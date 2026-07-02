@@ -100,6 +100,7 @@ private:
     uint64_t nominalRateQ16_ = 0;
     std::atomic<uint64_t> feedbackRateQ16_{0}; // 0 = no feedback yet
     uint64_t rateAccumulatorQ16_ = 0;          // event-thread only
+    bool lastPacketHadData_ = false;           // event-thread only
 
     std::unique_ptr<RingBuffer> ring_;
     std::vector<std::unique_ptr<TransferContext>> transfers_;
@@ -111,7 +112,9 @@ private:
     std::thread eventThread_;
     std::atomic<bool> running_{false};
     std::atomic<bool> stopping_{false};
-    std::atomic<bool> paused_{false};
+    // Streams begin paused: silence flows (locking the DAC's PLL, priming against pops)
+    // without consuming the ring or counting xruns until resume().
+    std::atomic<bool> paused_{true};
     std::atomic<bool> dead_{false};
 
     std::atomic<uint64_t> playedFrames_{0};

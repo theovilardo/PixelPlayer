@@ -177,10 +177,14 @@ void IsoStream::fillAndSubmit(TransferContext& context) {
         if (!silent && bytes > 0) {
             got = ring_->read(cursor, bytes);
             if (got < bytes) {
-                // Underrun: pad with silence. Only count once per packet while playing.
                 std::memset(cursor + got, 0, bytes - got);
-                xruns_.fetch_add(1, std::memory_order_relaxed);
+                // Count as an underrun only when audio actually ran dry mid-stream —
+                // steady silence at a track boundary / drain is not an xrun.
+                if (got > 0 || lastPacketHadData_) {
+                    xruns_.fetch_add(1, std::memory_order_relaxed);
+                }
             }
+            lastPacketHadData_ = got > 0;
         } else if (bytes > 0) {
             std::memset(cursor, 0, bytes);
         }

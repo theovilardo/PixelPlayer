@@ -301,6 +301,7 @@ dependencies {
 
     // Projects
     implementation(project(":shared"))
+    implementation(project(":usbaudio"))
 
     // Testing (Unit)
     testImplementation(libs.junit.jupiter.api)

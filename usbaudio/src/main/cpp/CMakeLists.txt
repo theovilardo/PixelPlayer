@@ -31,9 +31,11 @@ target_include_directories(usb-1.0
 target_compile_options(usb-1.0 PRIVATE -fvisibility=hidden -pthread)
 target_link_libraries(usb-1.0 PRIVATE log)
 
-# --- JNI bridge ----------------------------------------------------------------
+# --- JNI bridge + driver --------------------------------------------------------
 add_library(usbaudio_jni SHARED
     jni_bridge.cpp
+    uac_device.cpp
+    iso_stream.cpp
 )
 
 target_link_libraries(usbaudio_jni PRIVATE usb-1.0 log)

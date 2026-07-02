@@ -22,6 +22,7 @@ import com.theveloper.pixelplay.data.model.Playlist
 import com.theveloper.pixelplay.data.model.SortOption
 import com.theveloper.pixelplay.data.model.StorageFilter
 import com.theveloper.pixelplay.data.model.TransitionSettings
+import com.theveloper.pixelplay.data.usb.UsbRememberedDevice
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
@@ -140,6 +141,9 @@ class UserPreferencesRepository @Inject constructor(
         val KEEP_PLAYING_IN_BACKGROUND = booleanPreferencesKey("keep_playing_in_background")
         val IS_CROSSFADE_ENABLED = booleanPreferencesKey("is_crossfade_enabled")
         val HI_FI_MODE_ENABLED = booleanPreferencesKey("hi_fi_mode_enabled")
+        val USB_EXCLUSIVE_MODE_ENABLED = booleanPreferencesKey("usb_exclusive_mode_enabled")
+        val USB_REMEMBERED_DEVICES = stringPreferencesKey("usb_remembered_devices_json")
+        val USB_EXCLUSIVE_MAX_VOLUME_ACK = booleanPreferencesKey("usb_exclusive_max_volume_ack")
         val CROSSFADE_DURATION = intPreferencesKey("crossfade_duration")
         val CUSTOM_GENRES = stringSetPreferencesKey("custom_genres")
         val CUSTOM_GENRE_ICONS = stringPreferencesKey("custom_genre_icons")
@@ -347,6 +351,32 @@ class UserPreferencesRepository @Inject constructor(
 
     suspend fun setHiFiModeEnabled(enabled: Boolean) {
         dataStore.edit { it[PreferencesKeys.HI_FI_MODE_ENABLED] = enabled }
+    }
+
+    val usbExclusiveModeEnabledFlow: Flow<Boolean> =
+        pref { it[PreferencesKeys.USB_EXCLUSIVE_MODE_ENABLED] ?: false }
+
+    suspend fun setUsbExclusiveModeEnabled(enabled: Boolean) {
+        dataStore.edit { it[PreferencesKeys.USB_EXCLUSIVE_MODE_ENABLED] = enabled }
+    }
+
+    /** Remembered USB DACs keyed by [com.theveloper.pixelplay.data.usb.UsbDeviceInfo.key]. */
+    val usbRememberedDevicesFlow: Flow<Map<String, UsbRememberedDevice>> =
+        pref { decodeJsonPref(it, PreferencesKeys.USB_REMEMBERED_DEVICES, emptyMap()) }
+
+    suspend fun rememberUsbDevice(key: String, device: UsbRememberedDevice) {
+        editJsonMap<UsbRememberedDevice>(PreferencesKeys.USB_REMEMBERED_DEVICES) { put(key, device) }
+    }
+
+    suspend fun forgetUsbDevice(key: String) {
+        editJsonMap<UsbRememberedDevice>(PreferencesKeys.USB_REMEMBERED_DEVICES) { remove(key) }
+    }
+
+    val usbExclusiveMaxVolumeAckFlow: Flow<Boolean> =
+        pref { it[PreferencesKeys.USB_EXCLUSIVE_MAX_VOLUME_ACK] ?: false }
+
+    suspend fun setUsbExclusiveMaxVolumeAck(acknowledged: Boolean) {
+        dataStore.edit { it[PreferencesKeys.USB_EXCLUSIVE_MAX_VOLUME_ACK] = acknowledged }
     }
 
     val keepPlayingInBackgroundFlow: Flow<Boolean> =

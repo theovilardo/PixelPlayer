@@ -33,6 +33,7 @@ app/release/
 wear/build/
 wear/release/
 shared/build/
+usbaudio/build/
 baselineprofile/build/
 
 misc.xml

@@ -28,6 +28,9 @@ interface LocalPlaylistDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPlaylist(entity: LocalPlaylistEntity)
 
+    @Query("SELECT * FROM local_playlists WHERE playlistId = :playlistId")
+    suspend fun getPlaylistById(playlistId: String): LocalPlaylistEntity?
+
     @Query("DELETE FROM local_playlist_songs WHERE playlistId = :playlistId")
     suspend fun deleteSongsForPlaylist(playlistId: String)
 

@@ -7,10 +7,14 @@ import android.webkit.MimeTypeMap
 import com.google.android.gms.wearable.ChannelClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.NodeClient
+import com.theveloper.pixelplay.data.local.LocalPlaylistDao
+import com.theveloper.pixelplay.data.local.LocalPlaylistEntity
+import com.theveloper.pixelplay.data.local.LocalPlaylistSongCrossRef
 import com.theveloper.pixelplay.data.local.LocalSongDao
 import com.theveloper.pixelplay.data.local.LocalSongEntity
 import com.theveloper.pixelplay.shared.WearDataPaths
 import com.theveloper.pixelplay.shared.WearLibraryState
+import com.theveloper.pixelplay.shared.WearPlaylistSync
 import com.theveloper.pixelplay.shared.WearTransferMetadata
 import com.theveloper.pixelplay.shared.WearTransferProgress
 import com.theveloper.pixelplay.shared.WearTransferRequest
@@ -71,6 +75,7 @@ data class TransferState(
 class WearTransferRepository @Inject constructor(
     private val application: Application,
     private val localSongDao: LocalSongDao,
+    private val localPlaylistDao: LocalPlaylistDao,
     private val channelClient: ChannelClient,
     private val messageClient: MessageClient,
     private val nodeClient: NodeClient,
@@ -868,6 +873,33 @@ class WearTransferRepository @Inject constructor(
         }.onFailure { error ->
             Timber.tag(TAG).w(error, "Failed to publish watch library state")
         }
+    }
+
+    /**
+     * Creates/updates a playlist snapshot from a phone sync. This runs independently of song
+     * transfers — a playlist can exist (and be browsed) before any, or all, of its songs have
+     * finished downloading; availability is resolved by joining against [localSongDao] at read
+     * time. Re-syncing the same [playlistId] (e.g. after "update") replaces the full song order,
+     * it doesn't merge with the previous snapshot.
+     */
+    suspend fun onPlaylistSyncReceived(sync: WearPlaylistSync) {
+        val now = System.currentTimeMillis()
+        val existing = localPlaylistDao.getPlaylistById(sync.playlistId)
+        val entity = LocalPlaylistEntity(
+            playlistId = sync.playlistId,
+            name = sync.name,
+            createdAt = existing?.createdAt ?: now,
+            updatedAt = now,
+        )
+        val songCrossRefs = sync.songIds.mapIndexed { index, songId ->
+            LocalPlaylistSongCrossRef(playlistId = sync.playlistId, songId = songId, position = index)
+        }
+        localPlaylistDao.upsertPlaylist(entity, songCrossRefs)
+        Timber.tag(TAG).d(
+            "Playlist synced: %s (%d songs)",
+            sync.name,
+            sync.songIds.size,
+        )
     }
 
     /** Free space on the same volume where transferred songs are written (see [application.filesDir]). */

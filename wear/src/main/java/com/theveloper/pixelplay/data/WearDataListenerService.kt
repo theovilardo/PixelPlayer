@@ -17,6 +17,7 @@ import com.theveloper.pixelplay.shared.WearDataPaths
 import com.theveloper.pixelplay.shared.WearFavoriteSyncResponse
 import com.theveloper.pixelplay.shared.WearPlaybackResult
 import com.theveloper.pixelplay.shared.WearPlayerState
+import com.theveloper.pixelplay.shared.WearPlaylistSync
 import com.theveloper.pixelplay.shared.WearTransferMetadata
 import com.theveloper.pixelplay.shared.WearTransferProgress
 import com.theveloper.pixelplay.shared.WearTransferRequest
@@ -311,6 +312,23 @@ class WearDataListenerService : WearableListenerService() {
                     )
                 } catch (e: Exception) {
                     Timber.tag(TAG).e(e, "Failed to process transfer cancel")
+                }
+            }
+
+            WearDataPaths.PLAYLIST_SYNC -> {
+                scope.launch {
+                    try {
+                        val syncJson = String(messageEvent.data, Charsets.UTF_8)
+                        val sync = json.decodeFromString<WearPlaylistSync>(syncJson)
+                        transferRepository.onPlaylistSyncReceived(sync)
+                        Timber.tag(TAG).d(
+                            "Received playlist sync: %s (%d songs)",
+                            sync.name,
+                            sync.songIds.size,
+                        )
+                    } catch (e: Exception) {
+                        Timber.tag(TAG).e(e, "Failed to process playlist sync")
+                    }
                 }
             }
 

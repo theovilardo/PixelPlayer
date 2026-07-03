@@ -184,12 +184,13 @@ class WatchAudioTranscoder @Inject constructor(
         return File(dir, "${songId}_$requestId.m4a")
     }
 
-    private companion object {
-        const val TAG = "WatchAudioTranscoder"
+    companion object {
+        /** Also used by [WatchPlaylistTransferEstimator] to size-estimate songs that will be transcoded. */
         const val TARGET_BITRATE_BPS = 256_000
-        const val MAX_PASSTHROUGH_BITRATE_BPS = 256_000
-        const val PROGRESS_POLL_INTERVAL_MS = 250L
-        val PASSTHROUGH_MIME_TYPES = setOf(
+        private const val TAG = "WatchAudioTranscoder"
+        private const val MAX_PASSTHROUGH_BITRATE_BPS = 256_000
+        private const val PROGRESS_POLL_INTERVAL_MS = 250L
+        private val PASSTHROUGH_MIME_TYPES = setOf(
             "audio/mpeg",
             "audio/mp4",
             "audio/aac",

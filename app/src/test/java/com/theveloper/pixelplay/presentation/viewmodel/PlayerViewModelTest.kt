@@ -315,6 +315,9 @@ class PlayerViewModelTest {
             mockPlaylistSelectionStateHolder,
             playbackDispatchStateHolder,
             mediaControllerSyncStateHolder,
+            mockk<com.theveloper.pixelplay.data.usb.UsbExclusiveModeController>(relaxed = true) {
+                every { state } returns MutableStateFlow(com.theveloper.pixelplay.data.usb.UsbExclusiveState.Disabled)
+            },
             sessionToken,
             mockMediaControllerFactory
         )

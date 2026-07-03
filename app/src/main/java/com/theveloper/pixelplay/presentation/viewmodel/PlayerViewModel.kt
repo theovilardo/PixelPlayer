@@ -215,6 +215,7 @@ class PlayerViewModel @Inject constructor(
     val playlistSelectionStateHolder: PlaylistSelectionStateHolder,
     private val playbackDispatchStateHolder: PlaybackDispatchStateHolder,
     private val mediaControllerSyncStateHolder: MediaControllerSyncStateHolder,
+    private val usbExclusiveModeController: com.theveloper.pixelplay.data.usb.UsbExclusiveModeController,
     private val sessionToken: SessionToken,
     private val mediaControllerFactory: com.theveloper.pixelplay.data.media.MediaControllerFactory
 ) : ViewModel() {
@@ -1237,8 +1238,28 @@ class PlayerViewModel @Inject constructor(
         val isRemotePlaybackActive: Boolean = false,
         val selectedRouteName: String? = null,
         val isBluetoothEnabled: Boolean = false,
-        val bluetoothName: String? = null
+        val bluetoothName: String? = null,
+        /** "USB • 24bit/96kHz" while bit-perfect USB output is active, else null. */
+        val usbOutputLabel: String? = null
     )
+
+    /** Compact, language-neutral output badge; conversion shown as source→output rate. */
+    private fun usbOutputLabelOf(state: com.theveloper.pixelplay.data.usb.UsbExclusiveState): String? {
+        val active = state as? com.theveloper.pixelplay.data.usb.UsbExclusiveState.Active ?: return null
+        fun kHz(hz: Int): String =
+            if (hz % 1000 == 0) "${hz / 1000}kHz"
+            else String.format(java.util.Locale.US, "%.1fkHz", hz / 1000.0)
+        val bits = active.format.candidate.bitResolution
+        return if (active.conversion.isBitPerfect) {
+            "USB • ${bits}bit/${kHz(active.format.sampleRateHz)}"
+        } else {
+            "USB • ${bits}bit/${kHz(active.source.sampleRateHz)}→${kHz(active.format.sampleRateHz)}"
+        }
+    }
+
+    private val usbOutputLabelFlow = usbExclusiveModeController.state
+        .map { usbOutputLabelOf(it) }
+        .distinctUntilChanged()
 
     // Intermediate combine #1: 5 settings flows
     private val fullPlayerSlicePart1 = combine(
@@ -1264,11 +1285,13 @@ class PlayerViewModel @Inject constructor(
         immersiveLyricsTimeout,
         isImmersiveTemporarilyDisabled,
         isRemotePlaybackActive,
-        combine(selectedRouteName, bluetoothSlice) { route, bt -> route to bt }
+        combine(selectedRouteName, bluetoothSlice, usbOutputLabelFlow) { route, bt, usb ->
+            Triple(route, bt, usb)
+        }
     ) { immersive: Boolean, immersiveTimeout: Long, immersiveDisabled: Boolean,
-        remotePb: Boolean, routeAndBt: Pair<String?, BluetoothSlice> ->
-        val (routeName, bt) = routeAndBt
-        FullPlayerSlicePart2(immersive, immersiveTimeout, immersiveDisabled, remotePb, routeName, bt.enabled, bt.name)
+        remotePb: Boolean, routeBtUsb: Triple<String?, BluetoothSlice, String?> ->
+        val (routeName, bt, usbLabel) = routeBtUsb
+        FullPlayerSlicePart2(immersive, immersiveTimeout, immersiveDisabled, remotePb, routeName, bt.enabled, bt.name, usbLabel)
     }
 
     private data class FullPlayerSlicePart1(
@@ -1286,7 +1309,8 @@ class PlayerViewModel @Inject constructor(
         val isRemotePlaybackActive: Boolean,
         val selectedRouteName: String?,
         val isBluetoothEnabled: Boolean,
-        val bluetoothName: String?
+        val bluetoothName: String?,
+        val usbOutputLabel: String?
     )
 
     val fullPlayerSlice: StateFlow<FullPlayerSlice> = combine(
@@ -1305,7 +1329,8 @@ class PlayerViewModel @Inject constructor(
             isRemotePlaybackActive = p2.isRemotePlaybackActive,
             selectedRouteName = p2.selectedRouteName,
             isBluetoothEnabled = p2.isBluetoothEnabled,
-            bluetoothName = p2.bluetoothName
+            bluetoothName = p2.bluetoothName,
+            usbOutputLabel = p2.usbOutputLabel
         )
     }
         .distinctUntilChanged()

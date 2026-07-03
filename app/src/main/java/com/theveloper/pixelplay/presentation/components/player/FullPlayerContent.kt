@@ -260,6 +260,7 @@ fun FullPlayerContent(
     val selectedRouteName = fullPlayerSlice.selectedRouteName
     val isBluetoothEnabled = fullPlayerSlice.isBluetoothEnabled
     val bluetoothName = fullPlayerSlice.bluetoothName
+    val usbOutputLabel = fullPlayerSlice.usbOutputLabel
     val navigationBarBottomInset = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val queueGestureBottomExclusion = maxOf(20.dp, navigationBarBottomInset + 8.dp)
     val queueGestureBottomExclusionPx = with(LocalDensity.current) {
@@ -531,6 +532,7 @@ fun FullPlayerContent(
             currentPositionProvider = currentPositionProvider,
             totalDurationValue = totalDurationValue,
             showPlayerFileInfo = showPlayerFileInfo,
+            usbOutputLabel = usbOutputLabel,
             onSeek = onSeek,
             expansionFractionProvider = expansionFractionProvider,
             isPlayingProvider = isPlayingProvider,
@@ -1205,6 +1207,7 @@ private fun FullPlayerProgressSection(
     currentPositionProvider: () -> Long,
     totalDurationValue: Long,
     showPlayerFileInfo: Boolean,
+    usbOutputLabel: String?,
     onSeek: (Long) -> Unit,
     expansionFractionProvider: () -> Float,
     isPlayingProvider: () -> Boolean,
@@ -1241,6 +1244,7 @@ private fun FullPlayerProgressSection(
         audioBitrate = audioBitrate,
         audioSampleRate = audioSampleRate,
         showAudioFileInfo = showPlayerFileInfo,
+        usbOutputLabel = usbOutputLabel,
         onSeek = onSeek,
         expansionFractionProvider = expansionFractionProvider,
         isPlayingProvider = isPlayingProvider,
@@ -1638,6 +1642,7 @@ private fun PlayerProgressBarSection(
     audioBitrate: Int?,
     audioSampleRate: Int?,
     showAudioFileInfo: Boolean,
+    usbOutputLabel: String? = null,
     onSeek: (Long) -> Unit,
     expansionFractionProvider: () -> Float,
     isPlayingProvider: () -> Boolean,
@@ -1672,15 +1677,17 @@ private fun PlayerProgressBarSection(
         kotlin.math.abs(reportedDuration - hintDuration) <= 1500L -> reportedDuration
         else -> minOf(reportedDuration, hintDuration)
     }
-    val audioMetaLabel = remember(showAudioFileInfo, audioMimeType, audioBitrate, audioSampleRate) {
-        if (showAudioFileInfo) {
-            formatAudioMetaLabel(
+    val audioMetaLabel = remember(showAudioFileInfo, audioMimeType, audioBitrate, audioSampleRate, usbOutputLabel) {
+        when {
+            !showAudioFileInfo -> null
+            // Bit-perfect USB output: show the actual DAC output format, which is the
+            // more truthful label while exclusive mode drives the stream.
+            usbOutputLabel != null -> usbOutputLabel
+            else -> formatAudioMetaLabel(
                 mimeType = audioMimeType,
                 bitrate = audioBitrate,
                 sampleRate = audioSampleRate
             )
-        } else {
-            null
         }
     }
     var displayAudioMetaLabel by remember(songId) { mutableStateOf<String?>(null) }

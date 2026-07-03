@@ -86,6 +86,7 @@ import androidx.compose.material.icons.rounded.Science
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Timer
 import androidx.compose.material.icons.rounded.UnfoldMore
+import androidx.compose.material.icons.rounded.Usb
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ButtonDefaults
@@ -855,6 +856,13 @@ fun SettingsCategoryScreen(
                                     onCheckedChange = { settingsViewModel.setHiFiModeEnabled(it) },
                                     enabled = uiState.hiFiModeDeviceSupported,
                                     leadingIcon = { Icon(painterResource(R.drawable.outline_high_quality_24), null, tint = MaterialTheme.colorScheme.secondary) }
+                                )
+                                SettingsItem(
+                                    title = stringResource(R.string.settings_usb_audio_title),
+                                    subtitle = stringResource(R.string.settings_usb_audio_subtitle),
+                                    leadingIcon = { Icon(Icons.Rounded.Usb, null, tint = MaterialTheme.colorScheme.secondary) },
+                                    trailingIcon = { Icon(Icons.Rounded.ChevronRight, null, tint = MaterialTheme.colorScheme.onSurfaceVariant) },
+                                    onClick = { navController.navigateSafely(Screen.UsbAudio.route) }
                                 )
                                 SwitchSettingItem(
                                     title = stringResource(R.string.settings_persistent_shuffle_title),

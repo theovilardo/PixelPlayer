@@ -646,4 +646,31 @@
     <string name="settings_volume_section">Volumen</string>
     <string name="settings_pause_on_volume_zero">Pausar cuando el volumen llegue a cero</string>
     <string name="settings_pause_on_volume_zero_desc">Pausar automáticamente la reproducción cuando el volumen sea 0</string>
+<!-- USB Audio (modo exclusivo) -->
+    <string name="settings_usb_audio_title">Audio USB</string>
+    <string name="settings_usb_audio_subtitle">Salida bit-perfect a DACs USB</string>
+    <string name="settings_usb_exclusive_toggle_title">Modo exclusivo USB</string>
+    <string name="settings_usb_exclusive_toggle_subtitle">Toma control exclusivo de un DAC USB y reproduce en el formato nativo de la pista, sin pasar por el mezclador de Android</string>
+    <string name="settings_usb_disabled_hint">Actívalo para reclamar un DAC USB cuando se conecte. La reproducción vuelve a la salida normal cuando no hay DAC en uso.</string>
+    <string name="settings_usb_state_no_device">Ningún DAC USB conectado</string>
+    <string name="settings_usb_state_detected">%1$s detectado</string>
+    <string name="settings_usb_state_permission_pending">Esperando el permiso USB…</string>
+    <string name="settings_usb_state_permission_denied">Se denegó el acceso a %1$s</string>
+    <string name="settings_usb_state_ready">%1$s conectado • listo</string>
+    <string name="settings_usb_state_active">Reproduciendo en %1$s</string>
+    <string name="settings_usb_conversion_bit_perfect">Bit-perfect</string>
+    <string name="settings_usb_conversion_converted">Convertido — el DAC no admite el formato de origen</string>
+    <string name="settings_usb_retry_permission">Conceder acceso</string>
+    <string name="settings_usb_device_section">Dispositivo conectado</string>
+    <string name="settings_usb_device_class">Clase de audio USB</string>
+    <string name="settings_usb_device_rates">Frecuencias de muestreo</string>
+    <string name="settings_usb_device_depths">Profundidades de bits</string>
+    <string name="settings_usb_remember_title">Reanudar al reconectar</string>
+    <string name="settings_usb_remember_subtitle">Reanuda la reproducción cuando este DAC vuelva a conectarse</string>
+    <string name="settings_usb_volume_section">Volumen</string>
+    <string name="settings_usb_hw_volume_title">Volumen por hardware</string>
+    <string name="settings_usb_max_volume_warning_title">Salida fija a nivel de línea</string>
+    <string name="settings_usb_max_volume_warning_text">Este DAC no expone control de volumen por hardware, así que la salida va a escala completa. Controla el volumen en tu amplificador o auriculares antes de reproducir.</string>
+    <string name="settings_usb_max_volume_ack">Entendido</string>
+    <string name="settings_usb_test_tone">Reproducir tono de prueba</string>
 </resources>

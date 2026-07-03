@@ -24,6 +24,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -43,7 +44,10 @@ class WatchTransferForegroundService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val notification = buildNotification(transferStateStore.transfers.value.values.toList())
+        val notification = buildNotification(
+            transferStateStore.transfers.value.values.toList(),
+            transferStateStore.batchTransfers.value.values.toList(),
+        )
         if (!hasStartedForeground) {
             startInForeground(notification)
         } else {
@@ -63,21 +67,24 @@ class WatchTransferForegroundService : Service() {
     private fun observeTransfers() {
         transferObserverJob?.cancel()
         transferObserverJob = serviceScope.launch {
-            transferStateStore.transfers.collect { transfers ->
-                val states = transfers.values.toList()
-                if (states.isEmpty()) {
-                    stopForegroundCompat()
-                    stopSelf()
-                    return@collect
-                }
+            combine(
+                transferStateStore.transfers,
+                transferStateStore.batchTransfers,
+            ) { transfers, batches -> transfers.values.toList() to batches.values.toList() }
+                .collect { (states, batches) ->
+                    if (states.isEmpty() && batches.isEmpty()) {
+                        stopForegroundCompat()
+                        stopSelf()
+                        return@collect
+                    }
 
-                val notification = buildNotification(states)
-                if (!hasStartedForeground) {
-                    startInForeground(notification)
-                } else {
-                    notificationManager().notify(NOTIFICATION_ID, notification)
+                    val notification = buildNotification(states, batches)
+                    if (!hasStartedForeground) {
+                        startInForeground(notification)
+                    } else {
+                        notificationManager().notify(NOTIFICATION_ID, notification)
+                    }
                 }
-            }
         }
     }
 
@@ -110,7 +117,83 @@ class WatchTransferForegroundService : Service() {
         hasStartedForeground = false
     }
 
-    private fun buildNotification(transfers: List<PhoneWatchTransferState>): Notification {
+    private fun buildNotification(
+        transfers: List<PhoneWatchTransferState>,
+        batches: List<PhoneWatchBatchTransferState>,
+    ): Notification {
+        val activeBatches = batches.filter {
+            it.status == WearTransferProgress.STATUS_TRANSCODING || it.status == WearTransferProgress.STATUS_TRANSFERRING
+        }
+        val selectedBatch = activeBatches.maxByOrNull { it.updatedAtMillis }
+            ?: batches.maxByOrNull { it.updatedAtMillis }
+
+        if (selectedBatch != null) {
+            return buildBatchNotification(selectedBatch, isOngoing = activeBatches.isNotEmpty())
+        }
+
+        return buildIndividualNotification(transfers)
+    }
+
+    private fun buildBatchNotification(batch: PhoneWatchBatchTransferState, isOngoing: Boolean): Notification {
+        val title = if (isOngoing) {
+            getString(
+                R.string.watch_transfer_status_sending_playlist_service,
+                batch.playlistName,
+                batch.completedSongs,
+                batch.totalSongs,
+            )
+        } else {
+            when (batch.status) {
+                WearTransferProgress.STATUS_COMPLETED -> getString(R.string.watch_transfer_status_complete_service)
+                WearTransferProgress.STATUS_FAILED -> getString(R.string.watch_transfer_status_failed_service)
+                WearTransferProgress.STATUS_CANCELLED -> getString(R.string.watch_transfer_status_cancelled_service)
+                else -> getString(R.string.watch_transfer_status_preparing_service)
+            }
+        }
+
+        val statusText = when (batch.status) {
+            WearTransferProgress.STATUS_TRANSCODING -> getString(R.string.watch_transfer_status_transcoding)
+            WearTransferProgress.STATUS_TRANSFERRING -> getString(R.string.watch_transfer_status_transferring)
+            WearTransferProgress.STATUS_COMPLETED -> getString(R.string.watch_transfer_status_completed)
+            WearTransferProgress.STATUS_FAILED -> getString(R.string.watch_transfer_status_failed)
+            WearTransferProgress.STATUS_CANCELLED -> getString(R.string.watch_transfer_status_cancelled)
+            else -> getString(R.string.watch_transfer_status_preparing)
+        }
+        val contentText = batch.currentSongTitle.ifBlank { statusText }
+        val progressPercent = (batch.overallProgress * 100f).toInt().coerceIn(0, 100)
+
+        val builder = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+            .setSmallIcon(R.drawable.monochrome_player)
+            .setContentTitle(title)
+            .setContentText(contentText)
+            .setContentIntent(createOpenAppPendingIntent())
+            .setCategory(NotificationCompat.CATEGORY_SERVICE)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setOnlyAlertOnce(true)
+            .setSilent(true)
+            .setOngoing(isOngoing)
+            .setShowWhen(false)
+            .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+
+        if (isOngoing) {
+            builder.setProgress(100, progressPercent, false)
+        } else {
+            builder.setProgress(0, 0, false)
+        }
+
+        val detailText = listOfNotNull(
+            batch.currentSongTitle.ifBlank { null },
+            statusText,
+            batch.error?.takeIf { it.isNotBlank() },
+        ).joinToString(separator = "\n")
+        if (detailText.isNotBlank()) {
+            builder.setStyle(NotificationCompat.BigTextStyle().bigText(detailText))
+        }
+
+        return builder.build()
+    }
+
+    private fun buildIndividualNotification(transfers: List<PhoneWatchTransferState>): Notification {
         val activeTransfers = transfers.filter { it.status == WearTransferProgress.STATUS_TRANSFERRING }
         val selectedTransfer = activeTransfers.maxByOrNull { it.updatedAtMillis }
             ?: transfers.maxByOrNull { it.updatedAtMillis }

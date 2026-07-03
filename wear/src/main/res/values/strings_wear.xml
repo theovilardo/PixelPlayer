@@ -77,4 +77,15 @@
     <string name="wear_saving">Saving…</string>
     <string name="wear_save_to_watch">Save to watch</string>
     <string name="wear_confirm_save">Confirm save</string>
+
+    <!-- Local playlists (whole-playlist watch transfer) -->
+    <string name="wear_local_playlists_title">Playlists</string>
+    <string name="wear_no_local_playlists">No playlists sent yet</string>
+    <string name="wear_no_local_playlists_hint">Send a playlist from the phone app to see it here.</string>
+    <plurals name="wear_local_playlist_song_count">
+        <item quantity="one">%1$d song</item>
+        <item quantity="other">%1$d songs</item>
+    </plurals>
+    <string name="wear_play_all">Play all</string>
+    <string name="wear_song_pending_transfer">Waiting to transfer…</string>
 </resources>

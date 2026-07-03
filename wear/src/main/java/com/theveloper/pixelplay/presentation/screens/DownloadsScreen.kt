@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.QueueMusic
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.ErrorOutline
@@ -24,6 +25,7 @@ import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.material.icons.rounded.PhoneAndroid
 import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material.icons.rounded.QueueMusic
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.Security
 import androidx.compose.runtime.Composable
@@ -81,6 +83,7 @@ import kotlinx.coroutines.flow.collect
  */
 @Composable
 fun DownloadsScreen(
+    onPlaylistsClick: () -> Unit = {},
     viewModel: WearDownloadsViewModel = hiltViewModel(),
     playerViewModel: WearPlayerViewModel = hiltViewModel(),
 ) {
@@ -180,6 +183,33 @@ fun DownloadsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 4.dp),
+                )
+            }
+
+            item {
+                Chip(
+                    label = {
+                        Text(
+                            text = stringResource(R.string.wear_local_playlists_title),
+                            color = palette.textPrimary,
+                        )
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Rounded.QueueMusic,
+                            contentDescription = null,
+                            tint = palette.textSecondary,
+                            modifier = Modifier.size(18.dp),
+                        )
+                    },
+                    onClick = onPlaylistsClick,
+                    colors = ChipDefaults.chipColors(
+                        backgroundColor = surfaceContainer,
+                        contentColor = palette.chipContent,
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 2.dp),
                 )
             }
 

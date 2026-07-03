@@ -1,6 +1,7 @@
 package com.theveloper.pixelplay.data
 
 import android.app.Application
+import android.os.StatFs
 import android.os.SystemClock
 import android.webkit.MimeTypeMap
 import com.google.android.gms.wearable.ChannelClient
@@ -841,7 +842,10 @@ class WearTransferRepository @Inject constructor(
     ) {
         val snapshotSongIds = songIds ?: localSongDao.getAllSongIds().first().toSet()
         val payload = json.encodeToString(
-            WearLibraryState(songIds = snapshotSongIds.sorted())
+            WearLibraryState(
+                songIds = snapshotSongIds.sorted(),
+                freeStorageBytes = availableStorageBytes(),
+            )
         ).toByteArray(Charsets.UTF_8)
 
         runCatching {
@@ -864,6 +868,15 @@ class WearTransferRepository @Inject constructor(
         }.onFailure { error ->
             Timber.tag(TAG).w(error, "Failed to publish watch library state")
         }
+    }
+
+    /** Free space on the same volume where transferred songs are written (see [application.filesDir]). */
+    private fun availableStorageBytes(): Long {
+        return runCatching { StatFs(application.filesDir.path).availableBytes }
+            .getOrElse { error ->
+                Timber.tag(TAG).w(error, "Failed to read available storage")
+                0L
+            }
     }
 
     /**

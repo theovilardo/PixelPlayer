@@ -25,6 +25,7 @@ import com.theveloper.pixelplay.shared.WearBrowseRequest
 import com.theveloper.pixelplay.shared.WearBrowseResponse
 import com.theveloper.pixelplay.shared.WearDataPaths
 import com.theveloper.pixelplay.shared.WearLibraryItem
+import com.theveloper.pixelplay.shared.WearLibraryState
 import com.theveloper.pixelplay.shared.WearPlaybackCommand
 import com.theveloper.pixelplay.shared.WearTransferMetadata
 import com.theveloper.pixelplay.shared.WearTransferProgress
@@ -97,6 +98,7 @@ class WearCommandReceiver : WearableListenerService() {
             WearDataPaths.BROWSE_REQUEST -> handleBrowseRequest(messageEvent)
             WearDataPaths.TRANSFER_REQUEST -> handleTransferRequest(messageEvent)
             WearDataPaths.TRANSFER_CANCEL -> handleTransferCancel(messageEvent)
+            WearDataPaths.WATCH_LIBRARY_STATE -> handleWatchLibraryState(messageEvent)
             else -> Timber.tag(TAG).w("Unknown message path: ${messageEvent.path}")
         }
     }
@@ -536,6 +538,19 @@ class WearCommandReceiver : WearableListenerService() {
         transferCancellationStore.markCancelled(request.requestId)
         transferStateStore.markCancelled(request.requestId)
         Timber.tag(TAG).d("Transfer cancelled: requestId=${request.requestId}")
+    }
+
+    private fun handleWatchLibraryState(messageEvent: MessageEvent) {
+        val stateJson = String(messageEvent.data, Charsets.UTF_8)
+        val state = try {
+            json.decodeFromString<WearLibraryState>(stateJson)
+        } catch (e: Exception) {
+            Timber.tag(TAG).e(e, "Failed to parse watch library state")
+            return
+        }
+        val nodeId = messageEvent.sourceNodeId
+        transferStateStore.updateWatchSongIds(nodeId, state.songIds.toSet())
+        transferStateStore.updateWatchFreeStorageBytes(nodeId, state.freeStorageBytes)
     }
 
     /**

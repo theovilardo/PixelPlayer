@@ -47,6 +47,9 @@ class PhoneWatchTransferStateStore @Inject constructor() {
     private val watchSongIdsByNodeId = ConcurrentHashMap<String, Set<String>>()
     private val _watchSongIds = MutableStateFlow<Set<String>>(emptySet())
     val watchSongIds: StateFlow<Set<String>> = _watchSongIds.asStateFlow()
+    private val freeStorageBytesByNodeId = ConcurrentHashMap<String, Long>()
+    private val _watchFreeStorageBytesByNodeId = MutableStateFlow<Map<String, Long>>(emptyMap())
+    val watchFreeStorageBytesByNodeId: StateFlow<Map<String, Long>> = _watchFreeStorageBytesByNodeId.asStateFlow()
 
     private val cleanupJobs = ConcurrentHashMap<String, Job>()
 
@@ -164,6 +167,12 @@ class PhoneWatchTransferStateStore @Inject constructor() {
         updateWatchLibraryResolution()
     }
 
+    fun updateWatchFreeStorageBytes(nodeId: String, freeStorageBytes: Long) {
+        if (nodeId.isBlank()) return
+        freeStorageBytesByNodeId[nodeId] = freeStorageBytes
+        _watchFreeStorageBytesByNodeId.value = freeStorageBytesByNodeId.toMap()
+    }
+
     fun markSongPresentOnWatch(nodeId: String, songId: String) {
         if (nodeId.isBlank() || songId.isBlank()) return
         val existingSongIds = watchSongIdsByNodeId[nodeId].orEmpty()
@@ -192,6 +201,12 @@ class PhoneWatchTransferStateStore @Inject constructor() {
                 watchSongIdsByNodeId.remove(nodeId)
             }
         }
+        freeStorageBytesByNodeId.keys.toList().forEach { nodeId ->
+            if (nodeId !in nodeIds) {
+                freeStorageBytesByNodeId.remove(nodeId)
+            }
+        }
+        _watchFreeStorageBytesByNodeId.value = freeStorageBytesByNodeId.toMap()
         _watchLibrarySyncedNodeIds.value = _watchLibrarySyncedNodeIds.value.intersect(nodeIds)
         _watchSongIds.value = watchSongIdsByNodeId.values.flatten().toSet()
         updateWatchLibraryResolution()

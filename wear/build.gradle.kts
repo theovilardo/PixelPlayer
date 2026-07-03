@@ -16,6 +16,13 @@ android {
         targetSdk = 37
         versionCode = (project.findProperty("APP_VERSION_CODE") as? String)?.toInt() ?: 1
         versionName = (project.findProperty("APP_VERSION_NAME") as? String) ?: "1.0.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+        unitTests.all { it.useJUnitPlatform() }
     }
 
     buildTypes {
@@ -117,6 +124,27 @@ dependencies {
     implementation(libs.androidx.media3.session)
     implementation(libs.androidx.mediarouter)
 
+    // Testing (Unit)
+    testImplementation(libs.junit.jupiter.api)
+    testImplementation(libs.junit.jupiter.params)
+    testRuntimeOnly(libs.junit.jupiter.engine)
+    // JUnit 4 (Vintage) — required for legacy JUnit 4 tests under useJUnitPlatform()
+    testImplementation(libs.junit)
+    testRuntimeOnly(libs.junit.vintage.engine)
+    testRuntimeOnly(libs.junitplatformlauncher)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.turbine)
+    testImplementation(libs.truth)
+    testImplementation(kotlin("test"))
+
+    // Testing (Instrumentation)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.room.testing)
+    androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.truth)
+    androidTestImplementation(libs.mockk)
+
     constraints {
         // Fix vulnerabilities in transitive dependencies
         implementation(libs.netty.common)
@@ -130,4 +158,8 @@ dependencies {
         implementation(libs.jose4j)
         implementation(libs.apache.httpclient)
     }
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

@@ -14,6 +14,13 @@ import com.theveloper.pixelplay.data.model.SortOption
 import com.theveloper.pixelplay.data.playlist.M3uManager
 import com.theveloper.pixelplay.data.preferences.PlaylistPreferencesRepository
 import com.theveloper.pixelplay.data.repository.MusicRepository
+import com.theveloper.pixelplay.data.service.wear.PhoneWatchBatchTransferState
+import com.theveloper.pixelplay.data.service.wear.PhoneWatchTransferStateStore
+import com.theveloper.pixelplay.data.service.wear.PlaylistWatchTransferCoordinator
+import com.theveloper.pixelplay.data.service.wear.WatchAudioTranscoder
+import com.theveloper.pixelplay.data.service.wear.WatchPlaylistTransferEstimate
+import com.theveloper.pixelplay.data.service.wear.WatchPlaylistTransferEstimator
+import com.theveloper.pixelplay.data.service.wear.WearPhoneTransferSender
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +29,9 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -75,6 +85,10 @@ class PlaylistViewModel @Inject constructor(
     private val dailyMixManager: DailyMixManager,
     private val aiPlaylistGenerator: AiPlaylistGenerator,
     private val m3uManager: M3uManager,
+    private val playlistWatchTransferCoordinator: PlaylistWatchTransferCoordinator,
+    private val watchTransferStateStore: PhoneWatchTransferStateStore,
+    private val wearPhoneTransferSender: WearPhoneTransferSender,
+    private val watchAudioTranscoder: WatchAudioTranscoder,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -86,6 +100,24 @@ class PlaylistViewModel @Inject constructor(
         onBufferOverflow = kotlinx.coroutines.channels.BufferOverflow.DROP_OLDEST
     )
     val playlistCreationEvent: SharedFlow<Boolean> = _playlistCreationEvent.asSharedFlow()
+
+    private val _isPixelPlayWatchAvailable = MutableStateFlow(false)
+    val isPixelPlayWatchAvailable: StateFlow<Boolean> = _isPixelPlayWatchAvailable.asStateFlow()
+    private val _isRefreshingWatchAvailability = MutableStateFlow(false)
+    val watchFreeStorageBytesByNodeId: StateFlow<Map<String, Long>> =
+        watchTransferStateStore.watchFreeStorageBytesByNodeId
+    private val _activePlaylistBatchId = MutableStateFlow<String?>(null)
+
+    /** Batch transfer state for whichever playlist we most recently kicked off a send for. */
+    val activePlaylistBatchTransfer: StateFlow<PhoneWatchBatchTransferState?> = kotlinx.coroutines.flow.combine(
+        watchTransferStateStore.batchTransfers,
+        _activePlaylistBatchId,
+    ) { batches, batchId -> batchId?.let { batches[it] } }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000L),
+            initialValue = null,
+        )
 
     companion object {
         const val FOLDER_PLAYLIST_PREFIX = "folder_playlist:"
@@ -1223,5 +1255,46 @@ class PlaylistViewModel @Inject constructor(
                 Toast.makeText(context, context.getString(R.string.playlist_view_model_export_failed, e.message ?: ""), Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    /**
+     * Refreshes reachable-watch capability + free storage. Call when the "send to watch" sheet is
+     * about to be shown so the confirmation UI has up-to-date free-space data.
+     */
+    fun refreshWatchAvailability() {
+        if (_isRefreshingWatchAvailability.value) return
+
+        viewModelScope.launch {
+            _isRefreshingWatchAvailability.value = true
+            val available = wearPhoneTransferSender.isPixelPlayWatchAvailable()
+            _isPixelPlayWatchAvailable.value = available
+            _isRefreshingWatchAvailability.value = false
+            if (available) {
+                wearPhoneTransferSender.refreshWatchLibraryState()
+            }
+        }
+    }
+
+    fun isPlaylistFullyOnWatch(songIds: List<String>): Boolean {
+        return songIds.isNotEmpty() && songIds.all { watchTransferStateStore.isSongSavedOnAllReachableWatches(it) }
+    }
+
+    /** Size/time estimate over only the songs from [songs] that aren't already on every reachable watch. */
+    fun estimateWatchTransfer(songs: List<Song>): WatchPlaylistTransferEstimate {
+        val pendingSongs = songs.filterNot { watchTransferStateStore.isSongSavedOnAllReachableWatches(it.id) }
+        return WatchPlaylistTransferEstimator.estimate(songs, pendingSongs, watchAudioTranscoder)
+    }
+
+    /** Highest free-storage figure among reachable watches, or null if none reported yet. */
+    fun maxWatchFreeStorageBytes(): Long? = watchFreeStorageBytesByNodeId.value.values.maxOrNull()
+
+    fun sendPlaylistToWatch(playlistId: String, playlistName: String, songIds: List<String>): String {
+        val batchId = playlistWatchTransferCoordinator.requestPlaylistTransfer(playlistId, playlistName, songIds)
+        _activePlaylistBatchId.value = batchId
+        return batchId
+    }
+
+    fun cancelPlaylistTransfer(batchId: String) {
+        playlistWatchTransferCoordinator.cancelPlaylistTransfer(batchId)
     }
 }

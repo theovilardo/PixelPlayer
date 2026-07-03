@@ -64,4 +64,10 @@ object WearDataPaths {
 
     /** Message path for favorites sync progress/state (phone -> watch) */
     const val FAVORITES_SYNC_STATE = "/favorites_sync_state"
+
+    /** Message path for playlist sync (phone -> watch, creates/updates a local playlist) */
+    const val PLAYLIST_SYNC = "/playlist_sync"
+
+    /** Message path for playlist sync acknowledgement (watch -> phone) */
+    const val PLAYLIST_SYNC_ACK = "/playlist_sync_ack"
 }

@@ -16,6 +16,7 @@ data class WearTransferProgress(
     val error: String? = null,
 ) {
     companion object {
+        const val STATUS_TRANSCODING = "transcoding"
         const val STATUS_TRANSFERRING = "transferring"
         const val STATUS_COMPLETED = "completed"
         const val STATUS_FAILED = "failed"

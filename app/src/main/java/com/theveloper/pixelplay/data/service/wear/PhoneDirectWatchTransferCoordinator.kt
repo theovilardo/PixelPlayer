@@ -98,6 +98,7 @@ class PhoneDirectWatchTransferCoordinator @Inject constructor(
         transferMode: String = WearTransferRequest.MODE_SAVE_TO_LIBRARY,
         startPositionMs: Long = 0L,
         autoPlay: Boolean = false,
+        overrideAudioFile: File? = null,
     ) {
         transferStateStore.markRequested(
             requestId = requestId,
@@ -112,6 +113,7 @@ class PhoneDirectWatchTransferCoordinator @Inject constructor(
                 transferMode = transferMode,
                 startPositionMs = startPositionMs,
                 autoPlay = autoPlay,
+                overrideAudioFile = overrideAudioFile,
             )
         }
     }
@@ -123,6 +125,7 @@ class PhoneDirectWatchTransferCoordinator @Inject constructor(
         transferMode: String,
         startPositionMs: Long,
         autoPlay: Boolean,
+        overrideAudioFile: File? = null,
     ) {
         var openedSongSource: OpenedSongSource? = null
         try {
@@ -150,10 +153,19 @@ class PhoneDirectWatchTransferCoordinator @Inject constructor(
                 return
             }
 
-            val songSource = openSongSource(
-                song = song,
-                allowProxyStreaming = transferMode == WearTransferRequest.MODE_TEMPORARY_PLAYBACK,
-            )
+            val songSource = if (overrideAudioFile != null) {
+                runCatching {
+                    OpenedSongSource(
+                        inputStream = overrideAudioFile.inputStream(),
+                        fileSize = overrideAudioFile.length(),
+                    )
+                }.getOrNull()
+            } else {
+                openSongSource(
+                    song = song,
+                    allowProxyStreaming = transferMode == WearTransferRequest.MODE_TEMPORARY_PLAYBACK,
+                )
+            }
             if (songSource == null) {
                 sendTransferMetadataError(
                     nodeId = nodeId,
@@ -182,9 +194,9 @@ class PhoneDirectWatchTransferCoordinator @Inject constructor(
                 album = song.album,
                 albumId = song.albumId,
                 duration = song.duration,
-                mimeType = song.mimeType ?: "audio/mpeg",
+                mimeType = if (overrideAudioFile != null) TRANSCODED_MIME_TYPE else (song.mimeType ?: "audio/mpeg"),
                 fileSize = fileSize,
-                bitrate = song.bitrate ?: 0,
+                bitrate = if (overrideAudioFile != null) TRANSCODED_BITRATE_BPS else (song.bitrate ?: 0),
                 sampleRate = song.sampleRate ?: 0,
                 isFavorite = song.isFavorite,
                 paletteSeedArgb = paletteSeedArgb,
@@ -961,5 +973,8 @@ class PhoneDirectWatchTransferCoordinator @Inject constructor(
         const val TRANSFER_ARTWORK_QUALITY = 95
         const val TRANSFER_ARTWORK_MAX_BYTES = 1_500_000
         const val METADATA_GUARD_DELAY_MS = 250L
+        // Kept in sync with WatchAudioTranscoder's AAC-LC output.
+        const val TRANSCODED_MIME_TYPE = "audio/mp4"
+        const val TRANSCODED_BITRATE_BPS = 256_000
     }
 }

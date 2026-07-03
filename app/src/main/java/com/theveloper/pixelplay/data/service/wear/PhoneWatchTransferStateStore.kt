@@ -33,6 +33,33 @@ data class PhoneWatchTransferState(
         }
 }
 
+/**
+ * Aggregate state of a whole-playlist transfer. [activeRequestId] is the requestId of the song
+ * currently in flight (if any) — the UI uses it to avoid showing that same song a second time as
+ * an individual [PhoneWatchTransferState] row while its batch row is already visible.
+ */
+data class PhoneWatchBatchTransferState(
+    val batchId: String,
+    val playlistId: String,
+    val playlistName: String,
+    val totalSongs: Int,
+    val completedSongs: Int = 0,
+    val activeRequestId: String? = null,
+    val currentSongTitle: String = "",
+    val currentSongProgress: Float = 0f,
+    val status: String = WearTransferProgress.STATUS_TRANSFERRING,
+    val error: String? = null,
+    val updatedAtMillis: Long = System.currentTimeMillis(),
+) {
+    val overallProgress: Float
+        get() = if (totalSongs > 0) {
+            ((completedSongs.toFloat() + currentSongProgress.coerceIn(0f, 1f)) / totalSongs.toFloat())
+                .coerceIn(0f, 1f)
+        } else {
+            0f
+        }
+}
+
 @Singleton
 class PhoneWatchTransferStateStore @Inject constructor() {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
@@ -50,8 +77,11 @@ class PhoneWatchTransferStateStore @Inject constructor() {
     private val freeStorageBytesByNodeId = ConcurrentHashMap<String, Long>()
     private val _watchFreeStorageBytesByNodeId = MutableStateFlow<Map<String, Long>>(emptyMap())
     val watchFreeStorageBytesByNodeId: StateFlow<Map<String, Long>> = _watchFreeStorageBytesByNodeId.asStateFlow()
+    private val _batchTransfers = MutableStateFlow<Map<String, PhoneWatchBatchTransferState>>(emptyMap())
+    val batchTransfers: StateFlow<Map<String, PhoneWatchBatchTransferState>> = _batchTransfers.asStateFlow()
 
     private val cleanupJobs = ConcurrentHashMap<String, Job>()
+    private val batchCleanupJobs = ConcurrentHashMap<String, Job>()
 
     fun markRequested(
         requestId: String,
@@ -218,6 +248,112 @@ class PhoneWatchTransferStateStore @Inject constructor() {
 
         return reachableNodeIds.all { nodeId ->
             watchSongIdsByNodeId[nodeId]?.contains(songId) == true
+        }
+    }
+
+    fun markBatchStarted(batchId: String, playlistId: String, playlistName: String, totalSongs: Int) {
+        batchCleanupJobs.remove(batchId)?.cancel()
+        _batchTransfers.update { map ->
+            map + (batchId to PhoneWatchBatchTransferState(
+                batchId = batchId,
+                playlistId = playlistId,
+                playlistName = playlistName,
+                totalSongs = totalSongs,
+            ))
+        }
+    }
+
+    fun markBatchSongStarted(batchId: String, requestId: String, songTitle: String) {
+        _batchTransfers.update { map ->
+            val current = map[batchId] ?: return@update map
+            map + (batchId to current.copy(
+                activeRequestId = requestId,
+                currentSongTitle = songTitle,
+                currentSongProgress = 0f,
+                status = WearTransferProgress.STATUS_TRANSFERRING,
+                updatedAtMillis = System.currentTimeMillis(),
+            ))
+        }
+    }
+
+    fun markBatchSongProgress(batchId: String, status: String, progress: Float) {
+        _batchTransfers.update { map ->
+            val current = map[batchId] ?: return@update map
+            map + (batchId to current.copy(
+                status = status,
+                currentSongProgress = progress,
+                updatedAtMillis = System.currentTimeMillis(),
+            ))
+        }
+    }
+
+    fun markBatchSongCompleted(batchId: String) {
+        _batchTransfers.update { map ->
+            val current = map[batchId] ?: return@update map
+            map + (batchId to current.copy(
+                completedSongs = current.completedSongs + 1,
+                activeRequestId = null,
+                currentSongProgress = 0f,
+                updatedAtMillis = System.currentTimeMillis(),
+            ))
+        }
+    }
+
+    fun markBatchCompleted(batchId: String) {
+        _batchTransfers.update { map ->
+            val current = map[batchId] ?: return@update map
+            map + (batchId to current.copy(
+                status = WearTransferProgress.STATUS_COMPLETED,
+                activeRequestId = null,
+                currentSongProgress = 0f,
+                updatedAtMillis = System.currentTimeMillis(),
+            ))
+        }
+        scheduleBatchTerminalCleanup(batchId)
+    }
+
+    fun markBatchCancelled(batchId: String) {
+        _batchTransfers.update { map ->
+            val current = map[batchId] ?: return@update map
+            map + (batchId to current.copy(
+                status = WearTransferProgress.STATUS_CANCELLED,
+                activeRequestId = null,
+                updatedAtMillis = System.currentTimeMillis(),
+            ))
+        }
+        scheduleBatchTerminalCleanup(batchId)
+    }
+
+    fun markBatchFailed(batchId: String, error: String?) {
+        _batchTransfers.update { map ->
+            val current = map[batchId] ?: return@update map
+            map + (batchId to current.copy(
+                status = WearTransferProgress.STATUS_FAILED,
+                error = error,
+                activeRequestId = null,
+                updatedAtMillis = System.currentTimeMillis(),
+            ))
+        }
+        scheduleBatchTerminalCleanup(batchId)
+    }
+
+    private fun scheduleBatchTerminalCleanup(batchId: String) {
+        batchCleanupJobs.remove(batchId)?.cancel()
+        batchCleanupJobs[batchId] = scope.launch {
+            delay(TERMINAL_STATE_VISIBILITY_MS)
+            _batchTransfers.update { map ->
+                val current = map[batchId]
+                if (current != null &&
+                    (current.status == WearTransferProgress.STATUS_COMPLETED ||
+                        current.status == WearTransferProgress.STATUS_FAILED ||
+                        current.status == WearTransferProgress.STATUS_CANCELLED)
+                ) {
+                    map - batchId
+                } else {
+                    map
+                }
+            }
+            batchCleanupJobs.remove(batchId)
         }
     }
 

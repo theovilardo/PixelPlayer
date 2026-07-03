@@ -3,12 +3,14 @@ package com.theveloper.pixelplay.presentation.screens
 import com.theveloper.pixelplay.presentation.navigation.navigateSafely
 import com.theveloper.pixelplay.presentation.navigation.navigateSafelyReplacing
 
+import android.text.format.Formatter
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -65,10 +67,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LargeFlexibleTopAppBar
+import androidx.compose.material3.LinearWavyProgressIndicator
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
@@ -89,6 +94,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -100,9 +109,11 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
@@ -114,6 +125,9 @@ import androidx.navigation.NavController
 import coil.size.Size
 import com.theveloper.pixelplay.R
 import com.theveloper.pixelplay.data.model.Song
+import com.theveloper.pixelplay.data.service.wear.PhoneWatchBatchTransferState
+import com.theveloper.pixelplay.data.service.wear.WatchPlaylistTransferEstimate
+import com.theveloper.pixelplay.shared.WearTransferProgress
 import com.theveloper.pixelplay.presentation.components.MiniPlayerHeight
 import com.theveloper.pixelplay.presentation.components.PlaylistBottomSheet
 import com.theveloper.pixelplay.presentation.components.QueuePlaylistSongItem
@@ -208,6 +222,7 @@ fun PlaylistDetailScreen(
     val watchSongIds by playlistViewModel.watchSongIds.collectAsStateWithLifecycle()
     val activePlaylistBatchTransfer by playlistViewModel.activePlaylistBatchTransfer.collectAsStateWithLifecycle()
     val watchFreeStorageBytesByNodeId by playlistViewModel.watchFreeStorageBytesByNodeId.collectAsStateWithLifecycle()
+    val isPixelPlayWatchAvailable by playlistViewModel.isPixelPlayWatchAvailable.collectAsStateWithLifecycle()
     val isPlaylistOnWatch = currentPlaylist != null &&
         currentPlaylist.songIds.isNotEmpty() &&
         currentPlaylist.songIds.all { it in watchSongIds }
@@ -916,7 +931,35 @@ fun PlaylistDetailScreen(
             }
         }
     }
-    
+
+    if (showSendToWatchSheet && currentPlaylist != null) {
+        val estimate = remember(songsInPlaylist, watchSongIds) {
+            playlistViewModel.estimateWatchTransfer(songsInPlaylist)
+        }
+        SendPlaylistToWatchSheet(
+            playlistName = currentPlaylist.name,
+            estimate = estimate,
+            maxFreeStorageBytes = watchFreeStorageBytesByNodeId.values.maxOrNull(),
+            isWatchAvailable = isPixelPlayWatchAvailable,
+            isUpdate = isPlaylistOnWatch,
+            onDismiss = { showSendToWatchSheet = false },
+            onConfirm = {
+                playlistViewModel.sendPlaylistToWatch(currentPlaylist.id, currentPlaylist.name, currentPlaylist.songIds)
+                showSendToWatchSheet = false
+                showWatchBatchProgressDialog = true
+            }
+        )
+    }
+
+    val currentBatchTransfer = activePlaylistBatchTransfer
+    if (showWatchBatchProgressDialog && currentBatchTransfer != null) {
+        WatchPlaylistBatchProgressDialog(
+            batch = currentBatchTransfer,
+            onDismiss = { showWatchBatchProgressDialog = false },
+            onCancelTransfer = { playlistViewModel.cancelPlaylistTransfer(currentBatchTransfer.batchId) }
+        )
+    }
+
     if (showEditPlaylistDialog && currentPlaylist != null) {
         val initialShapeType = try {
             currentPlaylist.coverShapeType?.let { PlaylistShapeType.valueOf(it) } ?: PlaylistShapeType.Circle
@@ -1178,5 +1221,250 @@ private fun PlaylistActionItem(
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
+    }
+}
+
+private fun formatEstimatedDuration(seconds: Long): String {
+    if (seconds <= 0L) return "0s"
+    val minutes = seconds / 60
+    val remainingSeconds = seconds % 60
+    return if (minutes > 0) "${minutes}m ${remainingSeconds}s" else "${remainingSeconds}s"
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SendPlaylistToWatchSheet(
+    playlistName: String,
+    estimate: WatchPlaylistTransferEstimate,
+    maxFreeStorageBytes: Long?,
+    isWatchAvailable: Boolean,
+    isUpdate: Boolean,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit,
+) {
+    val context = LocalContext.current
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val estimatedSizeText = Formatter.formatShortFileSize(context, estimate.estimatedBytes)
+    val insufficientStorage = maxFreeStorageBytes != null && estimate.estimatedBytes > maxFreeStorageBytes
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        tonalElevation = 4.dp,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp, vertical = 8.dp)
+                .padding(bottom = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(
+                text = stringResource(
+                    if (isUpdate) R.string.send_playlist_to_watch_sheet_title_update
+                    else R.string.send_playlist_to_watch_sheet_title
+                ),
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = playlistName,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = stringResource(R.string.send_playlist_to_watch_song_count, estimate.totalSongCount),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+
+            if (estimate.pendingSongCount > 0) {
+                Text(
+                    text = pluralStringResource(
+                        R.plurals.send_playlist_to_watch_pending_count_plural,
+                        estimate.pendingSongCount,
+                        estimate.pendingSongCount
+                    ),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = stringResource(R.string.send_playlist_to_watch_estimated_size, estimatedSizeText),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = stringResource(
+                        R.string.send_playlist_to_watch_estimated_time,
+                        formatEstimatedDuration(estimate.estimatedTransferSeconds)
+                    ),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            } else {
+                Text(
+                    text = stringResource(R.string.send_playlist_to_watch_up_to_date),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            if (!isWatchAvailable) {
+                Text(
+                    text = stringResource(R.string.send_playlist_to_watch_no_watch),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            } else if (insufficientStorage) {
+                Text(
+                    text = stringResource(
+                        R.string.send_playlist_to_watch_insufficient_storage,
+                        estimatedSizeText,
+                        Formatter.formatShortFileSize(context, maxFreeStorageBytes ?: 0L)
+                    ),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                TextButton(
+                    modifier = Modifier.weight(1f),
+                    onClick = onDismiss
+                ) {
+                    Text(stringResource(R.string.common_cancel))
+                }
+                Button(
+                    modifier = Modifier.weight(1f),
+                    enabled = isWatchAvailable && !insufficientStorage,
+                    onClick = onConfirm
+                ) {
+                    Text(stringResource(R.string.common_confirm))
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun WatchPlaylistBatchProgressDialog(
+    batch: PhoneWatchBatchTransferState,
+    onDismiss: () -> Unit,
+    onCancelTransfer: () -> Unit,
+) {
+    val animatedProgress by animateFloatAsState(
+        targetValue = batch.overallProgress.coerceIn(0f, 1f),
+        animationSpec = tween(durationMillis = 300),
+        label = "WatchPlaylistBatchProgressDialog"
+    )
+    val progressPercent = (animatedProgress * 100f).toInt().coerceIn(0, 100)
+    val statusText = when (batch.status) {
+        WearTransferProgress.STATUS_TRANSCODING -> stringResource(R.string.watch_transfer_status_transcoding)
+        WearTransferProgress.STATUS_TRANSFERRING -> stringResource(R.string.watch_transfer_status_transferring)
+        WearTransferProgress.STATUS_COMPLETED -> stringResource(R.string.watch_transfer_status_completed)
+        WearTransferProgress.STATUS_FAILED -> stringResource(R.string.watch_transfer_status_failed)
+        WearTransferProgress.STATUS_CANCELLED -> stringResource(R.string.watch_transfer_status_cancelled)
+        else -> stringResource(R.string.watch_transfer_status_preparing)
+    }
+
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(
+            dismissOnBackPress = true,
+            dismissOnClickOutside = true
+        )
+    ) {
+        Surface(
+            shape = RoundedCornerShape(28.dp),
+            tonalElevation = 6.dp,
+            color = MaterialTheme.colorScheme.surface
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp, vertical = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(R.string.watch_playlist_batch_dialog_title, batch.playlistName),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Center
+                )
+                Box(
+                    modifier = Modifier
+                        .size(96.dp)
+                        .padding(vertical = 20.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    LoadingIndicator(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .scale(1.84f),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Text(
+                        text = stringResource(R.string.common_percentage_text, progressPercent),
+                        style = MaterialTheme.typography.labelLarge.copy(
+                            fontSize = MaterialTheme.typography.labelLarge.fontSize * 1.4f
+                        ),
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
+                LinearWavyProgressIndicator(
+                    progress = { animatedProgress },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(8.dp)
+                        .clip(RoundedCornerShape(50)),
+                    color = MaterialTheme.colorScheme.primary,
+                    trackColor = MaterialTheme.colorScheme.surfaceContainerHighest
+                )
+                Text(
+                    text = stringResource(R.string.watch_playlist_batch_progress, batch.completedSongs, batch.totalSongs),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = batch.currentSongTitle.ifBlank { statusText },
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Center
+                )
+                batch.error?.takeIf { it.isNotBlank() }?.let { errorText ->
+                    Text(
+                        text = errorText,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                TextButton(onClick = {
+                    onCancelTransfer()
+                    onDismiss()
+                }) {
+                    Text(stringResource(R.string.watch_transfer_action_cancel))
+                }
+            }
+        }
     }
 }

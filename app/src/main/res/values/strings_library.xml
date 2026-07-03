@@ -285,7 +285,25 @@
     <string name="watch_transfer_status_starting">Starting transfer…</string>
     <string name="watch_transfer_status_starting_short">Starting</string>
     <string name="watch_transfer_status_transferring">Transferring</string>
+    <string name="watch_transfer_status_transcoding">Converting audio</string>
     <string name="watch_transfer_summary_n">%1$d transfers</string>
+
+    <!-- Send Playlist To Watch: confirmation sheet + batch progress dialog + service notification -->
+    <string name="send_playlist_to_watch_sheet_title">Send to watch</string>
+    <string name="send_playlist_to_watch_sheet_title_update">Update on watch</string>
+    <string name="send_playlist_to_watch_song_count">%1$d songs</string>
+    <plurals name="send_playlist_to_watch_pending_count_plural">
+        <item quantity="one">%1$d new song will be sent</item>
+        <item quantity="other">%1$d new songs will be sent</item>
+    </plurals>
+    <string name="send_playlist_to_watch_up_to_date">All songs are already on the watch. Only the playlist itself will be updated.</string>
+    <string name="send_playlist_to_watch_estimated_size">Estimated size: %1$s</string>
+    <string name="send_playlist_to_watch_estimated_time">Estimated time: %1$s</string>
+    <string name="send_playlist_to_watch_insufficient_storage">Not enough free space on the watch: needs %1$s, only %2$s free.</string>
+    <string name="send_playlist_to_watch_no_watch">No reachable watch with PixelPlay installed.</string>
+    <string name="watch_playlist_batch_dialog_title">Sending “%1$s”</string>
+    <string name="watch_playlist_batch_progress">%1$d / %2$d songs</string>
+    <string name="watch_transfer_status_sending_playlist_service">Sending playlist %1$s (%2$d/%3$d)</string>
 
     <!-- EditSongSheet -->
     <string name="edit_song_toolbar_title">Edit song</string>

@@ -106,6 +106,7 @@ class PlaylistViewModel @Inject constructor(
     private val _isRefreshingWatchAvailability = MutableStateFlow(false)
     val watchFreeStorageBytesByNodeId: StateFlow<Map<String, Long>> =
         watchTransferStateStore.watchFreeStorageBytesByNodeId
+    val watchSongIds: StateFlow<Set<String>> = watchTransferStateStore.watchSongIds
     private val _activePlaylistBatchId = MutableStateFlow<String?>(null)
 
     /** Batch transfer state for whichever playlist we most recently kicked off a send for. */

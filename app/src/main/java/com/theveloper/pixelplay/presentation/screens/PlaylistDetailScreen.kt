@@ -179,6 +179,8 @@ fun PlaylistDetailScreen(
     val deletePlaylistLabel = stringResource(R.string.playlist_action_delete_playlist)
     val setDefaultTransitionLabel = stringResource(R.string.playlist_action_set_default_transition)
     val exportPlaylistLabel = stringResource(R.string.playlist_action_export_playlist)
+    val sendToWatchLabel = stringResource(R.string.playlist_action_send_to_watch)
+    val updateOnWatchLabel = stringResource(R.string.playlist_action_update_on_watch)
     val deletePlaylistConfirmTitle = stringResource(R.string.playlist_dialog_delete_title)
     val deletePlaylistConfirmBody = stringResource(R.string.playlist_dialog_delete_body)
     val sortSheetTitle = stringResource(R.string.playlist_sort_songs_title)
@@ -190,6 +192,7 @@ fun PlaylistDetailScreen(
 
     LaunchedEffect(playlistId) {
         playlistViewModel.loadPlaylistDetails(playlistId)
+        playlistViewModel.refreshWatchAvailability()
     }
 
     var showAddSongsSheet by remember { mutableStateOf(false) }
@@ -200,6 +203,20 @@ fun PlaylistDetailScreen(
     var showPlaylistOptionsSheet by remember { mutableStateOf(false) }
     var showEditPlaylistDialog by remember { mutableStateOf(false) }
     var showDeleteConfirmation by remember { mutableStateOf(false) }
+    var showSendToWatchSheet by remember { mutableStateOf(false) }
+    var showWatchBatchProgressDialog by remember { mutableStateOf(false) }
+    val watchSongIds by playlistViewModel.watchSongIds.collectAsStateWithLifecycle()
+    val activePlaylistBatchTransfer by playlistViewModel.activePlaylistBatchTransfer.collectAsStateWithLifecycle()
+    val watchFreeStorageBytesByNodeId by playlistViewModel.watchFreeStorageBytesByNodeId.collectAsStateWithLifecycle()
+    val isPlaylistOnWatch = currentPlaylist != null &&
+        currentPlaylist.songIds.isNotEmpty() &&
+        currentPlaylist.songIds.all { it in watchSongIds }
+
+    LaunchedEffect(activePlaylistBatchTransfer?.batchId) {
+        if (activePlaylistBatchTransfer == null) {
+            showWatchBatchProgressDialog = false
+        }
+    }
 
     val m3uExportLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("audio/x-mpegurl")
@@ -885,6 +902,17 @@ fun PlaylistDetailScreen(
                         m3uExportLauncher.launch("$sanitizedName.m3u")
                     }
                 )
+                if (songsInPlaylist.isNotEmpty()) {
+                    PlaylistActionItem(
+                        icon = painterResource(R.drawable.rounded_watch_arrow_down_24),
+                        label = if (isPlaylistOnWatch) updateOnWatchLabel else sendToWatchLabel,
+                        onClick = {
+                            showPlaylistOptionsSheet = false
+                            playlistViewModel.refreshWatchAvailability()
+                            showSendToWatchSheet = true
+                        }
+                    )
+                }
             }
         }
     }

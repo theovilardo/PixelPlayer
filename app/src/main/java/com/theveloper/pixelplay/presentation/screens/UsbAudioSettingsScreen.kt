@@ -158,7 +158,8 @@ fun UsbAudioSettingsScreen(
                 item(key = "usb_status_section") {
                     UsbStatusCard(
                         state = uiState.state,
-                        onRetryPermission = viewModel::retryPermission
+                        onRetryPermission = viewModel::retryPermission,
+                        onRetry = viewModel::refresh
                     )
                 }
 
@@ -216,7 +217,8 @@ fun UsbAudioSettingsScreen(
 @Composable
 private fun UsbStatusCard(
     state: UsbExclusiveState,
-    onRetryPermission: (UsbDeviceInfo) -> Unit
+    onRetryPermission: (UsbDeviceInfo) -> Unit,
+    onRetry: () -> Unit
 ) {
     val (message, isError) = when (state) {
         UsbExclusiveState.Disabled -> null to false
@@ -265,6 +267,11 @@ private fun UsbStatusCard(
             if (state is UsbExclusiveState.PermissionDenied) {
                 OutlinedButton(onClick = { onRetryPermission(state.device) }) {
                     Text(stringResource(R.string.settings_usb_retry_permission))
+                }
+            }
+            if (state is UsbExclusiveState.Error && state.recoverable) {
+                OutlinedButton(onClick = onRetry) {
+                    Text(stringResource(R.string.settings_usb_retry))
                 }
             }
         }

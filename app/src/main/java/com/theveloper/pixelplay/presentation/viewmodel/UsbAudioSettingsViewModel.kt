@@ -55,6 +55,9 @@ class UsbAudioSettingsViewModel @Inject constructor(
 
     fun retryPermission(device: UsbDeviceInfo) = controller.retryPermission(device)
 
+    /** Retry after a recoverable error (probe/claim failure). */
+    fun refresh() = controller.refresh()
+
     fun setAutoResume(device: UsbDeviceInfo, autoResume: Boolean) {
         viewModelScope.launch {
             userPreferencesRepository.rememberUsbDevice(

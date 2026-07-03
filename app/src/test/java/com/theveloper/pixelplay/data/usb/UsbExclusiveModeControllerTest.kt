@@ -47,9 +47,13 @@ class UsbExclusiveModeControllerTest {
         }
     }
 
+    private var claimResult = true
+    private var claimCount = 0
+
     private val session: UsbAudioSession = mockk(relaxed = true) {
         every { isAlive } returns true
         every { capabilities } returns caps()
+        every { claim(any(), any()) } answers { claimCount++; claimResult }
         every { close() } answers { sessionCloseCount++ }
     }
 
@@ -152,9 +156,28 @@ class UsbExclusiveModeControllerTest {
             val ready = awaitItem()
             assertThat(ready).isInstanceOf(UsbExclusiveState.Ready::class.java)
             assertThat(sessionsOpened).isEqualTo(1)
+            assertThat(claimCount).isEqualTo(1) // kernel driver detached before probing
             assertThat(controller.activeSession).isNotNull()
         }
         coVerify { prefs.rememberUsbDevice(any(), any()) }
+    }
+
+    @Test
+    fun `claim failure reports a recoverable error and closes the session once`() = runTest {
+        claimResult = false
+        val controller = controller()
+        controller.state.test {
+            assertThat(awaitItem()).isEqualTo(UsbExclusiveState.Disabled)
+            enabledFlow.value = true
+            assertThat(awaitItem()).isEqualTo(UsbExclusiveState.NoDevice)
+
+            attachedFlow.value = listOf(device(permission = true))
+            val error = awaitItem()
+            assertThat(error).isInstanceOf(UsbExclusiveState.Error::class.java)
+            assertThat((error as UsbExclusiveState.Error).recoverable).isTrue()
+        }
+        assertThat(sessionCloseCount).isEqualTo(1)
+        assertThat(controller.activeSession).isNull()
     }
 
     @Test

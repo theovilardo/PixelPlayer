@@ -669,4 +669,5 @@
     <string name="settings_usb_max_volume_warning_text">Ce DAC n’expose pas de contrôle de volume matériel : la sortie est à pleine échelle. Réglez le volume sur votre amplificateur ou votre casque avant la lecture.</string>
     <string name="settings_usb_max_volume_ack">Compris</string>
     <string name="settings_usb_test_tone">Jouer une tonalité de test</string>
+    <string name="settings_usb_retry">Réessayer</string>
 </resources>

@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <memory>
 #include <mutex>
+#include <vector>
 
 #include "iso_stream.h"
 #include "libusb.h"
@@ -119,6 +120,38 @@ Java_com_theveloper_pixelplay_usbaudio_UsbAudioNative_nativeSetSampleRate(
         ? session->device->setSampleRateUac2(clockId, acInterface, static_cast<uint32_t>(rateHz))
         : session->device->setSampleRateUac1(endpointAddress, static_cast<uint32_t>(rateHz));
     return ok ? 0 : -1;
+}
+
+JNIEXPORT jint JNICALL
+Java_com_theveloper_pixelplay_usbaudio_UsbAudioNative_nativeSetClockSelector(
+    JNIEnv*, jobject, jlong handle, jint selectorId, jint acInterface, jint pin) {
+    NativeSession* session = fromHandle(handle);
+    if (session == nullptr) return -1;
+    std::lock_guard<std::mutex> lock(session->mutex);
+    return session->device->setClockSelector(selectorId, acInterface, pin) ? 0 : -1;
+}
+
+JNIEXPORT jint JNICALL
+Java_com_theveloper_pixelplay_usbaudio_UsbAudioNative_nativeControlTransferIn(
+    JNIEnv* env, jobject, jlong handle, jint requestType, jint request, jint value, jint index,
+    jbyteArray buffer) {
+    NativeSession* session = fromHandle(handle);
+    if (session == nullptr || buffer == nullptr) return -1;
+    const jsize length = env->GetArrayLength(buffer);
+    if (length <= 0 || length > 0xFFFF) return -1;
+    std::vector<uint8_t> scratch(static_cast<size_t>(length));
+    int read;
+    {
+        std::lock_guard<std::mutex> lock(session->mutex);
+        read = session->device->controlTransferIn(
+            static_cast<uint8_t>(requestType), static_cast<uint8_t>(request),
+            static_cast<uint16_t>(value), static_cast<uint16_t>(index),
+            scratch.data(), static_cast<uint16_t>(length));
+    }
+    if (read > 0) {
+        env->SetByteArrayRegion(buffer, 0, read, reinterpret_cast<jbyte*>(scratch.data()));
+    }
+    return read;
 }
 
 JNIEXPORT jint JNICALL

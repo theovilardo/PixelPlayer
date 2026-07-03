@@ -72,6 +72,38 @@ class UsbDescriptorParserTest {
         assertThat(unit.muteChannels).contains(0)
     }
 
+    // ─── UAC2 with a clock selector (XMOS dual-clock designs) ────────────────
+
+    @Test
+    fun `clock selector and both sources are parsed`() {
+        val topology = parseOk(uac2SelectorDacDescriptors())
+        assertThat(topology.clockSelectors).hasSize(1)
+        val selector = topology.clockSelectors.single()
+        assertThat(selector.id).isEqualTo(0x28)
+        assertThat(selector.pinSourceIds).containsExactly(0x29, 0x2A).inOrder()
+        assertThat(topology.clockSources.map { it.id }).containsExactly(0x29, 0x2A)
+    }
+
+    @Test
+    fun `clock path resolves through the selector with pin mapping`() {
+        val topology = parseOk(uac2SelectorDacDescriptors())
+        val path = topology.clockPathFor(topology.playbackAltSettings.single())
+        assertThat(path).isNotNull()
+        assertThat(path!!.selector?.id).isEqualTo(0x28)
+        assertThat(path.sources.map { it.id }).containsExactly(0x29, 0x2A).inOrder()
+        assertThat(path.pinBySourceId).containsExactly(0x29, 1, 0x2A, 2)
+    }
+
+    @Test
+    fun `direct terminal-to-source link still resolves without a selector`() {
+        val topology = parseOk(uac2AsyncDacDescriptors())
+        val path = topology.clockPathFor(topology.playbackAltSettings.first())
+        assertThat(path).isNotNull()
+        assertThat(path!!.selector).isNull()
+        assertThat(path.sources.single().id).isEqualTo(0x29)
+        assertThat(path.pinBySourceId).isEmpty()
+    }
+
     // ─── UAC1 ────────────────────────────────────────────────────────────────
 
     @Test

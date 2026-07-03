@@ -673,4 +673,5 @@
     <string name="settings_usb_max_volume_warning_text">This DAC exposes no hardware volume control, so output is at full scale. Control loudness on your amplifier or headphones before playing.</string>
     <string name="settings_usb_max_volume_ack">Got it</string>
     <string name="settings_usb_test_tone">Play test tone</string>
+    <string name="settings_usb_retry">Retry</string>
 </resources>

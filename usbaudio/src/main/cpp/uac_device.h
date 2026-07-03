@@ -27,6 +27,13 @@ public:
     bool setSampleRateUac2(int clockId, int acInterface, uint32_t rateHz);
     bool setSampleRateUac1(int endpointAddress, uint32_t rateHz);
 
+    /** UAC2 clock selector: route the clock tree through 1-based input [pin]. */
+    bool setClockSelector(int selectorId, int acInterface, int pin);
+
+    /** Generic class/standard IN control transfer for capability probing (post-claim). */
+    int controlTransferIn(uint8_t requestType, uint8_t request, uint16_t value, uint16_t index,
+                          uint8_t* data, uint16_t length);
+
     /** Volume values are UAC-native: signed 1/256 dB steps. out = {min, max, res}. */
     bool getVolumeRangeDb256(int uacVersion, int unitId, int acInterface, int32_t out[3]);
     bool setVolumeDb256(int uacVersion, int unitId, int acInterface, int32_t valueDb256);

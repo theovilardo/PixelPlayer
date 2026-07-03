@@ -35,11 +35,35 @@ object UacCapabilityProber {
     /** bmRequestType: device-to-host | class | interface. */
     private const val REQUEST_TYPE_AC_GET = 0xA1
 
+    /**
+     * Topology-only capabilities: correct volume/version info with an empty format list.
+     * Used to construct the session before the (post-claim) rate probing has run.
+     */
+    fun preliminary(topology: UacTopology): UacCapabilities = UacCapabilities(
+        version = topology.version,
+        controlInterfaceNumber = topology.controlInterfaceNumber,
+        formats = emptyList(),
+        volume = resolveVolume(topology)
+    )
+
     fun probe(topology: UacTopology, controlTransfer: UsbControlTransfer): UacCapabilities {
         val formats = topology.playbackAltSettings.mapNotNull { alt ->
+            var clockRates = emptyList<ClockRates>()
+            var clockSelectorId: Int? = null
             val rates = when (topology.version) {
                 UacVersion.UAC1 -> uac1Rates(alt)
-                UacVersion.UAC2 -> uac2Rates(topology, alt, controlTransfer)
+                UacVersion.UAC2 -> {
+                    val path = topology.clockPathFor(alt) ?: return@mapNotNull null
+                    clockSelectorId = path.selector?.id
+                    clockRates = path.sources.mapNotNull { source ->
+                        val sourceRates = uac2RatesForClock(
+                            source.id, topology.controlInterfaceNumber, controlTransfer
+                        )
+                        if (sourceRates.isEmpty()) null
+                        else ClockRates(source.id, sourceRates, path.pinBySourceId[source.id])
+                    }
+                    clockRates.flatMap { it.ratesHz }.distinct().sorted()
+                }
             }
             if (rates.isEmpty()) return@mapNotNull null
             FormatCandidate(
@@ -54,8 +78,11 @@ object UacCapabilityProber {
                 intervalCode = alt.dataEndpoint.intervalCode,
                 syncType = alt.dataEndpoint.syncType,
                 feedbackEndpointAddress = alt.feedbackEndpoint?.address,
-                clockSourceId = topology.clockSourceFor(alt)?.id,
-                uac1SampleRateControl = alt.uac1SampleRateControl
+                clockSourceId = clockRates.firstOrNull()?.clockSourceId
+                    ?: topology.clockSourceFor(alt)?.id,
+                uac1SampleRateControl = alt.uac1SampleRateControl,
+                clockSources = clockRates,
+                clockSelectorId = clockSelectorId
             )
         }
 
@@ -84,13 +111,12 @@ object UacCapabilityProber {
         else -> emptyList()
     }
 
-    private fun uac2Rates(
-        topology: UacTopology,
-        alt: StreamingAltSetting,
+    private fun uac2RatesForClock(
+        clockSourceId: Int,
+        controlInterfaceNumber: Int,
         controlTransfer: UsbControlTransfer
     ): List<Int> {
-        val clock = topology.clockSourceFor(alt) ?: return emptyList()
-        val index = (clock.id shl 8) or topology.controlInterfaceNumber
+        val index = (clockSourceId shl 8) or controlInterfaceNumber
         val value = CS_SAM_FREQ_CONTROL shl 8
 
         // First learn the subrange count, then fetch the full layout:

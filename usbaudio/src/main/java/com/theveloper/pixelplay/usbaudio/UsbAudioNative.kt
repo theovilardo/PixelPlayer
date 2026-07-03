@@ -65,6 +65,29 @@ object UsbAudioNative {
         rateHz: Int
     ): Int
 
+    /** Routes a UAC2 clock selector to the 1-based input [pin]. */
+    external fun nativeSetClockSelector(
+        handle: Long,
+        selectorId: Int,
+        acInterface: Int,
+        pin: Int
+    ): Int
+
+    /**
+     * Class/standard IN control transfer through libusb (valid once the interfaces are
+     * claimed — the Java UsbDeviceConnection path is rejected by usbfs while the kernel
+     * audio driver owns the interface). Returns bytes read into [buffer] or a negative
+     * libusb error.
+     */
+    external fun nativeControlTransferIn(
+        handle: Long,
+        requestType: Int,
+        request: Int,
+        value: Int,
+        index: Int,
+        buffer: ByteArray
+    ): Int
+
     external fun nativeStart(handle: Long): Int
     external fun nativePause(handle: Long): Int
     external fun nativeResume(handle: Long): Int

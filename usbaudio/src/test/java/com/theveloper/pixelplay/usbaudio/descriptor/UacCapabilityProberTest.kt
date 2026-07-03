@@ -72,6 +72,59 @@ class UacCapabilityProberTest {
     }
 
     @Test
+    fun `dual-clock selector device unions rates across both sources`() {
+        // 44.1k family behind pin 1 (clock 0x29), 48k family behind pin 2 (clock 0x2A).
+        val ratesByClock = mapOf(
+            0x29 to rangeResponse(
+                Triple(44_100L, 44_100L, 0L), Triple(88_200L, 88_200L, 0L),
+                Triple(176_400L, 176_400L, 0L), Triple(352_800L, 352_800L, 0L)
+            ),
+            0x2A to rangeResponse(
+                Triple(48_000L, 48_000L, 0L), Triple(96_000L, 96_000L, 0L),
+                Triple(192_000L, 192_000L, 0L), Triple(384_000L, 384_000L, 0L)
+            )
+        )
+        val transfer = UsbControlTransfer { _, request, value, index, buffer ->
+            assertThat(request).isEqualTo(0x02)
+            assertThat(value).isEqualTo(0x0100)
+            val response = ratesByClock[index shr 8] ?: return@UsbControlTransfer -1
+            val n = minOf(buffer.size, response.size)
+            response.copyInto(buffer, endIndex = n)
+            n
+        }
+
+        val caps = UacCapabilityProber.probe(topology(uac2SelectorDacDescriptors()), transfer)
+
+        val format = caps.formats.single()
+        assertThat(format.sampleRatesHz).containsExactly(
+            44_100, 48_000, 88_200, 96_000, 176_400, 192_000, 352_800, 384_000
+        ).inOrder()
+        assertThat(format.clockSelectorId).isEqualTo(0x28)
+        assertThat(format.clockSources.map { it.clockSourceId }).containsExactly(0x29, 0x2A).inOrder()
+        assertThat(format.clockForRate(96_000)!!.clockSourceId).isEqualTo(0x2A)
+        assertThat(format.clockForRate(96_000)!!.selectorPin).isEqualTo(2)
+        assertThat(format.clockForRate(88_200)!!.clockSourceId).isEqualTo(0x29)
+        assertThat(format.clockForRate(88_200)!!.selectorPin).isEqualTo(1)
+    }
+
+    @Test
+    fun `selector device with one dead clock still exposes the live one`() {
+        val liveResponse = rangeResponse(Triple(44_100L, 44_100L, 0L), Triple(88_200L, 88_200L, 0L))
+        val transfer = UsbControlTransfer { _, _, _, index, buffer ->
+            if (index shr 8 != 0x29) return@UsbControlTransfer -1
+            val n = minOf(buffer.size, liveResponse.size)
+            liveResponse.copyInto(buffer, endIndex = n)
+            n
+        }
+
+        val caps = UacCapabilityProber.probe(topology(uac2SelectorDacDescriptors()), transfer)
+
+        val format = caps.formats.single()
+        assertThat(format.sampleRatesHz).containsExactly(44_100, 88_200).inOrder()
+        assertThat(format.clockSources.single().clockSourceId).isEqualTo(0x29)
+    }
+
+    @Test
     fun `uac2 failed control transfer yields no formats rather than throwing`() {
         val failing = UsbControlTransfer { _, _, _, _, _ -> -1 }
         val caps = UacCapabilityProber.probe(topology(uac2AsyncDacDescriptors()), failing)

@@ -59,6 +59,34 @@ data class ClockSource(
     val frequencyProgrammable: Boolean get() = controls and 0x03 == 0x03
 }
 
+/**
+ * UAC2 clock selector (CLOCK_SELECTOR descriptor). XMOS-style DACs typically route the
+ * streaming terminal's clock through one of these, feeding a 44.1 kHz-family and a
+ * 48 kHz-family clock source on separate pins.
+ */
+data class ClockSelector(
+    val id: Int,
+    /** Upstream entity IDs; pin numbers are 1-based indices into this list. */
+    val pinSourceIds: List<Int>,
+    val controls: Int
+)
+
+/** UAC2 clock multiplier (CLOCK_MULTIPLIER descriptor) — passed through when resolving. */
+data class ClockMultiplier(
+    val id: Int,
+    val sourceId: Int
+)
+
+/** The clock entities reachable from a streaming alt setting's terminal. */
+data class ClockPath(
+    /** The selector encountered first on the path, if any (the one to program). */
+    val selector: ClockSelector?,
+    /** All reachable clock sources, in pin order when behind a selector. */
+    val sources: List<ClockSource>,
+    /** For each source id: the 1-based selector pin that routes to it. */
+    val pinBySourceId: Map<Int, Int>
+)
+
 /** Feature unit with per-channel mute/volume capabilities (channel 0 = master). */
 data class FeatureUnit(
     val id: Int,
@@ -90,19 +118,54 @@ data class UacTopology(
     val controlInterfaceNumber: Int,
     val terminals: List<AudioTerminal>,
     val clockSources: List<ClockSource>,
+    val clockSelectors: List<ClockSelector> = emptyList(),
+    val clockMultipliers: List<ClockMultiplier> = emptyList(),
     val featureUnits: List<FeatureUnit>,
     /** Playback alt settings (iso OUT), across all AudioStreaming interfaces. */
     val playbackAltSettings: List<StreamingAltSetting>
 ) {
     /**
-     * The clock source feeding [alt], resolved through its terminal link (UAC2 only).
+     * Resolves the clock entities feeding [alt] through its terminal link (UAC2 only),
+     * walking selectors and multipliers transitively. Cycle-guarded — malformed
+     * descriptors cannot loop it.
      */
-    fun clockSourceFor(alt: StreamingAltSetting): ClockSource? {
+    fun clockPathFor(alt: StreamingAltSetting): ClockPath? {
         if (version != UacVersion.UAC2) return null
         val terminal = terminals.firstOrNull { it.id == alt.terminalLink } ?: return null
-        val clockId = terminal.clockSourceId ?: return null
-        return clockSources.firstOrNull { it.id == clockId }
+        val startId = terminal.clockSourceId ?: return null
+
+        val visited = mutableSetOf<Int>()
+        var firstSelector: ClockSelector? = null
+        val sources = mutableListOf<ClockSource>()
+        val pinBySourceId = mutableMapOf<Int, Int>()
+
+        fun visit(entityId: Int, pin: Int?) {
+            if (!visited.add(entityId)) return
+            clockSources.firstOrNull { it.id == entityId }?.let { source ->
+                sources += source
+                if (pin != null) pinBySourceId[source.id] = pin
+                return
+            }
+            clockSelectors.firstOrNull { it.id == entityId }?.let { selector ->
+                if (firstSelector == null) firstSelector = selector
+                selector.pinSourceIds.forEachIndexed { index, upstreamId ->
+                    // Pins are 1-based; nested selectors inherit the outer pin.
+                    visit(upstreamId, pin ?: (index + 1))
+                }
+                return
+            }
+            clockMultipliers.firstOrNull { it.id == entityId }?.let { multiplier ->
+                visit(multiplier.sourceId, pin)
+            }
+        }
+        visit(startId, null)
+
+        return if (sources.isEmpty()) null else ClockPath(firstSelector, sources, pinBySourceId)
     }
+
+    /** Convenience: the primary clock source feeding [alt] (first on the path). */
+    fun clockSourceFor(alt: StreamingAltSetting): ClockSource? =
+        clockPathFor(alt)?.sources?.firstOrNull()
 
     /**
      * Feature unit controlling the playback path of [alt]: the unit fed directly by the

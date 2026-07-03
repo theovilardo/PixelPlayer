@@ -111,6 +111,12 @@ class UsbExclusiveModeController @Inject constructor(
     fun retryPermission(device: UsbDeviceInfo) {
         deniedDeviceKeys.remove(device.key)
         requestedDeviceKeys.remove(device.key)
+        refresh()
+    }
+
+    /** Re-runs detection/reconciliation — the retry path for recoverable errors. */
+    fun refresh() {
+        usbDeviceManager.refreshAttachedDevices()
         scope.launch {
             reconcile(
                 userPreferencesRepository.usbExclusiveModeEnabledFlow.first(),
@@ -233,11 +239,13 @@ class UsbExclusiveModeController @Inject constructor(
                 ?: return@withContext OpenOutcome.Failed("Could not open ${device.displayName}", true)
 
             val raw = connection.rawDescriptors
-                ?: return@withContext OpenOutcome.Failed("No descriptors from ${device.displayName}", false)
+                ?: return@withContext OpenOutcome.Failed("No descriptors from ${device.displayName}", true)
                     .also { connection.close() }
 
             val topology = when (val parsed = UsbDescriptorParser.parse(raw)) {
                 is ParseResult.Failure -> {
+                    Timber.tag(TAG).w("Descriptor parse failed for %s: %s", device.key, parsed.reason)
+                    logRawDescriptors(raw)
                     connection.close()
                     return@withContext OpenOutcome.Failed(
                         "${device.displayName}: ${parsed.reason}", false
@@ -245,22 +253,48 @@ class UsbExclusiveModeController @Inject constructor(
                 }
                 is ParseResult.Success -> parsed.topology
             }
+            Timber.tag(TAG).i(
+                "Topology %s: %s, AC=%d, altSettings=%s, clockSources=%s, selectors=%s",
+                device.key, topology.version, topology.controlInterfaceNumber,
+                topology.playbackAltSettings.map {
+                    "if${it.interfaceNumber}/alt${it.altSetting} ${it.bitResolution}bit×${it.channels}ch ${it.dataEndpoint.syncType}"
+                },
+                topology.clockSources.map { it.id },
+                topology.clockSelectors.map { "${it.id}(pins=${it.pinSourceIds})" }
+            )
 
-            val controlTransfer = UsbControlTransfer { requestType, request, value, index, buffer ->
-                connection.controlTransfer(requestType, request, value, index, buffer, buffer.size, 1000)
-            }
-            val capabilities = UacCapabilityProber.probe(topology, controlTransfer)
-            if (capabilities.formats.isEmpty()) {
-                connection.close()
-                return@withContext OpenOutcome.Failed(
-                    "${device.displayName} reports no playable formats", false
-                )
-            }
-
-            val session = sessionFactory.open(connection, capabilities)
+            // The session (and its claim) must exist BEFORE rate probing: usbfs rejects
+            // interface-recipient control transfers while the kernel audio driver still
+            // owns the interface, so probing goes through libusb after the detach+claim.
+            val session = sessionFactory.open(connection, UacCapabilityProber.preliminary(topology))
                 ?: return@withContext OpenOutcome.Failed(
                     "Driver could not attach to ${device.displayName}", true
                 ).also { connection.close() }
+
+            val asInterface = topology.playbackAltSettings.first().interfaceNumber
+            if (!session.claim(topology.controlInterfaceNumber, asInterface)) {
+                val reason = session.lastError ?: "claim failed"
+                session.close()
+                return@withContext OpenOutcome.Failed(
+                    "Could not claim ${device.displayName}: $reason", true
+                )
+            }
+
+            val controlTransfer = UsbControlTransfer { requestType, request, value, index, buffer ->
+                session.controlTransferIn(requestType, request, value, index, buffer)
+            }
+            val capabilities = UacCapabilityProber.probe(topology, controlTransfer)
+            if (capabilities.formats.isEmpty()) {
+                Timber.tag(TAG).w(
+                    "No formats resolved for %s (driver error: %s)", device.key, session.lastError
+                )
+                logRawDescriptors(raw)
+                session.close()
+                return@withContext OpenOutcome.Failed(
+                    "Could not read supported formats from ${device.displayName}", true
+                )
+            }
+            session.installCapabilities(capabilities)
 
             OpenOutcome.Opened(session, capabilities)
         }
@@ -294,6 +328,16 @@ class UsbExclusiveModeController @Inject constructor(
             _sessionLost.tryEmit(device)
         }
         Timber.tag(TAG).i("USB session closed (lost=%b)", lost)
+    }
+
+    /** Field-debugging aid: the raw descriptor blob, hex-dumped in logcat-sized lines. */
+    private fun logRawDescriptors(raw: ByteArray) {
+        raw.toList().chunked(64).forEachIndexed { index, chunk ->
+            Timber.tag(TAG).d(
+                "descriptors[%03d]: %s", index * 64,
+                chunk.joinToString("") { "%02x".format(it) }
+            )
+        }
     }
 
     private sealed interface OpenOutcome {

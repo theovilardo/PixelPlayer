@@ -21,6 +21,7 @@ constexpr uint8_t kReqGetRes = 0x84;
 
 // Control selectors
 constexpr uint8_t kCsSamFreqControl = 0x01;   // clock source (UAC2) / endpoint (UAC1)
+constexpr uint8_t kCxClockSelectorControl = 0x01; // clock selector pin (UAC2 §A.17.2)
 constexpr uint8_t kFuMuteControl = 0x01;
 constexpr uint8_t kFuVolumeControl = 0x02;
 
@@ -135,6 +136,22 @@ bool UacDevice::setSampleRateUac1(int endpointAddress, uint32_t rateHz) {
     }
     UA_LOGI("UAC1 endpoint 0x%02x set to %" PRIu32 " Hz", endpointAddress, rateHz);
     return true;
+}
+
+bool UacDevice::setClockSelector(int selectorId, int acInterface, int pin) {
+    const uint8_t data[1] = {static_cast<uint8_t>(pin & 0xFF)};
+    const uint16_t value = static_cast<uint16_t>(kCxClockSelectorControl << 8);
+    const uint16_t index = static_cast<uint16_t>((selectorId << 8) | (acInterface & 0xFF));
+    if (!controlOut(kClassInterfaceOut, kReqCur, value, index, data, sizeof(data))) {
+        return false;
+    }
+    UA_LOGI("Clock selector %d set to pin %d", selectorId, pin);
+    return true;
+}
+
+int UacDevice::controlTransferIn(uint8_t requestType, uint8_t request, uint16_t value,
+                                 uint16_t index, uint8_t* data, uint16_t length) {
+    return controlIn(requestType, request, value, index, data, length);
 }
 
 bool UacDevice::getVolumeRangeDb256(int uacVersion, int unitId, int acInterface, int32_t out[3]) {

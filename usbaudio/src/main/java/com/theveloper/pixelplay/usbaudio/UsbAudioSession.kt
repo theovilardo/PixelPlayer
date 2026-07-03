@@ -20,8 +20,22 @@ import java.nio.ByteBuffer
 class UsbAudioSession private constructor(
     private val connection: UsbDeviceConnection,
     private val handle: Long,
-    val capabilities: UacCapabilities
+    capabilities: UacCapabilities
 ) : AutoCloseable {
+
+    /**
+     * Starts as the topology-derived preliminary capabilities (correct version/volume,
+     * empty formats) and is replaced via [installCapabilities] once post-claim rate
+     * probing completes. Never mutated after the session reaches the Ready state.
+     */
+    @Volatile
+    var capabilities: UacCapabilities = capabilities
+        private set
+
+    /** Installs the fully-probed capabilities; exclusive-mode controller only. */
+    fun installCapabilities(capabilities: UacCapabilities) {
+        this.capabilities = capabilities
+    }
 
     private val lock = Any()
     private var closed = false
@@ -36,9 +50,32 @@ class UsbAudioSession private constructor(
         get() = if (capabilities.version == UacVersion.UAC2) 2 else 1
 
     /**
-     * Programs [format]: claims interfaces on first use, selects the alt setting, sets the
-     * sample rate and starts the iso pipeline. Returns false (with [lastError] populated)
-     * on any failure; the session stays usable for a retry with another format.
+     * Detaches the kernel audio driver and claims the AudioControl + AudioStreaming
+     * interfaces. Idempotent. Must happen before [controlTransferIn] probing — usbfs
+     * rejects interface-recipient control transfers while another driver owns the
+     * interface, which is exactly the state a freshly-attached DAC is in on Android.
+     */
+    fun claim(acInterface: Int, asInterface: Int): Boolean {
+        synchronized(lock) {
+            if (closed) return false
+            if (claimed) return true
+            if (UsbAudioNative.nativeClaim(handle, acInterface, asInterface) != 0) return false
+            claimed = true
+            return true
+        }
+    }
+
+    /** Class IN control transfer via libusb (post-claim); see [UsbAudioNative]. */
+    fun controlTransferIn(requestType: Int, request: Int, value: Int, index: Int, buffer: ByteArray): Int {
+        if (closed) return -1
+        return UsbAudioNative.nativeControlTransferIn(handle, requestType, request, value, index, buffer)
+    }
+
+    /**
+     * Programs [format]: claims interfaces on first use, selects the alt setting, routes
+     * the clock selector (dual-clock XMOS designs), sets the sample rate and starts the
+     * iso pipeline. Returns false (with [lastError] populated) on any failure; the
+     * session stays usable for a retry with another format.
      */
     fun configure(format: NegotiatedFormat, ringBufferMs: Int = DEFAULT_RING_BUFFER_MS): Boolean {
         synchronized(lock) {
@@ -72,10 +109,24 @@ class UsbAudioSession private constructor(
                 return false
             }
 
+            // Dual-clock (44.1k/48k family) devices need the selector routed to the clock
+            // source that carries the target rate before that source is programmed.
+            val clock = candidate.clockForRate(format.sampleRateHz)
+            val selectorId = candidate.clockSelectorId
+            if (selectorId != null && clock?.selectorPin != null) {
+                if (UsbAudioNative.nativeSetClockSelector(
+                        handle, selectorId, capabilities.controlInterfaceNumber, clock.selectorPin
+                    ) != 0
+                ) {
+                    // Some firmwares auto-route on SET CUR frequency; log-and-continue.
+                    // (Native layer already logged the failure.)
+                }
+            }
+
             if (UsbAudioNative.nativeSetSampleRate(
                     handle = handle,
                     uacVersion = uacVersionCode,
-                    clockId = candidate.clockSourceId ?: 0,
+                    clockId = clock?.clockSourceId ?: candidate.clockSourceId ?: 0,
                     acInterface = capabilities.controlInterfaceNumber,
                     endpointAddress = candidate.endpointAddress,
                     rateHz = format.sampleRateHz

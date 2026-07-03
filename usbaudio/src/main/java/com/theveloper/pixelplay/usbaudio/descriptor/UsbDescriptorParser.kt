@@ -28,6 +28,8 @@ object UsbDescriptorParser {
     private const val AC_OUTPUT_TERMINAL = 0x03
     private const val AC_FEATURE_UNIT = 0x06
     private const val AC2_CLOCK_SOURCE = 0x0A
+    private const val AC2_CLOCK_SELECTOR = 0x0B
+    private const val AC2_CLOCK_MULTIPLIER = 0x0C
 
     // AS class-specific descriptor subtypes
     private const val AS_GENERAL = 0x01
@@ -48,6 +50,8 @@ object UsbDescriptorParser {
         var controlInterface: Int? = null
         val terminals = mutableListOf<AudioTerminal>()
         val clockSources = mutableListOf<ClockSource>()
+        val clockSelectors = mutableListOf<ClockSelector>()
+        val clockMultipliers = mutableListOf<ClockMultiplier>()
         val featureUnits = mutableListOf<FeatureUnit>()
         val altSettings = mutableListOf<StreamingAltSetting>()
 
@@ -147,6 +151,30 @@ object UsbDescriptorParser {
                                     )
                                 }
                             }
+
+                            AC2_CLOCK_SELECTOR -> {
+                                // bLength = 7 + p: bClockID, bNrInPins, baCSourceID[p],
+                                // bmControls, iClockSelector
+                                if (version == UacVersion.UAC2 && d.bytes.size >= 7) {
+                                    val pins = d.u8(4)
+                                    if (pins in 1..(d.bytes.size - 7)) {
+                                        clockSelectors += ClockSelector(
+                                            id = d.u8(3),
+                                            pinSourceIds = (0 until pins).map { d.u8(5 + it) },
+                                            controls = d.u8(5 + pins)
+                                        )
+                                    }
+                                }
+                            }
+
+                            AC2_CLOCK_MULTIPLIER -> {
+                                if (version == UacVersion.UAC2 && d.bytes.size >= 7) {
+                                    clockMultipliers += ClockMultiplier(
+                                        id = d.u8(3),
+                                        sourceId = d.u8(4)
+                                    )
+                                }
+                            }
                         }
                     }
 
@@ -213,6 +241,8 @@ object UsbDescriptorParser {
                 controlInterfaceNumber = acInterface,
                 terminals = terminals,
                 clockSources = clockSources,
+                clockSelectors = clockSelectors,
+                clockMultipliers = clockMultipliers,
                 featureUnits = featureUnits,
                 playbackAltSettings = altSettings
             )

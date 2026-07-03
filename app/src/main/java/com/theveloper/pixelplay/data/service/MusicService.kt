@@ -53,6 +53,8 @@ import com.theveloper.pixelplay.data.preferences.ThemePreferencesRepository
 import com.theveloper.pixelplay.data.preferences.UserPreferencesRepository
 import com.theveloper.pixelplay.data.repository.MusicRepository
 import com.theveloper.pixelplay.data.service.player.DualPlayerEngine
+import com.theveloper.pixelplay.data.usb.UsbExclusiveModeController
+import com.theveloper.pixelplay.data.usb.UsbExclusiveState
 import com.theveloper.pixelplay.data.service.player.TransitionController
 import com.theveloper.pixelplay.ui.glancewidget.PlayerActions
 import com.theveloper.pixelplay.utils.AlbumArtUtils
@@ -63,6 +65,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -168,6 +172,8 @@ class MusicService : MediaLibraryService() {
     @Inject
     lateinit var listeningStatsTracker: ListeningStatsTracker
     @Inject
+    lateinit var usbExclusiveModeController: UsbExclusiveModeController
+    @Inject
     @AppScope
     lateinit var appScope: CoroutineScope
 
@@ -188,6 +194,9 @@ class MusicService : MediaLibraryService() {
     private val controllerLastBrowsedParent = mutableMapOf<String, String>()
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private var keepPlayingInBackground = true
+    // Set when the USB DAC vanished while playing; a re-attach of a remembered device
+    // with auto-resume then continues playback.
+    private var usbResumeAfterReattach = false
     private var isManualShuffleEnabled = false
     private var persistentShuffleEnabled = false
     // Holds the previous main-thread UncaughtExceptionHandler so we can restore it in onDestroy.
@@ -507,6 +516,42 @@ class MusicService : MediaLibraryService() {
             }
         }
 
+        // USB exclusive mode: attach/detach the bit-perfect sink as the controller's session
+        // comes and goes. The engine rebuild preserves queue/position (same as Hi-Fi toggle).
+        serviceScope.launch {
+            usbExclusiveModeController.state.collect { state ->
+                val session = when (state) {
+                    is UsbExclusiveState.Ready, is UsbExclusiveState.Active ->
+                        usbExclusiveModeController.activeSession
+                    else -> null
+                }
+                engine.setUsbExclusiveMode(
+                    session,
+                    usbExclusiveModeController::onSinkFormatChanged,
+                    usbExclusiveModeController::onSessionDead
+                )
+
+                // Re-attach of a remembered device after an unplug: offer to resume by
+                // actually resuming, mirroring the headset-reconnect behavior.
+                if (state is UsbExclusiveState.Ready && usbResumeAfterReattach) {
+                    usbResumeAfterReattach = false
+                    val remembered = userPreferencesRepository.usbRememberedDevicesFlow.first()
+                    if (remembered[state.device.key]?.autoResume == true) {
+                        mediaSession?.player?.play()
+                    }
+                }
+            }
+        }
+        // DAC unplugged mid-playback: pause immediately; the state collector above swaps the
+        // engine back to the normal output path without losing the queue.
+        serviceScope.launch {
+            usbExclusiveModeController.sessionLost.collect {
+                val player = mediaSession?.player
+                usbResumeAfterReattach = player?.playWhenReady == true
+                player?.pause()
+            }
+        }
+
         serviceScope.launch {
             userPreferencesRepository.resumeOnHeadsetReconnectFlow.collect { enabled ->
                 resumeOnHeadsetReconnectEnabled = enabled
@@ -528,10 +573,16 @@ class MusicService : MediaLibraryService() {
             }
         }
 
-        // ReplayGain preference collectors
+        // ReplayGain preference collectors. ReplayGain scales the player volume, which the
+        // bit-perfect USB path must never do — gate it on exclusive mode being inactive.
         serviceScope.launch {
-            userPreferencesRepository.replayGainEnabledFlow.collect { enabled ->
-                replayGainProcessor.setEnabled(enabled)
+            combine(
+                userPreferencesRepository.replayGainEnabledFlow,
+                usbExclusiveModeController.state
+            ) { enabled, usbState ->
+                enabled && usbState !is UsbExclusiveState.Ready && usbState !is UsbExclusiveState.Active
+            }.distinctUntilChanged().collect { effectiveEnabled ->
+                replayGainProcessor.setEnabled(effectiveEnabled)
                 // Re-apply to current track when toggled
                 replayGainProcessor.apply(mediaSession?.player?.currentMediaItem)
             }

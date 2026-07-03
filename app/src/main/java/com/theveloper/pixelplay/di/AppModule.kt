@@ -115,6 +115,14 @@ object AppModule {
 
     @Singleton
     @Provides
+    fun provideUsbSessionFactory(): com.theveloper.pixelplay.data.usb.UsbSessionFactory {
+        return com.theveloper.pixelplay.data.usb.UsbSessionFactory { connection, capabilities ->
+            com.theveloper.pixelplay.usbaudio.UsbAudioSession.open(connection, capabilities)
+        }
+    }
+
+    @Singleton
+    @Provides
     fun provideWorkManager(@ApplicationContext context: Context): WorkManager {
         return WorkManager.getInstance(context)
     }

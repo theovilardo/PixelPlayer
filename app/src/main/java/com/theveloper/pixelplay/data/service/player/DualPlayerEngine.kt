@@ -38,7 +38,11 @@ import androidx.media3.extractor.mp3.Mp3Extractor
 import androidx.media3.extractor.flac.FlacExtractor
 import com.theveloper.pixelplay.data.diagnostics.PerformanceMetrics
 import com.theveloper.pixelplay.data.model.TransitionSettings
+import com.theveloper.pixelplay.data.service.player.usb.UsbAudioSink
 import com.theveloper.pixelplay.data.telegram.TelegramRepository
+import com.theveloper.pixelplay.usbaudio.UsbAudioSession
+import com.theveloper.pixelplay.usbaudio.negotiation.NegotiatedFormat
+import com.theveloper.pixelplay.usbaudio.negotiation.SourceFormat
 import com.theveloper.pixelplay.utils.envelope
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -250,6 +254,15 @@ class DualPlayerEngine @Inject constructor(
     var hiFiModeEnabled: Boolean = false
         private set
     private var audioOffloadEnabled = !shouldDisableAudioOffloadByDefault()
+
+    // USB exclusive (bit-perfect) output. When a session is set, buildAudioSink() routes
+    // decoded PCM to the USB driver instead of DefaultAudioSink; offload is forced off and
+    // crossfade transitions are suspended (see usbExclusiveActive consumers).
+    private var usbExclusiveSession: UsbAudioSession? = null
+    private var usbSinkFormatCallback: (NegotiatedFormat?, SourceFormat?) -> Unit = { _, _ -> }
+    private var usbSessionDeadCallback: () -> Unit = {}
+    private val _usbExclusiveActive = MutableStateFlow(false)
+    val usbExclusiveActive: StateFlow<Boolean> = _usbExclusiveActive.asStateFlow()
     private var transitionJob: Job? = null
     private var bufferingFallbackJob: Job? = null
     private var transitionRunning = false
@@ -1044,6 +1057,12 @@ class DualPlayerEngine @Inject constructor(
                 enableFloatOutput: Boolean,
                 enableAudioOutputPlaybackParams: Boolean
             ): AudioSink {
+                usbExclusiveSession?.let { session ->
+                    // Bit-perfect path: no processor chain, no AudioTrack. The sink itself
+                    // reports float support, so the FFmpeg renderer decodes >16-bit
+                    // material to float regardless of the Hi-Fi toggle.
+                    return UsbAudioSink(session, usbSinkFormatCallback, usbSessionDeadCallback)
+                }
                 return DefaultAudioSink.Builder(context)
                     .setEnableFloatOutput(hiFiModeEnabled)
                     .setEnableAudioOutputPlaybackParameters(enableAudioOutputPlaybackParams)
@@ -1133,7 +1152,9 @@ class DualPlayerEngine @Inject constructor(
             setAudioAttributes(audioAttributes, false)
             val offloadPreferences = TrackSelectionParameters.AudioOffloadPreferences.Builder()
                 .setAudioOffloadMode(
-                    if (audioOffloadEnabled) {
+                    // Offload hands the compressed stream to the DSP — incompatible with a
+                    // custom sink, so it is forced off while USB exclusive mode is engaged.
+                    if (audioOffloadEnabled && usbExclusiveSession == null) {
                         TrackSelectionParameters.AudioOffloadPreferences.AUDIO_OFFLOAD_MODE_ENABLED
                     } else {
                         TrackSelectionParameters.AudioOffloadPreferences.AUDIO_OFFLOAD_MODE_DISABLED
@@ -1191,6 +1212,27 @@ class DualPlayerEngine @Inject constructor(
         }
         hiFiModeEnabled = enabled
         rebuildPlayersPreservingMasterState("Hi-Fi mode set to $enabled")
+    }
+
+    /**
+     * Engages or releases USB exclusive (bit-perfect) output. Follows the [setHiFiMode]
+     * pattern: players are rebuilt preserving queue/position/params, so toggling mid-song
+     * resumes where it was — on the DAC, or back on the normal Android path.
+     */
+    fun setUsbExclusiveMode(
+        session: UsbAudioSession?,
+        onFormatChanged: (NegotiatedFormat?, SourceFormat?) -> Unit = { _, _ -> },
+        onSessionDead: () -> Unit = {}
+    ) {
+        if (usbExclusiveSession === session) return
+        usbExclusiveSession = session
+        usbSinkFormatCallback = onFormatChanged
+        usbSessionDeadCallback = onSessionDead
+        _usbExclusiveActive.value = session != null
+        if (!::playerA.isInitialized) return // first buildPlayer() will pick the session up
+        rebuildPlayersPreservingMasterState(
+            "USB exclusive mode ${if (session != null) "engaged" else "released"}"
+        )
     }
 
     suspend fun resolveCloudUri(uri: Uri): Uri = withContext(Dispatchers.IO) {
@@ -1293,6 +1335,12 @@ class DualPlayerEngine @Inject constructor(
     }
 
     private suspend fun prepareNext(mediaItem: MediaItem, preferredAbsoluteIndex: Int, startPositionMs: Long = 0L) {
+        if (usbExclusiveSession != null) {
+            // Crossfade needs a second player fading on the same output — impossible (and
+            // volume-scaled, so not bit-perfect) while the DAC is exclusively claimed.
+            Timber.tag("TransitionDebug").d("USB exclusive active — skipping crossfade prepare")
+            return
+        }
         try {
             val snapshot = ensureQueueSnapshot()
             val currentAbsoluteIndex = resolveCurrentAbsoluteIndex(playerA.currentMediaItem ?: mediaItem, snapshot)

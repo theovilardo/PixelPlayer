@@ -185,16 +185,25 @@ class TransitionController @Inject constructor(
                 }
             }
 
-            combine(settingsFlow, isCrossfadeEnabledFlow) { resolution, isEnabled ->
-                Pair(resolution, isEnabled)
+            combine(settingsFlow, isCrossfadeEnabledFlow, engine.usbExclusiveActive) { resolution, isEnabled, usbExclusive ->
+                Triple(resolution, isEnabled, usbExclusive)
             }.distinctUntilChanged() // Crucial: prevents restarting the job if the same settings are emitted again
-            .collectLatest { (resolution, isEnabled) ->
+            .collectLatest { (resolution, isEnabled, usbExclusive) ->
 
                 val settings = resolution.settings
                 Timber.tag("TransitionDebug").d(
-                    "Settings resolved: Mode=%s, Duration=%dms, GlobalEnabled=%s, Source=%s",
-                    settings.mode, settings.durationMs, isEnabled, resolution.source
+                    "Settings resolved: Mode=%s, Duration=%dms, GlobalEnabled=%s, Source=%s, UsbExclusive=%s",
+                    settings.mode, settings.durationMs, isEnabled, resolution.source, usbExclusive
                 )
+
+                // Crossfade is a dual-player volume fade — neither possible (single exclusive
+                // output) nor bit-perfect while the USB DAC is claimed. Plain gapless advance.
+                if (usbExclusive) {
+                    Timber.tag("TransitionDebug").d("USB exclusive active. Using default gap.")
+                    engine.cancelNext()
+                    engine.setPauseAtEndOfMediaItems(shouldPause = false)
+                    return@collectLatest
+                }
 
                 val isGloballyDisabled = resolution.source == TransitionSource.GLOBAL_DEFAULT && !isEnabled
 

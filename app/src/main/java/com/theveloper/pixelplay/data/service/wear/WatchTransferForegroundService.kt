@@ -10,6 +10,7 @@ import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
+import android.os.PowerManager
 import android.text.format.Formatter
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -36,11 +37,34 @@ class WatchTransferForegroundService : Service() {
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var transferObserverJob: Job? = null
     private var hasStartedForeground = false
+    private var wakeLock: PowerManager.WakeLock? = null
 
     override fun onCreate() {
         super.onCreate()
         ensureNotificationChannel()
         observeTransfers()
+    }
+
+    /**
+     * Without this, the CPU can deep-sleep between Bluetooth chunks once the screen is off,
+     * which can outlast our own idle-timeout watchdogs and mark a healthy-but-slow transfer as
+     * failed. Held only while a transfer is actually active; released as soon as it's not.
+     */
+    private fun acquireWakeLock() {
+        if (wakeLock?.isHeld == true) return
+        val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+        wakeLock = powerManager.newWakeLock(
+            PowerManager.PARTIAL_WAKE_LOCK,
+            "PixelPlay:watchTransfer",
+        ).apply {
+            setReferenceCounted(false)
+            acquire(MAX_WAKE_LOCK_DURATION_MS)
+        }
+    }
+
+    private fun releaseWakeLock() {
+        wakeLock?.let { if (it.isHeld) it.release() }
+        wakeLock = null
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -59,6 +83,7 @@ class WatchTransferForegroundService : Service() {
     override fun onDestroy() {
         transferObserverJob?.cancel()
         serviceScope.cancel()
+        releaseWakeLock()
         super.onDestroy()
     }
 
@@ -73,11 +98,13 @@ class WatchTransferForegroundService : Service() {
             ) { transfers, batches -> transfers.values.toList() to batches.values.toList() }
                 .collect { (states, batches) ->
                     if (states.isEmpty() && batches.isEmpty()) {
+                        releaseWakeLock()
                         stopForegroundCompat()
                         stopSelf()
                         return@collect
                     }
 
+                    acquireWakeLock()
                     val notification = buildNotification(states, batches)
                     if (!hasStartedForeground) {
                         startInForeground(notification)
@@ -349,6 +376,9 @@ class WatchTransferForegroundService : Service() {
         private const val NOTIFICATION_CHANNEL_ID = "pixelplay_watch_transfers"
         private const val NOTIFICATION_ID = 1003
         private const val MAX_STYLE_LINES = 5
+        // Safety net in case release() is ever skipped by a bug: auto-releases well past any
+        // legitimately slow whole-playlist transfer instead of draining battery indefinitely.
+        private const val MAX_WAKE_LOCK_DURATION_MS = 6 * 60 * 60 * 1000L
 
         fun start(context: Context) {
             val intent = Intent(context, WatchTransferForegroundService::class.java)

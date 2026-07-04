@@ -66,6 +66,8 @@ class WearPlayerViewModel @Inject constructor(
     /** Whether local playback is currently active on the watch */
     val isLocalPlaybackActive: StateFlow<Boolean> = localPlayerRepository.isLocalPlaybackActive
     val localQueueState: StateFlow<WearLocalQueueState> = localPlayerRepository.localQueueState
+    /** Transient local-playback error message (e.g. a song that failed to decode and got skipped). */
+    val localPlaybackError: StateFlow<String?> = localPlayerRepository.localPlaybackError
     private val localSongs = transferRepository.localSongs
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
@@ -495,6 +497,10 @@ class WearPlayerViewModel @Inject constructor(
     /** Stop local playback and switch back to remote mode */
     fun stopLocalPlayback() {
         localPlayerRepository.release()
+    }
+
+    fun consumeLocalPlaybackError() {
+        localPlayerRepository.consumeLocalPlaybackError()
     }
 }
 

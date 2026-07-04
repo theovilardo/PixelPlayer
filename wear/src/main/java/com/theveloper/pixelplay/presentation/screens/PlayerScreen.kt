@@ -155,6 +155,7 @@ fun PlayerScreen(
     val activeOutputRouteType by viewModel.activeOutputRouteType.collectAsState()
     val activeVolumeState by viewModel.activeVolumeState.collectAsState()
     val albumArt by viewModel.albumArt.collectAsState()
+    val localPlaybackError by viewModel.localPlaybackError.collectAsState()
 
     PlayerContent(
         state = state,
@@ -172,6 +173,8 @@ fun PlayerScreen(
         onOutputClick = onOutputClick,
         onMoreClick = onMoreClick,
         onQueueClick = onQueueClick,
+        localPlaybackError = localPlaybackError,
+        onConsumeLocalPlaybackError = viewModel::consumeLocalPlaybackError,
     )
 }
 
@@ -192,6 +195,8 @@ private fun PlayerContent(
     onOutputClick: () -> Unit,
     onMoreClick: () -> Unit,
     onQueueClick: () -> Unit,
+    localPlaybackError: String? = null,
+    onConsumeLocalPlaybackError: () -> Unit = {},
 ) {
     val palette = LocalWearPalette.current
     val isAmbient by WearLifecycleState.isAmbient.collectAsState()
@@ -310,6 +315,37 @@ private fun PlayerContent(
                 unselectedColor = palette.textPrimary.copy(alpha = 0.52f),
                 backgroundColor = Color.Transparent,
             )
+        }
+
+        LaunchedEffect(localPlaybackError) {
+            if (localPlaybackError != null) {
+                delay(3000L)
+                onConsumeLocalPlaybackError()
+            }
+        }
+
+        AnimatedVisibility(
+            visible = localPlaybackError != null,
+            enter = fadeIn(animationSpec = tween(durationMillis = 180)),
+            exit = fadeOut(animationSpec = tween(durationMillis = 240)),
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = 36.dp)
+                .zIndex(7f),
+        ) {
+            Box(
+                modifier = Modifier
+                    .background(Color.Black.copy(alpha = 0.75f), RoundedCornerShape(12.dp))
+                    .padding(horizontal = 12.dp, vertical = 6.dp),
+            ) {
+                Text(
+                    text = localPlaybackError.orEmpty(),
+                    color = Color.White,
+                    style = MaterialTheme.typography.caption2,
+                    textAlign = TextAlign.Center,
+                    maxLines = 2,
+                )
+            }
         }
     }
 }

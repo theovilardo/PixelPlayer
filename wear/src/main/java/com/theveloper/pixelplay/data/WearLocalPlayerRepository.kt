@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
@@ -104,6 +105,10 @@ class WearLocalPlayerRepository @Inject constructor(
     private val _localQueueState = MutableStateFlow(WearLocalQueueState())
     val localQueueState: StateFlow<WearLocalQueueState> = _localQueueState.asStateFlow()
 
+    private val _localPlaybackError = MutableStateFlow<String?>(null)
+    /** Transient message describing the last playback error, for the UI to show as a snackbar. */
+    val localPlaybackError: StateFlow<String?> = _localPlaybackError.asStateFlow()
+
     private var positionUpdateJob: Job? = null
     private var currentQueueSongIds: List<String> = emptyList()
     private var currentQueueSongsById: Map<String, LocalSongEntity> = emptyMap()
@@ -153,6 +158,31 @@ class WearLocalPlayerRepository @Inject constructor(
         override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
             updateState()
         }
+
+        override fun onPlayerError(error: PlaybackException) {
+            val player = mediaController
+            val failedItem = player?.currentMediaItem
+            val trackTitle = failedItem?.mediaMetadata?.title?.toString()
+                ?: currentQueueSongsById[failedItem?.mediaId]?.title
+                ?: "Unknown track"
+            Timber.tag(TAG).e(error, "Local playback error for songId=%s", failedItem?.mediaId)
+            _localPlaybackError.value = "Skipped $trackTitle (${error.localizedMessage ?: error.message ?: "playback error"})"
+
+            // ExoPlayer drops to STATE_IDLE on error, so a plain seekToNext() wouldn't resume
+            // playback on its own — re-prepare and play to actually skip forward.
+            if (player != null && player.hasNextMediaItem()) {
+                player.seekToNext()
+                player.prepare()
+                player.play()
+            } else {
+                stopPositionUpdates()
+            }
+        }
+    }
+
+    /** Called by the UI after it has shown [localPlaybackError], to clear the transient message. */
+    fun consumeLocalPlaybackError() {
+        _localPlaybackError.value = null
     }
 
     /**
@@ -324,6 +354,7 @@ class WearLocalPlayerRepository @Inject constructor(
             _localThemePalette.value = null
             _localPaletteSeedArgb.value = null
             _localAlbumArt.value = null
+            _localPlaybackError.value = null
 
             val mediaItems = queueSongs.map { song ->
                 MediaItem.Builder()
@@ -492,6 +523,7 @@ class WearLocalPlayerRepository @Inject constructor(
         _localPaletteSeedArgb.value = null
         _localAlbumArt.value = null
         _localQueueState.value = WearLocalQueueState()
+        _localPlaybackError.value = null
         currentQueueSongIds = emptyList()
         currentQueueSongsById = emptyMap()
         currentQueueItemsById = emptyMap()

@@ -1,0 +1,115 @@
+name: USB Beta Release
+
+# Manually dispatched: builds signed release APKs from the chosen ref and publishes
+# them as a GitHub Release, so testers can download without an Actions login.
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (also used in the APK file names)'
+        required: true
+        default: 'v0.7.5-usb-beta.1'
+      prerelease:
+        description: 'Mark as pre-release'
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: write
+
+concurrency:
+  group: usb-beta-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      # Same cache key as nightly-apk.yml: beta releases and nightlies share one
+      # signature, so update-installs work across them.
+      - name: Cache nightly keystore
+        id: cache-keystore
+        uses: actions/cache@v5
+        with:
+          path: vz-pixelplay.jks
+          key: ${{ runner.os }}-nightly-keystore-vz-pixelplay
+
+      - name: Generate nightly keystore if not cached
+        if: steps.cache-keystore.outputs.cache-hit != 'true'
+        run: |
+          keytool -genkey -v -keystore vz-pixelplay.jks -alias pixelplay-nightly-key -keyalg RSA -keysize 4096 -validity 10000 \
+            -storepass 994273 -keypass 994273 \
+            -dname "CN=PixelPlay Nightly, OU=Dev, O=PixelPlay, L=World, S=World, C=US"
+
+      - name: Create keystore.properties
+        run: |
+          echo "storePassword=994273" > keystore.properties
+          echo "keyAlias=pixelplay-nightly-key" >> keystore.properties
+          echo "keyPassword=994273" >> keystore.properties
+
+      - name: Build release APKs
+        run: gradle :app:assembleRelease -Ppixelplay.enableAbiSplits=true
+
+      - name: Verify split APKs
+        run: |
+          BUILD_TOOLS_VERSION="$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -n 1)"
+          for apk in \
+            app/build/outputs/apk/release/app-arm64-v8a-release.apk \
+            app/build/outputs/apk/release/app-armeabi-v7a-release.apk
+          do
+            "$ANDROID_HOME/build-tools/$BUILD_TOOLS_VERSION/aapt2" dump badging "$apk" >/dev/null
+            "$ANDROID_HOME/build-tools/$BUILD_TOOLS_VERSION/apksigner" verify --verbose "$apk"
+          done
+
+      - name: Stage release assets
+        run: |
+          mkdir -p release-assets
+          cp app/build/outputs/apk/release/app-arm64-v8a-release.apk \
+            "release-assets/PixelPlay-${{ inputs.tag }}-arm64-v8a.apk"
+          cp app/build/outputs/apk/release/app-armeabi-v7a-release.apk \
+            "release-assets/PixelPlay-${{ inputs.tag }}-armeabi-v7a.apk"
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag }}
+          target_commitish: ${{ github.sha }}
+          name: 'USB Exclusive Mode (bit-perfect) — ${{ inputs.tag }}'
+          prerelease: ${{ inputs.prerelease }}
+          files: release-assets/*.apk
+          body: |
+            Beta build of **USB exclusive mode**: PixelPlay claims a USB DAC directly
+            (libusb, no root) and streams at the track's native sample rate and bit
+            depth — bit-perfect, bypassing the Android mixer. Validated on a FiiO
+            BTR17 up to 768 kHz.
+
+            **Install:** download the `arm64-v8a` APK (fits virtually all phones;
+            `armeabi-v7a` is only for very old 32-bit devices), open it on the phone
+            and allow installing from unknown sources.
+
+            **Signature note:** this build is signed with the CI test key (same as the
+            nightly builds). It cannot update-install over a copy of PixelPlay signed
+            with a different key — uninstall that one first, or install alongside a
+            `.debug` test build (different application id, no conflict).
+
+            **Usage:** Settings → Playback → USB Audio → enable *USB exclusive mode*,
+            plug in the DAC, grant the USB permission. The Now Playing screen shows
+            `USB • <bit>/<rate>` while bit-perfect output is active, and the DAC's own
+            display follows the track's sample rate.
+
+            Full feature documentation: `docs/usb-exclusive-mode.md` in the repo.

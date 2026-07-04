@@ -232,6 +232,27 @@ class UsbAudioSinkTest {
     }
 
     @Test
+    fun `format change while playing resumes the new stream`() {
+        val sink = sink()
+        sink.configure(pcm16Format(rate = 44_100), 0, null)
+        sink.play()
+        io.mockk.verify(exactly = 1) { session.resume() }
+
+        // Gapless transition into a different rate: nothing re-calls play(), so the
+        // sink itself must resume the freshly configured (paused) stream.
+        sink.configure(pcm16Format(rate = 96_000), 0, null)
+        io.mockk.verify(exactly = 2) { session.resume() }
+    }
+
+    @Test
+    fun `format change while paused stays paused`() {
+        val sink = sink()
+        sink.configure(pcm16Format(rate = 44_100), 0, null)
+        sink.configure(pcm16Format(rate = 96_000), 0, null)
+        io.mockk.verify(exactly = 0) { session.resume() }
+    }
+
+    @Test
     fun `volume changes are ignored on the bit-perfect path`() {
         val sink = sink()
         sink.configure(pcm16Format(), 0, null)

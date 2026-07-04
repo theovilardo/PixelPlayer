@@ -224,6 +224,8 @@ class UsbExclusiveModeControllerTest {
 
         controller.sessionLost.test {
             enabledFlow.value = false
+            // Disabled is set only after the (IO-dispatched) close completes.
+            while (controller.state.value != UsbExclusiveState.Disabled) kotlinx.coroutines.yield()
             expectNoEvents()
         }
         assertThat(sessionCloseCount).isEqualTo(1)

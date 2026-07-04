@@ -1,8 +1,10 @@
 #include <jni.h>
 
 #include <cstdio>
+#include <chrono>
 #include <memory>
 #include <mutex>
+#include <thread>
 #include <vector>
 
 #include "iso_stream.h"
@@ -28,6 +30,18 @@ std::shared_ptr<IsoStream> streamOf(jlong handle) {
     if (session == nullptr) return nullptr;
     std::lock_guard<std::mutex> lock(session->mutex);
     return session->stream;
+}
+
+/**
+ * Lets the decay ramp play out (pause → ~2 ms ramp to silence within the next transfer
+ * cycle) before cancelling, so reconfigures/teardowns don't cut audio mid-sample.
+ */
+void gracefulStop(IsoStream& stream) {
+    if (stream.alive() && !stream.paused()) {
+        stream.pause();
+        std::this_thread::sleep_for(std::chrono::milliseconds(25));
+    }
+    stream.stop();
 }
 
 }  // namespace
@@ -87,7 +101,7 @@ Java_com_theveloper_pixelplay_usbaudio_UsbAudioNative_nativeConfigureStream(
     std::lock_guard<std::mutex> lock(session->mutex);
 
     if (session->stream) {
-        session->stream->stop();
+        gracefulStop(*session->stream);
         session->stream.reset();
     }
     if (!session->device->setAltSetting(asInterface, altSetting)) {
@@ -192,7 +206,7 @@ Java_com_theveloper_pixelplay_usbaudio_UsbAudioNative_nativeStop(
     if (session == nullptr) return -1;
     std::lock_guard<std::mutex> lock(session->mutex);
     if (session->stream) {
-        session->stream->stop();
+        gracefulStop(*session->stream);
         session->stream.reset();
     }
     // Alt setting 0 releases the reserved isochronous bandwidth.
@@ -261,6 +275,19 @@ Java_com_theveloper_pixelplay_usbaudio_UsbAudioNative_nativeGetVolumeRangeDb256(
     if (out == nullptr) return nullptr;
     env->SetIntArrayRegion(out, 0, 3, reinterpret_cast<jint*>(range));
     return out;
+}
+
+JNIEXPORT jint JNICALL
+Java_com_theveloper_pixelplay_usbaudio_UsbAudioNative_nativeGetVolumeDb256(
+    JNIEnv*, jobject, jlong handle, jint uacVersion, jint unitId, jint acInterface) {
+    NativeSession* session = fromHandle(handle);
+    if (session == nullptr) return INT32_MIN;
+    std::lock_guard<std::mutex> lock(session->mutex);
+    int32_t value = 0;
+    if (!session->device->getVolumeDb256(uacVersion, unitId, acInterface, &value)) {
+        return INT32_MIN;
+    }
+    return value;
 }
 
 JNIEXPORT jint JNICALL

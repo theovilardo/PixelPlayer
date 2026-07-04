@@ -179,8 +179,10 @@ fun UsbAudioSettingsScreen(
                     }
 
                     item(key = "usb_volume_section") {
+                        val hardwareVolume by viewModel.hardwareVolumeFraction.collectAsStateWithLifecycle()
                         UsbVolumeSection(
                             capabilities = capabilities,
+                            initialVolumeFraction = hardwareVolume,
                             maxVolumeAcknowledged = uiState.maxVolumeAcknowledged,
                             onAcknowledge = viewModel::acknowledgeMaxVolume,
                             onVolumeChange = viewModel::setHardwareVolume
@@ -336,6 +338,7 @@ private fun UsbDeviceCard(
 @Composable
 private fun UsbVolumeSection(
     capabilities: UacCapabilities,
+    initialVolumeFraction: Float?,
     maxVolumeAcknowledged: Boolean,
     onAcknowledge: () -> Unit,
     onVolumeChange: (Float) -> Unit
@@ -345,7 +348,10 @@ private fun UsbVolumeSection(
         icon = { Icon(Icons.Rounded.VolumeUp, null, tint = MaterialTheme.colorScheme.primary) }
     ) {
         if (capabilities.volume != null) {
-            var sliderValue by remember { mutableFloatStateOf(0.75f) }
+            // Snaps to the DAC's actual volume once the session reports it.
+            var sliderValue by remember(initialVolumeFraction) {
+                mutableFloatStateOf(initialVolumeFraction ?: 0.75f)
+            }
             Surface(
                 color = MaterialTheme.colorScheme.surfaceContainer,
                 shape = RoundedCornerShape(16.dp),

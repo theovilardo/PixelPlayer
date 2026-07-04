@@ -181,6 +181,18 @@ bool UacDevice::getVolumeRangeDb256(int uacVersion, int unitId, int acInterface,
     return true;
 }
 
+bool UacDevice::getVolumeDb256(int uacVersion, int unitId, int acInterface, int32_t* out) {
+    const uint16_t value = static_cast<uint16_t>(kFuVolumeControl << 8); // channel 0 = master
+    const uint16_t index = static_cast<uint16_t>((unitId << 8) | (acInterface & 0xFF));
+    // UAC2 uses CUR with the class GET direction; UAC1 has a dedicated GET_CUR request.
+    const uint8_t request = uacVersion == 2 ? kReqCur : 0x81;
+    uint8_t buffer[2] = {0};
+    const int read = controlIn(kClassInterfaceIn, request, value, index, buffer, sizeof(buffer));
+    if (read < 2) return false;
+    *out = static_cast<int16_t>(buffer[0] | (buffer[1] << 8));
+    return true;
+}
+
 bool UacDevice::setVolumeDb256(int uacVersion, int unitId, int acInterface, int32_t valueDb256) {
     (void)uacVersion; // SET CUR encoding is identical for UAC1 and UAC2 (2-byte value)
     const int16_t clamped = static_cast<int16_t>(valueDb256);

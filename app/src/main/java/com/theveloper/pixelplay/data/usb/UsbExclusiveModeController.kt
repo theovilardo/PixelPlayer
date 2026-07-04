@@ -166,6 +166,16 @@ class UsbExclusiveModeController @Inject constructor(
         return session.setVolumeDb256(stepped)
     }
 
+    /** The DAC's current hardware volume as a 0..1 fraction of its range, or null. */
+    fun hardwareVolumeFraction(): Float? {
+        val session = activeSession ?: return null
+        val range = session.volumeRangeDb256() ?: return null
+        val current = session.currentVolumeDb256() ?: return null
+        val (min, max) = range[0] to range[1]
+        if (max <= min) return null
+        return ((current - min).toFloat() / (max - min)).coerceIn(0f, 1f)
+    }
+
     private suspend fun reconcile(enabled: Boolean, devices: List<UsbDeviceInfo>) {
         mutex.withLock {
             if (!enabled) {

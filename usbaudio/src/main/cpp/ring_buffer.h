@@ -46,6 +46,40 @@ public:
 
     /** Copies up to `size` bytes out; returns the number read. */
     size_t read(uint8_t* out, size_t size) {
+        const size_t toRead = copyOut(out, size);
+        if (toRead > 0) {
+            readPos_.store(readPos_.load(std::memory_order_relaxed) + toRead,
+                           std::memory_order_release);
+        }
+        return toRead;
+    }
+
+    /** Like read() but leaves the data in the ring (consumer side only). */
+    size_t peek(uint8_t* out, size_t size) const { return copyOut(out, size); }
+
+    /** Consumer-side: discards up to `size` bytes; returns the number skipped. */
+    size_t skip(size_t size) {
+        const uint64_t readPos = readPos_.load(std::memory_order_relaxed);
+        const uint64_t writePos = writePos_.load(std::memory_order_acquire);
+        const size_t available = static_cast<size_t>(writePos - readPos);
+        const size_t toSkip = size < available ? size : available;
+        if (toSkip > 0) {
+            readPos_.store(readPos + toSkip, std::memory_order_release);
+        }
+        return toSkip;
+    }
+
+    uint64_t readPosition() const { return readPos_.load(std::memory_order_acquire); }
+    uint64_t writePosition() const { return writePos_.load(std::memory_order_acquire); }
+
+    /** Consumer-side discard of everything currently buffered. */
+    void clear() {
+        readPos_.store(writePos_.load(std::memory_order_acquire), std::memory_order_release);
+    }
+
+private:
+    /** Shared copy path of read()/peek(); does not advance the read position. */
+    size_t copyOut(uint8_t* out, size_t size) const {
         const uint64_t readPos = readPos_.load(std::memory_order_relaxed);
         const uint64_t writePos = writePos_.load(std::memory_order_acquire);
         const size_t available = static_cast<size_t>(writePos - readPos);
@@ -58,16 +92,9 @@ public:
         if (toRead > first) {
             std::memcpy(out + first, buffer_.data(), toRead - first);
         }
-        readPos_.store(readPos + toRead, std::memory_order_release);
         return toRead;
     }
 
-    /** Consumer-side discard of everything currently buffered. */
-    void clear() {
-        readPos_.store(writePos_.load(std::memory_order_acquire), std::memory_order_release);
-    }
-
-private:
     std::vector<uint8_t> buffer_;
     std::atomic<uint64_t> writePos_{0};
     std::atomic<uint64_t> readPos_{0};

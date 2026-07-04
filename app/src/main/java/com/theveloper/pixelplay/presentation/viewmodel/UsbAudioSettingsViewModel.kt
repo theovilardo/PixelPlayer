@@ -22,9 +22,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 @HiltViewModel
@@ -74,6 +77,18 @@ class UsbAudioSettingsViewModel @Inject constructor(
     fun setHardwareVolume(fraction: Float) {
         viewModelScope.launch(Dispatchers.IO) { controller.setHardwareVolume(fraction) }
     }
+
+    /** The DAC's actual volume when a session comes up, so the slider starts truthful. */
+    val hardwareVolumeFraction: StateFlow<Float?> = controller.state
+        .map { state ->
+            if (state is UsbExclusiveState.Ready || state is UsbExclusiveState.Active) {
+                withContext(Dispatchers.IO) { controller.hardwareVolumeFraction() }
+            } else {
+                null
+            }
+        }
+        .distinctUntilChanged()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
     // ─── Debug: raw driver bring-up tone (bypasses ExoPlayer entirely) ────────
 

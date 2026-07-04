@@ -36,6 +36,8 @@ public:
 
     /** Volume values are UAC-native: signed 1/256 dB steps. out = {min, max, res}. */
     bool getVolumeRangeDb256(int uacVersion, int unitId, int acInterface, int32_t out[3]);
+    /** Reads the feature unit's current master volume (1/256 dB). */
+    bool getVolumeDb256(int uacVersion, int unitId, int acInterface, int32_t* out);
     bool setVolumeDb256(int uacVersion, int unitId, int acInterface, int32_t valueDb256);
     bool setMute(int uacVersion, int unitId, int acInterface, bool mute);
 

@@ -132,6 +132,14 @@ object UsbAudioNative {
         valueDb256: Int
     ): Int
 
+    /** Current master volume in 1/256 dB, or [Int.MIN_VALUE] when unreadable. */
+    external fun nativeGetVolumeDb256(
+        handle: Long,
+        uacVersion: Int,
+        unitId: Int,
+        acInterface: Int
+    ): Int
+
     external fun nativeSetMute(
         handle: Long,
         uacVersion: Int,

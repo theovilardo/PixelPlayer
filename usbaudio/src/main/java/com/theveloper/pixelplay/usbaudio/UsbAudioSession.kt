@@ -201,6 +201,18 @@ class UsbAudioSession private constructor(
         }
     }
 
+    /** The DAC's current master volume in 1/256 dB, or null when unreadable. */
+    fun currentVolumeDb256(): Int? {
+        synchronized(lock) {
+            if (closed) return null
+            val unit = capabilities.volume ?: return null
+            val value = UsbAudioNative.nativeGetVolumeDb256(
+                handle, uacVersionCode, unit.featureUnitId, capabilities.controlInterfaceNumber
+            )
+            return if (value == Int.MIN_VALUE) null else value
+        }
+    }
+
     fun setVolumeDb256(valueDb256: Int): Boolean {
         synchronized(lock) {
             if (closed) return false

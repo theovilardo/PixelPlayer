@@ -65,6 +65,7 @@ class UsbAudioSink(
     private var playbackParameters = PlaybackParameters.DEFAULT
     private var skipSilenceEnabled = false
     private var audioAttributes: AudioAttributes? = null
+    private var playing = false
 
     // ─── Format support ──────────────────────────────────────────────────────
 
@@ -127,6 +128,10 @@ class UsbAudioSink(
                     inputFormat
                 )
             }
+            // A freshly configured stream starts paused (silent PLL priming). Mid-playback
+            // format changes — gapless 44.1→96 transitions — must resume it themselves:
+            // ExoPlayer only re-calls play() after user-initiated actions.
+            if (playing) session.resume()
         }
 
         this.inputFormat = inputFormat
@@ -365,10 +370,12 @@ class UsbAudioSink(
     // ─── Transport ───────────────────────────────────────────────────────────
 
     override fun play() {
+        playing = true
         session.resume()
     }
 
     override fun pause() {
+        playing = false
         session.pause()
     }
 
@@ -403,6 +410,7 @@ class UsbAudioSink(
 
     override fun reset() {
         flush()
+        playing = false
         inputFormat = null
         sourceFormat = null
         sourceEncoding = null

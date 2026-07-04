@@ -1,7 +1,9 @@
 #include "iso_stream.h"
 
+#include <algorithm>
 #include <cinttypes>
 #include <cstring>
+#include <iterator>
 
 #include "log.h"
 #include "uac_device.h"
@@ -10,6 +12,12 @@ namespace {
 constexpr int kTransfers = 8;
 constexpr int kPacketsPerTransferTarget = 8;
 constexpr unsigned kEventTimeoutUs = 100 * 1000;
+// Synthetic silence↔data ramps: long enough to be clickless, short enough to be inaudible.
+constexpr uint32_t kRampMs = 2;
+// Audio buffered before playback starts after start/flush (absorbs bursty first buffers).
+constexpr uint32_t kPrefillMs = 40;
+// If some audio waits below the prefill threshold this long, start anyway (short tails).
+constexpr uint32_t kPrefillDeadlineMs = 50;
 }  // namespace
 
 IsoStream::IsoStream(UacDevice& device, Config config)
@@ -51,6 +59,14 @@ bool IsoStream::start() {
     ring_ = std::make_unique<RingBuffer>(ringBytes > 4096 ? ringBytes : 4096);
 
     rateAccumulatorQ16_ = 0;
+    rampFrames_ = std::max<uint32_t>(16, config_.rateHz * kRampMs / 1000);
+    prefillFrames_ = config_.rateHz * kPrefillMs / 1000;
+    prefillDeadlinePackets_ =
+        std::max<uint32_t>(1, packetsPerSecond_ * kPrefillDeadlineMs / 1000);
+    prefillWaitPackets_ = 0;
+    fillState_ = FillState::kPrefill;
+    std::fill(std::begin(lastSample_), std::end(lastSample_), 0);
+    flushRequested_.store(false);
     stopping_.store(false);
     dead_.store(false);
     running_.store(true);
@@ -132,8 +148,13 @@ void IsoStream::stop() {
 }
 
 void IsoStream::flush() {
-    if (ring_) ring_->clear();
-    // In-flight audio will still play out (a few ms); consumedFrames() already includes it,
+    if (!ring_) return;
+    // The consumer thread discards exactly the bytes present now — anything the producer
+    // writes after this call is the new stream and survives. It also bridges the cut with
+    // a decay ramp instead of a hard step (the source of the audible click on skips).
+    discardUpToPos_.store(ring_->writePosition(), std::memory_order_release);
+    flushRequested_.store(true, std::memory_order_release);
+    // In-flight audio still plays out (a few ms); consumedFrames() already includes it,
     // which is exactly what the sink snapshots as its flush base.
 }
 
@@ -162,33 +183,195 @@ uint32_t IsoStream::nextPacketFrames() {
     return frames;
 }
 
+int32_t IsoStream::readWireSample(const uint8_t* src) const {
+    switch (config_.subslotBytes) {
+        case 2:
+            return static_cast<int32_t>(static_cast<int16_t>(src[0] | (src[1] << 8))) << 16;
+        case 3:
+            return static_cast<int32_t>(src[0] | (src[1] << 8) | (src[2] << 16)) << 8;
+        default:
+            return static_cast<int32_t>(
+                src[0] | (src[1] << 8) | (src[2] << 16) |
+                (static_cast<uint32_t>(src[3]) << 24));
+    }
+}
+
+void IsoStream::writeWireSample(uint8_t* dst, int32_t s32top) const {
+    const uint32_t u = static_cast<uint32_t>(s32top);
+    switch (config_.subslotBytes) {
+        case 2:
+            dst[0] = static_cast<uint8_t>(u >> 16);
+            dst[1] = static_cast<uint8_t>(u >> 24);
+            break;
+        case 3:
+            dst[0] = static_cast<uint8_t>(u >> 8);
+            dst[1] = static_cast<uint8_t>(u >> 16);
+            dst[2] = static_cast<uint8_t>(u >> 24);
+            break;
+        default:
+            dst[0] = static_cast<uint8_t>(u);
+            dst[1] = static_cast<uint8_t>(u >> 8);
+            dst[2] = static_cast<uint8_t>(u >> 16);
+            dst[3] = static_cast<uint8_t>(u >> 24);
+    }
+}
+
+void IsoStream::beginApproach() {
+    uint8_t firstFrame[kMaxChannels * 4];
+    if (ring_->peek(firstFrame, frameBytes_) < static_cast<size_t>(frameBytes_)) {
+        fillState_ = FillState::kSilence;
+        return;
+    }
+    for (int ch = 0; ch < config_.channels && ch < kMaxChannels; ++ch) {
+        rampTarget_[ch] = readWireSample(firstFrame + ch * config_.subslotBytes);
+    }
+    rampPos_ = 0;
+    prefillWaitPackets_ = 0;
+    fillState_ = FillState::kApproach;
+}
+
+void IsoStream::beginDecay(FillState after) {
+    for (int ch = 0; ch < kMaxChannels; ++ch) rampTarget_[ch] = lastSample_[ch];
+    rampPos_ = 0;
+    decayTarget_ = after;
+    fillState_ = FillState::kDecay;
+}
+
+void IsoStream::handleFlushRequest() {
+    if (!flushRequested_.exchange(false, std::memory_order_acq_rel)) return;
+    // Discard exactly the audio that existed when flush() was called; bytes the producer
+    // wrote afterwards belong to the new stream and stay queued behind the prefill gate.
+    const uint64_t upTo = discardUpToPos_.load(std::memory_order_acquire);
+    const uint64_t readPos = ring_->readPosition();
+    if (upTo > readPos) {
+        ring_->skip(static_cast<size_t>(upTo - readPos));
+    }
+    switch (fillState_) {
+        case FillState::kPlaying:
+        case FillState::kApproach:
+            beginDecay(FillState::kPrefill);
+            break;
+        case FillState::kDecay:
+            decayTarget_ = FillState::kPrefill;
+            break;
+        default:
+            fillState_ = FillState::kPrefill;
+    }
+    prefillWaitPackets_ = 0;
+}
+
+uint32_t IsoStream::fillFrames(uint8_t* dst, uint32_t frames) {
+    const bool paused = paused_.load(std::memory_order_acquire);
+    const int channels = std::min(config_.channels, kMaxChannels);
+    uint32_t dataFrames = 0;
+    uint32_t remaining = frames;
+    uint8_t* cursor = dst;
+
+    while (remaining > 0) {
+        switch (fillState_) {
+            case FillState::kPrefill: {
+                const uint32_t ringFrames =
+                    static_cast<uint32_t>(ring_->availableToRead() / frameBytes_);
+                if (!paused && ringFrames > 0) {
+                    if (ringFrames >= prefillFrames_ ||
+                        prefillWaitPackets_ >= prefillDeadlinePackets_) {
+                        beginApproach();
+                        continue;
+                    }
+                    ++prefillWaitPackets_;
+                }
+                std::memset(cursor, 0, static_cast<size_t>(remaining) * frameBytes_);
+                return dataFrames;
+            }
+
+            case FillState::kSilence: {
+                if (!paused && ring_->availableToRead() >= static_cast<size_t>(frameBytes_)) {
+                    beginApproach();
+                    continue;
+                }
+                std::memset(cursor, 0, static_cast<size_t>(remaining) * frameBytes_);
+                return dataFrames;
+            }
+
+            case FillState::kApproach: {
+                while (remaining > 0 && rampPos_ < rampFrames_) {
+                    for (int ch = 0; ch < channels; ++ch) {
+                        const int32_t value = static_cast<int32_t>(
+                            static_cast<int64_t>(rampTarget_[ch]) * (rampPos_ + 1) /
+                            (rampFrames_ + 1));
+                        writeWireSample(cursor + ch * config_.subslotBytes, value);
+                        lastSample_[ch] = value;
+                    }
+                    cursor += frameBytes_;
+                    --remaining;
+                    ++rampPos_;
+                }
+                if (rampPos_ >= rampFrames_) fillState_ = FillState::kPlaying;
+                continue;
+            }
+
+            case FillState::kPlaying: {
+                if (paused) {
+                    beginDecay(FillState::kSilence);
+                    continue;
+                }
+                const size_t got =
+                    ring_->read(cursor, static_cast<size_t>(remaining) * frameBytes_);
+                const uint32_t gotFrames = static_cast<uint32_t>(got / frameBytes_);
+                if (gotFrames > 0) {
+                    const uint8_t* lastFrame = cursor + (gotFrames - 1) * frameBytes_;
+                    for (int ch = 0; ch < channels; ++ch) {
+                        lastSample_[ch] = readWireSample(lastFrame + ch * config_.subslotBytes);
+                    }
+                    dataFrames += gotFrames;
+                    remaining -= gotFrames;
+                    cursor += static_cast<size_t>(gotFrames) * frameBytes_;
+                }
+                if (remaining > 0) {
+                    // Ran dry mid-stream (or the track just drained): bridge with a decay
+                    // ramp instead of a hard step to zero.
+                    xruns_.fetch_add(1, std::memory_order_relaxed);
+                    beginDecay(FillState::kSilence);
+                    continue;
+                }
+                return dataFrames;
+            }
+
+            case FillState::kDecay: {
+                while (remaining > 0 && rampPos_ < rampFrames_) {
+                    for (int ch = 0; ch < channels; ++ch) {
+                        const int32_t value = static_cast<int32_t>(
+                            static_cast<int64_t>(rampTarget_[ch]) *
+                            (rampFrames_ - 1 - rampPos_) / rampFrames_);
+                        writeWireSample(cursor + ch * config_.subslotBytes, value);
+                        lastSample_[ch] = value;
+                    }
+                    cursor += frameBytes_;
+                    --remaining;
+                    ++rampPos_;
+                }
+                if (rampPos_ >= rampFrames_) fillState_ = decayTarget_;
+                continue;
+            }
+        }
+    }
+    return dataFrames;
+}
+
 void IsoStream::fillAndSubmit(TransferContext& context) {
     libusb_transfer* transfer = context.transfer;
     uint8_t* cursor = context.buffer.data();
     uint32_t dataFrames = 0;
     int totalBytes = 0;
 
-    const bool silent = paused_.load(std::memory_order_acquire);
+    handleFlushRequest();
 
     for (int p = 0; p < packetsPerTransfer_; ++p) {
         const uint32_t frames = nextPacketFrames();
         const size_t bytes = static_cast<size_t>(frames) * frameBytes_;
-        size_t got = 0;
-        if (!silent && bytes > 0) {
-            got = ring_->read(cursor, bytes);
-            if (got < bytes) {
-                std::memset(cursor + got, 0, bytes - got);
-                // Count as an underrun only when audio actually ran dry mid-stream —
-                // steady silence at a track boundary / drain is not an xrun.
-                if (got > 0 || lastPacketHadData_) {
-                    xruns_.fetch_add(1, std::memory_order_relaxed);
-                }
-            }
-            lastPacketHadData_ = got > 0;
-        } else if (bytes > 0) {
-            std::memset(cursor, 0, bytes);
+        if (bytes > 0) {
+            dataFrames += fillFrames(cursor, frames);
         }
-        dataFrames += static_cast<uint32_t>(got / frameBytes_);
         transfer->iso_packet_desc[p].length = static_cast<unsigned>(bytes);
         cursor += bytes;
         totalBytes += static_cast<int>(bytes);

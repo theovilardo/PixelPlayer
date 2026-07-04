@@ -52,7 +52,10 @@ public:
     void resume() { paused_.store(false, std::memory_order_release); }
     bool paused() const { return paused_.load(std::memory_order_acquire); }
 
-    /** Drops all buffered (not yet consumed) audio. */
+    /**
+     * Drops all audio buffered up to this moment (data written afterwards is kept).
+     * The consumer bridges the cut with a short synthetic decay ramp — no click.
+     */
     void flush();
 
     /** Producer side; returns bytes accepted (0 = ring full), -1 when the stream is dead. */
@@ -77,10 +80,30 @@ private:
         bool inFlight = false;
     };
 
+    /**
+     * Consumer-side output shaping. Real PCM is passed through bit-exact; the only
+     * synthesized audio is a ~2 ms ramp bridging silence↔data transitions, killing the
+     * step-discontinuity click on skip/seek/pause/underrun.
+     */
+    enum class FillState {
+        kPrefill,  // after start/flush: hold silence until the ring has enough audio
+        kApproach, // synthetic ramp 0 → first pending sample
+        kPlaying,  // bit-exact passthrough from the ring
+        kDecay,    // synthetic ramp last sample → 0
+        kSilence   // steady silence (paused or ran dry); resumes via kApproach
+    };
+
     static void onTransferComplete(libusb_transfer* transfer);
     static void onFeedbackComplete(libusb_transfer* transfer);
 
     void fillAndSubmit(TransferContext& context);
+    /** Fills `frames` frames at dst per the state machine; returns real data frames. */
+    uint32_t fillFrames(uint8_t* dst, uint32_t frames);
+    void handleFlushRequest();
+    void beginApproach();
+    void beginDecay(FillState after);
+    int32_t readWireSample(const uint8_t* src) const;
+    void writeWireSample(uint8_t* dst, int32_t s32top) const;
     bool submitFeedback();
     void markDead(const char* why);
     void eventLoop();
@@ -100,7 +123,20 @@ private:
     uint64_t nominalRateQ16_ = 0;
     std::atomic<uint64_t> feedbackRateQ16_{0}; // 0 = no feedback yet
     uint64_t rateAccumulatorQ16_ = 0;          // event-thread only
-    bool lastPacketHadData_ = false;           // event-thread only
+
+    // ─── Fill state machine (event-thread only unless noted) ───────────────
+    static constexpr int kMaxChannels = 8;
+    FillState fillState_ = FillState::kPrefill;
+    FillState decayTarget_ = FillState::kSilence;
+    int32_t lastSample_[kMaxChannels] = {0};
+    int32_t rampTarget_[kMaxChannels] = {0};
+    uint32_t rampPos_ = 0;
+    uint32_t rampFrames_ = 0;          // ~2 ms at the stream rate
+    uint32_t prefillFrames_ = 0;       // ~40 ms of audio before leaving kPrefill
+    uint32_t prefillWaitPackets_ = 0;  // deadline fallback so short tails still play
+    uint32_t prefillDeadlinePackets_ = 0;
+    std::atomic<bool> flushRequested_{false};
+    std::atomic<uint64_t> discardUpToPos_{0}; // ring write position captured at flush()
 
     std::unique_ptr<RingBuffer> ring_;
     std::vector<std::unique_ptr<TransferContext>> transfers_;

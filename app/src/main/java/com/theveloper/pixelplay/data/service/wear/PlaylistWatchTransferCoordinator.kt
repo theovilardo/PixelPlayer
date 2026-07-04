@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import timber.log.Timber
@@ -120,8 +121,11 @@ class PlaylistWatchTransferCoordinator @Inject constructor(
                 continue
             }
 
-            if (transferSongToAllNodes(batchId, nodes, song)) {
+            val outcome = transferSongToAllNodes(batchId, nodes, song)
+            if (outcome.completed) {
                 transferStateStore.markBatchSongCompleted(batchId)
+            } else {
+                transferStateStore.markBatchSongFailed(batchId, outcome.errorCode)
             }
         }
 
@@ -136,8 +140,8 @@ class PlaylistWatchTransferCoordinator @Inject constructor(
         batchId: String,
         nodes: List<Node>,
         song: Song,
-    ): Boolean {
-        if (cancelledBatchIds.contains(batchId)) return false
+    ): SongTransferResult {
+        if (cancelledBatchIds.contains(batchId)) return SongTransferResult(completed = false)
 
         val transcodeRequestId = UUID.randomUUID().toString()
         transferStateStore.markBatchSongStarted(batchId, transcodeRequestId, song.title)
@@ -151,23 +155,36 @@ class PlaylistWatchTransferCoordinator @Inject constructor(
         )
         if (transcodeResult is WatchAudioTranscoder.TranscodeResult.Failed) {
             Timber.tag(TAG).w(transcodeResult.error, "Transcode failed for songId=%s, skipping", song.id)
-            return false
+            return SongTransferResult(completed = false, errorCode = WearTransferProgress.ERROR_CODE_GENERIC)
         }
         if (cancelledBatchIds.contains(batchId)) {
             watchAudioTranscoder.cleanup(transcodeResult)
-            return false
+            return SongTransferResult(completed = false)
         }
 
         val overrideAudioFile = (transcodeResult as? WatchAudioTranscoder.TranscodeResult.Transcoded)?.outputFile
 
+        // Send to every reachable node (not just the first) — with multiple paired watches this
+        // song should land on all of them. Present on at least one counts as done overall; if
+        // every node failed, report whichever node failed last (good enough for the UI's
+        // single-line failure summary).
         var succeededOnAnyNode = false
+        var lastFailureErrorCode: String? = null
         for (node in nodes) {
             if (cancelledBatchIds.contains(batchId)) break
-            succeededOnAnyNode = transferSongToNode(batchId, node, song, overrideAudioFile) || succeededOnAnyNode
+            val nodeOutcome = transferSongToNode(batchId, node, song, overrideAudioFile)
+            if (nodeOutcome.completed) {
+                succeededOnAnyNode = true
+            } else {
+                lastFailureErrorCode = nodeOutcome.errorCode
+            }
         }
 
         watchAudioTranscoder.cleanup(transcodeResult)
-        return succeededOnAnyNode
+        return SongTransferResult(
+            completed = succeededOnAnyNode,
+            errorCode = if (succeededOnAnyNode) null else lastFailureErrorCode,
+        )
     }
 
     private suspend fun transferSongToNode(
@@ -175,7 +192,7 @@ class PlaylistWatchTransferCoordinator @Inject constructor(
         node: Node,
         song: Song,
         overrideAudioFile: java.io.File?,
-    ): Boolean {
+    ): SongTransferResult {
         val requestId = UUID.randomUUID().toString()
         transferStateStore.markBatchSongStarted(batchId, requestId, song.title)
 
@@ -196,17 +213,47 @@ class PlaylistWatchTransferCoordinator @Inject constructor(
             overrideAudioFile = overrideAudioFile,
         )
 
-        val finalState = transferStateStore.transfers
-            .mapNotNull { it[requestId] }
-            .first { it.status in TERMINAL_STATUSES }
+        val finalState = withTimeoutOrNull(SONG_TRANSFER_AWAIT_TIMEOUT_MS) {
+            transferStateStore.transfers
+                .mapNotNull { it[requestId] }
+                .first { it.status in TERMINAL_STATUSES }
+        }
         progressWatcherJob.cancel()
 
-        return finalState.status == WearTransferProgress.STATUS_COMPLETED
+        if (finalState == null) {
+            Timber.tag(TAG).w(
+                "Timed out awaiting watch confirmation: songId=%s requestId=%s",
+                song.id,
+                requestId,
+            )
+            transferStateStore.markProgress(
+                requestId = requestId,
+                songId = song.id,
+                bytesTransferred = 0L,
+                totalBytes = 0L,
+                status = WearTransferProgress.STATUS_FAILED,
+                error = "Timed out waiting for watch confirmation",
+                errorCode = WearTransferProgress.ERROR_CODE_TIMED_OUT,
+            )
+            return SongTransferResult(completed = false, errorCode = WearTransferProgress.ERROR_CODE_TIMED_OUT)
+        }
+
+        return SongTransferResult(
+            completed = finalState.status == WearTransferProgress.STATUS_COMPLETED,
+            errorCode = finalState.errorCode,
+        )
     }
 
-    private companion object {
-        const val TAG = "PlaylistWatchTransfer"
-        val TERMINAL_STATUSES = setOf(
+    private data class SongTransferResult(val completed: Boolean, val errorCode: String? = null)
+
+    internal companion object {
+        private const val TAG = "PlaylistWatchTransfer"
+        // Deliberately generous relative to the watch's own 120s idle watchdog: leaves room for
+        // slow transcoding + a slow Bluetooth link on large files. Better to wait too long than
+        // to mark a legitimately-slow transfer as failed.
+        // Var (not const) so tests can shrink it instead of waiting out the real timeout.
+        internal var SONG_TRANSFER_AWAIT_TIMEOUT_MS = 300_000L
+        private val TERMINAL_STATUSES = setOf(
             WearTransferProgress.STATUS_COMPLETED,
             WearTransferProgress.STATUS_FAILED,
             WearTransferProgress.STATUS_CANCELLED,

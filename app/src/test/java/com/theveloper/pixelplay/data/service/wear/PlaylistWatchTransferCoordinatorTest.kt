@@ -7,8 +7,10 @@ import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.CapabilityInfo
 import com.google.android.gms.wearable.MessageClient
+import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable
 import com.google.common.truth.Truth.assertThat
+import com.theveloper.pixelplay.data.model.Song
 import com.theveloper.pixelplay.data.repository.MusicRepository
 import com.theveloper.pixelplay.shared.WearTransferProgress
 import io.mockk.coEvery
@@ -16,6 +18,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -38,6 +41,8 @@ class PlaylistWatchTransferCoordinatorTest {
         transferStateStore = transferStateStore,
     )
 
+    private val originalAwaitTimeoutMs = PlaylistWatchTransferCoordinator.SONG_TRANSFER_AWAIT_TIMEOUT_MS
+
     @BeforeEach
     fun mockWearable() {
         mockkStatic(Wearable::class)
@@ -46,6 +51,7 @@ class PlaylistWatchTransferCoordinatorTest {
     @AfterEach
     fun unmockWearable() {
         unmockkStatic(Wearable::class)
+        PlaylistWatchTransferCoordinator.SONG_TRANSFER_AWAIT_TIMEOUT_MS = originalAwaitTimeoutMs
     }
 
     private fun stubNoReachableWatches() {
@@ -55,6 +61,36 @@ class PlaylistWatchTransferCoordinatorTest {
         every { Wearable.getCapabilityClient(any<Context>()) } returns capabilityClient
         every { Wearable.getMessageClient(any<Context>()) } returns mockk<MessageClient>(relaxed = true)
     }
+
+    private fun stubOneReachableWatch(): MessageClient {
+        val node = mockk<Node> { every { id } returns "node-1" }
+        val capabilityClient = mockk<CapabilityClient>()
+        val capabilityInfo = mockk<CapabilityInfo> { every { nodes } returns setOf(node) }
+        every { capabilityClient.getCapability(any(), any()) } returns Tasks.forResult(capabilityInfo)
+        every { Wearable.getCapabilityClient(any<Context>()) } returns capabilityClient
+        val messageClient = mockk<MessageClient>(relaxed = true)
+        // A relaxed mock's default Task<Int> for sendMessage never actually completes its
+        // listeners, so .await() on it would hang forever — return a genuinely resolved Task.
+        every { messageClient.sendMessage(any(), any(), any()) } returns Tasks.forResult(0)
+        every { Wearable.getMessageClient(any<Context>()) } returns messageClient
+        return messageClient
+    }
+
+    private fun song(id: String) = Song(
+        id = id,
+        title = "Song $id",
+        artist = "Test Artist",
+        artistId = 1L,
+        album = "Test Album",
+        albumId = 1L,
+        path = "/sdcard/Music/$id.file",
+        contentUriString = "content://media/external/audio/media/$id",
+        albumArtUriString = null,
+        duration = 60_000L,
+        mimeType = "audio/mpeg",
+        bitrate = 128_000,
+        sampleRate = 44_100,
+    )
 
     @Test
     fun `requestPlaylistTransfer with an empty playlist does not start a batch`() = runTest {
@@ -106,5 +142,39 @@ class PlaylistWatchTransferCoordinatorTest {
 
         assertThat(transferStateStore.batchTransfers.value.getValue("batch-1").status)
             .isEqualTo(WearTransferProgress.STATUS_CANCELLED)
+    }
+
+    @Test
+    fun `a song whose transfer never reaches a terminal state is failed as timed out, not hung forever`() = runTest {
+        PlaylistWatchTransferCoordinator.SONG_TRANSFER_AWAIT_TIMEOUT_MS = 50L
+        stubOneReachableWatch()
+        every { musicRepository.getSongsByIds(listOf("song-1")) } returns flowOf(listOf(song("song-1")))
+        coEvery {
+            watchAudioTranscoder.transcodeIfNeeded(any(), any(), any())
+        } returns WatchAudioTranscoder.TranscodeResult.Passthrough
+        // directTransferCoordinator is relaxed: startTransferToWatch is a no-op that never pushes
+        // a terminal status into transferStateStore.transfers, simulating a watch that went
+        // silent (dead battery, out of range) right after the request went out.
+
+        val batchId = coordinator.requestPlaylistTransfer(
+            "playlist-1",
+            "QA Transcode Test",
+            listOf("song-1"),
+        )
+
+        // The batch runs on the coordinator's own background scope, concurrently with this test,
+        // so intermediate StateFlow emissions (song-started, etc.) can be conflated — poll until
+        // the batch actually reaches a terminal status instead of asserting an exact step count.
+        transferStateStore.batchTransfers.test {
+            var batch = awaitItem()[batchId]
+            while (batch == null || batch.status == WearTransferProgress.STATUS_TRANSFERRING) {
+                batch = awaitItem()[batchId]
+            }
+            assertThat(batch.status).isEqualTo(WearTransferProgress.STATUS_COMPLETED)
+            assertThat(batch.completedSongs).isEqualTo(0)
+            assertThat(batch.failedSongCount).isEqualTo(1)
+            assertThat(batch.lastFailureErrorCode).isEqualTo(WearTransferProgress.ERROR_CODE_TIMED_OUT)
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 }

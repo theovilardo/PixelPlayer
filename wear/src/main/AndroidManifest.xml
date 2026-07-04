@@ -10,6 +10,7 @@
          mediaPlayback foreground service (WearPlaybackService). -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
@@ -66,6 +67,13 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </service>
+
+        <!-- Keeps the process alive (dataSync) while a transfer from the phone is in flight,
+             so Wear OS doesn't suspend it mid-transfer on screen-off/ambient. -->
+        <service
+            android:name=".data.WearTransferForegroundService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
 
         <!-- Receives player state updates from the phone app via Data Layer -->
         <service

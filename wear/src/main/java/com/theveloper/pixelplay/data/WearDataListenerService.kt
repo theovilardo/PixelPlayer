@@ -235,6 +235,7 @@ class WearDataListenerService : WearableListenerService() {
             }
 
             WearDataPaths.TRANSFER_METADATA -> {
+                WearTransferForegroundService.start(applicationContext)
                 scope.launch {
                     try {
                         val metadataJson = String(messageEvent.data, Charsets.UTF_8)
@@ -366,6 +367,7 @@ class WearDataListenerService : WearableListenerService() {
         when (channel.path) {
             WearDataPaths.TRANSFER_CHANNEL -> {
                 Timber.tag(TAG).d("Audio transfer channel opened")
+                WearTransferForegroundService.start(applicationContext)
                 transferRepository.receiveAudioChannel(channel)
             }
 

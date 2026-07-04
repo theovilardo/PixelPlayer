@@ -196,7 +196,7 @@ class PhoneDirectWatchTransferCoordinator @Inject constructor(
                 duration = song.duration,
                 mimeType = if (overrideAudioFile != null) TRANSCODED_MIME_TYPE else (song.mimeType ?: "audio/mpeg"),
                 fileSize = fileSize,
-                bitrate = if (overrideAudioFile != null) TRANSCODED_BITRATE_BPS else (song.bitrate ?: 0),
+                bitrate = if (overrideAudioFile != null) WatchAudioTranscoder.TARGET_BITRATE_BPS else (song.bitrate ?: 0),
                 sampleRate = song.sampleRate ?: 0,
                 isFavorite = song.isFavorite,
                 paletteSeedArgb = paletteSeedArgb,
@@ -978,6 +978,5 @@ class PhoneDirectWatchTransferCoordinator @Inject constructor(
         const val METADATA_GUARD_DELAY_MS = 250L
         // Kept in sync with WatchAudioTranscoder's AAC-LC output.
         const val TRANSCODED_MIME_TYPE = "audio/mp4"
-        const val TRANSCODED_BITRATE_BPS = 256_000
     }
 }

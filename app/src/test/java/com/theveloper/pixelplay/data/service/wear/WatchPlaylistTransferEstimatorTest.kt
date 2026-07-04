@@ -48,7 +48,7 @@ class WatchPlaylistTransferEstimatorTest {
 
         val bytes = WatchPlaylistTransferEstimator.estimateBytesForSong(flacSong, transcoder)
 
-        assertThat(bytes).isEqualTo(60L * 256_000L / 8L)
+        assertThat(bytes).isEqualTo(60L * WatchAudioTranscoder.TARGET_BITRATE_BPS.toLong() / 8L)
     }
 
     @Test

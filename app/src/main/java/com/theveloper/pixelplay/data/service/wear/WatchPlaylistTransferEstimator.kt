@@ -22,8 +22,14 @@ data class WatchPlaylistTransferEstimate(
 @UnstableApi
 object WatchPlaylistTransferEstimator {
 
-    /** Conservative assumed throughput for the single Bluetooth channel used for the transfer. */
-    private const val ASSUMED_TRANSFER_RATE_BYTES_PER_SEC = 200_000L
+    /**
+     * Assumed throughput for the single Bluetooth channel used for the transfer. Measured on a
+     * real phone+watch pair (Wearable Data Layer ChannelClient, not raw BT bandwidth) rather than
+     * taken from a spec sheet — observed rate was closer to ~40KB/s per song. Kept deliberately
+     * conservative: an estimate that undershoots the real time erodes trust in the sheet more
+     * than one that's a bit pessimistic.
+     */
+    private const val ASSUMED_TRANSFER_RATE_BYTES_PER_SEC = 40_000L
 
     fun estimateBytesForSong(song: Song, transcoder: WatchAudioTranscoder): Long {
         val effectiveBitrateBps = if (transcoder.requiresTranscoding(song)) {

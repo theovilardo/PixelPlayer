@@ -186,7 +186,7 @@ class WatchAudioTranscoder @Inject constructor(
 
     companion object {
         /** Also used by [WatchPlaylistTransferEstimator] to size-estimate songs that will be transcoded. */
-        const val TARGET_BITRATE_BPS = 256_000
+        const val TARGET_BITRATE_BPS = 128_000
         private const val TAG = "WatchAudioTranscoder"
         private const val MAX_PASSTHROUGH_BITRATE_BPS = 256_000
         private const val PROGRESS_POLL_INTERVAL_MS = 250L

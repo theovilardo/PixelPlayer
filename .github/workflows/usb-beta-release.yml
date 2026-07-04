@@ -1,8 +1,12 @@
 name: USB Beta Release
 
-# Manually dispatched: builds signed release APKs from the chosen ref and publishes
-# them as a GitHub Release, so testers can download without an Actions login.
+# Builds signed release APKs and publishes them as a GitHub Release, so testers can
+# download without an Actions login. Trigger by pushing a `v*-usb-beta*` tag, or
+# dispatch manually against any ref.
 on:
+  push:
+    tags:
+      - 'v*-usb-beta*'
   workflow_dispatch:
     inputs:
       tag:
@@ -77,20 +81,21 @@ jobs:
           done
 
       - name: Stage release assets
+        env:
+          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
         run: |
           mkdir -p release-assets
           cp app/build/outputs/apk/release/app-arm64-v8a-release.apk \
-            "release-assets/PixelPlay-${{ inputs.tag }}-arm64-v8a.apk"
+            "release-assets/PixelPlay-${RELEASE_TAG}-arm64-v8a.apk"
           cp app/build/outputs/apk/release/app-armeabi-v7a-release.apk \
-            "release-assets/PixelPlay-${{ inputs.tag }}-armeabi-v7a.apk"
+            "release-assets/PixelPlay-${RELEASE_TAG}-armeabi-v7a.apk"
 
       - name: Publish GitHub release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ inputs.tag }}
-          target_commitish: ${{ github.sha }}
-          name: 'USB Exclusive Mode (bit-perfect) — ${{ inputs.tag }}'
-          prerelease: ${{ inputs.prerelease }}
+          tag_name: ${{ inputs.tag || github.ref_name }}
+          name: 'USB Exclusive Mode (bit-perfect) — ${{ inputs.tag || github.ref_name }}'
+          prerelease: ${{ inputs.prerelease || true }}
           files: release-assets/*.apk
           body: |
             Beta build of **USB exclusive mode**: PixelPlay claims a USB DAC directly

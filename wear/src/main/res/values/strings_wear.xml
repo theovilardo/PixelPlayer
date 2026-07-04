@@ -89,4 +89,6 @@
     <string name="wear_play_all">Play all</string>
     <string name="wear_song_pending_transfer">Waiting to transfer…</string>
     <string name="wear_local_playlist_receiving">Receiving…</string>
+    <string name="wear_transfer_notification_title">Receiving from phone</string>
+    <string name="wear_transfer_notification_starting">Starting…</string>
 </resources>

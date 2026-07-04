@@ -287,6 +287,7 @@ private fun WatchTransferProgressDialog(
     }
     val statusText = when (transfer.status) {
         WearTransferProgress.STATUS_TRANSFERRING -> stringResource(R.string.watch_transfer_status_transferring)
+        WearTransferProgress.STATUS_AWAITING_WATCH_ACK -> stringResource(R.string.watch_transfer_status_confirming)
         WearTransferProgress.STATUS_COMPLETED -> stringResource(R.string.watch_transfer_status_completed)
         WearTransferProgress.STATUS_FAILED -> stringResource(R.string.watch_transfer_status_failed)
         WearTransferProgress.STATUS_CANCELLED -> stringResource(R.string.watch_transfer_status_cancelled)

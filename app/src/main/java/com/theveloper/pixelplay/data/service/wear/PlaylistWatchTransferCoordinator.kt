@@ -200,7 +200,10 @@ class PlaylistWatchTransferCoordinator @Inject constructor(
             transferStateStore.transfers
                 .mapNotNull { it[requestId] }
                 .collect { state ->
-                    if (state.status == WearTransferProgress.STATUS_TRANSFERRING) {
+                    if (
+                        state.status == WearTransferProgress.STATUS_TRANSFERRING ||
+                        state.status == WearTransferProgress.STATUS_AWAITING_WATCH_ACK
+                    ) {
                         transferStateStore.markBatchSongProgress(batchId, state.status, state.progress)
                     }
                 }

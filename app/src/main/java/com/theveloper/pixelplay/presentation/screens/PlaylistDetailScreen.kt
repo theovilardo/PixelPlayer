@@ -1305,6 +1305,17 @@ private fun SendPlaylistToWatchSheet(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+                Text(
+                    text = stringResource(R.string.send_playlist_to_watch_keep_nearby_advisory),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+                Text(
+                    text = stringResource(R.string.send_playlist_to_watch_safe_background_advisory),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             } else {
                 Text(
                     text = stringResource(R.string.send_playlist_to_watch_up_to_date),
@@ -1373,10 +1384,27 @@ private fun WatchPlaylistBatchProgressDialog(
     val statusText = when (batch.status) {
         WearTransferProgress.STATUS_TRANSCODING -> stringResource(R.string.watch_transfer_status_transcoding)
         WearTransferProgress.STATUS_TRANSFERRING -> stringResource(R.string.watch_transfer_status_transferring)
+        WearTransferProgress.STATUS_AWAITING_WATCH_ACK -> stringResource(R.string.watch_transfer_status_confirming)
         WearTransferProgress.STATUS_COMPLETED -> stringResource(R.string.watch_transfer_status_completed)
         WearTransferProgress.STATUS_FAILED -> stringResource(R.string.watch_transfer_status_failed)
         WearTransferProgress.STATUS_CANCELLED -> stringResource(R.string.watch_transfer_status_cancelled)
         else -> stringResource(R.string.watch_transfer_status_preparing)
+    }
+    val failureSummaryText = if (batch.status == WearTransferProgress.STATUS_COMPLETED && batch.failedSongCount > 0) {
+        val reasonText = when (batch.lastFailureErrorCode) {
+            WearTransferProgress.ERROR_CODE_INSUFFICIENT_STORAGE ->
+                stringResource(R.string.watch_playlist_batch_failure_reason_storage)
+            WearTransferProgress.ERROR_CODE_CONNECTION_LOST, WearTransferProgress.ERROR_CODE_TIMED_OUT ->
+                stringResource(R.string.watch_playlist_batch_failure_reason_connection)
+            else -> stringResource(R.string.watch_playlist_batch_failure_reason_generic)
+        }
+        pluralStringResource(
+            R.plurals.watch_playlist_batch_failed_count_plural,
+            batch.failedSongCount,
+            batch.failedSongCount,
+        ) + " · " + reasonText
+    } else {
+        null
     }
 
     Dialog(
@@ -1453,6 +1481,14 @@ private fun WatchPlaylistBatchProgressDialog(
                 batch.error?.takeIf { it.isNotBlank() }?.let { errorText ->
                     Text(
                         text = errorText,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                failureSummaryText?.let { text ->
+                    Text(
+                        text = text,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
                         textAlign = TextAlign.Center

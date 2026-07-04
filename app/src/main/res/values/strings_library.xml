@@ -286,6 +286,7 @@
     <string name="watch_transfer_status_starting_short">Starting</string>
     <string name="watch_transfer_status_transferring">Transferring</string>
     <string name="watch_transfer_status_transcoding">Converting audio</string>
+    <string name="watch_transfer_status_confirming">Confirming on watch…</string>
     <string name="watch_transfer_summary_n">%1$d transfers</string>
 
     <!-- Send Playlist To Watch: confirmation sheet + batch progress dialog + service notification -->
@@ -301,9 +302,18 @@
     <string name="send_playlist_to_watch_estimated_time">Estimated time: %1$s</string>
     <string name="send_playlist_to_watch_insufficient_storage">Not enough free space on the watch: needs %1$s, only %2$s free.</string>
     <string name="send_playlist_to_watch_no_watch">No reachable watch with PixelPlay installed.</string>
+    <string name="send_playlist_to_watch_keep_nearby_advisory">Keep your watch nearby and connected during the transfer.</string>
+    <string name="send_playlist_to_watch_safe_background_advisory">You can lock your phone or use other apps — the transfer continues in the background.</string>
     <string name="watch_playlist_batch_dialog_title">Sending “%1$s”</string>
     <string name="watch_playlist_batch_progress">%1$d / %2$d songs</string>
     <string name="watch_transfer_status_sending_playlist_service">Sending playlist %1$s (%2$d/%3$d)</string>
+    <string name="watch_playlist_batch_failure_reason_storage">Not enough free space on the watch</string>
+    <string name="watch_playlist_batch_failure_reason_connection">Connection to the watch was lost</string>
+    <string name="watch_playlist_batch_failure_reason_generic">Some songs failed to transfer</string>
+    <plurals name="watch_playlist_batch_failed_count_plural">
+        <item quantity="one">%1$d song couldn\'t be sent</item>
+        <item quantity="other">%1$d songs couldn\'t be sent</item>
+    </plurals>
 
     <!-- EditSongSheet -->
     <string name="edit_song_toolbar_title">Edit song</string>

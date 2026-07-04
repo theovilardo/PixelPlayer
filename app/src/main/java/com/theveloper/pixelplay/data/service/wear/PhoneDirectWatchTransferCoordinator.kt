@@ -932,20 +932,23 @@ class PhoneDirectWatchTransferCoordinator @Inject constructor(
         status: String,
         error: String? = null,
     ) {
+        // Local bookkeeping only: a phone-side "completed" just means the phone finished
+        // writing its own stream. The watch still has to validate the file and ack it before
+        // this song is trustworthy as "present on watch" — see WearCommandReceiver's handling
+        // of the watch's own TRANSFER_PROGRESS reply for where STATUS_COMPLETED actually lands.
+        val localStatus = if (status == WearTransferProgress.STATUS_COMPLETED) {
+            WearTransferProgress.STATUS_AWAITING_WATCH_ACK
+        } else {
+            status
+        }
         transferStateStore.markProgress(
             requestId = requestId,
             songId = songId,
             bytesTransferred = bytesTransferred,
             totalBytes = totalBytes,
-            status = status,
+            status = localStatus,
             error = error,
         )
-        if (status == WearTransferProgress.STATUS_COMPLETED) {
-            transferStateStore.markSongPresentOnWatch(
-                nodeId = nodeId,
-                songId = songId,
-            )
-        }
         val progress = WearTransferProgress(
             requestId = requestId,
             songId = songId,

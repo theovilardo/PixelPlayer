@@ -23,6 +23,7 @@ data class PhoneWatchTransferState(
     val totalBytes: Long = 0L,
     val status: String = WearTransferProgress.STATUS_TRANSFERRING,
     val error: String? = null,
+    val errorCode: String? = null,
     val updatedAtMillis: Long = System.currentTimeMillis(),
 ) {
     val progress: Float
@@ -44,6 +45,8 @@ data class PhoneWatchBatchTransferState(
     val playlistName: String,
     val totalSongs: Int,
     val completedSongs: Int = 0,
+    val failedSongCount: Int = 0,
+    val lastFailureErrorCode: String? = null,
     val activeRequestId: String? = null,
     val currentSongTitle: String = "",
     val currentSongProgress: Float = 0f,
@@ -141,6 +144,7 @@ class PhoneWatchTransferStateStore @Inject constructor() {
         totalBytes: Long,
         status: String,
         error: String? = null,
+        errorCode: String? = null,
         songTitle: String? = null,
     ) {
         _transfers.update { map ->
@@ -154,6 +158,7 @@ class PhoneWatchTransferStateStore @Inject constructor() {
                     totalBytes = maxOf(current.totalBytes, totalBytes),
                     status = status,
                     error = error,
+                    errorCode = errorCode,
                     updatedAtMillis = now,
                 )
             } else {
@@ -165,6 +170,7 @@ class PhoneWatchTransferStateStore @Inject constructor() {
                     totalBytes = totalBytes,
                     status = status,
                     error = error,
+                    errorCode = errorCode,
                     updatedAtMillis = now,
                 )
             }
@@ -208,6 +214,15 @@ class PhoneWatchTransferStateStore @Inject constructor() {
         val existingSongIds = watchSongIdsByNodeId[nodeId].orEmpty()
         if (songId in existingSongIds) return
         watchSongIdsByNodeId[nodeId] = existingSongIds + songId
+        _watchSongIds.value = watchSongIdsByNodeId.values.flatten().toSet()
+    }
+
+    /** Corrects a wrongly-optimistic presence mark once the watch reports it never actually landed. */
+    fun clearSongPresentOnWatch(nodeId: String, songId: String) {
+        if (nodeId.isBlank() || songId.isBlank()) return
+        val existing = watchSongIdsByNodeId[nodeId] ?: return
+        if (songId !in existing) return
+        watchSongIdsByNodeId[nodeId] = existing - songId
         _watchSongIds.value = watchSongIdsByNodeId.values.flatten().toSet()
     }
 
@@ -294,6 +309,19 @@ class PhoneWatchTransferStateStore @Inject constructor() {
                 completedSongs = current.completedSongs + 1,
                 activeRequestId = null,
                 currentSongProgress = 0f,
+                updatedAtMillis = System.currentTimeMillis(),
+            ))
+        }
+    }
+
+    fun markBatchSongFailed(batchId: String, errorCode: String?) {
+        _batchTransfers.update { map ->
+            val current = map[batchId] ?: return@update map
+            map + (batchId to current.copy(
+                failedSongCount = current.failedSongCount + 1,
+                activeRequestId = null,
+                currentSongProgress = 0f,
+                lastFailureErrorCode = errorCode ?: current.lastFailureErrorCode,
                 updatedAtMillis = System.currentTimeMillis(),
             ))
         }

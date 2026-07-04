@@ -116,4 +116,78 @@ class PhoneWatchTransferStateStoreTest {
 
         assertThat(store.batchTransfers.value).isEmpty()
     }
+
+    @Test
+    fun `markBatchSongFailed increments the failure count and records the reason`() = runTest {
+        store.batchTransfers.test {
+            awaitItem() // initial empty snapshot from subscribing to the StateFlow
+
+            store.markBatchStarted("batch-1", "playlist-1", "QA Transcode Test", totalSongs = 2)
+            awaitItem()
+            store.markBatchSongStarted("batch-1", "req-1", "test_flac")
+            awaitItem()
+
+            store.markBatchSongFailed("batch-1", WearTransferProgress.ERROR_CODE_TIMED_OUT)
+            val failedOnce = awaitItem().getValue("batch-1")
+            assertThat(failedOnce.failedSongCount).isEqualTo(1)
+            assertThat(failedOnce.lastFailureErrorCode).isEqualTo(WearTransferProgress.ERROR_CODE_TIMED_OUT)
+            assertThat(failedOnce.activeRequestId).isNull()
+
+            // A later failure with a null errorCode shouldn't erase the last known reason.
+            store.markBatchSongFailed("batch-1", null)
+            val failedTwice = awaitItem().getValue("batch-1")
+            assertThat(failedTwice.failedSongCount).isEqualTo(2)
+            assertThat(failedTwice.lastFailureErrorCode).isEqualTo(WearTransferProgress.ERROR_CODE_TIMED_OUT)
+        }
+    }
+
+    @Test
+    fun `markSongPresentOnWatch and clearSongPresentOnWatch toggle isSongSavedOnAllReachableWatches`() = runTest {
+        store.retainReachableWatchNodes(setOf("node-1"))
+        assertThat(store.isSongSavedOnAllReachableWatches("song-1")).isFalse()
+
+        store.markSongPresentOnWatch("node-1", "song-1")
+        assertThat(store.isSongSavedOnAllReachableWatches("song-1")).isTrue()
+
+        store.clearSongPresentOnWatch("node-1", "song-1")
+        assertThat(store.isSongSavedOnAllReachableWatches("song-1")).isFalse()
+    }
+
+    @Test
+    fun `clearSongPresentOnWatch is a no-op for a song that was never marked present`() = runTest {
+        store.retainReachableWatchNodes(setOf("node-1"))
+        store.markSongPresentOnWatch("node-1", "song-1")
+
+        store.clearSongPresentOnWatch("node-1", "song-2")
+
+        assertThat(store.isSongSavedOnAllReachableWatches("song-1")).isTrue()
+    }
+
+    @Test
+    fun `markProgress with AWAITING_WATCH_ACK status is stored as-is`() = runTest {
+        store.transfers.test {
+            awaitItem() // initial empty snapshot from subscribing to the StateFlow
+
+            store.markProgress(
+                requestId = "req-1",
+                songId = "song-1",
+                bytesTransferred = 100L,
+                totalBytes = 100L,
+                status = WearTransferProgress.STATUS_AWAITING_WATCH_ACK,
+            )
+            val awaitingAck = awaitItem().getValue("req-1")
+            assertThat(awaitingAck.status).isEqualTo(WearTransferProgress.STATUS_AWAITING_WATCH_ACK)
+
+            // The watch's ack later resolves it to a real terminal status.
+            store.markProgress(
+                requestId = "req-1",
+                songId = "song-1",
+                bytesTransferred = 100L,
+                totalBytes = 100L,
+                status = WearTransferProgress.STATUS_COMPLETED,
+            )
+            val completed = awaitItem().getValue("req-1")
+            assertThat(completed.status).isEqualTo(WearTransferProgress.STATUS_COMPLETED)
+        }
+    }
 }

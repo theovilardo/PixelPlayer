@@ -98,8 +98,60 @@ class WearCommandReceiver : WearableListenerService() {
             WearDataPaths.BROWSE_REQUEST -> handleBrowseRequest(messageEvent)
             WearDataPaths.TRANSFER_REQUEST -> handleTransferRequest(messageEvent)
             WearDataPaths.TRANSFER_CANCEL -> handleTransferCancel(messageEvent)
+            WearDataPaths.TRANSFER_PROGRESS -> handleTransferProgressAck(messageEvent)
             WearDataPaths.WATCH_LIBRARY_STATE -> handleWatchLibraryState(messageEvent)
             else -> Timber.tag(TAG).w("Unknown message path: ${messageEvent.path}")
+        }
+    }
+
+    /**
+     * The watch reports the real, validated outcome of a transfer over this same path (reusing
+     * the schema the phone uses for its own outgoing progress updates). This is the only source
+     * of truth for "is this song actually present on the watch" — see
+     * PhoneDirectWatchTransferCoordinator.sendTransferProgress, which deliberately no longer
+     * marks a song present just because the phone finished sending it.
+     */
+    private fun handleTransferProgressAck(messageEvent: MessageEvent) {
+        val progress = try {
+            json.decodeFromString<WearTransferProgress>(String(messageEvent.data, Charsets.UTF_8))
+        } catch (e: Exception) {
+            Timber.tag(TAG).e(e, "Failed to parse transfer progress ack")
+            return
+        }
+        when (progress.status) {
+            WearTransferProgress.STATUS_COMPLETED -> {
+                transferStateStore.markProgress(
+                    requestId = progress.requestId,
+                    songId = progress.songId,
+                    bytesTransferred = progress.totalBytes,
+                    totalBytes = progress.totalBytes,
+                    status = WearTransferProgress.STATUS_COMPLETED,
+                )
+                transferStateStore.markSongPresentOnWatch(
+                    nodeId = messageEvent.sourceNodeId,
+                    songId = progress.songId,
+                )
+            }
+            WearTransferProgress.STATUS_FAILED -> {
+                transferStateStore.markProgress(
+                    requestId = progress.requestId,
+                    songId = progress.songId,
+                    bytesTransferred = progress.bytesTransferred,
+                    totalBytes = progress.totalBytes,
+                    status = WearTransferProgress.STATUS_FAILED,
+                    error = progress.error,
+                    errorCode = progress.errorCode,
+                )
+                // A rejection because it's already on the watch means it IS genuinely present —
+                // don't downgrade that case, only a real failure should clear presence.
+                if (progress.error != WearTransferProgress.ERROR_ALREADY_ON_WATCH) {
+                    transferStateStore.clearSongPresentOnWatch(
+                        nodeId = messageEvent.sourceNodeId,
+                        songId = progress.songId,
+                    )
+                }
+            }
+            else -> Timber.tag(TAG).d("Ignoring non-terminal transfer ack: %s", progress.status)
         }
     }
 

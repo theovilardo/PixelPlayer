@@ -128,6 +128,8 @@ class WearTransferRepository @Inject constructor(
     private val transferWatchdogs = ConcurrentHashMap<String, Job>()
     /** Request IDs currently receiving bytes through ChannelClient. */
     private val activeChannelRequestIds = ConcurrentHashMap.newKeySet<String>()
+    /** Node that originated each in-flight requestId, so the final ack can be routed back to it. */
+    private val sourceNodeIdByRequestId = ConcurrentHashMap<String, String>()
     /** Cancelled request IDs retained briefly so late metadata/progress/channel events are ignored safely. */
     private val cancelledRequestIds = ConcurrentHashMap.newKeySet<String>()
 
@@ -181,10 +183,11 @@ class WearTransferRepository @Inject constructor(
         scope.launch {
             val existingSong = localSongDao.getSongById(songId)
             if (existingSong?.hasPlayableLocalFile() == true) {
-                notifyPhoneTransferFailure(
+                notifyPhoneTransferResult(
                     targetNodeId = targetNodeId,
                     requestId = requestId,
                     songId = songId,
+                    status = WearTransferProgress.STATUS_FAILED,
                     message = WearTransferProgress.ERROR_ALREADY_ON_WATCH,
                 )
                 return@launch
@@ -282,16 +285,24 @@ class WearTransferRepository @Inject constructor(
         )
     }
 
-    private suspend fun notifyPhoneTransferFailure(
+    /**
+     * Reports the real, watch-confirmed outcome of a transfer back to the phone, so the phone's
+     * belief about "what's on the watch" (PhoneWatchTransferStateStore) reflects what the watch
+     * actually validated — not just what the phone thinks it finished sending.
+     */
+    private suspend fun notifyPhoneTransferResult(
         targetNodeId: String?,
         requestId: String,
         songId: String,
-        message: String,
+        status: String,
+        message: String? = null,
+        errorCode: String? = null,
     ) {
         Timber.tag(TAG).d(
-            "Rejecting transfer requestId=%s songId=%s: %s",
+            "Reporting transfer result requestId=%s songId=%s status=%s: %s",
             requestId,
             songId,
+            status,
             message,
         )
         if (targetNodeId == null) return
@@ -302,8 +313,9 @@ class WearTransferRepository @Inject constructor(
                 songId = songId,
                 bytesTransferred = 0L,
                 totalBytes = 0L,
-                status = WearTransferProgress.STATUS_FAILED,
+                status = status,
                 error = message,
+                errorCode = errorCode,
             )
             messageClient.sendMessage(
                 targetNodeId,
@@ -311,7 +323,7 @@ class WearTransferRepository @Inject constructor(
                 json.encodeToString(progress).toByteArray(Charsets.UTF_8),
             ).await()
         }.onFailure { error ->
-            Timber.tag(TAG).w(error, "Failed to report transfer failure to phone")
+            Timber.tag(TAG).w(error, "Failed to report transfer result to phone")
         }
     }
 
@@ -322,6 +334,7 @@ class WearTransferRepository @Inject constructor(
         metadata: WearTransferMetadata,
         sourceNodeId: String? = null,
     ) {
+        sourceNodeId?.let { sourceNodeIdByRequestId[metadata.requestId] = it }
         if (isTransferCancelled(metadata.requestId)) {
             cleanupCancelledTransfer(metadata.requestId, metadata.songId)
             return
@@ -337,12 +350,8 @@ class WearTransferRepository @Inject constructor(
             metadata.transferMode == WearTransferRequest.MODE_SAVE_TO_LIBRARY &&
             existingSong?.hasPlayableLocalFile() == true
         ) {
-            notifyPhoneTransferFailure(
-                targetNodeId = sourceNodeId,
-                requestId = metadata.requestId,
-                songId = metadata.songId,
-                message = WearTransferProgress.ERROR_ALREADY_ON_WATCH,
-            )
+            // handleTransferError below reports this back to the phone automatically via
+            // sourceNodeIdByRequestId (populated at the top of this function).
             handleTransferError(
                 requestId = metadata.requestId,
                 songId = metadata.songId,
@@ -429,6 +438,7 @@ class WearTransferRepository @Inject constructor(
                 channelClient.getInputStream(channel).await().use { inputStream ->
                     val requestId = readLengthPrefixedString(inputStream, "requestId")
                     Timber.tag(TAG).d("Audio transfer channel: requestId=%s", requestId)
+                    sourceNodeIdByRequestId.putIfAbsent(requestId, channel.nodeId)
                     onAudioChannelOpened(requestId, inputStream)
                 }
             }.onFailure { error ->
@@ -769,6 +779,16 @@ class WearTransferRepository @Inject constructor(
             Timber.tag(TAG).d(
                 "Transfer complete: ${resolvedMetadata.title} ($actualSize bytes) → ${localFile.absolutePath}"
             )
+            sourceNodeIdByRequestId.remove(requestId)?.let { nodeId ->
+                scope.launch {
+                    notifyPhoneTransferResult(
+                        targetNodeId = nodeId,
+                        requestId = requestId,
+                        songId = resolvedMetadata.songId,
+                        status = WearTransferProgress.STATUS_COMPLETED,
+                    )
+                }
+            }
         } catch (e: Exception) {
             Timber.tag(TAG).e(e, "Failed to write transferred file")
             tempFile.delete()
@@ -986,9 +1006,15 @@ class WearTransferRepository @Inject constructor(
         pendingArtworkByRequestId.remove(requestId)
         clearTransferWatchdog(requestId)
         activeChannelRequestIds.remove(requestId)
+        sourceNodeIdByRequestId.remove(requestId)
     }
 
-    private fun handleTransferError(requestId: String, songId: String, message: String) {
+    private fun handleTransferError(
+        requestId: String,
+        songId: String,
+        message: String,
+        errorCode: String? = null,
+    ) {
         Timber.tag(TAG).e("Transfer error: $message (requestId=$requestId, songId=$songId)")
         _activeTransfers.update { map ->
             val current = map[requestId]
@@ -1007,6 +1033,18 @@ class WearTransferRepository @Inject constructor(
         pendingArtworkByRequestId.remove(requestId)
         clearTransferWatchdog(requestId)
         activeChannelRequestIds.remove(requestId)
+        sourceNodeIdByRequestId.remove(requestId)?.let { nodeId ->
+            scope.launch {
+                notifyPhoneTransferResult(
+                    targetNodeId = nodeId,
+                    requestId = requestId,
+                    songId = songId,
+                    status = WearTransferProgress.STATUS_FAILED,
+                    message = message,
+                    errorCode = errorCode,
+                )
+            }
+        }
     }
 
     private fun resolveTemporaryPlaybackStartPosition(

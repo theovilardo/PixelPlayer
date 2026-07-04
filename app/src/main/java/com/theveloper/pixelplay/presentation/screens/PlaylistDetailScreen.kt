@@ -225,7 +225,7 @@ fun PlaylistDetailScreen(
     val isPixelPlayWatchAvailable by playlistViewModel.isPixelPlayWatchAvailable.collectAsStateWithLifecycle()
     val isPlaylistOnWatch = currentPlaylist != null &&
         currentPlaylist.songIds.isNotEmpty() &&
-        currentPlaylist.songIds.all { it in watchSongIds }
+        currentPlaylist.songIds.any { it in watchSongIds }
 
     LaunchedEffect(activePlaylistBatchTransfer?.batchId) {
         if (activePlaylistBatchTransfer == null) {

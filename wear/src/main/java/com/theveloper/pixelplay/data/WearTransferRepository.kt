@@ -141,6 +141,7 @@ class WearTransferRepository @Inject constructor(
         private const val METADATA_POLL_INTERVAL_MS = 120L
         private const val WATCHDOG_TOUCH_INTERVAL_MS = 1_500L
         private const val LOCAL_PROGRESS_UPDATE_INTERVAL_BYTES = 65_536L
+        private const val STORAGE_SAFETY_MARGIN_BYTES = 5 * 1024 * 1024L
         private const val CANCELLED_REQUEST_RETENTION_MS = 300_000L
     }
 
@@ -533,6 +534,7 @@ class WearTransferRepository @Inject constructor(
             var lastProgressUpdateAtBytes = 0L
             var lastWatchdogTouchAt = SystemClock.elapsedRealtime()
             var cancelledDuringStream = false
+            var storageExhausted = false
             armTransferWatchdog(
                 requestId = requestId,
                 songId = metadata?.songId ?: _activeTransfers.value[requestId]?.songId.orEmpty(),
@@ -578,6 +580,16 @@ class WearTransferRepository @Inject constructor(
 
                     val now = SystemClock.elapsedRealtime()
                     if (now - lastWatchdogTouchAt >= WATCHDOG_TOUCH_INTERVAL_MS) {
+                        val expectedTotal = metadata?.fileSize ?: 0L
+                        val remainingNeeded = expectedTotal - totalReceived
+                        if (
+                            expectedTotal > 0L &&
+                            remainingNeeded > 0L &&
+                            availableStorageBytes() < remainingNeeded + STORAGE_SAFETY_MARGIN_BYTES
+                        ) {
+                            storageExhausted = true
+                            break
+                        }
                         armTransferWatchdog(
                             requestId = requestId,
                             songId = metadata?.songId ?: _activeTransfers.value[requestId]?.songId.orEmpty(),
@@ -587,6 +599,17 @@ class WearTransferRepository @Inject constructor(
                 }
             }
             inputStream.close()
+
+            if (storageExhausted) {
+                tempFile.delete()
+                handleTransferError(
+                    requestId = requestId,
+                    songId = metadata?.songId ?: _activeTransfers.value[requestId]?.songId.orEmpty(),
+                    message = "Not enough storage on watch",
+                    errorCode = WearTransferProgress.ERROR_CODE_INSUFFICIENT_STORAGE,
+                )
+                return
+            }
 
             if (cancelledDuringStream || isTransferCancelled(requestId)) {
                 if (tempFile.exists() && !tempFile.delete()) {
@@ -1127,7 +1150,12 @@ class WearTransferRepository @Inject constructor(
         transferWatchdogs[requestId] = scope.launch {
             delay(TRANSFER_IDLE_TIMEOUT_MS)
             if (_activeTransfers.value.containsKey(requestId)) {
-                handleTransferError(requestId, songId, "Transfer timed out")
+                handleTransferError(
+                    requestId,
+                    songId,
+                    "Transfer timed out",
+                    errorCode = WearTransferProgress.ERROR_CODE_CONNECTION_LOST,
+                )
             }
         }
     }

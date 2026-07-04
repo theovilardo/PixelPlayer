@@ -2,9 +2,11 @@ package com.theveloper.pixelplay.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.theveloper.pixelplay.data.TransferState
 import com.theveloper.pixelplay.data.WearLocalPlayerRepository
 import com.theveloper.pixelplay.data.WearOutputTarget
 import com.theveloper.pixelplay.data.WearStateRepository
+import com.theveloper.pixelplay.data.WearTransferRepository
 import com.theveloper.pixelplay.data.local.LocalPlaylistDao
 import com.theveloper.pixelplay.data.local.LocalPlaylistEntity
 import com.theveloper.pixelplay.data.local.LocalSongDao
@@ -41,10 +43,27 @@ class WearLocalPlaylistViewModel @Inject constructor(
     private val localSongDao: LocalSongDao,
     private val localPlayerRepository: WearLocalPlayerRepository,
     private val stateRepository: WearStateRepository,
+    private val transferRepository: WearTransferRepository,
 ) : ViewModel() {
 
     val playlists: StateFlow<List<LocalPlaylistEntity>> = localPlaylistDao.observePlaylists()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000L), emptyList())
+
+    /** In-flight song transfers from the phone, keyed by requestId — for on-screen receive feedback. */
+    val activeTransfers: StateFlow<Map<String, TransferState>> = transferRepository.activeTransfers
+
+    /** Playlists that currently have at least one of their songs actively transferring. */
+    val playlistIdsReceiving: StateFlow<Set<String>> = combine(
+        localPlaylistDao.observeAllPlaylistSongCrossRefs(),
+        transferRepository.activeTransfers,
+    ) { crossRefs, transfers ->
+        if (transfers.isEmpty()) {
+            emptySet()
+        } else {
+            val activeSongIds = transfers.values.map { it.songId }.toSet()
+            crossRefs.filter { it.songId in activeSongIds }.map { it.playlistId }.toSet()
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000L), emptySet())
 
     private val _playlistId = MutableStateFlow<String?>(null)
 

@@ -42,4 +42,8 @@ interface LocalPlaylistDao {
 
     @Query("SELECT * FROM local_playlist_songs WHERE playlistId = :playlistId ORDER BY position ASC")
     fun observePlaylistSongs(playlistId: String): Flow<List<LocalPlaylistSongCrossRef>>
+
+    /** All playlist/song memberships across every playlist, used to map an in-flight transfer's songId back to its playlist(s). */
+    @Query("SELECT * FROM local_playlist_songs")
+    fun observeAllPlaylistSongCrossRefs(): Flow<List<LocalPlaylistSongCrossRef>>
 }

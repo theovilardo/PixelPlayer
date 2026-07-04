@@ -88,4 +88,5 @@
     </plurals>
     <string name="wear_play_all">Play all</string>
     <string name="wear_song_pending_transfer">Waiting to transfer…</string>
+    <string name="wear_local_playlist_receiving">Receiving…</string>
 </resources>

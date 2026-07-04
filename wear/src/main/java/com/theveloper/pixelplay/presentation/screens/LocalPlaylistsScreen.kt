@@ -23,6 +23,7 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
+import androidx.wear.compose.material.CircularProgressIndicator
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
@@ -46,6 +47,7 @@ fun LocalPlaylistsScreen(
     onPlaylistClick: (playlistId: String, name: String) -> Unit,
 ) {
     val playlists by viewModel.playlists.collectAsState()
+    val playlistIdsReceiving by viewModel.playlistIdsReceiving.collectAsState()
     val palette = LocalWearPalette.current
     val columnState = rememberResponsiveColumnState()
     val background = palette.screenBackgroundColor()
@@ -101,6 +103,7 @@ fun LocalPlaylistsScreen(
             } else {
                 items(playlists.size) { index ->
                     val playlist = playlists[index]
+                    val isReceiving = playlist.playlistId in playlistIdsReceiving
                     Chip(
                         label = {
                             Text(
@@ -110,13 +113,34 @@ fun LocalPlaylistsScreen(
                                 color = palette.textPrimary,
                             )
                         },
+                        secondaryLabel = if (isReceiving) {
+                            {
+                                Text(
+                                    text = stringResource(R.string.wear_local_playlist_receiving),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    color = palette.textSecondary.copy(alpha = 0.82f),
+                                )
+                            }
+                        } else {
+                            null
+                        },
                         icon = {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Rounded.QueueMusic,
-                                contentDescription = null,
-                                tint = palette.textSecondary,
-                                modifier = Modifier.size(18.dp),
-                            )
+                            if (isReceiving) {
+                                CircularProgressIndicator(
+                                    indicatorColor = palette.shuffleActive,
+                                    trackColor = surfaceContainer,
+                                    modifier = Modifier.size(18.dp),
+                                    strokeWidth = 2.dp,
+                                )
+                            } else {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Rounded.QueueMusic,
+                                    contentDescription = null,
+                                    tint = palette.textSecondary,
+                                    modifier = Modifier.size(18.dp),
+                                )
+                            }
                         },
                         onClick = { onPlaylistClick(playlist.playlistId, playlist.name) },
                         colors = ChipDefaults.chipColors(

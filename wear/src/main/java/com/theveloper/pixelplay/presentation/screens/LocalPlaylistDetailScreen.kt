@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
@@ -28,9 +29,11 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
+import androidx.wear.compose.material.CircularProgressIndicator
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
+import com.theveloper.pixelplay.data.TransferState
 import com.google.android.horologist.compose.layout.ScalingLazyColumn
 import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
 import com.theveloper.pixelplay.R
@@ -43,6 +46,7 @@ import com.theveloper.pixelplay.presentation.theme.surfaceContainerColor
 import com.theveloper.pixelplay.presentation.theme.surfaceContainerHighColor
 import com.theveloper.pixelplay.presentation.viewmodel.WearLocalPlaylistViewModel
 import com.theveloper.pixelplay.presentation.viewmodel.WearPlayerViewModel
+import com.theveloper.pixelplay.shared.WearTransferProgress
 
 /**
  * Song list for one playlist snapshot. Songs that haven't finished transferring yet are shown
@@ -60,6 +64,10 @@ fun LocalPlaylistDetailScreen(
 
     val songs by viewModel.playlistSongs.collectAsState()
     val playerState by playerViewModel.playerState.collectAsState()
+    val activeTransfers by viewModel.activeTransfers.collectAsState()
+    val activeTransferBySongId = remember(activeTransfers) {
+        activeTransfers.values.associateBy { it.songId }
+    }
     val palette = LocalWearPalette.current
     val columnState = rememberResponsiveColumnState()
     val background = palette.screenBackgroundColor()
@@ -185,22 +193,42 @@ fun LocalPlaylistDetailScreen(
                         modifier = Modifier.fillMaxWidth(),
                     )
                 } else {
+                    val activeTransfer = activeTransferBySongId[item.songId]
+                    val isReceiving = activeTransfer?.status == WearTransferProgress.STATUS_TRANSFERRING
                     Chip(
                         label = {
                             Text(
-                                text = stringResource(R.string.wear_song_pending_transfer),
+                                text = if (isReceiving) {
+                                    val percent = (activeTransfer!!.progress * 100f).toInt().coerceIn(0, 100)
+                                    if (activeTransfer.totalBytes > 0L) {
+                                        "$percent%"
+                                    } else {
+                                        stringResource(R.string.wear_transfer_starting)
+                                    }
+                                } else {
+                                    stringResource(R.string.wear_song_pending_transfer)
+                                },
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                                 color = palette.textSecondary.copy(alpha = 0.6f),
                             )
                         },
                         icon = {
-                            Icon(
-                                imageVector = Icons.Rounded.CloudDownload,
-                                contentDescription = null,
-                                tint = palette.textSecondary.copy(alpha = 0.6f),
-                                modifier = Modifier.size(18.dp),
-                            )
+                            if (isReceiving) {
+                                CircularProgressIndicator(
+                                    indicatorColor = palette.shuffleActive,
+                                    trackColor = surfaceContainer,
+                                    modifier = Modifier.size(18.dp),
+                                    strokeWidth = 2.dp,
+                                )
+                            } else {
+                                Icon(
+                                    imageVector = Icons.Rounded.CloudDownload,
+                                    contentDescription = null,
+                                    tint = palette.textSecondary.copy(alpha = 0.6f),
+                                    modifier = Modifier.size(18.dp),
+                                )
+                            }
                         },
                         onClick = {},
                         enabled = false,

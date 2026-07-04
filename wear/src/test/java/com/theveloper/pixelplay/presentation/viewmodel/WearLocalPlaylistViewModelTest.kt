@@ -3,17 +3,21 @@ package com.theveloper.pixelplay.presentation.viewmodel
 import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import com.theveloper.pixelplay.MainCoroutineExtension
+import com.theveloper.pixelplay.data.TransferState
 import com.theveloper.pixelplay.data.WearLocalPlayerRepository
 import com.theveloper.pixelplay.data.WearOutputTarget
 import com.theveloper.pixelplay.data.WearStateRepository
+import com.theveloper.pixelplay.data.WearTransferRepository
 import com.theveloper.pixelplay.data.local.LocalPlaylistDao
 import com.theveloper.pixelplay.data.local.LocalPlaylistSongCrossRef
 import com.theveloper.pixelplay.data.local.LocalSongDao
 import com.theveloper.pixelplay.data.local.LocalSongEntity
+import com.theveloper.pixelplay.shared.WearTransferProgress
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -40,6 +44,9 @@ class WearLocalPlaylistViewModelTest {
     private val localSongDao = mockk<LocalSongDao>()
     private val localPlayerRepository = mockk<WearLocalPlayerRepository>(relaxed = true)
     private val stateRepository = mockk<WearStateRepository>(relaxed = true)
+    private val transferRepository = mockk<WearTransferRepository>()
+    private val crossRefsFlow = MutableStateFlow<List<LocalPlaylistSongCrossRef>>(emptyList())
+    private val activeTransfersFlow = MutableStateFlow<Map<String, TransferState>>(emptyMap())
 
     private fun song(id: String) = LocalSongEntity(
         songId = id,
@@ -58,15 +65,29 @@ class WearLocalPlaylistViewModelTest {
         transferredAt = 0L,
     )
 
-    private fun crossRef(songId: String, position: Int) =
-        LocalPlaylistSongCrossRef(playlistId = "p1", songId = songId, position = position)
+    private fun crossRef(songId: String, position: Int, playlistId: String = "p1") =
+        LocalPlaylistSongCrossRef(playlistId = playlistId, songId = songId, position = position)
 
-    private fun buildViewModel() = WearLocalPlaylistViewModel(
-        localPlaylistDao = localPlaylistDao,
-        localSongDao = localSongDao,
-        localPlayerRepository = localPlayerRepository,
-        stateRepository = stateRepository,
+    private fun transferring(songId: String) = TransferState(
+        requestId = "req-$songId",
+        songId = songId,
+        songTitle = "Title $songId",
+        bytesTransferred = 0L,
+        totalBytes = 0L,
+        status = WearTransferProgress.STATUS_TRANSFERRING,
     )
+
+    private fun buildViewModel(): WearLocalPlaylistViewModel {
+        every { localPlaylistDao.observeAllPlaylistSongCrossRefs() } returns crossRefsFlow
+        every { transferRepository.activeTransfers } returns activeTransfersFlow
+        return WearLocalPlaylistViewModel(
+            localPlaylistDao = localPlaylistDao,
+            localSongDao = localSongDao,
+            localPlayerRepository = localPlayerRepository,
+            stateRepository = stateRepository,
+            transferRepository = transferRepository,
+        )
+    }
 
     @Test
     fun `playlistSongs marks songs without a matching local song as unavailable`() = runTest {
@@ -135,5 +156,26 @@ class WearLocalPlaylistViewModelTest {
         viewModel.playFrom("s2")
 
         verify(exactly = 0) { localPlayerRepository.playLocalSongs(any(), any(), any(), any()) }
+    }
+
+    @Test
+    fun `playlistIdsReceiving only includes playlists with a song actively transferring`() = runTest {
+        every { localPlaylistDao.observePlaylists() } returns flowOf(emptyList())
+        crossRefsFlow.value = listOf(
+            crossRef("s1", 0, playlistId = "p1"),
+            crossRef("s2", 0, playlistId = "p2"),
+        )
+
+        val viewModel = buildViewModel()
+
+        viewModel.playlistIdsReceiving.test {
+            assertThat(awaitItem()).isEmpty()
+
+            activeTransfersFlow.value = mapOf("req-s1" to transferring("s1"))
+            assertThat(awaitItem()).containsExactly("p1")
+
+            activeTransfersFlow.value = emptyMap()
+            assertThat(awaitItem()).isEmpty()
+        }
     }
 }

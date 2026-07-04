@@ -79,7 +79,7 @@
     <string name="wear_confirm_save">Confirm save</string>
 
     <!-- Local playlists (whole-playlist watch transfer) -->
-    <string name="wear_local_playlists_title">Playlists</string>
+    <string name="wear_local_playlists_title">My Playlists</string>
     <string name="wear_no_local_playlists">No playlists sent yet</string>
     <string name="wear_no_local_playlists_hint">Send a playlist from the phone app to see it here.</string>
     <plurals name="wear_local_playlist_song_count">

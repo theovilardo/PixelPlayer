@@ -112,6 +112,10 @@
                     android:scheme="wear"
                     android:host="*"
                     android:pathPrefix="/volume_state" />
+                <data
+                    android:scheme="wear"
+                    android:host="*"
+                    android:pathPrefix="/playlist_sync" />
             </intent-filter>
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.CHANNEL_EVENT" />

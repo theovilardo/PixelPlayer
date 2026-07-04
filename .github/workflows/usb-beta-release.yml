@@ -1,23 +1,23 @@
 name: USB Beta Release
 
-# Builds signed release APKs and publishes them as a GitHub Release, so testers can
-# download without an Actions login. Trigger by pushing a `v*-usb-beta*` tag, or
-# dispatch manually against any ref.
+# Builds signed release APKs and publishes them as a GitHub Release.
+# Two triggers:
+#  - manual dispatch (tag comes from the input), or
+#  - a push that changes .github/release-tag.txt (tag comes from that file) — this
+#    lets a release be cut from an environment that can push the branch but cannot
+#    call the workflow-dispatch API or push tags.
 on:
-  push:
-    tags:
-      - 'v*-usb-beta*'
   workflow_dispatch:
     inputs:
       tag:
         description: 'Release tag (also used in the APK file names)'
         required: true
         default: 'v0.7.5-usb-beta.1'
-      prerelease:
-        description: 'Mark as pre-release'
-        required: true
-        default: true
-        type: boolean
+  push:
+    branches:
+      - claude/new-session-lpe3cm
+    paths:
+      - '.github/release-tag.txt'
 
 permissions:
   contents: write
@@ -34,6 +34,22 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+
+      - name: Resolve release tag
+        id: tag
+        env:
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          if [ -n "${INPUT_TAG}" ]; then
+            TAG="${INPUT_TAG}"
+          else
+            TAG="$(tr -d '[:space:]' < .github/release-tag.txt)"
+          fi
+          if [ -z "${TAG}" ]; then
+            echo "No release tag resolved" >&2
+            exit 1
+          fi
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
 
       - name: Set up JDK 21
         uses: actions/setup-java@v5
@@ -82,7 +98,7 @@ jobs:
 
       - name: Stage release assets
         env:
-          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+          RELEASE_TAG: ${{ steps.tag.outputs.tag }}
         run: |
           mkdir -p release-assets
           cp app/build/outputs/apk/release/app-arm64-v8a-release.apk \
@@ -93,9 +109,9 @@ jobs:
       - name: Publish GitHub release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ inputs.tag || github.ref_name }}
-          name: 'USB Exclusive Mode (bit-perfect) — ${{ inputs.tag || github.ref_name }}'
-          prerelease: ${{ inputs.prerelease || true }}
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: 'USB Exclusive Mode (bit-perfect) — ${{ steps.tag.outputs.tag }}'
+          prerelease: true
           files: release-assets/*.apk
           body: |
             Beta build of **USB exclusive mode**: PixelPlay claims a USB DAC directly

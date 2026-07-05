@@ -78,12 +78,6 @@ interface MusicRepository {
     ): Flow<Int>
 
     /**
-     * Returns the count of songs in the library.
-     * @return Flow emitting the current song count.
-     */
-    fun getSongCountFlow(): Flow<Int>
-
-    /**
      * Returns the count of cloud songs in the library.
      */
     fun getCloudSongCountFlow(): Flow<Int>

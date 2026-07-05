@@ -10,6 +10,7 @@ import androidx.compose.material.icons.rounded.LibraryMusic
 import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material.icons.rounded.QueueMusic
+import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.theveloper.pixelplay.R
 
@@ -61,6 +62,12 @@ enum class SettingsCategory(
         titleRes = R.string.settings_category_ai_title,
         subtitleRes = R.string.settings_category_ai_subtitle,
         iconRes = R.drawable.gemini_ai
+    ),
+    GENERATION_PARAMETERS(
+        id = "generation_parameters",
+        titleRes = R.string.settings_category_generation_parameters_title,
+        subtitleRes = R.string.settings_category_generation_parameters_subtitle,
+        icon = Icons.Rounded.Tune
     ),
     BACKUP_RESTORE(
         id = "backup_restore",

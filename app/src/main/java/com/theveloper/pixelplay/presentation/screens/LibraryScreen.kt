@@ -493,6 +493,7 @@ fun LibraryScreen(
     }.collectAsStateWithLifecycle(initialValue = false)
     val hasActiveAiProviderApiKey by playerViewModel.hasActiveAiProviderApiKey.collectAsStateWithLifecycle()
     val isGeneratingAiPlaylist by playerViewModel.isGeneratingAiPlaylist.collectAsStateWithLifecycle()
+    val aiStatus by playerViewModel.aiStatus.collectAsStateWithLifecycle()
     val aiError by playerViewModel.aiError.collectAsStateWithLifecycle()
     var showCreatePlaylistDialog by remember { mutableStateOf(false) }
     var showPlaylistCreationTypeDialog by remember { mutableStateOf(false) }
@@ -1002,11 +1003,11 @@ fun LibraryScreen(
         }.collectAsStateWithLifecycle(initialValue = LibraryScreenPlayerProjection())
         val isLibraryContentEmpty by remember(playerViewModel) {
             combine(
-                playerViewModel.songCountFlow,
+                playerViewModel.allSongsFlow,
                 playerViewModel.albumsFlow,
                 playerViewModel.artistsFlow
-            ) { songCount, albums, artists ->
-                songCount == 0 && albums.isEmpty() && artists.isEmpty()
+            ) { songs, albums, artists ->
+                songs.isEmpty() && albums.isEmpty() && artists.isEmpty()
             }.distinctUntilChanged()
         }.collectAsStateWithLifecycle(initialValue = true)
 
@@ -1800,6 +1801,7 @@ fun LibraryScreen(
     CreateAiPlaylistDialog(
         visible = showCreateAiPlaylistDialog && hasActiveAiProviderApiKey,
         isGenerating = isGeneratingAiPlaylist,
+        status = aiStatus,
         error = aiError,
         onDismiss = {
             showCreateAiPlaylistDialog = false

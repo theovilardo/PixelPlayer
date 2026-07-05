@@ -179,6 +179,7 @@ private fun formatPromptType(type: String): String {
         "MOOD_ANALYSIS" -> "Analysis"
         "PERSONA" -> "Persona"
         "DAILY_MIX" -> "Daily Mix"
+        "LYRICS" -> "Lyrics"
         "GENERAL" -> "General"
         else -> type.lowercase().replaceFirstChar { it.uppercase() }
     }

@@ -21,10 +21,27 @@ object AiResponseCleaner {
     }
 
     fun cleanTextResponse(raw: String): String {
-        return raw
+        var cleaned = raw
             .replace("```text", "")
             .replace("```", "")
             .trim()
+
+        // Remove conversational framing lines that AIs sometimes prepend
+        val framingPrefixes = listOf(
+            "Here is", "Here's", "Here are", "Sure", "Certainly",
+            "Of course", "I've", "I have", "The translated", "Translation:",
+            "Translated lyrics:", "Output:"
+        )
+        val framingPattern = framingPrefixes.joinToString("|") { Regex.escape(it) }
+        cleaned = cleaned.replace(Regex("^(?:$framingPattern).*\\n?", RegexOption.MULTILINE), "")
+
+        // Strip paired markdown formatting markers (**text** or __text__)
+        cleaned = cleaned
+            .replace(Regex("\\*\\*(.*?)\\*\\*"), "$1")
+            .replace(Regex("__(.*?)__"), "$1")
+            .trim()
+
+        return cleaned
     }
 
     fun extractJsonArray(text: String): String? {

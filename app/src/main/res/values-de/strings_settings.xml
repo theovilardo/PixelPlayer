@@ -12,7 +12,9 @@
     <string name="settings_category_behavior_title">Verhalten</string>
     <string name="settings_category_behavior_subtitle">Gesten, Haptik und Navigation</string>
     <string name="settings_category_ai_title">KI-Integration (β)</string>
-    <string name="settings_category_ai_subtitle">Anbieter, API Keys und Modelle</string>
+    <string name="settings_category_ai_subtitle">AI providers, API keys, model selection, and activity logs</string>
+    <string name="settings_category_generation_parameters_title">Generation Parameters</string>
+    <string name="settings_category_generation_parameters_subtitle">Temperature, sampling, prompts, and song data configuration</string>
     <string name="settings_category_backup_title">Backup &amp; Wiederherstellen</string>
     <string name="settings_category_backup_subtitle">App-Daten exportieren und importieren</string>
     <string name="settings_category_developer_title">Entwickleroptionen</string>

@@ -10,7 +10,9 @@
     <string name="settings_category_behavior_title">Davranış</string>
     <string name="settings_category_behavior_subtitle">Hareketler, dokunsal geri bildirim ve gezinme davranışı</string>
     <string name="settings_category_ai_title">Yapay Zeka Entegrasyonu (β)</string>
-    <string name="settings_category_ai_subtitle">YZ sağlayıcıları, API anahtarları ve model ayarları</string>
+    <string name="settings_category_ai_subtitle">AI providers, API keys, model selection, and activity logs</string>
+    <string name="settings_category_generation_parameters_title">Generation Parameters</string>
+    <string name="settings_category_generation_parameters_subtitle">Temperature, sampling, prompts, and song data configuration</string>
     <string name="settings_category_backup_title">Yedekle ve Geri Yükle</string>
     <string name="settings_category_backup_subtitle">Kişisel uygulama verilerinizi dışa aktarın ve kurtarın</string>
     <string name="settings_category_developer_title">Geliştirici Seçenekleri</string>

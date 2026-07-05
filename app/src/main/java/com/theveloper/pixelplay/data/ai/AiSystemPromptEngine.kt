@@ -11,6 +11,7 @@ enum class AiSystemPromptType {
     MOOD_ANALYSIS,
     PERSONA,
     DAILY_MIX,
+    LYRICS,
     GENERAL
 }
 
@@ -180,6 +181,16 @@ class AiSystemPromptEngine @Inject constructor() {
                 - Be concise but evocative — 4-6 sentences that feel hand-crafted.
                 </strategy>
                 $dailyMixPersonaPrompt
+            """.trimIndent()
+
+            AiSystemPromptType.LYRICS -> """
+                <role>Song lyrics translator — you translate lyrics between languages while preserving structure.</role>
+                <strategy>
+                - Preserve ALL timestamps and line structure exactly.
+                - Output each original line followed by its translation on the next line.
+                - Never add explanations, labels, or formatting beyond the requested format.
+                - If the source is already in the target language, respond with: ALREADY_IN_TARGET_LANGUAGE
+                </strategy>
             """.trimIndent()
 
             AiSystemPromptType.GENERAL -> """

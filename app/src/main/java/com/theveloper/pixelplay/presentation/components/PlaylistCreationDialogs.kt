@@ -35,6 +35,7 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -301,6 +302,7 @@ private fun CreationModeCard(
 fun CreateAiPlaylistDialog(
     visible: Boolean,
     isGenerating: Boolean,
+    status: String?,
     error: String?,
     onDismiss: () -> Unit,
     onGenerate: (playlistName: String?, prompt: String, minLength: Int, maxLength: Int) -> Unit
@@ -328,6 +330,7 @@ fun CreateAiPlaylistDialog(
             ) {
                 CreateAiPlaylistContent(
                     isGenerating = isGenerating,
+                    status = status,
                     error = error,
                     onDismiss = onDismiss,
                     onGenerate = onGenerate
@@ -340,6 +343,7 @@ fun CreateAiPlaylistDialog(
 @Composable
 private fun CreateAiPlaylistContent(
     isGenerating: Boolean,
+    status: String?,
     error: String?,
     onDismiss: () -> Unit,
     onGenerate: (playlistName: String?, prompt: String, minLength: Int, maxLength: Int) -> Unit
@@ -524,6 +528,28 @@ private fun CreateAiPlaylistContent(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Spacer(modifier = Modifier.height(4.dp))
+
+            if (isGenerating && !status.isNullOrBlank()) {
+                Card(
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.7f)
+                    )
+                ) {
+                    Row(
+                        modifier = Modifier.padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        LoadingIndicator(modifier = Modifier.size(20.dp))
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text(
+                            text = status,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer
+                        )
+                    }
+                }
+            }
 
             HeroAiCard()
 

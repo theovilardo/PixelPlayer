@@ -171,13 +171,11 @@ class AiHandler @Inject constructor(
     ): String {
         val params = getGenerationParams()
         val effectiveMaxTokens = if (type == AiSystemPromptType.LYRICS) {
-            // Lyrics translation needs more output tokens because each original
-            // line is followed by its translation (2x output). Also factor in
-            // the full lyrics text in the prompt. Use at least 4096, at most
-            // 16384, scaling linearly with input length.
             val estimatedInputChars = prompt.length
             val estimatedOutputChars = estimatedInputChars * 2
-            val estimatedOutputTokens = (estimatedOutputChars / 4).coerceAtLeast(4096)
+            val cjkRatio = prompt.count { it.code in 0x4E00..0x9FFF || it.code in 0x3040..0x30FF || it.code in 0xAC00..0xD7AF }.toFloat() / estimatedInputChars.coerceAtLeast(1)
+            val charsPerToken = (4f - cjkRatio * 3f).coerceIn(1f, 4f)
+            val estimatedOutputTokens = (estimatedOutputChars / charsPerToken).toInt().coerceAtLeast(4096)
             estimatedOutputTokens.coerceAtMost(16384)
         } else {
             params.maxTokens

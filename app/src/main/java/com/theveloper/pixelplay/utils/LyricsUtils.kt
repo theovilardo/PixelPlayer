@@ -130,6 +130,7 @@ object MultiLangRomanizer {
     }
 
     fun isScriptThatNeedsRomanization(text: String): Boolean {
+        if (isVietnamese(text) || isThai(text) || isArabic(text) || isGreek(text) || isHebrew(text)) return true
         return text.any { char ->
             val code = char.code
             code in 0x3040..0x309F || // Hiragana

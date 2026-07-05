@@ -428,17 +428,18 @@ class LyricsStateHolder @Inject constructor(
     }
 
     private fun readEmbeddedLyricsFromFile(song: Song): String? {
-        song.lyrics
-            ?.trim()
-            ?.takeIf { it.isNotBlank() }
-            ?.let { return it }
-
-        return runCatching {
+        val fileLyrics = runCatching {
             AudioMetadataReader.read(File(song.path))
                 ?.lyrics
                 ?.trim()
                 ?.takeIf { it.isNotBlank() }
         }.getOrNull()
+
+        if (fileLyrics != null) return fileLyrics
+
+        return song.lyrics
+            ?.trim()
+            ?.takeIf { it.isNotBlank() }
     }
 
     private fun readLocalLyricsFile(song: Song): String? {

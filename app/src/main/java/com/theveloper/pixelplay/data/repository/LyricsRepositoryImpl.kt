@@ -1014,8 +1014,8 @@ class LyricsRepositoryImpl @Inject constructor(
                     }
                 }
 
-                val cleanArtist = song.displayArtist.replace(Regex("[^a-zA-Z0-9]"), "_")
-                val cleanTitle = song.title.replace(Regex("[^a-zA-Z0-9]"), "_")
+                val cleanArtist = song.displayArtist.replace(Regex("[^\\p{L}\\p{N}]"), "_")
+                val cleanTitle = song.title.replace(Regex("[^\\p{L}\\p{N}]"), "_")
 
                 for (extension in LyricsImportSecurity.supportedFileExtensions()) {
                     val alternativeLyricsFile = File(directory, "${cleanArtist}_${cleanTitle}.$extension")

@@ -1122,6 +1122,7 @@ fun SettingsCategoryScreen(
                                                 .fillMaxWidth()
                                                 .padding(top = 8.dp, bottom = 8.dp)
                                         ) {
+                                            @Suppress("NonObservableLocale")
                                             val dateFormat = SimpleDateFormat("MMMM d, yyyy", Locale.getDefault())
                                             val groupedUsage = recentAiUsage.groupBy { 
                                                 dateFormat.format(Date(it.timestamp)) 

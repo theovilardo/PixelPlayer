@@ -30,70 +30,70 @@ class AiClientFactory @Inject constructor(
                 baseUrl = "https://api.deepseek.com/v1",
                 defaultModelId = "deepseek-chat",
                 providerName = provider.displayName,
-                httpClient = sharedHttpClient
+                client = sharedHttpClient
             )
             AiProvider.GROQ -> GenericOpenAiClient(
                 apiKey = apiKey,
                 baseUrl = "https://api.groq.com/openai/v1",
                 defaultModelId = "llama-3.3-70b-versatile",
                 providerName = provider.displayName,
-                httpClient = sharedHttpClient
+                client = sharedHttpClient
             )
             AiProvider.MISTRAL -> GenericOpenAiClient(
                 apiKey = apiKey,
                 baseUrl = "https://api.mistral.ai/v1",
                 defaultModelId = "mistral-large-2411",
                 providerName = provider.displayName,
-                httpClient = sharedHttpClient
+                client = sharedHttpClient
             )
             AiProvider.NVIDIA -> GenericOpenAiClient(
                 apiKey = apiKey,
                 baseUrl = "https://integrate.api.nvidia.com/v1",
                 defaultModelId = "nvidia/llama-3.1-nemotron-70b-instruct",
                 providerName = provider.displayName,
-                httpClient = sharedHttpClient
+                client = sharedHttpClient
             )
             AiProvider.KIMI -> GenericOpenAiClient(
                 apiKey = apiKey,
                 baseUrl = "https://api.moonshot.cn/v1",
                 defaultModelId = "moonshot-v1-auto",
                 providerName = provider.displayName,
-                httpClient = sharedHttpClient
+                client = sharedHttpClient
             )
             AiProvider.GLM -> GenericOpenAiClient(
                 apiKey = apiKey,
                 baseUrl = "https://open.bigmodel.cn/api/paas/v4",
                 defaultModelId = "glm-4-plus",
                 providerName = provider.displayName,
-                httpClient = sharedHttpClient
+                client = sharedHttpClient
             )
             AiProvider.OPENAI -> GenericOpenAiClient(
                 apiKey = apiKey,
                 baseUrl = "https://api.openai.com/v1",
                 defaultModelId = "gpt-4o-mini",
                 providerName = provider.displayName,
-                httpClient = sharedHttpClient
+                client = sharedHttpClient
             )
             AiProvider.OPENROUTER -> GenericOpenAiClient(
                 apiKey = apiKey,
                 baseUrl = "https://openrouter.ai/api/v1",
                 defaultModelId = "google/gemini-2.5-flash-preview-04-17:free",
                 providerName = provider.displayName,
-                httpClient = sharedHttpClient
+                client = sharedHttpClient
             )
             AiProvider.OLLAMA -> GenericOpenAiClient(
                 apiKey = apiKey,
                 baseUrl = "https://api.ollama.ai/v1",
                 defaultModelId = "llama3",
                 providerName = provider.displayName,
-                httpClient = sharedHttpClient
+                client = sharedHttpClient
             )
             AiProvider.CUSTOM -> GenericOpenAiClient(
                 apiKey = apiKey,
                 baseUrl = "",
                 defaultModelId = "",
                 providerName = provider.displayName,
-                httpClient = sharedHttpClient
+                client = sharedHttpClient
             )
         }
     }

@@ -150,7 +150,11 @@ class PlaylistWatchTransferCoordinator @Inject constructor(
             song = song,
             requestId = transcodeRequestId,
             onProgress = { fraction ->
-                transferStateStore.markBatchSongProgress(batchId, WearTransferProgress.STATUS_TRANSCODING, fraction)
+                transferStateStore.markBatchSongProgress(
+                    batchId,
+                    WearTransferProgress.STATUS_TRANSCODING,
+                    fraction.coerceIn(0f, 1f) * TRANSCODE_PHASE_WEIGHT,
+                )
             },
         )
         if (transcodeResult is WatchAudioTranscoder.TranscodeResult.Failed) {
@@ -163,6 +167,7 @@ class PlaylistWatchTransferCoordinator @Inject constructor(
         }
 
         val overrideAudioFile = (transcodeResult as? WatchAudioTranscoder.TranscodeResult.Transcoded)?.outputFile
+        val wasTranscoded = overrideAudioFile != null
 
         // Send to every reachable node (not just the first) — with multiple paired watches this
         // song should land on all of them. Present on at least one counts as done overall; if
@@ -172,7 +177,7 @@ class PlaylistWatchTransferCoordinator @Inject constructor(
         var lastFailureErrorCode: String? = null
         for (node in nodes) {
             if (cancelledBatchIds.contains(batchId)) break
-            val nodeOutcome = transferSongToNode(batchId, node, song, overrideAudioFile)
+            val nodeOutcome = transferSongToNode(batchId, node, song, overrideAudioFile, wasTranscoded)
             if (nodeOutcome.completed) {
                 succeededOnAnyNode = true
             } else {
@@ -192,9 +197,13 @@ class PlaylistWatchTransferCoordinator @Inject constructor(
         node: Node,
         song: Song,
         overrideAudioFile: java.io.File?,
+        wasTranscoded: Boolean,
     ): SongTransferResult {
         val requestId = UUID.randomUUID().toString()
-        transferStateStore.markBatchSongStarted(batchId, requestId, song.title)
+        // Re-targets activeRequestId to this node's request without resetting the visible
+        // progress: if the song was transcoded, it's already sitting at TRANSCODE_PHASE_WEIGHT.
+        val startingProgress = if (wasTranscoded) TRANSCODE_PHASE_WEIGHT else 0f
+        transferStateStore.markBatchSongStarted(batchId, requestId, song.title, startingProgress)
 
         val progressWatcherJob: Job = scope.launch {
             transferStateStore.transfers
@@ -204,7 +213,14 @@ class PlaylistWatchTransferCoordinator @Inject constructor(
                         state.status == WearTransferProgress.STATUS_TRANSFERRING ||
                         state.status == WearTransferProgress.STATUS_AWAITING_WATCH_ACK
                     ) {
-                        transferStateStore.markBatchSongProgress(batchId, state.status, state.progress)
+                        // Transferring is the second phase for a transcoded song: continue from
+                        // TRANSCODE_PHASE_WEIGHT up to 1.0 instead of restarting at 0.
+                        val overallProgress = if (wasTranscoded) {
+                            TRANSCODE_PHASE_WEIGHT + state.progress * (1f - TRANSCODE_PHASE_WEIGHT)
+                        } else {
+                            state.progress
+                        }
+                        transferStateStore.markBatchSongProgress(batchId, state.status, overallProgress)
                     }
                 }
         }
@@ -251,6 +267,10 @@ class PlaylistWatchTransferCoordinator @Inject constructor(
 
     internal companion object {
         private const val TAG = "PlaylistWatchTransfer"
+        // Transcoding and transferring both report 0f..1f progress for the same song; weighting
+        // them into one continuous 0..1 scale (instead of each resetting to 0) avoids the visible
+        // jump-then-reset when a song moves from one phase to the other.
+        private const val TRANSCODE_PHASE_WEIGHT = 0.3f
         // Deliberately generous relative to the watch's own 120s idle watchdog: leaves room for
         // slow transcoding + a slow Bluetooth link on large files. Better to wait too long than
         // to mark a legitimately-slow transfer as failed.

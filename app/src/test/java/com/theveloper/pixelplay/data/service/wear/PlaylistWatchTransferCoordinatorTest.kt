@@ -17,6 +17,7 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import io.mockk.slot
 import io.mockk.unmockkStatic
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -174,6 +175,57 @@ class PlaylistWatchTransferCoordinatorTest {
             assertThat(batch.completedSongs).isEqualTo(0)
             assertThat(batch.failedSongCount).isEqualTo(1)
             assertThat(batch.lastFailureErrorCode).isEqualTo(WearTransferProgress.ERROR_CODE_TIMED_OUT)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `transcode and transfer progress combine into one continuous scale instead of resetting`() = runTest {
+        stubOneReachableWatch()
+        every { musicRepository.getSongsByIds(listOf("song-1")) } returns flowOf(listOf(song("song-1")))
+        val transcodedFile = mockk<java.io.File>(relaxed = true)
+        coEvery {
+            watchAudioTranscoder.transcodeIfNeeded(any(), any(), any())
+        } coAnswers {
+            thirdArg<(Float) -> Unit>().invoke(0.5f)
+            WatchAudioTranscoder.TranscodeResult.Transcoded(transcodedFile)
+        }
+        val requestIdSlot = slot<String>()
+        every {
+            directTransferCoordinator.startTransferToWatch(
+                any(), capture(requestIdSlot), any(), any(), any(), any(), any(),
+            )
+        } answers {
+            transferStateStore.markProgress(
+                requestId = requestIdSlot.captured,
+                songId = "song-1",
+                bytesTransferred = 50L,
+                totalBytes = 100L,
+                status = WearTransferProgress.STATUS_TRANSFERRING,
+            )
+        }
+
+        val batchId = coordinator.requestPlaylistTransfer(
+            "playlist-1",
+            "QA Transcode Test",
+            listOf("song-1"),
+        )
+
+        transferStateStore.batchTransfers.test {
+            var batch = awaitItem()[batchId]
+            // Transcode phase: 0.5 fraction scaled into the first 30% of the overall bar.
+            while (batch == null || batch.currentSongProgress < 0.1f) {
+                batch = awaitItem()[batchId]
+            }
+            assertThat(batch!!.currentSongProgress).isWithin(0.01f).of(0.15f)
+
+            // Transfer phase must continue from there, not reset to 0, landing at
+            // 0.3 + 0.5 * 0.7 = 0.65.
+            while (batch!!.currentSongProgress < 0.5f) {
+                batch = awaitItem()[batchId]
+                assertThat(batch!!.currentSongProgress).isAtLeast(0.1f)
+            }
+            assertThat(batch.currentSongProgress).isWithin(0.01f).of(0.65f)
             cancelAndIgnoreRemainingEvents()
         }
     }

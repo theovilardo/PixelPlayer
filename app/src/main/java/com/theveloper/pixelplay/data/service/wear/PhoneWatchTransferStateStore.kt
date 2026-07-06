@@ -278,13 +278,23 @@ class PhoneWatchTransferStateStore @Inject constructor() {
         }
     }
 
-    fun markBatchSongStarted(batchId: String, requestId: String, songTitle: String) {
+    /**
+     * [initialProgress] lets a caller re-target [activeRequestId] (e.g. moving from a transcode
+     * request to the per-node transfer request for the same song) without snapping the visible
+     * progress back to 0 — see [PlaylistWatchTransferCoordinator]'s transcode/transfer weighting.
+     */
+    fun markBatchSongStarted(
+        batchId: String,
+        requestId: String,
+        songTitle: String,
+        initialProgress: Float = 0f,
+    ) {
         _batchTransfers.update { map ->
             val current = map[batchId] ?: return@update map
             map + (batchId to current.copy(
                 activeRequestId = requestId,
                 currentSongTitle = songTitle,
-                currentSongProgress = 0f,
+                currentSongProgress = initialProgress,
                 status = WearTransferProgress.STATUS_TRANSFERRING,
                 updatedAtMillis = System.currentTimeMillis(),
             ))

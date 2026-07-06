@@ -1041,106 +1041,19 @@ fun SettingsCategoryScreen(
 
                             Spacer(modifier = Modifier.height(16.dp))
 
-                            SettingsSubsection(title = stringResource(R.string.settings_ai_usage_report_section)) {
-                                val recentAiUsage by settingsViewModel.recentAiUsage.collectAsStateWithLifecycle()
-                                val totalPromptTokens by settingsViewModel.totalPromptTokens.collectAsStateWithLifecycle()
-                                val totalOutputTokens by settingsViewModel.totalOutputTokens.collectAsStateWithLifecycle()
-                                val totalThoughtTokens by settingsViewModel.totalThoughtTokens.collectAsStateWithLifecycle()
-
-                                val totalTokens = totalPromptTokens + totalOutputTokens + totalThoughtTokens
-                                val totalTokStr = String.format(Locale.US, "%,d", totalTokens)
-                                val promptTokStr = String.format(Locale.US, "%,d", totalPromptTokens)
-                                val outputTokStr = String.format(Locale.US, "%,d", totalOutputTokens)
-                                val thoughtTokStr = String.format(Locale.US, "%,d", totalThoughtTokens)
-
-                                ActionSettingsItem(
-                                    title = stringResource(R.string.settings_total_consumption_title),
-                                    subtitle = stringResource(
-                                        R.string.settings_ai_usage_tokens_subtitle,
-                                        totalTokStr,
-                                        promptTokStr,
-                                        outputTokStr,
-                                        thoughtTokStr
-                                    ),
-                                    icon = {
-                                        Icon(
-                                            painter = painterResource(R.drawable.rounded_monitoring_24),
-                                            contentDescription = null,
-                                            tint = MaterialTheme.colorScheme.tertiary
-                                        )
-                                    },
-                                    primaryActionLabel = stringResource(R.string.settings_ai_clear_logs),
-                                    onPrimaryAction = { settingsViewModel.clearAiUsageData() }
-                                )
-
-                                if (recentAiUsage.isNotEmpty()) {
-                                    Spacer(modifier = Modifier.height(12.dp))
-                                    var expanded by remember { mutableStateOf(false) }
-                                    val rotation by animateFloatAsState(targetValue = if (expanded) 180f else 0f)
-                                    
-                                    Surface(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .clickable { expanded = !expanded },
-                                        color = Color.Transparent
-                                    ) {
-                                        Row(
-                                            modifier = Modifier.padding(vertical = 8.dp),
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.SpaceBetween
-                                        ) {
-                                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                                Icon(
-                                                    painter = painterResource(R.drawable.rounded_monitoring_24),
-                                                    contentDescription = null,
-                                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                    modifier = Modifier.size(20.dp)
-                                                )
-                                                Spacer(modifier = Modifier.width(12.dp))
-                                                Text(
-                                                    text = stringResource(R.string.settings_ai_activity_log_title, recentAiUsage.size),
-                                                    style = MaterialTheme.typography.titleMedium.copy(fontFamily = GoogleSansRounded),
-                                                    color = MaterialTheme.colorScheme.onSurface
-                                                )
-                                            }
-                                            Icon(
-                                                imageVector = Icons.Rounded.ExpandMore,
-                                                contentDescription = if (expanded) stringResource(R.string.settings_ai_hide_logs) else stringResource(R.string.settings_ai_show_logs),
-                                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                modifier = Modifier.rotate(rotation)
-                                            )
-                                        }
-                                    }
-
-                                    AnimatedVisibility(
-                                        visible = expanded,
-                                        enter = expandVertically() + fadeIn(),
-                                        exit = shrinkVertically() + fadeOut()
-                                    ) {
-                                        Column(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(top = 8.dp, bottom = 8.dp)
-                                        ) {
-                                            @Suppress("NonObservableLocale")
-                                            val dateFormat = SimpleDateFormat("MMMM d, yyyy", Locale.getDefault())
-                                            val groupedUsage = recentAiUsage.groupBy { 
-                                                dateFormat.format(Date(it.timestamp)) 
-                                            }
-
-                                            groupedUsage.forEach { (date, items) ->
-                                                AiUsageDateHeader(date = date)
-                                                items.forEach { usage ->
-                                                    AiUsageLogItem(usage = usage)
-                                                }
-                                                Spacer(modifier = Modifier.height(8.dp))
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                            AiUsageReportSection(settingsViewModel = settingsViewModel)
                         }
                         SettingsCategory.GENERATION_PARAMETERS -> {
+                            val aiTemperature by settingsViewModel.aiTemperature.collectAsStateWithLifecycle()
+                            val aiTopP by settingsViewModel.aiTopP.collectAsStateWithLifecycle()
+                            val aiTopK by settingsViewModel.aiTopK.collectAsStateWithLifecycle()
+                            val aiMaxTokens by settingsViewModel.aiMaxTokens.collectAsStateWithLifecycle()
+                            val aiPresencePenalty by settingsViewModel.aiPresencePenalty.collectAsStateWithLifecycle()
+                            val aiFrequencyPenalty by settingsViewModel.aiFrequencyPenalty.collectAsStateWithLifecycle()
+                            val aiSampleSize by settingsViewModel.aiSampleSize.collectAsStateWithLifecycle()
+                            val aiDigestMode by settingsViewModel.aiDigestMode.collectAsStateWithLifecycle()
+                            val aiIncludeExtendedFields by settingsViewModel.aiIncludeExtendedFields.collectAsStateWithLifecycle()
+
                             // Prompt Behavior Section
                             SettingsSubsection(
                                 title = stringResource(R.string.settings_prompt_behavior_section),
@@ -1160,7 +1073,7 @@ fun SettingsCategoryScreen(
                             SettingsSubsection(title = "Generation Parameters") {
                                 SliderSettingsItem(
                                     label = "Temperature",
-                                    value = settingsViewModel.aiTemperature.collectAsStateWithLifecycle().value,
+                                    value = aiTemperature,
                                     valueRange = 0.0f..2.0f,
                                     steps = 20,
                                     onValueChange = { settingsViewModel.onAiTemperatureChange(it) },
@@ -1174,7 +1087,7 @@ fun SettingsCategoryScreen(
                                 )
                                 SliderSettingsItem(
                                     label = "Top P",
-                                    value = settingsViewModel.aiTopP.collectAsStateWithLifecycle().value,
+                                    value = aiTopP,
                                     valueRange = 0.0f..1.0f,
                                     steps = 20,
                                     onValueChange = { settingsViewModel.onAiTopPChange(it) },
@@ -1188,7 +1101,7 @@ fun SettingsCategoryScreen(
                                 )
                                 SliderSettingsItem(
                                     label = "Top K",
-                                    value = settingsViewModel.aiTopK.collectAsStateWithLifecycle().value.toFloat(),
+                                    value = aiTopK.toFloat(),
                                     valueRange = 1f..100f,
                                     steps = 99,
                                     onValueChange = { settingsViewModel.onAiTopKChange(it.toInt()) },
@@ -1202,7 +1115,7 @@ fun SettingsCategoryScreen(
                                 )
                                 SliderSettingsItem(
                                     label = "Max Output Tokens",
-                                    value = settingsViewModel.aiMaxTokens.collectAsStateWithLifecycle().value.toFloat(),
+                                    value = aiMaxTokens.toFloat(),
                                     valueRange = 128f..8192f,
                                     steps = 63,
                                     onValueChange = { settingsViewModel.onAiMaxTokensChange(it.toInt()) },
@@ -1216,7 +1129,7 @@ fun SettingsCategoryScreen(
                                 )
                                 SliderSettingsItem(
                                     label = "Presence Penalty",
-                                    value = settingsViewModel.aiPresencePenalty.collectAsStateWithLifecycle().value,
+                                    value = aiPresencePenalty,
                                     valueRange = -2.0f..2.0f,
                                     steps = 40,
                                     onValueChange = { settingsViewModel.onAiPresencePenaltyChange(it) },
@@ -1230,7 +1143,7 @@ fun SettingsCategoryScreen(
                                 )
                                 SliderSettingsItem(
                                     label = "Frequency Penalty",
-                                    value = settingsViewModel.aiFrequencyPenalty.collectAsStateWithLifecycle().value,
+                                    value = aiFrequencyPenalty,
                                     valueRange = -2.0f..2.0f,
                                     steps = 40,
                                     onValueChange = { settingsViewModel.onAiFrequencyPenaltyChange(it) },
@@ -1248,7 +1161,6 @@ fun SettingsCategoryScreen(
 
                             // Song Data Configuration Section
                             SettingsSubsection(title = "Song Data Configuration") {
-                                val aiSampleSize by settingsViewModel.aiSampleSize.collectAsStateWithLifecycle()
                                 SliderSettingsItem(
                                     label = "Sample Size",
                                     value = aiSampleSize.toFloat(),
@@ -1267,7 +1179,7 @@ fun SettingsCategoryScreen(
                                     label = "Digest Detail",
                                     description = "Controls how much listening history data is included",
                                     options = mapOf("safe" to "Concise (faster)", "full" to "Full (better quality)"),
-                                    selectedKey = settingsViewModel.aiDigestMode.collectAsStateWithLifecycle().value,
+                                    selectedKey = aiDigestMode,
                                     onSelectionChanged = { settingsViewModel.onAiDigestModeChange(it) },
                                     leadingIcon = {
                                         Icon(
@@ -1280,7 +1192,7 @@ fun SettingsCategoryScreen(
                                 SwitchSettingItem(
                                     title = "Extended Song Fields",
                                     subtitle = "Include album, year, and genre info in song data sent to AI",
-                                    checked = settingsViewModel.aiIncludeExtendedFields.collectAsStateWithLifecycle().value,
+                                    checked = aiIncludeExtendedFields,
                                     onCheckedChange = { settingsViewModel.onAiIncludeExtendedFieldsChange(it) },
                                     leadingIcon = {
                                         Icon(
@@ -1294,104 +1206,7 @@ fun SettingsCategoryScreen(
 
                             Spacer(modifier = Modifier.height(16.dp))
 
-                            SettingsSubsection(title = stringResource(R.string.settings_ai_usage_report_section)) {
-                                val recentAiUsage by settingsViewModel.recentAiUsage.collectAsStateWithLifecycle()
-                                val totalPromptTokens by settingsViewModel.totalPromptTokens.collectAsStateWithLifecycle()
-                                val totalOutputTokens by settingsViewModel.totalOutputTokens.collectAsStateWithLifecycle()
-                                val totalThoughtTokens by settingsViewModel.totalThoughtTokens.collectAsStateWithLifecycle()
-
-                                val totalTokens = totalPromptTokens + totalOutputTokens + totalThoughtTokens
-                                val totalTokStr = String.format(Locale.US, "%,d", totalTokens)
-                                val promptTokStr = String.format(Locale.US, "%,d", totalPromptTokens)
-                                val outputTokStr = String.format(Locale.US, "%,d", totalOutputTokens)
-                                val thoughtTokStr = String.format(Locale.US, "%,d", totalThoughtTokens)
-
-                                ActionSettingsItem(
-                                    title = stringResource(R.string.settings_total_consumption_title),
-                                    subtitle = stringResource(
-                                        R.string.settings_ai_usage_tokens_subtitle,
-                                        totalTokStr,
-                                        promptTokStr,
-                                        outputTokStr,
-                                        thoughtTokStr
-                                    ),
-                                    icon = {
-                                        Icon(
-                                            painter = painterResource(R.drawable.rounded_monitoring_24),
-                                            contentDescription = null,
-                                            tint = MaterialTheme.colorScheme.tertiary
-                                        )
-                                    },
-                                    primaryActionLabel = stringResource(R.string.settings_ai_clear_logs),
-                                    onPrimaryAction = { settingsViewModel.clearAiUsageData() }
-                                )
-
-                                if (recentAiUsage.isNotEmpty()) {
-                                    Spacer(modifier = Modifier.height(12.dp))
-                                    var expanded by remember { mutableStateOf(false) }
-                                    val rotation by animateFloatAsState(targetValue = if (expanded) 180f else 0f)
-                                    
-                                    Surface(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .clickable { expanded = !expanded },
-                                        color = Color.Transparent
-                                    ) {
-                                        Row(
-                                            modifier = Modifier.padding(vertical = 8.dp),
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.SpaceBetween
-                                        ) {
-                                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                                Icon(
-                                                    painter = painterResource(R.drawable.rounded_monitoring_24),
-                                                    contentDescription = null,
-                                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                    modifier = Modifier.size(20.dp)
-                                                )
-                                                Spacer(modifier = Modifier.width(12.dp))
-                                                Text(
-                                                    text = stringResource(R.string.settings_ai_activity_log_title, recentAiUsage.size),
-                                                    style = MaterialTheme.typography.titleMedium.copy(fontFamily = GoogleSansRounded),
-                                                    color = MaterialTheme.colorScheme.onSurface
-                                                )
-                                            }
-                                            Icon(
-                                                imageVector = Icons.Rounded.ExpandMore,
-                                                contentDescription = if (expanded) stringResource(R.string.settings_ai_hide_logs) else stringResource(R.string.settings_ai_show_logs),
-                                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                modifier = Modifier.rotate(rotation)
-                                            )
-                                        }
-                                    }
-
-                                    AnimatedVisibility(
-                                        visible = expanded,
-                                        enter = expandVertically() + fadeIn(),
-                                        exit = shrinkVertically() + fadeOut()
-                                    ) {
-                                        Column(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(top = 8.dp, bottom = 8.dp)
-                                        ) {
-                                            @Suppress("NonObservableLocale")
-                                            val dateFormat = SimpleDateFormat("MMMM d, yyyy", Locale.getDefault())
-                                            val groupedUsage = recentAiUsage.groupBy { 
-                                                dateFormat.format(Date(it.timestamp)) 
-                                            }
-
-                                            groupedUsage.forEach { (date, items) ->
-                                                AiUsageDateHeader(date = date)
-                                                items.forEach { usage ->
-                                                    AiUsageLogItem(usage = usage)
-                                                }
-                                                Spacer(modifier = Modifier.height(8.dp))
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                            AiUsageReportSection(settingsViewModel = settingsViewModel)
 
                         }
                         SettingsCategory.BACKUP_RESTORE -> {
@@ -3033,5 +2848,107 @@ private fun SettingsSubsection(
     }
     if (addBottomSpace) {
         Spacer(modifier = Modifier.height(10.dp))
+    }
+}
+
+@Composable
+private fun AiUsageReportSection(settingsViewModel: SettingsViewModel) {
+    SettingsSubsection(title = stringResource(R.string.settings_ai_usage_report_section)) {
+        val recentAiUsage by settingsViewModel.recentAiUsage.collectAsStateWithLifecycle()
+        val totalPromptTokens by settingsViewModel.totalPromptTokens.collectAsStateWithLifecycle()
+        val totalOutputTokens by settingsViewModel.totalOutputTokens.collectAsStateWithLifecycle()
+        val totalThoughtTokens by settingsViewModel.totalThoughtTokens.collectAsStateWithLifecycle()
+
+        val totalTokens = totalPromptTokens + totalOutputTokens + totalThoughtTokens
+        val totalTokStr = String.format(Locale.US, "%,d", totalTokens)
+        val promptTokStr = String.format(Locale.US, "%,d", totalPromptTokens)
+        val outputTokStr = String.format(Locale.US, "%,d", totalOutputTokens)
+        val thoughtTokStr = String.format(Locale.US, "%,d", totalThoughtTokens)
+
+        ActionSettingsItem(
+            title = stringResource(R.string.settings_total_consumption_title),
+            subtitle = stringResource(
+                R.string.settings_ai_usage_tokens_subtitle,
+                totalTokStr,
+                promptTokStr,
+                outputTokStr,
+                thoughtTokStr
+            ),
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.rounded_monitoring_24),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.tertiary
+                )
+            },
+            primaryActionLabel = stringResource(R.string.settings_ai_clear_logs),
+            onPrimaryAction = { settingsViewModel.clearAiUsageData() }
+        )
+
+        if (recentAiUsage.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(12.dp))
+            var expanded by remember { mutableStateOf(false) }
+            val rotation by animateFloatAsState(targetValue = if (expanded) 180f else 0f)
+
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { expanded = !expanded },
+                color = Color.Transparent
+            ) {
+                Row(
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(R.drawable.rounded_monitoring_24),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text(
+                            text = stringResource(R.string.settings_ai_activity_log_title, recentAiUsage.size),
+                            style = MaterialTheme.typography.titleMedium.copy(fontFamily = GoogleSansRounded),
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                    Icon(
+                        imageVector = Icons.Rounded.ExpandMore,
+                        contentDescription = if (expanded) stringResource(R.string.settings_ai_hide_logs) else stringResource(R.string.settings_ai_show_logs),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.rotate(rotation)
+                    )
+                }
+            }
+
+            AnimatedVisibility(
+                visible = expanded,
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut()
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp, bottom = 8.dp)
+                ) {
+                    @Suppress("NonObservableLocale")
+                    val dateFormat = SimpleDateFormat("MMMM d, yyyy", Locale.getDefault())
+                    val groupedUsage = recentAiUsage.groupBy {
+                        dateFormat.format(Date(it.timestamp))
+                    }
+
+                    groupedUsage.forEach { (date, items) ->
+                        AiUsageDateHeader(date = date)
+                        items.forEach { usage ->
+                            AiUsageLogItem(usage = usage)
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+                }
+            }
+        }
     }
 }

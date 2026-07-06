@@ -590,14 +590,19 @@ class LyricsRepositoryImpl @Inject constructor(
                         
                         // Save to database
                         try {
-                            lyricsDao.insert(
-                                com.theveloper.pixelplay.data.database.LyricsEntity(
-                                    songId = song.id.toLong(),
-                                    content = rawLyrics,
-                                    isSynced = !bestMatch.syncedLyrics.isNullOrBlank(),
-                                    source = "remote"
+                            val songIdLong = song.id.toLongOrNull()
+                            if (songIdLong == null) {
+                                Log.w(TAG, "Cannot persist lyrics to DB: non-numeric Song.id '${song.id}'")
+                            } else {
+                                lyricsDao.insert(
+                                    com.theveloper.pixelplay.data.database.LyricsEntity(
+                                        songId = songIdLong,
+                                        content = rawLyrics,
+                                        isSynced = !bestMatch.syncedLyrics.isNullOrBlank(),
+                                        source = "remote"
+                                    )
                                 )
-                            )
+                            }
                         } catch (e: NumberFormatException) {
                             Log.w(TAG, "Skipping database save for non-numeric song ID: ${song.id} (possible streaming or external source). Lyrics will be cached in JSON.")
                         }
@@ -1314,14 +1319,19 @@ class LyricsRepositoryImpl @Inject constructor(
                     val rawLyricsToSave = best.rawLyrics
 
                     try {
-                        lyricsDao.insert(
-                             com.theveloper.pixelplay.data.database.LyricsEntity(
-                                 songId = song.id.toLong(),
-                                 content = rawLyricsToSave,
-                                 isSynced = !best.lyrics.synced.isNullOrEmpty(),
-                                 source = "remote"
-                             )
-                        )
+                        val songIdLong = song.id.toLongOrNull()
+                        if (songIdLong == null) {
+                            Log.w(TAG, "Cannot persist lyrics to DB: non-numeric Song.id '${song.id}'")
+                        } else {
+                            lyricsDao.insert(
+                                 com.theveloper.pixelplay.data.database.LyricsEntity(
+                                     songId = songIdLong,
+                                     content = rawLyricsToSave,
+                                     isSynced = !best.lyrics.synced.isNullOrEmpty(),
+                                     source = "remote"
+                                 )
+                            )
+                        }
                     } catch (e: NumberFormatException) {
                         Log.w(TAG, "Skipping DB update for non-numeric ID: ${song.id}")
                     }
@@ -1357,9 +1367,14 @@ class LyricsRepositoryImpl @Inject constructor(
                 }
 
                 try {
+                    val songIdLong = song.id.toLongOrNull()
+                    if (songIdLong == null) {
+                        Log.w(TAG, "Cannot persist lyrics to DB: non-numeric Song.id '${song.id}'")
+                        return@withContext Result.failure(LyricsException("Non-numeric Song.id"))
+                    }
                     lyricsDao.insert(
                         com.theveloper.pixelplay.data.database.LyricsEntity(
-                            songId = song.id.toLong(),
+                            songId = songIdLong,
                             content = rawLyricsToSave,
                             isSynced = !parsedLyrics.synced.isNullOrEmpty(),
                             source = "remote"
@@ -1669,14 +1684,19 @@ class LyricsRepositoryImpl @Inject constructor(
                                     val validated = readValidatedLocalLyrics(foundFile)
                                     if (validated != null) {
                                         try {
-                                            lyricsDao.insert(
-                                                 com.theveloper.pixelplay.data.database.LyricsEntity(
-                                                     songId = song.id.toLong(),
-                                                     content = validated.sanitizedContent,
-                                                     isSynced = validated.parsedLyrics.synced?.isNotEmpty() == true,
-                                                     source = "local_file"
-                                                 )
-                                            )
+                                            val songIdLong = song.id.toLongOrNull()
+                                            if (songIdLong == null) {
+                                                Log.w(TAG, "Cannot persist lyrics to DB: non-numeric Song.id '${song.id}'")
+                                            } else {
+                                                lyricsDao.insert(
+                                                     com.theveloper.pixelplay.data.database.LyricsEntity(
+                                                         songId = songIdLong,
+                                                         content = validated.sanitizedContent,
+                                                         isSynced = validated.parsedLyrics.synced?.isNotEmpty() == true,
+                                                         source = "local_file"
+                                                     )
+                                                )
+                                            }
                                             updatedCount.incrementAndGet()
                                             LogUtils.d(this@LyricsRepositoryImpl, "Auto-assigned lyrics from ${foundFile.name}")
                                         } catch (e: Exception) {

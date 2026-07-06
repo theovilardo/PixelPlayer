@@ -175,7 +175,7 @@ fun SearchScreen(
     val multiSelectionState = playerViewModel.multiSelectionStateHolder
     val selectedSongs by multiSelectionState.selectedSongs.collectAsStateWithLifecycle()
     val isSongSelectionMode by multiSelectionState.isSelectionMode.collectAsStateWithLifecycle()
-    val selectedSongIds by multiSelectionState.selectedSongIds.collectAsStateWithLifecycle()
+    val selectedSongIds = remember(selectedSongs) { selectedSongs.map { it.id }.toSet() }
     var showMultiSelectionSheet by remember { mutableStateOf(false) }
 
     // Multi-selection state for albums
@@ -188,7 +188,7 @@ fun SearchScreen(
     val playlistSelectionState = playerViewModel.playlistSelectionStateHolder
     val selectedPlaylists by playlistSelectionState.selectedPlaylists.collectAsStateWithLifecycle()
     val isPlaylistSelectionMode by playlistSelectionState.isSelectionMode.collectAsStateWithLifecycle()
-    val selectedPlaylistIds by playlistSelectionState.selectedPlaylistIds.collectAsStateWithLifecycle()
+    val selectedPlaylistIds = remember(selectedPlaylists) { selectedPlaylists.map { it.id }.toSet() }
     var showPlaylistMultiSelectionSheet by remember { mutableStateOf(false) }
 
     // Multi-selection state for genres
@@ -580,6 +580,7 @@ fun SearchScreen(
                                         },
                                         currentPlayingSongId = stablePlayerState.currentSong?.id,
                                         isPlaying = stablePlayerState.isPlaying,
+                                        isShuffleEnabled = stablePlayerState.isShuffleEnabled,
                                         onSongMoreOptionsClick = handleSongMoreOptionsClick,
                                         navController = navController,
                                         isSelectionMode = isSongSelectionMode,
@@ -1069,6 +1070,7 @@ fun SearchResultsList(
     onItemSelected: () -> Unit,
     currentPlayingSongId: String?,
     isPlaying: Boolean,
+    isShuffleEnabled: Boolean = false,
     onSongMoreOptionsClick: (Song) -> Unit,
     navController: NavHostController,
     isSelectionMode: Boolean = false,
@@ -1087,7 +1089,6 @@ fun SearchResultsList(
     getPlaylistSelectionIndex: (String) -> Int? = { null }
 ) {
     val localDensity = LocalDensity.current
-    val playerStableState by playerViewModel.stablePlayerState.collectAsStateWithLifecycle()
 
     if (results.isEmpty()) {
         Box(
@@ -1294,7 +1295,7 @@ fun SearchResultsList(
                                                 songs.first(),
                                                 item.playlist.name
                                             )
-                                            if (playerStableState.isShuffleEnabled) playerViewModel.toggleShuffle()
+                                            if (isShuffleEnabled) playerViewModel.toggleShuffle()
                                         } else {
                                             playerViewModel.sendToast("Empty playlist")
                                         }

@@ -507,31 +507,10 @@ class UserPreferencesRepository @Inject constructor(
         dataStore.edit { it[PreferencesKeys.GLOBAL_TRANSITION_SETTINGS] = json.encodeToString(settings) }
     }
 
-    // ─── Favorites ────────────────────────────────────────────────────────────
+    // ─── Favorites (Legacy — only used for one-time migration) ─────────────────
 
     val favoriteSongIdsFlow: Flow<Set<String>> =
         pref { it[PreferencesKeys.FAVORITE_SONG_IDS] ?: emptySet() }
-
-    /**
-     * Adds or removes [songId] from favorites depending on [isFavorite].
-     * Prefer this over [toggleFavoriteSong] when the desired state is known.
-     */
-    suspend fun setFavoriteSong(songId: String, isFavorite: Boolean) {
-        dataStore.edit { preferences ->
-            val current = preferences[PreferencesKeys.FAVORITE_SONG_IDS] ?: emptySet()
-            preferences[PreferencesKeys.FAVORITE_SONG_IDS] =
-                if (isFavorite) current + songId else current - songId
-        }
-    }
-
-    /** Toggles [songId] in the favorites set. */
-    suspend fun toggleFavoriteSong(songId: String) {
-        dataStore.edit { preferences ->
-            val current = preferences[PreferencesKeys.FAVORITE_SONG_IDS] ?: emptySet()
-            preferences[PreferencesKeys.FAVORITE_SONG_IDS] =
-                if (songId in current) current - songId else current + songId
-        }
-    }
 
     suspend fun clearFavoriteSongIds() {
         dataStore.edit { it[PreferencesKeys.FAVORITE_SONG_IDS] = emptySet() }

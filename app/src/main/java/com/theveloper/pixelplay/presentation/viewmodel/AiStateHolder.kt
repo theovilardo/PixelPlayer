@@ -292,26 +292,45 @@ class AiStateHolder @Inject constructor(
             val targetLanguage = context.resources.configuration.locales[0]
                 .getDisplayLanguage(Locale.US)
             val sourceLanguage = detectLyricsLanguage(lyricsText)
+            val hasTimestamps = lyricsText.contains(Regex("\\[\\d{1,2}:\\d{2}"))
             val taskPrefix = if (sourceLanguage != null) {
                 "Translate these $sourceLanguage song lyrics into $targetLanguage."
             } else {
                 "Translate these song lyrics into $targetLanguage. Detect the source language from the lyrics content."
             }
+            val formatSection = if (hasTimestamps) {
+                """
+<format>
+For SYNCED lyrics — output TWO lines per original line:
+[original timestamp] original text
+[same timestamp] translated text
+
+Preserve ALL timestamps [mm:ss.xx] exactly — never modify, merge, or drop them.
+</format>
+                """.trimIndent()
+            } else {
+                """
+<format>
+For PLAIN lyrics (no timestamps) — output TWO lines per original line:
+original text
+translated text
+
+Keep the same line order as the original.
+</format>
+                """.trimIndent()
+            }
             val xmlPrompt = """
 <task>$taskPrefix</task>
 
 <rules>
-- Preserve ALL timestamps [mm:ss.xx] exactly — never modify, merge, or drop them.
-- Output TWO lines per original line: the original, then the translation with the same timestamp.
+- Output TWO lines per original line: the original, then the translation.
 - NEVER add explanations, labels, numbering, section headers, or formatting.
 - NEVER remove, merge, split, or reorder lines.
+- Translate ALL lines completely — do not skip or truncate any part.
 - If lyrics are ALREADY mostly in $targetLanguage, output ONLY: ALREADY_IN_TARGET_LANGUAGE
 </rules>
 
-<format>
-[original timestamp] original text
-[same timestamp] translated text
-</format>
+$formatSection
 
 <lyrics>
 $lyricsText

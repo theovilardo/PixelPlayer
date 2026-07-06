@@ -344,22 +344,16 @@ class LyricsStateHolder @Inject constructor(
     fun translateLyricsViaAi(currentSong: Song, lyricsObj: Lyrics?, cb: LyricsTranslationCallbacks) {
         val songId = currentSong.id.toLongOrNull() ?: return
 
-        if (lyricsObj?.synced != null) {
-            val hasValidTranslation = lyricsObj.synced.any { !it.translation.isNullOrBlank() }
-            if (hasValidTranslation) {
-                _messageEvents.tryEmit(cb.getString(R.string.lyrics_translate_already_translated))
-                return
-            }
-        }
-
         scope?.launch {
             _messageEvents.emit(cb.getString(R.string.lyrics_translate_progress))
 
+            // Always read fresh lyrics from source — never rely on the potentially
+            // stale Lyrics object from UI state which may contain old translations.
             val rawLyrics = withContext(Dispatchers.IO) {
                 readLocalLyricsFile(currentSong)
                     ?: readEmbeddedLyricsFromFile(currentSong)
-                    ?: currentSong.lyrics?.takeIf { it.isNotBlank() }
                     ?: musicRepository.getStoredLyrics(currentSong)?.second
+                    ?: currentSong.lyrics?.takeIf { it.isNotBlank() }
             }
 
             if (rawLyrics.isNullOrBlank()) {

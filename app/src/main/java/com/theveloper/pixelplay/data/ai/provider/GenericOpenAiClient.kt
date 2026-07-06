@@ -132,11 +132,6 @@ class GenericOpenAiClient(
         }
     }
     
-    override suspend fun countTokens(model: String, systemPrompt: String, prompt: String): Int {
-        // Estimation for generic providers
-        return (systemPrompt.length + prompt.length) / 4
-    }
-    
     override suspend fun getAvailableModels(apiKey: String): List<String> {
         return withContext(Dispatchers.IO) {
             try {

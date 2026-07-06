@@ -1,5 +1,6 @@
 package com.theveloper.pixelplay.data.ai
 
+import com.theveloper.pixelplay.data.ai.provider.UnifiedModelFilter
 import com.theveloper.pixelplay.data.repository.MusicRepository
 import com.theveloper.pixelplay.data.worker.AiWorkerManager
 import kotlinx.coroutines.Dispatchers
@@ -22,12 +23,7 @@ class GeminiModelService @Inject constructor(
 ) {
 
     companion object {
-        // Markers for models that cannot perform text chat generation. These are the
-        // only things we filter out — every other model the API returns is selectable.
-        private val NON_CHAT_MARKERS = listOf(
-            "embedding", "aqa", "imagen", "image-generation",
-            "tts", "audio", "veo", "vision-only", "learnlm-embedding"
-        )
+        // Use UnifiedModelFilter for consistent model filtering across all providers.
     }
 
     suspend fun fetchAvailableModels(apiKey: String): Result<List<GeminiModel>> {
@@ -48,10 +44,11 @@ class GeminiModelService @Inject constructor(
     private suspend fun makeModelsListRequest(apiKey: String): List<GeminiModel> {
         return withContext(Dispatchers.IO) {
             try {
-                val url = "https://generativelanguage.googleapis.com/v1beta/models?key=$apiKey"
+                val url = "https://generativelanguage.googleapis.com/v1beta/models"
                 val connection = java.net.URL(url).openConnection() as java.net.HttpURLConnection
 
                 connection.requestMethod = "GET"
+                connection.setRequestProperty("x-goog-api-key", apiKey)
                 connection.connectTimeout = 10000
                 connection.readTimeout = 10000
 
@@ -88,7 +85,7 @@ class GeminiModelService @Inject constructor(
                 // version — let the user pick any chat-capable model their key supports.
                 if ((modelName.startsWith("gemini", ignoreCase = true) ||
                      modelName.startsWith("gemma", ignoreCase = true)) &&
-                    !isNonChatModel(modelName)) {
+                    UnifiedModelFilter.isModelUsableForChat(modelName)) {
                     models.add(GeminiModel(
                         name = modelName,
                         displayName = formatDisplayName(modelName)
@@ -129,11 +126,6 @@ class GeminiModelService @Inject constructor(
                 context = context
             )
         }
-    }
-
-    private fun isNonChatModel(modelName: String): Boolean {
-        val lower = modelName.lowercase()
-        return NON_CHAT_MARKERS.any { lower.contains(it) }
     }
 
     private fun formatDisplayName(modelName: String): String {

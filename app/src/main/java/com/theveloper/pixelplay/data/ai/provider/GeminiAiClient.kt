@@ -165,44 +165,6 @@ class GeminiAiClient(private val apiKey: String) : AiClient {
         }
     }
 
-    override suspend fun countTokens(model: String, systemPrompt: String, prompt: String): Int {
-        return withContext(Dispatchers.IO) {
-            val resolvedModel = model.ifBlank { DEFAULT_GEMINI_MODEL }
-            try {
-                val requestBody = GenerateRequest(
-                    contents = listOf(Content(role = "user", parts = listOf(Part(prompt)))),
-                    systemInstruction = systemPrompt
-                        .takeIf { it.isNotBlank() }
-                        ?.let { Content(parts = listOf(Part(it))) },
-                    generationConfig = GenerationConfig(temperature = 0.0)
-                )
-                val jsonBody = json.encodeToString(GenerateRequest.serializer(), requestBody)
-                val body = jsonBody.toRequestBody("application/json".toMediaType())
-
-                val request = Request.Builder()
-                    .url("$BASE_URL/models/$resolvedModel:countTokens")
-                    .addHeader("x-goog-api-key", apiKey)
-                    .addHeader("Content-Type", "application/json")
-                    .post(body)
-                    .build()
-
-                httpClient.newCall(request).execute().use { response ->
-                    if (!response.isSuccessful) {
-                        return@withContext (prompt.length / 4) + (systemPrompt.length / 4)
-                    }
-                    val totalTokens = Regex(""""totalTokens"\s*:\s*(\d+)""")
-                        .find(response.body.string())
-                        ?.groupValues
-                        ?.getOrNull(1)
-                        ?.toIntOrNull()
-                    totalTokens ?: ((prompt.length / 4) + (systemPrompt.length / 4))
-                }
-            } catch (e: Exception) {
-                (prompt.length / 4) + (systemPrompt.length / 4)
-            }
-        }
-    }
-
     override suspend fun getAvailableModels(apiKey: String): List<String> {
         return withContext(Dispatchers.IO) {
             try {

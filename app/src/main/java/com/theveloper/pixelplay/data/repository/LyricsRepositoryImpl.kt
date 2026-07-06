@@ -527,6 +527,15 @@ class LyricsRepositoryImpl @Inject constructor(
                         })
                     }
                 }
+                // Romanized search strategy for non-Latin artists
+                if (MultiLangRomanizer.isScriptThatNeedsRomanization(cleanArtist)) {
+                    val romanArtist = romanizeForMatch(cleanArtist)
+                    if (romanArtist != cleanArtist) {
+                        add(RemoteSearchStrategy("romanized_artist") {
+                            lrcLibApiService.searchLyrics(trackName = cleanTitle, artistName = romanArtist)
+                        })
+                    }
+                }
                 
                 // Smart title cleanup strategy (removes leading digits/spaces and truncates at -, (, ))
                 val smartTitle = cleanTitleSmart(cleanTitle)
@@ -1364,7 +1373,7 @@ class LyricsRepositoryImpl @Inject constructor(
                 saveLocalLyricsJson(song, parsedLyrics)
                 LogUtils.d(this@LyricsRepositoryImpl, "Fetched and cached remote lyrics (exact match) for: ${song.title}")
 
-                Result.success(Pair(parsedLyrics, rawLyricsToSave))
+                return@withContext Result.success(Pair(parsedLyrics, rawLyricsToSave))
             } else {
                 LogUtils.d(this@LyricsRepositoryImpl, "No lyrics found remotely for: ${song.title}")
                 Result.failure(NoLyricsFoundException())
@@ -1400,6 +1409,24 @@ class LyricsRepositoryImpl @Inject constructor(
                     lrcLibApiService.searchLyrics(trackName = cleanTitle, artistName = cleanArtist)
                 })
                 
+                // Romanized search strategy for non-Latin titles
+                if (MultiLangRomanizer.isScriptThatNeedsRomanization(cleanTitle)) {
+                    val romanTitle = romanizeForMatch(cleanTitle)
+                    if (romanTitle != cleanTitle) {
+                        add(RemoteSearchStrategy("romanized_track") {
+                            lrcLibApiService.searchLyrics(trackName = romanTitle, artistName = cleanArtist)
+                        })
+                    }
+                }
+                if (MultiLangRomanizer.isScriptThatNeedsRomanization(cleanArtist)) {
+                    val romanArtist = romanizeForMatch(cleanArtist)
+                    if (romanArtist != cleanArtist) {
+                        add(RemoteSearchStrategy("romanized_artist") {
+                            lrcLibApiService.searchLyrics(trackName = cleanTitle, artistName = romanArtist)
+                        })
+                    }
+                }
+
                 // Smart title cleanup strategy
                 val smartTitle = cleanTitleSmart(cleanTitle)
                 if (smartTitle != cleanTitle && smartTitle.isNotBlank()) {
@@ -1547,7 +1574,9 @@ class LyricsRepositoryImpl @Inject constructor(
         // Also remove JSON cache
         try {
             val file = File(context.filesDir, "lyrics/${songId}.json")
-            if (file.exists()) file.delete()
+            if (file.exists() && !file.delete()) {
+                Log.w(TAG, "Failed to delete JSON cache for songId: $songId")
+            }
         } catch (e: Exception) {
             Log.w(TAG, "Error deleting JSON cache: ${e.message}")
         }
@@ -1625,8 +1654,8 @@ class LyricsRepositoryImpl @Inject constructor(
                                 
                                 // Strategy 2: Artist - Title
                                 if (foundFile == null) {
-                                    val cleanArtist = song.displayArtist.replace(Regex("[^a-zA-Z0-9]"), "_")
-                                    val cleanTitle = song.title.replace(Regex("[^a-zA-Z0-9]"), "_")
+                                    val cleanArtist = song.displayArtist.replace(Regex("[^\\p{L}\\p{N}]"), "_")
+                                    val cleanTitle = song.title.replace(Regex("[^\\p{L}\\p{N}]"), "_")
                                     for (extension in LyricsImportSecurity.supportedFileExtensions()) {
                                         val altMatch = File(directory, "${cleanArtist}_${cleanTitle}.$extension")
                                         if (altMatch.exists() && altMatch.canRead()) {

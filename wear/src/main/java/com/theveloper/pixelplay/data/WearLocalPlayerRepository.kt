@@ -135,7 +135,9 @@ class WearLocalPlayerRepository @Inject constructor(
                     }
                 }
 
-                if (!localPlayerState.value.isEmpty) {
+                // Same rationale as startPositionUpdates(): skip the repaint pipeline while
+                // nobody can see it. The in-memory song map above is kept fresh either way.
+                if (!localPlayerState.value.isEmpty && WearLifecycleState.isInteractiveNow) {
                     updateState()
                 }
             }

@@ -1,11 +1,17 @@
 package com.theveloper.pixelplay.data
 
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.audio.AudioSink
+import androidx.media3.exoplayer.audio.DefaultAudioSink
+import androidx.media3.exoplayer.audio.DefaultAudioTrackBufferSizeProvider
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import com.google.common.util.concurrent.Futures
@@ -24,6 +30,7 @@ import timber.log.Timber
  *
  * [WearLocalPlayerRepository] drives this service's player through a `MediaController`.
  */
+@UnstableApi
 class WearPlaybackService : MediaSessionService() {
 
     private var player: ExoPlayer? = null
@@ -32,7 +39,7 @@ class WearPlaybackService : MediaSessionService() {
     override fun onCreate() {
         super.onCreate()
 
-        val exoPlayer = ExoPlayer.Builder(this)
+        val exoPlayer = ExoPlayer.Builder(this, BufferedAudioRenderersFactory(this))
             .setAudioAttributes(
                 AudioAttributes.Builder()
                     .setUsage(C.USAGE_MEDIA)
@@ -111,8 +118,36 @@ class WearPlaybackService : MediaSessionService() {
         }
     }
 
+    /**
+     * Local playback here is a single background audio track with no latency requirements, so
+     * trade a larger [AudioSink] buffer for resilience: this watch's SoC can have as few as 2
+     * cores, and a momentary CPU stall (our own UI work, or a concurrent fitness-tracking app in
+     * the future) is enough to starve the platform default's small low-latency buffer and produce
+     * an audible underrun. See [WearDeviceTier].
+     */
+    private class BufferedAudioRenderersFactory(context: Context) : DefaultRenderersFactory(context) {
+        override fun buildAudioSink(
+            context: Context,
+            enableFloatOutput: Boolean,
+            enableAudioTrackPlaybackParams: Boolean,
+        ): AudioSink {
+            return DefaultAudioSink.Builder(context)
+                .setEnableFloatOutput(enableFloatOutput)
+                .setEnableAudioTrackPlaybackParams(enableAudioTrackPlaybackParams)
+                .setAudioTrackBufferSizeProvider(
+                    DefaultAudioTrackBufferSizeProvider.Builder()
+                        .setMinPcmBufferDurationUs(MIN_PCM_BUFFER_DURATION_US)
+                        .setMaxPcmBufferDurationUs(MAX_PCM_BUFFER_DURATION_US)
+                        .build()
+                )
+                .build()
+        }
+    }
+
     companion object {
         private const val TAG = "WearPlaybackService"
         private const val MEDIA_SESSION_ID = "wear-local-playback"
+        private const val MIN_PCM_BUFFER_DURATION_US = 1_000_000 // 1s
+        private const val MAX_PCM_BUFFER_DURATION_US = 3_000_000 // 3s
     }
 }

@@ -116,6 +116,7 @@ import com.google.android.horologist.audio.ui.volumeRotaryBehavior
 import com.google.android.horologist.compose.layout.ScalingLazyColumn
 import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
 import com.theveloper.pixelplay.R
+import com.theveloper.pixelplay.data.WearDeviceTier
 import com.theveloper.pixelplay.data.WearLifecycleState
 import com.theveloper.pixelplay.presentation.components.AlwaysOnScalingPositionIndicator
 import com.theveloper.pixelplay.presentation.components.CurvedVolumeIndicator
@@ -256,6 +257,12 @@ private fun PlayerContent(
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.fillMaxSize(),
+            // Reverted: beyondViewportPageCount = 0 traded a small idle-CPU saving for composing
+            // the destination page on demand during the swipe gesture itself — a CPU burst at
+            // exactly the worst possible moment (mid-interaction), which caused audible playback
+            // stutter during swipes and when opening the volume screen. Keeping the neighbor
+            // preloaded avoids that; audible glitches during real use matter far more than
+            // background CPU while idle.
             beyondViewportPageCount = 1,
         ) { page ->
             when (page) {
@@ -1114,7 +1121,7 @@ private fun MainPlayerPage(
         },
     )
 
-    val livePositionMs by rememberLivePositionMs(state)
+    val livePositionMs by rememberLivePositionMs(state, isWatchOutputSelected)
     val trackProgressTarget = if (state.totalDurationMs > 0L) {
         (livePositionMs.toFloat() / state.totalDurationMs.toFloat()).coerceIn(0f, 1f)
     } else {
@@ -1230,6 +1237,7 @@ private fun MainPlayerPage(
                     enabled = if (isWatchOutputSelected) !state.isEmpty else isPhoneConnected,
                     outlined = isAmbient,
                     trackProgress = trackProgress,
+                    isWatchOutputSelected = isWatchOutputSelected,
                     onTogglePlayPause = onTogglePlayPause,
                     onNext = onNext,
                     onPrevious = onPrevious,
@@ -1284,24 +1292,36 @@ private fun MainPlayerPage(
 }
 
 @Composable
-private fun rememberLivePositionMs(state: WearPlayerState): androidx.compose.runtime.State<Long> {
+private fun rememberLivePositionMs(
+    state: WearPlayerState,
+    isWatchOutputSelected: Boolean,
+): androidx.compose.runtime.State<Long> {
     val safeDuration = state.totalDurationMs.coerceAtLeast(0L)
     val safeAnchorPosition = state.currentPositionMs.coerceIn(0L, safeDuration)
+    val isInteractive by WearLifecycleState.isInteractive.collectAsState(
+        initial = WearLifecycleState.isInteractiveNow,
+    )
+    // The 250ms tick below only exists to make the seek bar glide smoothly between the ~1s
+    // position updates from the repository. That's not worth it while nobody can see it
+    // (isInteractive), or while the watch itself is decoding audio on a constrained tier (see
+    // WearDeviceTier) where it competes for CPU with ExoPlayer's decode/render threads.
+    val shouldInterpolate = isInteractive && (isWatchOutputSelected.not() || WearDeviceTier.isCapable)
     val positionKey = remember(
         state.songId,
         safeAnchorPosition,
         safeDuration,
         state.isPlaying,
         state.positionUpdatedElapsedRealtimeMs,
+        shouldInterpolate,
     ) {
-        "${state.songId}|$safeAnchorPosition|$safeDuration|${state.isPlaying}|${state.positionUpdatedElapsedRealtimeMs}"
+        "${state.songId}|$safeAnchorPosition|$safeDuration|${state.isPlaying}|${state.positionUpdatedElapsedRealtimeMs}|$shouldInterpolate"
     }
     return produceState(
         initialValue = state.livePositionFromAnchor(safeAnchorPosition, safeDuration),
         key1 = positionKey,
     ) {
         value = state.livePositionFromAnchor(safeAnchorPosition, safeDuration)
-        if (!state.isPlaying || safeDuration <= 0L) {
+        if (!state.isPlaying || safeDuration <= 0L || !shouldInterpolate) {
             return@produceState
         }
 
@@ -1669,6 +1689,7 @@ private fun MainControlsRow(
     enabled: Boolean,
     outlined: Boolean,
     trackProgress: Float,
+    isWatchOutputSelected: Boolean,
     onTogglePlayPause: () -> Unit,
     onNext: () -> Unit,
     onPrevious: () -> Unit,
@@ -1697,6 +1718,7 @@ private fun MainControlsRow(
             enabled = enabled && !isEmpty,
             outlined = outlined,
             trackProgress = trackProgress,
+            isWatchOutputSelected = isWatchOutputSelected,
             onClick = onTogglePlayPause,
         )
 
@@ -1772,6 +1794,7 @@ private fun CenterPlayButton(
     enabled: Boolean,
     outlined: Boolean,
     trackProgress: Float,
+    isWatchOutputSelected: Boolean,
     onClick: () -> Unit,
 ) {
     val palette = LocalWearPalette.current
@@ -1785,17 +1808,25 @@ private fun CenterPlayButton(
     val isInteractive by WearLifecycleState.isInteractive.collectAsState(
         initial = WearLifecycleState.isInteractiveNow,
     )
-    LaunchedEffect(isPlaying, isInteractive) {
-        if (!isPlaying || !isInteractive) {
-            val normalizedRotation = ((rotation.value % 360f) + 360f) % 360f
-            rotation.snapTo(normalizedRotation)
-            rotation.animateTo(
-                targetValue = 0f,
-                animationSpec = tween(
-                    durationMillis = 616,
-                    easing = FastOutSlowInEasing,
-                ),
-            )
+    LaunchedEffect(isPlaying, isInteractive, isWatchOutputSelected) {
+        // Continuous per-frame rotation is real CPU cost for the whole time music plays. That
+        // only competes with ExoPlayer's decode/render threads when the watch itself is doing the
+        // decoding (isWatchOutputSelected): when it's just remote-controlling phone playback, the
+        // watch does no local decode work, so there's no reason to hold back on a constrained
+        // tier. See WearDeviceTier.
+        val spinAllowed = isWatchOutputSelected.not() || WearDeviceTier.isCapable
+        if (!isPlaying || !isInteractive || !spinAllowed) {
+            if (rotation.value != 0f) {
+                val normalizedRotation = ((rotation.value % 360f) + 360f) % 360f
+                rotation.snapTo(normalizedRotation)
+                rotation.animateTo(
+                    targetValue = 0f,
+                    animationSpec = tween(
+                        durationMillis = 616,
+                        easing = FastOutSlowInEasing,
+                    ),
+                )
+            }
             return@LaunchedEffect
         }
         while (true) {

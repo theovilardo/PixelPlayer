@@ -923,8 +923,14 @@ fun PlaylistDetailScreen(
                         label = if (isPlaylistOnWatch) updateOnWatchLabel else sendToWatchLabel,
                         onClick = {
                             showPlaylistOptionsSheet = false
-                            playlistViewModel.refreshWatchAvailability()
-                            showSendToWatchSheet = true
+                            if (activePlaylistBatchTransfer != null) {
+                                // A batch (this playlist's or another's) is already running — show
+                                // its progress instead of letting a second one start concurrently.
+                                showWatchBatchProgressDialog = true
+                            } else {
+                                playlistViewModel.refreshWatchAvailability()
+                                showSendToWatchSheet = true
+                            }
                         }
                     )
                 }
@@ -944,7 +950,12 @@ fun PlaylistDetailScreen(
             isUpdate = isPlaylistOnWatch,
             onDismiss = { showSendToWatchSheet = false },
             onConfirm = {
-                playlistViewModel.sendPlaylistToWatch(currentPlaylist.id, currentPlaylist.name, currentPlaylist.songIds)
+                // Re-check rather than trusting the click above: a batch could have started
+                // elsewhere in the narrow window this sheet was open, and starting a second one
+                // concurrently would contend for the single Bluetooth channel.
+                if (activePlaylistBatchTransfer == null) {
+                    playlistViewModel.sendPlaylistToWatch(currentPlaylist.id, currentPlaylist.name, currentPlaylist.songIds)
+                }
                 showSendToWatchSheet = false
                 showWatchBatchProgressDialog = true
             }

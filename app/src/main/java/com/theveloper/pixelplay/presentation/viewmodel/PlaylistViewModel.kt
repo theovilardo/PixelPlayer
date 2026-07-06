@@ -21,6 +21,7 @@ import com.theveloper.pixelplay.data.service.wear.WatchAudioTranscoder
 import com.theveloper.pixelplay.data.service.wear.WatchPlaylistTransferEstimate
 import com.theveloper.pixelplay.data.service.wear.WatchPlaylistTransferEstimator
 import com.theveloper.pixelplay.data.service.wear.WearPhoneTransferSender
+import com.theveloper.pixelplay.shared.WearTransferProgress
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -107,13 +108,15 @@ class PlaylistViewModel @Inject constructor(
     val watchFreeStorageBytesByNodeId: StateFlow<Map<String, Long>> =
         watchTransferStateStore.watchFreeStorageBytesByNodeId
     val watchSongIds: StateFlow<Set<String>> = watchTransferStateStore.watchSongIds
-    private val _activePlaylistBatchId = MutableStateFlow<String?>(null)
 
-    /** Batch transfer state for whichever playlist we most recently kicked off a send for. */
-    val activePlaylistBatchTransfer: StateFlow<PhoneWatchBatchTransferState?> = kotlinx.coroutines.flow.combine(
-        watchTransferStateStore.batchTransfers,
-        _activePlaylistBatchId,
-    ) { batches, batchId -> batchId?.let { batches[it] } }
+    /**
+     * Whichever playlist batch transfer is currently active, regardless of which screen/ViewModel
+     * instance started it — queried directly off the shared [PhoneWatchTransferStateStore] instead
+     * of remembering "the last batchId this instance kicked off", so screens other than the one
+     * that started the send (e.g. LibraryScreen reopening from its notification chip) still see it.
+     */
+    val activePlaylistBatchTransfer: StateFlow<PhoneWatchBatchTransferState?> = watchTransferStateStore.batchTransfers
+        .map { batches -> batches.values.firstOrNull { it.status !in TERMINAL_BATCH_STATUSES } }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000L),
@@ -124,6 +127,11 @@ class PlaylistViewModel @Inject constructor(
         const val FOLDER_PLAYLIST_PREFIX = "folder_playlist:"
         private const val MANUAL_ORDER_MODE = "manual"
         private const val SMART_PLAYLIST_MAX_ITEMS = 100
+        private val TERMINAL_BATCH_STATUSES = setOf(
+            WearTransferProgress.STATUS_COMPLETED,
+            WearTransferProgress.STATUS_FAILED,
+            WearTransferProgress.STATUS_CANCELLED,
+        )
 
         fun sanitizeFileName(name: String): String {
             val sanitized = name.replace(Regex("[\\\\/:*?\"<>|\\s]+"), "_").trim('_')
@@ -1290,9 +1298,7 @@ class PlaylistViewModel @Inject constructor(
     fun maxWatchFreeStorageBytes(): Long? = watchFreeStorageBytesByNodeId.value.values.maxOrNull()
 
     fun sendPlaylistToWatch(playlistId: String, playlistName: String, songIds: List<String>): String {
-        val batchId = playlistWatchTransferCoordinator.requestPlaylistTransfer(playlistId, playlistName, songIds)
-        _activePlaylistBatchId.value = batchId
-        return batchId
+        return playlistWatchTransferCoordinator.requestPlaylistTransfer(playlistId, playlistName, songIds)
     }
 
     fun cancelPlaylistTransfer(batchId: String) {

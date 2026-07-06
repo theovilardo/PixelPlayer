@@ -486,7 +486,10 @@ fun LibraryScreen(
     val isSortSheetVisible by playerViewModel.isSortingSheetVisible.collectAsStateWithLifecycle()
     val isSendingToWatch by songInfoBottomSheetViewModel.isSendingToWatch.collectAsStateWithLifecycle()
     val activeWatchTransfer by songInfoBottomSheetViewModel.activeWatchTransfer.collectAsStateWithLifecycle()
+    val activePlaylistBatchTransfer by playlistViewModel.activePlaylistBatchTransfer.collectAsStateWithLifecycle()
+    val isTransferringToWatch = isSendingToWatch || activePlaylistBatchTransfer != null
     var showWatchTransferDialog by remember { mutableStateOf(false) }
+    var showWatchBatchProgressDialog by remember { mutableStateOf(false) }
     val canNavigateBackInFolders by remember(playerViewModel) {
         playerViewModel.playerUiState
             .map { uiState -> uiState.currentFolder != null && uiState.folderBackGestureNavigationEnabled }
@@ -512,6 +515,11 @@ fun LibraryScreen(
     LaunchedEffect(activeWatchTransfer?.requestId) {
         if (activeWatchTransfer == null) {
             showWatchTransferDialog = false
+        }
+    }
+    LaunchedEffect(activePlaylistBatchTransfer?.batchId) {
+        if (activePlaylistBatchTransfer == null) {
+            showWatchBatchProgressDialog = false
         }
     }
 
@@ -852,10 +860,10 @@ fun LibraryScreen(
                                 modifier = Modifier,
                                 title = currentTabTitle,
                                 isExpanded = showTabSwitcherSheet,
-                                showIcon = !isSendingToWatch,
+                                showIcon = !isTransferringToWatch,
                                 iconRes = currentTab.iconRes(),
                                 pageIndex = pagerState.currentPage,
-                                compressForWatchTransfer = isSendingToWatch,
+                                compressForWatchTransfer = isTransferringToWatch,
                                 onClick = {
                                     showTabSwitcherSheet = true
                                 },
@@ -874,8 +882,10 @@ fun LibraryScreen(
                         }
                     },
                     actions = {
-                        if (isSendingToWatch) {
-                            val watchTransferProgress = activeWatchTransfer?.progress ?: 0f
+                        if (isTransferringToWatch) {
+                            val currentBatchTransfer = activePlaylistBatchTransfer
+                            val watchTransferProgress = currentBatchTransfer?.overallProgress
+                                ?: (activeWatchTransfer?.progress ?: 0f)
                             val watchTransferPercent = (watchTransferProgress * 100f).toInt().coerceIn(0, 100)
                             Surface(
                                 modifier = Modifier
@@ -883,8 +893,15 @@ fun LibraryScreen(
                                     .wrapContentWidth()
                                     .height(40.dp)
                                     .clip(CircleShape)
-                                    .clickable(enabled = activeWatchTransfer != null) {
-                                        showWatchTransferDialog = true
+                                    .clickable(enabled = currentBatchTransfer != null || activeWatchTransfer != null) {
+                                        // A playlist batch takes priority: it's the more meaningful
+                                        // aggregate view, and its Cancel actually stops the whole
+                                        // batch instead of just the one song currently in flight.
+                                        if (currentBatchTransfer != null) {
+                                            showWatchBatchProgressDialog = true
+                                        } else {
+                                            showWatchTransferDialog = true
+                                        }
                                     },
                                 shape = CircleShape,
                                 color = MaterialTheme.colorScheme.secondaryContainer,
@@ -1827,6 +1844,18 @@ fun LibraryScreen(
             onCancelTransfer = {
                 songInfoBottomSheetViewModel.cancelWatchTransfer(currentWatchTransfer.requestId)
                 showWatchTransferDialog = false
+            }
+        )
+    }
+
+    if (showWatchBatchProgressDialog && activePlaylistBatchTransfer != null) {
+        val currentBatchTransfer = activePlaylistBatchTransfer!!
+        WatchPlaylistBatchProgressDialog(
+            batch = currentBatchTransfer,
+            onDismiss = { showWatchBatchProgressDialog = false },
+            onCancelTransfer = {
+                playlistViewModel.cancelPlaylistTransfer(currentBatchTransfer.batchId)
+                showWatchBatchProgressDialog = false
             }
         )
     }

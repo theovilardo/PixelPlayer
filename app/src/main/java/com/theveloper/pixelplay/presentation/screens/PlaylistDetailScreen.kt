@@ -1368,9 +1368,11 @@ private fun SendPlaylistToWatchSheet(
     }
 }
 
+// Not private: also used by LibraryScreen, which needs to show batch (not per-song) progress
+// when reopening its "sending to watch" chip while a playlist batch transfer is active.
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun WatchPlaylistBatchProgressDialog(
+fun WatchPlaylistBatchProgressDialog(
     batch: PhoneWatchBatchTransferState,
     onDismiss: () -> Unit,
     onCancelTransfer: () -> Unit,

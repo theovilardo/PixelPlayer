@@ -9,7 +9,6 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import java.util.concurrent.TimeUnit
 
 /**
  * Gemini provider implementation.
@@ -19,20 +18,12 @@ import java.util.concurrent.TimeUnit
  * SDK. This keeps generation in lockstep with whatever models the API actually serves,
  * so any model the user selects works as long as their key supports it.
  */
-class GeminiAiClient(private val apiKey: String) : AiClient {
+class GeminiAiClient(private val apiKey: String, private val httpClient: OkHttpClient) : AiClient {
 
     companion object {
         private const val DEFAULT_GEMINI_MODEL = "gemini-3.1-flash-lite"
         private const val BASE_URL = "https://generativelanguage.googleapis.com/v1beta"
-
-
     }
-
-    private val httpClient = OkHttpClient.Builder()
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(60, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS)
-        .build()
 
     private val json = Json {
         ignoreUnknownKeys = true

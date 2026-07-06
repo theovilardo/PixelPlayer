@@ -213,86 +213,6 @@ class SettingsViewModel @Inject constructor(
         .flatMapLatest { provider -> aiPreferencesRepository.getSystemPrompt(AiProvider.fromString(provider)) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AiPreferencesRepository.DEFAULT_SYSTEM_PROMPT)
 
-    // Specific Provider StateFlows for UI Compatibility
-    val geminiApiKey: StateFlow<String> = aiPreferencesRepository.geminiApiKey
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
-    val geminiModel: StateFlow<String> = aiPreferencesRepository.geminiModel
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
-    val geminiSystemPrompt: StateFlow<String> = aiPreferencesRepository.geminiSystemPrompt
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AiPreferencesRepository.DEFAULT_SYSTEM_PROMPT)
-
-    val deepseekApiKey: StateFlow<String> = aiPreferencesRepository.deepseekApiKey
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
-    val deepseekModel: StateFlow<String> = aiPreferencesRepository.deepseekModel
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
-    val deepseekSystemPrompt: StateFlow<String> = aiPreferencesRepository.deepseekSystemPrompt
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AiPreferencesRepository.DEFAULT_DEEPSEEK_SYSTEM_PROMPT)
-
-    val groqApiKey: StateFlow<String> = aiPreferencesRepository.groqApiKey
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
-    val groqModel: StateFlow<String> = aiPreferencesRepository.groqModel
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
-    val groqSystemPrompt: StateFlow<String> = aiPreferencesRepository.groqSystemPrompt
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AiPreferencesRepository.DEFAULT_GROQ_SYSTEM_PROMPT)
-
-    val mistralApiKey: StateFlow<String> = aiPreferencesRepository.mistralApiKey
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
-    val mistralModel: StateFlow<String> = aiPreferencesRepository.mistralModel
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
-    val mistralSystemPrompt: StateFlow<String> = aiPreferencesRepository.mistralSystemPrompt
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AiPreferencesRepository.DEFAULT_MISTRAL_SYSTEM_PROMPT)
-
-    val nvidiaApiKey: StateFlow<String> = aiPreferencesRepository.nvidiaApiKey
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
-    val nvidiaModel: StateFlow<String> = aiPreferencesRepository.nvidiaModel
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
-    val nvidiaSystemPrompt: StateFlow<String> = aiPreferencesRepository.nvidiaSystemPrompt
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AiPreferencesRepository.DEFAULT_NVIDIA_SYSTEM_PROMPT)
-
-    val kimiApiKey: StateFlow<String> = aiPreferencesRepository.kimiApiKey
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
-    val kimiModel: StateFlow<String> = aiPreferencesRepository.kimiModel
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
-    val kimiSystemPrompt: StateFlow<String> = aiPreferencesRepository.kimiSystemPrompt
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AiPreferencesRepository.DEFAULT_KIMI_SYSTEM_PROMPT)
-
-    val glmApiKey: StateFlow<String> = aiPreferencesRepository.glmApiKey
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
-    val glmModel: StateFlow<String> = aiPreferencesRepository.glmModel
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
-    val glmSystemPrompt: StateFlow<String> = aiPreferencesRepository.glmSystemPrompt
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AiPreferencesRepository.DEFAULT_GLM_SYSTEM_PROMPT)
-
-    val openaiApiKey: StateFlow<String> = aiPreferencesRepository.openaiApiKey
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
-    val openaiModel: StateFlow<String> = aiPreferencesRepository.openaiModel
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
-    val openaiSystemPrompt: StateFlow<String> = aiPreferencesRepository.openaiSystemPrompt
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AiPreferencesRepository.DEFAULT_OPENAI_SYSTEM_PROMPT)
-
-    val openrouterApiKey: StateFlow<String> = aiPreferencesRepository.openrouterApiKey
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
-    val openrouterModel: StateFlow<String> = aiPreferencesRepository.openrouterModel
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
-    val openrouterSystemPrompt: StateFlow<String> = aiPreferencesRepository.openrouterSystemPrompt
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AiPreferencesRepository.DEFAULT_OPENROUTER_SYSTEM_PROMPT)
-
-    val ollamaApiKey: StateFlow<String> = aiPreferencesRepository.ollamaApiKey
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
-    val ollamaModel: StateFlow<String> = aiPreferencesRepository.ollamaModel
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
-    val ollamaSystemPrompt: StateFlow<String> = aiPreferencesRepository.ollamaSystemPrompt
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AiPreferencesRepository.DEFAULT_SYSTEM_PROMPT)
-
-    val customApiKey: StateFlow<String> = aiPreferencesRepository.customApiKey
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
-    val customModel: StateFlow<String> = aiPreferencesRepository.customModel
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
-    val customSystemPrompt: StateFlow<String> = aiPreferencesRepository.customSystemPrompt
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AiPreferencesRepository.DEFAULT_SYSTEM_PROMPT)
-    val customBaseUrl: StateFlow<String> = aiPreferencesRepository.customBaseUrl
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
-
     val currentAiBaseUrl: StateFlow<String> = aiProvider
         .flatMapLatest { provider ->
             val p = AiProvider.fromString(provider)
@@ -375,18 +295,6 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun onGeminiModelChange(model: String) = viewModelScope.launch { aiPreferencesRepository.setModel(AiProvider.GEMINI, model) }
-    fun onDeepseekModelChange(model: String) = viewModelScope.launch { aiPreferencesRepository.setModel(AiProvider.DEEPSEEK, model) }
-    fun onGroqModelChange(model: String) = viewModelScope.launch { aiPreferencesRepository.setModel(AiProvider.GROQ, model) }
-    fun onMistralModelChange(model: String) = viewModelScope.launch { aiPreferencesRepository.setModel(AiProvider.MISTRAL, model) }
-    fun onNvidiaModelChange(model: String) = viewModelScope.launch { aiPreferencesRepository.setModel(AiProvider.NVIDIA, model) }
-    fun onKimiModelChange(model: String) = viewModelScope.launch { aiPreferencesRepository.setModel(AiProvider.KIMI, model) }
-    fun onGlmModelChange(model: String) = viewModelScope.launch { aiPreferencesRepository.setModel(AiProvider.GLM, model) }
-    fun onOpenAiModelChange(model: String) = viewModelScope.launch { aiPreferencesRepository.setModel(AiProvider.OPENAI, model) }
-    fun onOpenrouterModelChange(model: String) = viewModelScope.launch { aiPreferencesRepository.setModel(AiProvider.OPENROUTER, model) }
-    fun onOllamaModelChange(model: String) = viewModelScope.launch { aiPreferencesRepository.setModel(AiProvider.OLLAMA, model) }
-    fun onCustomModelChange(model: String) = viewModelScope.launch { aiPreferencesRepository.setModel(AiProvider.CUSTOM, model) }
-
     fun onAiSystemPromptChange(prompt: String) {
         viewModelScope.launch {
             val provider = AiProvider.fromString(aiProvider.value)
@@ -394,36 +302,12 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun onGeminiSystemPromptChange(prompt: String) = viewModelScope.launch { aiPreferencesRepository.setSystemPrompt(AiProvider.GEMINI, prompt) }
-    fun onDeepseekSystemPromptChange(prompt: String) = viewModelScope.launch { aiPreferencesRepository.setSystemPrompt(AiProvider.DEEPSEEK, prompt) }
-    fun onGroqSystemPromptChange(prompt: String) = viewModelScope.launch { aiPreferencesRepository.setSystemPrompt(AiProvider.GROQ, prompt) }
-    fun onMistralSystemPromptChange(prompt: String) = viewModelScope.launch { aiPreferencesRepository.setSystemPrompt(AiProvider.MISTRAL, prompt) }
-    fun onNvidiaSystemPromptChange(prompt: String) = viewModelScope.launch { aiPreferencesRepository.setSystemPrompt(AiProvider.NVIDIA, prompt) }
-    fun onKimiSystemPromptChange(prompt: String) = viewModelScope.launch { aiPreferencesRepository.setSystemPrompt(AiProvider.KIMI, prompt) }
-    fun onGlmSystemPromptChange(prompt: String) = viewModelScope.launch { aiPreferencesRepository.setSystemPrompt(AiProvider.GLM, prompt) }
-    fun onOpenAiSystemPromptChange(prompt: String) = viewModelScope.launch { aiPreferencesRepository.setSystemPrompt(AiProvider.OPENAI, prompt) }
-    fun onOpenrouterSystemPromptChange(prompt: String) = viewModelScope.launch { aiPreferencesRepository.setSystemPrompt(AiProvider.OPENROUTER, prompt) }
-    fun onOllamaSystemPromptChange(prompt: String) = viewModelScope.launch { aiPreferencesRepository.setSystemPrompt(AiProvider.OLLAMA, prompt) }
-    fun onCustomSystemPromptChange(prompt: String) = viewModelScope.launch { aiPreferencesRepository.setSystemPrompt(AiProvider.CUSTOM, prompt) }
-
     fun resetAiSystemPrompt() {
         viewModelScope.launch {
             val provider = AiProvider.fromString(aiProvider.value)
             aiPreferencesRepository.resetSystemPrompt(provider)
         }
     }
-
-    fun resetGeminiSystemPrompt() = viewModelScope.launch { aiPreferencesRepository.resetSystemPrompt(AiProvider.GEMINI) }
-    fun resetDeepseekSystemPrompt() = viewModelScope.launch { aiPreferencesRepository.resetSystemPrompt(AiProvider.DEEPSEEK) }
-    fun resetGroqSystemPrompt() = viewModelScope.launch { aiPreferencesRepository.resetSystemPrompt(AiProvider.GROQ) }
-    fun resetMistralSystemPrompt() = viewModelScope.launch { aiPreferencesRepository.resetSystemPrompt(AiProvider.MISTRAL) }
-    fun resetNvidiaSystemPrompt() = viewModelScope.launch { aiPreferencesRepository.resetSystemPrompt(AiProvider.NVIDIA) }
-    fun resetKimiSystemPrompt() = viewModelScope.launch { aiPreferencesRepository.resetSystemPrompt(AiProvider.KIMI) }
-    fun resetGlmSystemPrompt() = viewModelScope.launch { aiPreferencesRepository.resetSystemPrompt(AiProvider.GLM) }
-    fun resetOpenAiSystemPrompt() = viewModelScope.launch { aiPreferencesRepository.resetSystemPrompt(AiProvider.OPENAI) }
-    fun resetOpenrouterSystemPrompt() = viewModelScope.launch { aiPreferencesRepository.resetSystemPrompt(AiProvider.OPENROUTER) }
-    fun resetOllamaSystemPrompt() = viewModelScope.launch { aiPreferencesRepository.resetSystemPrompt(AiProvider.OLLAMA) }
-    fun resetCustomSystemPrompt() = viewModelScope.launch { aiPreferencesRepository.resetSystemPrompt(AiProvider.CUSTOM) }
 
     fun clearAiUsageData() {
         viewModelScope.launch {

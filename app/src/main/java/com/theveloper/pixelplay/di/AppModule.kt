@@ -586,4 +586,51 @@ object AppModule {
     ): ArtistImageRepository {
         return ArtistImageRepository(deezerApiService, musicDao)
     }
+
+    /**
+     * Qualifier for the Last.fm Retrofit instance.
+     */
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class LastFmRetrofit
+
+    /**
+     * Provides a Retrofit instance configured for the Last.fm API.
+     * Base URL: https://ws.audioscrobbler.com/
+     */
+    @Provides
+    @Singleton
+    @LastFmRetrofit
+    fun provideLastFmRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://ws.audioscrobbler.com/")
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    /**
+     * Provides the Last.fm API service.
+     */
+    @Provides
+    @Singleton
+    fun provideLastFmApiService(@LastFmRetrofit retrofit: Retrofit): com.theveloper.pixelplay.data.network.lastfm.LastFmApiService {
+        return retrofit.create(com.theveloper.pixelplay.data.network.lastfm.LastFmApiService::class.java)
+    }
+
+    /**
+     * Provides the Last.fm repository for scrobbling and now-playing.
+     */
+    @Provides
+    @Singleton
+    fun provideLastFmRepository(
+        lastFmApiService: com.theveloper.pixelplay.data.network.lastfm.LastFmApiService,
+        userPreferencesRepository: UserPreferencesRepository
+    ): com.theveloper.pixelplay.data.lastfm.LastFmRepository {
+        return com.theveloper.pixelplay.data.lastfm.LastFmRepositoryImpl(
+            lastFmApiService = lastFmApiService,
+            userPreferencesRepository = userPreferencesRepository
+        )
+    }
+
 }

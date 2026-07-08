@@ -90,6 +90,20 @@ class UsbAudioSettingsViewModel @Inject constructor(
         .distinctUntilChanged()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
+    /** Software volume (dB) for volume-less DACs, null when the gain stage is off. */
+    val softwareVolumeDb: StateFlow<Float?> = controller.softwareVolumeDb
+
+    val fixedVolumeOutput: StateFlow<Boolean> = userPreferencesRepository.usbFixedVolumeOutputFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+
+    fun setSoftwareVolumeDb(db: Float) {
+        controller.setSoftwareVolumeDb(db)
+    }
+
+    fun setFixedVolumeOutput(fixed: Boolean) {
+        viewModelScope.launch { userPreferencesRepository.setUsbFixedVolumeOutput(fixed) }
+    }
+
     // ─── Debug: raw driver bring-up tone (bypasses ExoPlayer entirely) ────────
 
     private var toneJob: Job? = null

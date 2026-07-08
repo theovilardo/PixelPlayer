@@ -128,6 +128,33 @@ class FormatNegotiatorTest {
     }
 
     @Test
+    fun `preferDeepestDepth picks the deepest adequate alt setting`() {
+        // Volume-less DAC: the software gain stage wants subslot headroom, so a 16-bit
+        // source should land on the 32-bit alt instead of the byte-exact 16-bit one.
+        val result = FormatNegotiator.negotiate(
+            SourceFormat(44_100, 16, 2, isFloat = false), typicalDac, preferDeepestDepth = true
+        )!!
+        assertThat(result.candidate.bitResolution).isEqualTo(32)
+        assertThat(result.sampleRateHz).isEqualTo(44_100)
+        // Widening the subslot is lossless — still bit-perfect at unity gain.
+        assertThat(result.conversion.isBitPerfect).isTrue()
+    }
+
+    @Test
+    fun `preferDeepestDepth never trades an exact rate for depth`() {
+        val dac = caps(
+            candidate(altSetting = 1, bitResolution = 16, rates = listOf(44_100)),
+            candidate(altSetting = 2, bitResolution = 32, subslotBytes = 4, rates = listOf(48_000))
+        )
+        val result = FormatNegotiator.negotiate(
+            SourceFormat(44_100, 16, 2, isFloat = false), dac, preferDeepestDepth = true
+        )!!
+        // Resampling outranks depth preference: stay at 44.1 kHz on the 16-bit alt.
+        assertThat(result.candidate.altSetting).isEqualTo(1)
+        assertThat(result.conversion.resampled).isFalse()
+    }
+
+    @Test
     fun `chooseRate helper table`() {
         val rates = listOf(44_100, 48_000, 88_200, 96_000)
         assertThat(FormatNegotiator.chooseRate(44_100, rates)).isEqualTo(44_100 to false)

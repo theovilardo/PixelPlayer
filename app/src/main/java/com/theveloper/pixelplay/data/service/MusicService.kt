@@ -347,13 +347,33 @@ class MusicService : MediaLibraryService() {
         replayGainProcessor.onTransitionFinished()
     }
 
+    /**
+     * Wraps the player for the media session while USB exclusive mode is engaged so the
+     * phone's volume keys reach the DAC (hardware feature unit or software gain stage).
+     * Reuses the existing wrapper when the underlying player hasn't changed, so the
+     * identity check below keeps working.
+     */
+    private var usbVolumePlayerWrapper: com.theveloper.pixelplay.data.service.player.usb.UsbDeviceVolumePlayer? = null
+
+    private fun sessionPlayerFor(player: Player): Player {
+        if (usbExclusiveModeController.activeSession == null) {
+            usbVolumePlayerWrapper = null
+            return player
+        }
+        usbVolumePlayerWrapper?.takeIf { it.wrappedPlayer === player }?.let { return it }
+        return com.theveloper.pixelplay.data.service.player.usb.UsbDeviceVolumePlayer(
+            player, usbExclusiveModeController
+        ).also { usbVolumePlayerWrapper = it }
+    }
+
     private fun publishMediaSessionPlayer(player: Player, logMessage: String) {
         val session = mediaSession ?: return
+        val target = sessionPlayerFor(player)
         val oldPlayer = session.player
-        if (oldPlayer !== player) {
+        if (oldPlayer !== target) {
             oldPlayer.removeListener(playerListener)
-            session.player = player
-            player.addListener(playerListener)
+            session.player = target
+            target.addListener(playerListener)
         }
 
         Timber.tag("MusicService").d(logMessage)

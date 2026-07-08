@@ -144,6 +144,7 @@ class UserPreferencesRepository @Inject constructor(
         val USB_EXCLUSIVE_MODE_ENABLED = booleanPreferencesKey("usb_exclusive_mode_enabled")
         val USB_REMEMBERED_DEVICES = stringPreferencesKey("usb_remembered_devices_json")
         val USB_EXCLUSIVE_MAX_VOLUME_ACK = booleanPreferencesKey("usb_exclusive_max_volume_ack")
+        val USB_FIXED_VOLUME_OUTPUT = booleanPreferencesKey("usb_fixed_volume_output")
         val CROSSFADE_DURATION = intPreferencesKey("crossfade_duration")
         val CUSTOM_GENRES = stringSetPreferencesKey("custom_genres")
         val CUSTOM_GENRE_ICONS = stringPreferencesKey("custom_genre_icons")
@@ -377,6 +378,14 @@ class UserPreferencesRepository @Inject constructor(
 
     suspend fun setUsbExclusiveMaxVolumeAck(acknowledged: Boolean) {
         dataStore.edit { it[PreferencesKeys.USB_EXCLUSIVE_MAX_VOLUME_ACK] = acknowledged }
+    }
+
+    /** Purist mode: always full-scale output on volume-less DACs (no software gain stage). */
+    val usbFixedVolumeOutputFlow: Flow<Boolean> =
+        pref { it[PreferencesKeys.USB_FIXED_VOLUME_OUTPUT] ?: false }
+
+    suspend fun setUsbFixedVolumeOutput(fixed: Boolean) {
+        dataStore.edit { it[PreferencesKeys.USB_FIXED_VOLUME_OUTPUT] = fixed }
     }
 
     val keepPlayingInBackgroundFlow: Flow<Boolean> =

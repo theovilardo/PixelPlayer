@@ -26,6 +26,16 @@ object PcmRepacker {
         FLOAT(4)
     }
 
+    /** Unity gain in Q16 fixed point — the bit-perfect passthrough value. */
+    const val UNITY_GAIN_Q16: Int = 1 shl 16
+
+    /** Converts an attenuation in dB (≤ 0) to Q16 gain; null/0 dB → [UNITY_GAIN_Q16]. */
+    fun gainQ16FromDb(db: Float?): Int = when {
+        db == null || db >= 0f -> UNITY_GAIN_Q16
+        db <= -90f -> 0
+        else -> (Math.pow(10.0, db / 20.0) * UNITY_GAIN_Q16).toInt()
+    }
+
     /** Bytes [repack] will produce for [inputBytes] of source data. */
     fun outputSize(inputBytes: Int, source: Encoding, sourceChannels: Int, targetChannels: Int, subslotBytes: Int): Int {
         val frameBytes = source.bytesPerSample * sourceChannels
@@ -40,6 +50,12 @@ object PcmRepacker {
      * order. Channel handling: equal counts copy through; mono duplicates into the first two
      * target channels; missing channels are silence; excess source channels are dropped
      * (callers downmix 5.1/7.1 upstream — dropping is only the last-resort fallback).
+     *
+     * [gainQ16] is the software-volume stage for DACs without a hardware volume control:
+     * at [UNITY_GAIN_Q16] samples pass through untouched (the bit-perfect path takes no
+     * multiplication); below unity, scaling happens here in the 32-bit domain — before
+     * subslot packing — so attenuated 16-bit material keeps full fidelity into a
+     * 24/32-bit subslot.
      */
     fun repack(
         input: ByteBuffer,
@@ -47,13 +63,15 @@ object PcmRepacker {
         sourceChannels: Int,
         targetChannels: Int,
         subslotBytes: Int,
-        output: ByteBuffer
+        output: ByteBuffer,
+        gainQ16: Int = UNITY_GAIN_Q16
     ) {
         val in_ = input.duplicate().order(ByteOrder.LITTLE_ENDIAN)
         output.order(ByteOrder.LITTLE_ENDIAN)
         val frameBytes = source.bytesPerSample * sourceChannels
         val frames = (in_.limit() - in_.position()) / frameBytes
 
+        val applyGain = gainQ16 != UNITY_GAIN_Q16
         val copyChannels = minOf(sourceChannels, targetChannels)
         for (frame in 0 until frames) {
             val frameBase = in_.position() + frame * frameBytes
@@ -63,10 +81,13 @@ object PcmRepacker {
                     sourceChannels == 1 && channel == 1 -> 0 // mono → duplicate into R
                     else -> -1 // silence
                 }
-                val s32top = if (sourceChannel >= 0) {
+                var s32top = if (sourceChannel >= 0) {
                     readS32Top(in_, frameBase + sourceChannel * source.bytesPerSample, source)
                 } else {
                     0
+                }
+                if (applyGain) {
+                    s32top = ((s32top.toLong() * gainQ16) shr 16).toInt()
                 }
                 writeSubslot(output, s32top, subslotBytes)
             }

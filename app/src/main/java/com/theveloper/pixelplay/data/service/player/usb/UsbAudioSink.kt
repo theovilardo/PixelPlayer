@@ -117,8 +117,13 @@ class UsbAudioSink(
             isFloat = encoding == PcmRepacker.Encoding.FLOAT
         )
 
-        val format = FormatNegotiator.negotiate(source, session.capabilities)
-            ?: throw AudioSink.ConfigurationException("No negotiable DAC format", inputFormat)
+        val format = FormatNegotiator.negotiate(
+            source,
+            session.capabilities,
+            // No hardware volume → a software gain stage may attenuate; a deeper subslot
+            // keeps the attenuated bits (still bit-perfect while the gain sits at unity).
+            preferDeepestDepth = session.capabilities.volume == null
+        ) ?: throw AudioSink.ConfigurationException("No negotiable DAC format", inputFormat)
 
         val sameStream = negotiated == format && session.currentFormat == format
         if (!sameStream) {
@@ -261,7 +266,9 @@ class UsbAudioSink(
         wireScratch.clear()
         if (keep > 0) wireScratch.put(pendingWire)
         PcmRepacker.repack(
-            stage, stageEncoding, stageChannels, candidate.channels, candidate.subslotBytes, wireScratch
+            stage, stageEncoding, stageChannels, candidate.channels, candidate.subslotBytes,
+            wireScratch,
+            gainQ16 = session.softwareGainQ16
         )
         wireScratch.flip()
         // Swap scratch and pending so the next round reuses the other buffer.

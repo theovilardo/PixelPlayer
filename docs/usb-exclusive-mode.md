@@ -63,10 +63,29 @@ output. The deck/preview player likewise stays on the phone output while a DAC i
 
 If the DAC exposes a UAC feature unit with a master volume, the USB Audio settings screen
 offers a **hardware volume** slider (SET CUR on the feature unit, in the DAC's own 1/256 dB
-steps — the PCM samples are untouched). Otherwise the output is fixed at full scale and the
-screen shows a one-time **line-level warning**. The phone's volume keys do not affect the
-DAC in exclusive mode (there is no AudioTrack); mapping volume keys to the feature unit is
-a possible follow-up via a Media3 device-volume override.
+steps — the PCM samples are untouched).
+
+DACs **without** a hardware volume (dongles wired straight to sensitive IEMs) get a
+**software gain stage** instead of raw full-scale output:
+
+- Attenuation happens in `PcmRepacker` as a single Q16 fixed-point multiply in the 32-bit
+  domain *before* subslot packing, and the negotiator prefers the deepest available subslot
+  (`preferDeepestDepth`) so attenuated 16-bit material keeps its low-order bits in a
+  24/32-bit slot. At **0 dB the multiply is skipped entirely** — unity is the same
+  untouched code path as always, and only then does the UI (and the Now Playing badge)
+  say *bit-perfect*; at any other level the badge appends the attenuation (e.g.
+  `USB • 16bit/44.1kHz • −30dB`).
+- First connect defaults to a safe **−30 dB**, and the slider is capped at **−10 dB**
+  until the user explicitly acknowledges the loudness warning. The chosen level is
+  remembered **per device**.
+- A **Fixed line-level output** toggle bypasses the gain stage completely (purist mode /
+  feeding an external amplifier) and restores the old full-scale behaviour with its
+  warning card.
+
+The phone's **volume keys** control the DAC in exclusive mode: the media-session player is
+wrapped in a `ForwardingPlayer` advertising `PLAYBACK_TYPE_REMOTE` device volume
+(30 steps), which maps onto the hardware feature unit when present, else onto the software
+gain range (−60…0 dB, where the floor mutes).
 
 ## Lifecycle & edge cases
 
@@ -110,7 +129,10 @@ physical DAC (ideally one UAC2 async device with a rate display and one UAC1 don
 8. Replug: permission re-grant (or remembered) → auto-resume if enabled.
 9. Incoming call and alarm: playback pauses and resumes; no mixing into the DAC.
 10. 1-hour screen-off playback: stream survives doze.
-11. Hardware-volume DAC: slider changes loudness; fixed-volume DAC: warning shown.
+11. Hardware-volume DAC: slider changes loudness; volume-less DAC: software slider engages
+    at −30 dB, unlock card gates levels above −10 dB, badge shows the attenuation.
+12. Volume keys change DAC loudness while exclusive (both hardware and software paths);
+    with *Fixed line-level output* on, keys do nothing and output is full scale.
 
 ## Licensing
 

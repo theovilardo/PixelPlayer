@@ -45,7 +45,16 @@ data class NegotiatedFormat(
  */
 object FormatNegotiator {
 
-    fun negotiate(source: SourceFormat, caps: UacCapabilities): NegotiatedFormat? {
+    /**
+     * [preferDeepestDepth]: choose the deepest adequate bit resolution instead of the
+     * tightest. Used for DACs without hardware volume, where a software gain stage may
+     * attenuate — a deeper subslot preserves the attenuated sample's low bits.
+     */
+    fun negotiate(
+        source: SourceFormat,
+        caps: UacCapabilities,
+        preferDeepestDepth: Boolean = false
+    ): NegotiatedFormat? {
         return caps.formats
             .mapNotNull { candidate -> evaluate(source, candidate) }
             .minWithOrNull(
@@ -53,8 +62,9 @@ object FormatNegotiator {
                     { if (it.conversion.downmixed) 1 else 0 },
                     { if (it.conversion.resampled) 1 else 0 },
                     { if (it.conversion.depthReduced) 1 else 0 },
-                    // Tightest adequate depth (24-bit source → prefer 24 over 32)…
-                    { depthOverhead(source, it.candidate) },
+                    // Tightest adequate depth (24-bit source → prefer 24 over 32) unless a
+                    // software volume stage wants headroom — then deepest adequate.
+                    { depthOverhead(source, it.candidate, preferDeepestDepth) },
                     // …then the least-destructive rate choice.
                     { rateDistance(source.sampleRateHz, it.sampleRateHz) },
                     // Stable tiebreak.
@@ -98,10 +108,15 @@ object FormatNegotiator {
     internal fun sameFamily(a: Int, b: Int): Boolean =
         (a % 11_025 == 0) == (b % 11_025 == 0)
 
-    private fun depthOverhead(source: SourceFormat, candidate: FormatCandidate): Int {
+    private fun depthOverhead(
+        source: SourceFormat,
+        candidate: FormatCandidate,
+        preferDeepestDepth: Boolean
+    ): Int {
         val overhead = candidate.bitResolution - source.effectiveBitDepth
         // Inadequate depth sorts after any adequate depth; among inadequate, deeper is better.
-        return if (overhead >= 0) overhead else 1000 - overhead
+        if (overhead < 0) return 1000 - overhead
+        return if (preferDeepestDepth) 64 - candidate.bitResolution else overhead
     }
 
     private fun rateDistance(sourceRate: Int, chosenRate: Int): Long {

@@ -37,6 +37,14 @@ class UsbAudioSession private constructor(
         this.capabilities = capabilities
     }
 
+    /**
+     * Software-volume gain in Q16 fixed point (65536 = unity/bit-perfect). Set by the
+     * exclusive-mode controller for DACs without a hardware volume feature unit; the
+     * audio sink reads it on every buffer. Unity means the gain stage is skipped entirely.
+     */
+    @Volatile
+    var softwareGainQ16: Int = UNITY_GAIN_Q16
+
     private val lock = Any()
     private var closed = false
     private var claimed = false
@@ -248,6 +256,7 @@ class UsbAudioSession private constructor(
 
     companion object {
         const val DEFAULT_RING_BUFFER_MS = 250
+        const val UNITY_GAIN_Q16 = 1 shl 16
 
         /**
          * Wraps an open, permission-granted connection. [capabilities] must come from

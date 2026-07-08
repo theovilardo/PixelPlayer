@@ -116,4 +116,82 @@ class PcmRepackerTest {
         PcmRepacker.repack(input, PcmRepacker.Encoding.PCM_16, 1, 1, 2, out(2))
         assertThat(input.hasRemaining()).isFalse()
     }
+
+    // ─── Software gain stage ──────────────────────────────────────────────────
+
+    @Test
+    fun `unity gain is byte-identical to the no-gain path`() {
+        val plain = out(4)
+        PcmRepacker.repack(buffer(0x34, 0x12, 0xDC, 0xFE), PcmRepacker.Encoding.PCM_16, 2, 2, 2, plain)
+        val unity = out(4)
+        PcmRepacker.repack(
+            buffer(0x34, 0x12, 0xDC, 0xFE), PcmRepacker.Encoding.PCM_16, 2, 2, 2, unity,
+            gainQ16 = PcmRepacker.UNITY_GAIN_Q16
+        )
+        assertThat(unity.bytes()).isEqualTo(plain.bytes())
+    }
+
+    @Test
+    fun `half gain halves samples exactly in the 32-bit domain`() {
+        // s16 0x4000 (s32top 0x40000000) at gain 0.5 → 0x20000000 → 16-bit wire 0x2000
+        val output = out(2)
+        PcmRepacker.repack(
+            buffer(0x00, 0x40), PcmRepacker.Encoding.PCM_16, 1, 1, 2, output,
+            gainQ16 = PcmRepacker.UNITY_GAIN_Q16 / 2
+        )
+        assertThat(output.bytes()).containsExactly(0x00, 0x20).inOrder()
+    }
+
+    @Test
+    fun `attenuated 16-bit material keeps fractional bits in a deeper subslot`() {
+        // Smallest s16 step (0x0001 → s32top 0x00010000) halved is 0x00008000 — below the
+        // 16-bit floor but exactly representable in a 24-bit subslot (0x000080).
+        val output = out(3)
+        PcmRepacker.repack(
+            buffer(0x01, 0x00), PcmRepacker.Encoding.PCM_16, 1, 1, 3, output,
+            gainQ16 = PcmRepacker.UNITY_GAIN_Q16 / 2
+        )
+        assertThat(output.bytes()).containsExactly(0x80, 0x00, 0x00).inOrder()
+    }
+
+    @Test
+    fun `zero gain silences the output`() {
+        val output = out(4)
+        PcmRepacker.repack(
+            buffer(0x34, 0x12, 0xDC, 0xFE), PcmRepacker.Encoding.PCM_16, 2, 2, 2, output,
+            gainQ16 = 0
+        )
+        assertThat(output.bytes()).containsExactly(0x00, 0x00, 0x00, 0x00).inOrder()
+    }
+
+    @Test
+    fun `negative samples attenuate toward zero without wrapping`() {
+        // Most negative 16-bit sample halved: 0x8000 → s32top MIN_VALUE → ÷2 = 0xC0000000
+        val output = out(2)
+        PcmRepacker.repack(
+            buffer(0x00, 0x80), PcmRepacker.Encoding.PCM_16, 1, 1, 2, output,
+            gainQ16 = PcmRepacker.UNITY_GAIN_Q16 / 2
+        )
+        assertThat(output.bytes()).containsExactly(0x00, 0xC0).inOrder()
+    }
+
+    @Test
+    fun `gainQ16FromDb golden values`() {
+        assertThat(PcmRepacker.gainQ16FromDb(null)).isEqualTo(PcmRepacker.UNITY_GAIN_Q16)
+        assertThat(PcmRepacker.gainQ16FromDb(0f)).isEqualTo(PcmRepacker.UNITY_GAIN_Q16)
+        assertThat(PcmRepacker.gainQ16FromDb(-90f)).isEqualTo(0)
+        assertThat(PcmRepacker.gainQ16FromDb(-120f)).isEqualTo(0)
+        // −20 dB is exactly 0.1 linear; −6.02 dB is within one Q16 step of 0.5.
+        assertThat(PcmRepacker.gainQ16FromDb(-20f)).isEqualTo((0.1 * 65536).toInt())
+        val half = PcmRepacker.gainQ16FromDb(-6.0206f)
+        assertThat(half).isAtLeast(32766)
+        assertThat(half).isAtMost(32769)
+        // Monotonic: deeper attenuation never yields a higher gain.
+        var previous = Int.MAX_VALUE
+        for (db in 0 downTo -90) {
+            val gain = PcmRepacker.gainQ16FromDb(db.toFloat())
+            assertThat(gain).isAtMost(previous)
+            previous = gain
+        }
+    }
 }

@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -57,8 +58,14 @@ sealed interface UsbExclusiveState {
         val format: NegotiatedFormat,
         val source: SourceFormat,
         val conversion: Conversion,
-        val hardwareVolume: Boolean
-    ) : UsbExclusiveState
+        val hardwareVolume: Boolean,
+        /** Software volume in dB when the gain stage is engaged; null = unity path only. */
+        val softwareVolumeDb: Float? = null
+    ) : UsbExclusiveState {
+        /** True bit-perfect: no format conversion AND no software attenuation. */
+        val isBitPerfectOutput: Boolean
+            get() = conversion.isBitPerfect && (softwareVolumeDb == null || softwareVolumeDb >= -0.01f)
+    }
 
     /** Something failed; [recoverable] states can be retried from the UI. */
     data class Error(val message: String, val recoverable: Boolean) : UsbExclusiveState
@@ -89,10 +96,20 @@ class UsbExclusiveModeController @Inject constructor(
     var activeSession: UsbAudioSession? = null
         private set
 
+    /** Software volume (dB) while the gain stage is engaged for the current session, else null. */
+    private val _softwareVolumeDb = MutableStateFlow<Float?>(null)
+    val softwareVolumeDb: StateFlow<Float?> = _softwareVolumeDb.asStateFlow()
+
     private val mutex = Mutex()
     private var sessionDevice: UsbDeviceInfo? = null
     private var deniedDeviceKeys = mutableSetOf<String>()
     private var requestedDeviceKeys = mutableSetOf<String>()
+    private var fixedVolumeOutput = false
+    private var maxVolumeAcknowledged = false
+    /** Last known hardware volume fraction, cached so volume keys never block on USB I/O. */
+    @Volatile
+    private var cachedHardwareFraction: Float = 0.5f
+    private var preMuteSoftwareDb: Float? = null
 
     init {
         scope.launch {
@@ -104,6 +121,18 @@ class UsbExclusiveModeController @Inject constructor(
         }
         scope.launch {
             usbDeviceManager.permissionEvents.collect { result -> onPermissionResult(result) }
+        }
+        scope.launch {
+            userPreferencesRepository.usbExclusiveMaxVolumeAckFlow.collect { acknowledged ->
+                maxVolumeAcknowledged = acknowledged
+            }
+        }
+        scope.launch {
+            userPreferencesRepository.usbFixedVolumeOutputFlow.collect { fixed ->
+                fixedVolumeOutput = fixed
+                // Live-apply to the running session: purist mode drops the gain stage.
+                applySoftwareVolumeForCurrentSession()
+            }
         }
     }
 
@@ -136,7 +165,8 @@ class UsbExclusiveModeController @Inject constructor(
                 format = format,
                 source = source,
                 conversion = format.conversion,
-                hardwareVolume = session.capabilities.volume != null
+                hardwareVolume = session.capabilities.volume != null,
+                softwareVolumeDb = _softwareVolumeDb.value
             )
         } else {
             UsbExclusiveState.Ready(device, session.capabilities)
@@ -161,9 +191,12 @@ class UsbExclusiveModeController @Inject constructor(
         val session = activeSession ?: return false
         val range = session.volumeRangeDb256() ?: return false
         val (min, max, resolution) = Triple(range[0], range[1], range[2].coerceAtLeast(1))
-        val target = min + ((max - min) * fraction.coerceIn(0f, 1f)).toInt()
+        val clamped = fraction.coerceIn(0f, 1f)
+        val target = min + ((max - min) * clamped).toInt()
         val stepped = min + ((target - min) / resolution) * resolution
-        return session.setVolumeDb256(stepped)
+        return session.setVolumeDb256(stepped).also { ok ->
+            if (ok) cachedHardwareFraction = clamped
+        }
     }
 
     /** The DAC's current hardware volume as a 0..1 fraction of its range, or null. */
@@ -174,7 +207,144 @@ class UsbExclusiveModeController @Inject constructor(
         val (min, max) = range[0] to range[1]
         if (max <= min) return null
         return ((current - min).toFloat() / (max - min)).coerceIn(0f, 1f)
+            .also { cachedHardwareFraction = it }
     }
+
+    // ─── Software volume (DACs without a hardware feature unit) ────────────────
+
+    /**
+     * Sets the software volume, clamped to the allowed range — and, until the user has
+     * acknowledged the loudness warning, additionally capped at
+     * [UsbRememberedDevice.UNACKNOWLEDGED_CAP_DB]. Returns the dB actually applied,
+     * or null when the gain stage is not in play (hardware volume / fixed output).
+     */
+    fun setSoftwareVolumeDb(db: Float): Float? {
+        val session = activeSession ?: return null
+        if (session.capabilities.volume != null || fixedVolumeOutput) return null
+
+        val cap = if (maxVolumeAcknowledged) {
+            UsbRememberedDevice.MAX_SOFTWARE_VOLUME_DB
+        } else {
+            UsbRememberedDevice.UNACKNOWLEDGED_CAP_DB
+        }
+        val applied = db.coerceIn(UsbRememberedDevice.MIN_SOFTWARE_VOLUME_DB, cap)
+        preMuteSoftwareDb = null
+        session.softwareGainQ16 = gainQ16ForDb(applied)
+        _softwareVolumeDb.value = applied
+        _state.update { state ->
+            if (state is UsbExclusiveState.Active) state.copy(softwareVolumeDb = applied) else state
+        }
+        sessionDevice?.let { device ->
+            scope.launch {
+                val remembered = userPreferencesRepository.usbRememberedDevicesFlow.first()[device.key]
+                userPreferencesRepository.rememberUsbDevice(
+                    device.key,
+                    (remembered ?: UsbRememberedDevice(label = device.displayName))
+                        .copy(softwareVolumeDb = applied)
+                )
+            }
+        }
+        return applied
+    }
+
+    /** Installs (or removes) the gain stage for the current session per device/prefs. */
+    private suspend fun applySoftwareVolumeForCurrentSession() {
+        mutex.withLock { applySoftwareVolumeLocked() }
+    }
+
+    private suspend fun applySoftwareVolumeLocked() {
+        run {
+            val session = activeSession ?: return
+            val device = sessionDevice ?: return
+            if (session.capabilities.volume != null || fixedVolumeOutput) {
+                session.softwareGainQ16 = UsbAudioSession.UNITY_GAIN_Q16
+                _softwareVolumeDb.value = null
+                _state.update { state ->
+                    if (state is UsbExclusiveState.Active) state.copy(softwareVolumeDb = null) else state
+                }
+                return
+            }
+            val rememberedDb = userPreferencesRepository.usbRememberedDevicesFlow.first()[device.key]
+                ?.softwareVolumeDb ?: UsbRememberedDevice.DEFAULT_SOFTWARE_VOLUME_DB
+            val cap = if (maxVolumeAcknowledged) {
+                UsbRememberedDevice.MAX_SOFTWARE_VOLUME_DB
+            } else {
+                UsbRememberedDevice.UNACKNOWLEDGED_CAP_DB
+            }
+            val applied = rememberedDb.coerceIn(UsbRememberedDevice.MIN_SOFTWARE_VOLUME_DB, cap)
+            session.softwareGainQ16 = gainQ16ForDb(applied)
+            _softwareVolumeDb.value = applied
+            _state.update { state ->
+                if (state is UsbExclusiveState.Active) state.copy(softwareVolumeDb = applied) else state
+            }
+            Timber.tag(TAG).i("Software volume engaged at %.0f dB for %s", applied, device.key)
+        }
+    }
+
+
+    // ─── Device-volume mapping (phone volume keys via the media session) ──────
+
+    /** Total steps advertised to the media session's device-volume surface. */
+    val deviceVolumeMaxSteps: Int get() = DEVICE_VOLUME_STEPS
+
+    /** True when volume keys have something to control (hw feature unit or software gain). */
+    fun deviceVolumeAvailable(): Boolean {
+        val session = activeSession ?: return false
+        return session.capabilities.volume != null ||
+            (!fixedVolumeOutput && _softwareVolumeDb.value != null)
+    }
+
+    fun deviceVolumeSteps(): Int {
+        val session = activeSession ?: return 0
+        return if (session.capabilities.volume != null) {
+            (cachedHardwareFraction * DEVICE_VOLUME_STEPS).toInt().coerceIn(0, DEVICE_VOLUME_STEPS)
+        } else {
+            val db = _softwareVolumeDb.value ?: return 0
+            stepsForDb(db)
+        }
+    }
+
+    fun setDeviceVolumeSteps(steps: Int) {
+        val session = activeSession ?: return
+        val clamped = steps.coerceIn(0, DEVICE_VOLUME_STEPS)
+        if (session.capabilities.volume != null) {
+            scope.launch(Dispatchers.IO) {
+                setHardwareVolume(clamped.toFloat() / DEVICE_VOLUME_STEPS)
+            }
+        } else {
+            setSoftwareVolumeDb(dbForSteps(clamped))
+        }
+    }
+
+    fun adjustDeviceVolume(delta: Int) = setDeviceVolumeSteps(deviceVolumeSteps() + delta)
+
+    fun setDeviceMuted(muted: Boolean) {
+        val session = activeSession ?: return
+        if (session.capabilities.volume != null) {
+            scope.launch(Dispatchers.IO) { session.setMute(muted) }
+        } else if (muted) {
+            preMuteSoftwareDb = _softwareVolumeDb.value
+            setSoftwareVolumeDb(UsbRememberedDevice.MIN_SOFTWARE_VOLUME_DB)
+        } else {
+            setSoftwareVolumeDb(preMuteSoftwareDb ?: UsbRememberedDevice.DEFAULT_SOFTWARE_VOLUME_DB)
+        }
+    }
+
+    private fun gainQ16ForDb(db: Float): Int = when {
+        db >= -0.01f -> UsbAudioSession.UNITY_GAIN_Q16
+        db <= UsbRememberedDevice.MIN_SOFTWARE_VOLUME_DB -> 0 // floor = mute
+        else -> (Math.pow(10.0, db / 20.0) * UsbAudioSession.UNITY_GAIN_Q16).toInt()
+    }
+
+    private fun stepsForDb(db: Float): Int =
+        (((db - UsbRememberedDevice.MIN_SOFTWARE_VOLUME_DB) /
+            (UsbRememberedDevice.MAX_SOFTWARE_VOLUME_DB - UsbRememberedDevice.MIN_SOFTWARE_VOLUME_DB)) *
+            DEVICE_VOLUME_STEPS).toInt().coerceIn(0, DEVICE_VOLUME_STEPS)
+
+    private fun dbForSteps(steps: Int): Float =
+        UsbRememberedDevice.MIN_SOFTWARE_VOLUME_DB +
+            (UsbRememberedDevice.MAX_SOFTWARE_VOLUME_DB - UsbRememberedDevice.MIN_SOFTWARE_VOLUME_DB) *
+            steps.toFloat() / DEVICE_VOLUME_STEPS
 
     private suspend fun reconcile(enabled: Boolean, devices: List<UsbDeviceInfo>) {
         mutex.withLock {
@@ -314,10 +484,18 @@ class UsbExclusiveModeController @Inject constructor(
                 activeSession = opened.session
                 sessionDevice = device
                 _state.value = UsbExclusiveState.Ready(device, opened.capabilities)
+                if (opened.capabilities.volume != null) {
+                    // Prime the cache so volume keys have a truthful starting point.
+                    hardwareVolumeFraction()
+                } else {
+                    // Volume-less DAC: engage the software gain stage at the remembered
+                    // (safe-by-default) level before any audio can flow.
+                    applySoftwareVolumeLocked()
+                }
                 Timber.tag(TAG).i(
-                    "USB exclusive ready: %s (%s, rates=%s)",
+                    "USB exclusive ready: %s (%s, rates=%s, swVolume=%s)",
                     device.displayName, opened.capabilities.version,
-                    opened.capabilities.allSampleRatesHz
+                    opened.capabilities.allSampleRatesHz, _softwareVolumeDb.value
                 )
             }
 
@@ -333,6 +511,8 @@ class UsbExclusiveModeController @Inject constructor(
         val device = sessionDevice
         activeSession = null
         sessionDevice = null
+        _softwareVolumeDb.value = null
+        preMuteSoftwareDb = null
         withContext(Dispatchers.IO) { runCatching { session.close() } }
         if (lost && device != null) {
             _sessionLost.tryEmit(device)
@@ -357,6 +537,7 @@ class UsbExclusiveModeController @Inject constructor(
 
     private companion object {
         private const val TAG = "UsbExclusiveMode"
+        private const val DEVICE_VOLUME_STEPS = 30
     }
 }
 

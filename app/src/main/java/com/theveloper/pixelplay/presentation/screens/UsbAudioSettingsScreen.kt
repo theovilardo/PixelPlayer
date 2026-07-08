@@ -180,12 +180,18 @@ fun UsbAudioSettingsScreen(
 
                     item(key = "usb_volume_section") {
                         val hardwareVolume by viewModel.hardwareVolumeFraction.collectAsStateWithLifecycle()
+                        val softwareVolume by viewModel.softwareVolumeDb.collectAsStateWithLifecycle()
+                        val fixedOutput by viewModel.fixedVolumeOutput.collectAsStateWithLifecycle()
                         UsbVolumeSection(
                             capabilities = capabilities,
                             initialVolumeFraction = hardwareVolume,
+                            softwareVolumeDb = softwareVolume,
+                            fixedVolumeOutput = fixedOutput,
                             maxVolumeAcknowledged = uiState.maxVolumeAcknowledged,
                             onAcknowledge = viewModel::acknowledgeMaxVolume,
-                            onVolumeChange = viewModel::setHardwareVolume
+                            onVolumeChange = viewModel::setHardwareVolume,
+                            onSoftwareVolumeChange = viewModel::setSoftwareVolumeDb,
+                            onFixedOutputChange = viewModel::setFixedVolumeOutput
                         )
                     }
 
@@ -339,9 +345,13 @@ private fun UsbDeviceCard(
 private fun UsbVolumeSection(
     capabilities: UacCapabilities,
     initialVolumeFraction: Float?,
+    softwareVolumeDb: Float?,
+    fixedVolumeOutput: Boolean,
     maxVolumeAcknowledged: Boolean,
     onAcknowledge: () -> Unit,
-    onVolumeChange: (Float) -> Unit
+    onVolumeChange: (Float) -> Unit,
+    onSoftwareVolumeChange: (Float) -> Unit,
+    onFixedOutputChange: (Boolean) -> Unit
 ) {
     SettingsSection(
         title = stringResource(R.string.settings_usb_volume_section),
@@ -370,42 +380,112 @@ private fun UsbVolumeSection(
                     )
                 }
             }
-        } else {
-            Surface(
-                color = if (maxVolumeAcknowledged) MaterialTheme.colorScheme.surfaceContainer
-                else MaterialTheme.colorScheme.errorContainer,
-                shape = RoundedCornerShape(16.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            Icons.Rounded.Warning,
-                            null,
-                            tint = if (maxVolumeAcknowledged) MaterialTheme.colorScheme.onSurfaceVariant
-                            else MaterialTheme.colorScheme.onErrorContainer
+            return@SettingsSection
+        }
+
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            if (!fixedVolumeOutput) {
+                // Software gain stage (the DAC has no hardware volume). 0 dB = bit-perfect.
+                var sliderDb by remember(softwareVolumeDb) {
+                    mutableFloatStateOf(softwareVolumeDb ?: -30f)
+                }
+                Surface(
+                    color = MaterialTheme.colorScheme.surfaceContainer,
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(
+                                text = stringResource(R.string.settings_usb_sw_volume_title),
+                                style = MaterialTheme.typography.titleSmall,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Spacer(Modifier.weight(1f))
+                            Text(
+                                text = if (sliderDb >= -0.5f) {
+                                    stringResource(R.string.settings_usb_sw_volume_bit_perfect)
+                                } else {
+                                    String.format(Locale.US, "%.0f dB", sliderDb)
+                                },
+                                style = MaterialTheme.typography.titleSmall,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        Slider(
+                            value = sliderDb,
+                            valueRange = -60f..0f,
+                            onValueChange = { sliderDb = it },
+                            onValueChangeFinished = { onSoftwareVolumeChange(sliderDb) }
                         )
-                        Spacer(Modifier.padding(horizontal = 6.dp))
                         Text(
-                            text = stringResource(R.string.settings_usb_max_volume_warning_title),
-                            style = MaterialTheme.typography.titleSmall,
-                            color = if (maxVolumeAcknowledged) MaterialTheme.colorScheme.onSurface
-                            else MaterialTheme.colorScheme.onErrorContainer
+                            text = stringResource(R.string.settings_usb_sw_volume_subtitle),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
-                    Text(
-                        text = stringResource(R.string.settings_usb_max_volume_warning_text),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = if (maxVolumeAcknowledged) MaterialTheme.colorScheme.onSurfaceVariant
-                        else MaterialTheme.colorScheme.onErrorContainer
-                    )
-                    if (!maxVolumeAcknowledged) {
-                        OutlinedButton(onClick = onAcknowledge) {
-                            Text(stringResource(R.string.settings_usb_max_volume_ack))
+                }
+                if (!maxVolumeAcknowledged) {
+                    Surface(
+                        color = MaterialTheme.colorScheme.errorContainer,
+                        shape = RoundedCornerShape(16.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(Icons.Rounded.Warning, null, tint = MaterialTheme.colorScheme.onErrorContainer)
+                                Spacer(Modifier.padding(horizontal = 6.dp))
+                                Text(
+                                    text = stringResource(R.string.settings_usb_volume_cap_title),
+                                    style = MaterialTheme.typography.titleSmall,
+                                    color = MaterialTheme.colorScheme.onErrorContainer
+                                )
+                            }
+                            Text(
+                                text = stringResource(R.string.settings_usb_volume_cap_text),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onErrorContainer
+                            )
+                            OutlinedButton(onClick = onAcknowledge) {
+                                Text(stringResource(R.string.settings_usb_volume_cap_unlock))
+                            }
                         }
                     }
                 }
+            } else {
+                Surface(
+                    color = MaterialTheme.colorScheme.errorContainer,
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Rounded.Warning, null, tint = MaterialTheme.colorScheme.onErrorContainer)
+                            Spacer(Modifier.padding(horizontal = 6.dp))
+                            Text(
+                                text = stringResource(R.string.settings_usb_max_volume_warning_title),
+                                style = MaterialTheme.typography.titleSmall,
+                                color = MaterialTheme.colorScheme.onErrorContainer
+                            )
+                        }
+                        Text(
+                            text = stringResource(R.string.settings_usb_max_volume_warning_text),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onErrorContainer
+                        )
+                    }
+                }
             }
+            SwitchSettingItem(
+                title = stringResource(R.string.settings_usb_fixed_output_title),
+                subtitle = stringResource(R.string.settings_usb_fixed_output_subtitle),
+                checked = fixedVolumeOutput,
+                onCheckedChange = onFixedOutputChange,
+                leadingIcon = { Icon(Icons.Rounded.VolumeUp, null, tint = MaterialTheme.colorScheme.secondary) }
+            )
         }
     }
 }

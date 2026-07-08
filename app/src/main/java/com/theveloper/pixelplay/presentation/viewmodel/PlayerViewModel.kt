@@ -1250,10 +1250,17 @@ class PlayerViewModel @Inject constructor(
             if (hz % 1000 == 0) "${hz / 1000}kHz"
             else String.format(java.util.Locale.US, "%.1fkHz", hz / 1000.0)
         val bits = active.format.candidate.bitResolution
-        return if (active.conversion.isBitPerfect) {
+        val base = if (active.conversion.isBitPerfect) {
             "USB • ${bits}bit/${kHz(active.format.sampleRateHz)}"
         } else {
             "USB • ${bits}bit/${kHz(active.source.sampleRateHz)}→${kHz(active.format.sampleRateHz)}"
+        }
+        // Software attenuation is not bit-perfect, so the badge must say so.
+        val softDb = active.softwareVolumeDb
+        return if (softDb != null && softDb < -0.05f) {
+            base + String.format(java.util.Locale.US, " • %.0fdB", softDb)
+        } else {
+            base
         }
     }
 

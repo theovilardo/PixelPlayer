@@ -10,6 +10,7 @@ import com.theveloper.pixelplay.usbaudio.descriptor.EndpointSyncType
 import com.theveloper.pixelplay.usbaudio.descriptor.FormatCandidate
 import com.theveloper.pixelplay.usbaudio.descriptor.UacCapabilities
 import com.theveloper.pixelplay.usbaudio.descriptor.UacVersion
+import com.theveloper.pixelplay.usbaudio.descriptor.VolumeCapability
 import com.theveloper.pixelplay.usbaudio.negotiation.NegotiatedFormat
 import io.mockk.every
 import io.mockk.mockk
@@ -40,7 +41,9 @@ class UsbAudioSinkTest {
                 clockSourceId = 0x29, uac1SampleRateControl = false
             )
         ),
-        volume = null
+        // Hardware volume present → the sink negotiates for minimal conversion (matching
+        // depth) instead of preferring the deepest subslot for the software gain stage.
+        volume = VolumeCapability(featureUnitId = 0x0A, hasMasterVolume = true, hasMasterMute = true)
     )
 
     private lateinit var session: UsbAudioSession
@@ -64,6 +67,7 @@ class UsbAudioSinkTest {
 
         session = mockk(relaxed = true) {
             every { capabilities } returns this@UsbAudioSinkTest.capabilities
+            every { softwareGainQ16 } returns UsbAudioSession.UNITY_GAIN_Q16
             every { isAlive } answers { alive }
             every { currentFormat } answers { configuredFormat }
             every { configure(any(), any()) } answers {

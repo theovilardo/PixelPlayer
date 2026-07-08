@@ -39,8 +39,22 @@ internal fun usbDeviceKey(vendorId: Int, productId: Int, serialNumber: String?):
 @Serializable
 data class UsbRememberedDevice(
     val label: String,
-    val autoResume: Boolean = true
-)
+    val autoResume: Boolean = true,
+    /**
+     * Software volume for DACs without a hardware volume control, in dB (−60..0).
+     * Defaults to a safe −30 dB so sensitive IEMs never get blasted at full scale
+     * on first connect. 0 dB = unity = bit-perfect.
+     */
+    val softwareVolumeDb: Float = DEFAULT_SOFTWARE_VOLUME_DB
+) {
+    companion object {
+        const val DEFAULT_SOFTWARE_VOLUME_DB = -30f
+        const val MIN_SOFTWARE_VOLUME_DB = -60f
+        const val MAX_SOFTWARE_VOLUME_DB = 0f
+        /** Without the loudness acknowledgement, software volume is capped here. */
+        const val UNACKNOWLEDGED_CAP_DB = -10f
+    }
+}
 
 sealed interface UsbPermissionResult {
     val device: UsbDeviceInfo

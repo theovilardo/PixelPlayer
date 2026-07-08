@@ -27,6 +27,8 @@ class UsbExclusiveModeControllerTest {
     private val attachedFlow = MutableStateFlow<List<UsbDeviceInfo>>(emptyList())
     private val permissionFlow = MutableSharedFlow<UsbPermissionResult>(extraBufferCapacity = 4)
     private val rememberedFlow = MutableStateFlow<Map<String, UsbRememberedDevice>>(emptyMap())
+    private val ackFlow = MutableStateFlow(false)
+    private val fixedOutputFlow = MutableStateFlow(false)
 
     private val requestedPermissions = mutableListOf<UsbDeviceInfo>()
     private var sessionsOpened = 0
@@ -41,6 +43,8 @@ class UsbExclusiveModeControllerTest {
     private val prefs: UserPreferencesRepository = mockk(relaxed = true) {
         every { usbExclusiveModeEnabledFlow } returns enabledFlow
         every { usbRememberedDevicesFlow } returns rememberedFlow
+        every { usbExclusiveMaxVolumeAckFlow } returns ackFlow
+        every { usbFixedVolumeOutputFlow } returns fixedOutputFlow
         coEvery { rememberUsbDevice(any(), any()) } answers {
             rememberedFlow.value = rememberedFlow.value +
                 (firstArg<String>() to secondArg<UsbRememberedDevice>())
@@ -49,12 +53,15 @@ class UsbExclusiveModeControllerTest {
 
     private var claimResult = true
     private var claimCount = 0
+    private var appliedGainQ16 = UsbAudioSession.UNITY_GAIN_Q16
 
     private val session: UsbAudioSession = mockk(relaxed = true) {
         every { isAlive } returns true
         every { capabilities } returns caps()
         every { claim(any(), any()) } answers { claimCount++; claimResult }
         every { close() } answers { sessionCloseCount++ }
+        every { softwareGainQ16 = any() } answers { appliedGainQ16 = firstArg() }
+        every { softwareGainQ16 } answers { appliedGainQ16 }
     }
 
     private fun caps() = UacCapabilities(
@@ -273,5 +280,93 @@ class UsbExclusiveModeControllerTest {
 
         controller.onSinkFormatChanged(null, null)
         assertThat(controller.state.value).isInstanceOf(UsbExclusiveState.Ready::class.java)
+    }
+
+    // ─── Software volume (fixture DAC has no hardware feature unit) ───────────
+
+    private suspend fun openVolumelessSession(controller: UsbExclusiveModeController) {
+        enabledFlow.value = true
+        attachedFlow.value = listOf(device(permission = true))
+        while (controller.softwareVolumeDb.value == null) kotlinx.coroutines.yield()
+    }
+
+    @Test
+    fun `volume-less DAC engages the gain stage at the safe default before audio flows`() = runTest {
+        val controller = controller()
+        openVolumelessSession(controller)
+
+        assertThat(controller.softwareVolumeDb.value)
+            .isEqualTo(UsbRememberedDevice.DEFAULT_SOFTWARE_VOLUME_DB)
+        val expectedGain =
+            (Math.pow(10.0, UsbRememberedDevice.DEFAULT_SOFTWARE_VOLUME_DB / 20.0) *
+                UsbAudioSession.UNITY_GAIN_Q16).toInt()
+        assertThat(appliedGainQ16).isEqualTo(expectedGain)
+    }
+
+    @Test
+    fun `software volume is capped until the loudness warning is acknowledged`() = runTest {
+        val controller = controller()
+        openVolumelessSession(controller)
+
+        // Asking for full scale only gets the unacknowledged cap…
+        assertThat(controller.setSoftwareVolumeDb(0f))
+            .isEqualTo(UsbRememberedDevice.UNACKNOWLEDGED_CAP_DB)
+        assertThat(controller.softwareVolumeDb.value)
+            .isEqualTo(UsbRememberedDevice.UNACKNOWLEDGED_CAP_DB)
+
+        // …until the acknowledgement lands, then 0 dB (bit-perfect) unlocks.
+        ackFlow.value = true
+        assertThat(controller.setSoftwareVolumeDb(0f)).isEqualTo(0f)
+        assertThat(appliedGainQ16).isEqualTo(UsbAudioSession.UNITY_GAIN_Q16)
+    }
+
+    @Test
+    fun `software volume persists per device and is restored on the next session`() = runTest {
+        val dac = device(permission = true)
+        rememberedFlow.value = mapOf(
+            dac.key to UsbRememberedDevice(label = "Test DAC", softwareVolumeDb = -18f)
+        )
+        val controller = controller()
+        openVolumelessSession(controller)
+
+        // Remembered level restored instead of the -30 dB default.
+        assertThat(controller.softwareVolumeDb.value).isEqualTo(-18f)
+
+        // Changing it writes back to the per-device record.
+        controller.setSoftwareVolumeDb(-24f)
+        while (rememberedFlow.value[dac.key]?.softwareVolumeDb != -24f) kotlinx.coroutines.yield()
+        assertThat(rememberedFlow.value[dac.key]!!.softwareVolumeDb).isEqualTo(-24f)
+    }
+
+    @Test
+    fun `fixed output mode drops the gain stage to unity`() = runTest {
+        val controller = controller()
+        openVolumelessSession(controller)
+
+        fixedOutputFlow.value = true
+        while (controller.softwareVolumeDb.value != null) kotlinx.coroutines.yield()
+
+        assertThat(appliedGainQ16).isEqualTo(UsbAudioSession.UNITY_GAIN_Q16)
+        // The slider has nothing to control in purist mode.
+        assertThat(controller.setSoftwareVolumeDb(-20f)).isNull()
+        assertThat(controller.deviceVolumeAvailable()).isFalse()
+    }
+
+    @Test
+    fun `volume keys map onto the software gain range`() = runTest {
+        val controller = controller()
+        openVolumelessSession(controller)
+
+        assertThat(controller.deviceVolumeAvailable()).isTrue()
+        // −30 dB inside −60..0 is the midpoint of the 30-step scale.
+        assertThat(controller.deviceVolumeSteps()).isEqualTo(15)
+
+        controller.adjustDeviceVolume(+1)
+        assertThat(controller.softwareVolumeDb.value).isEqualTo(-28f)
+
+        controller.setDeviceVolumeSteps(0)
+        assertThat(controller.softwareVolumeDb.value)
+            .isEqualTo(UsbRememberedDevice.MIN_SOFTWARE_VOLUME_DB)
+        assertThat(appliedGainQ16).isEqualTo(0) // floor mutes outright
     }
 }

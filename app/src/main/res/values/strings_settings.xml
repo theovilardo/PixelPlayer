@@ -674,4 +674,12 @@
     <string name="settings_usb_max_volume_ack">Got it</string>
     <string name="settings_usb_test_tone">Play test tone</string>
     <string name="settings_usb_retry">Retry</string>
+    <string name="settings_usb_sw_volume_title">Software volume</string>
+    <string name="settings_usb_sw_volume_bit_perfect">Bit-perfect</string>
+    <string name="settings_usb_sw_volume_subtitle">This DAC has no volume control, so PixelPlay attenuates the signal before sending it. At 0 dB the stream is bit-perfect but plays at full line level.</string>
+    <string name="settings_usb_volume_cap_title">Volume capped for safety</string>
+    <string name="settings_usb_volume_cap_text">Levels above −10 dB are locked until you confirm your headphones or amplifier can handle full line-level output. Full scale into sensitive IEMs can be dangerously loud.</string>
+    <string name="settings_usb_volume_cap_unlock">I understand, unlock full volume</string>
+    <string name="settings_usb_fixed_output_title">Fixed line-level output</string>
+    <string name="settings_usb_fixed_output_subtitle">Bypass the software volume entirely and always output at full scale — for feeding an external amplifier</string>
 </resources>

@@ -1,6 +1,10 @@
 name: opencode
 
 on:
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened]
   issue_comment:
     types: [created]
   pull_request_review_comment:
@@ -9,6 +13,8 @@ on:
 jobs:
   opencode:
     if: |
+      github.event_name == 'issues' ||
+      github.event_name == 'pull_request' ||
       contains(github.event.comment.body, ' /oc') ||
       startsWith(github.event.comment.body, '/oc') ||
       contains(github.event.comment.body, ' /opencode') ||
@@ -17,8 +23,8 @@ jobs:
     permissions:
       id-token: write
       contents: read
-      pull-requests: read
-      issues: read
+      pull-requests: write
+      issues: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6

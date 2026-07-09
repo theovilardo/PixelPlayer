@@ -92,7 +92,9 @@ fun LibraryAlbumsTab(
     onAlbumLongPress: (Album) -> Unit = {},
     onAlbumSelectionToggle: (Album) -> Unit = {},
     getSelectionIndex: (Long) -> Int? = { null },
-    storageFilter: StorageFilter = StorageFilter.ALL
+    storageFilter: StorageFilter = StorageFilter.ALL,
+    listState: androidx.compose.foundation.lazy.LazyListState = androidx.compose.foundation.lazy.rememberLazyListState(),
+    gridState: androidx.compose.foundation.lazy.grid.LazyGridState = androidx.compose.foundation.lazy.grid.rememberLazyGridState()
 ) {
     val hasCurrentSong by remember(playerViewModel) {
         playerViewModel.stablePlayerState
@@ -100,10 +102,8 @@ fun LibraryAlbumsTab(
             .distinctUntilChanged()
     }.collectAsStateWithLifecycle(initialValue = false)
 
-    val gridState = rememberLazyGridState()
-    val listState = rememberLazyListState()
-    val dummyListState = rememberLazyListState()
-    val dummyGridState = rememberLazyGridState()
+    val dummyListState = androidx.compose.foundation.lazy.rememberLazyListState()
+    val dummyGridState = androidx.compose.foundation.lazy.grid.rememberLazyGridState()
     val context = LocalContext.current
     val imageLoader = context.imageLoader
 
@@ -481,7 +481,8 @@ fun LibraryArtistsTab(
     onArtistClick: (Long) -> Unit,
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
-    storageFilter: StorageFilter = StorageFilter.ALL
+    storageFilter: StorageFilter = StorageFilter.ALL,
+    listState: androidx.compose.foundation.lazy.LazyListState = androidx.compose.foundation.lazy.rememberLazyListState()
 ) {
     val hasCurrentSong by remember(playerViewModel) {
         playerViewModel.stablePlayerState
@@ -489,8 +490,7 @@ fun LibraryArtistsTab(
             .distinctUntilChanged()
     }.collectAsStateWithLifecycle(initialValue = false)
 
-    val listState = rememberLazyListState()
-    val dummyListState = rememberLazyListState()
+    val dummyListState = androidx.compose.foundation.lazy.rememberLazyListState()
     val artistFastScrollLabelProvider = remember(artists, currentArtistSortOption) {
         { index: Int ->
             artistFastScrollLabel(

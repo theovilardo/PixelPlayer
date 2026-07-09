@@ -438,6 +438,10 @@ fun LibraryScreen(
     songInfoBottomSheetViewModel: SongInfoBottomSheetViewModel = hiltViewModel()
 ) {
     // La recolección de estados de alto nivel se mantiene mínima.
+    val albumsListState = androidx.compose.foundation.lazy.rememberLazyListState()
+    val albumsGridState = androidx.compose.foundation.lazy.grid.rememberLazyGridState()
+    val songsListState = androidx.compose.foundation.lazy.rememberLazyListState()
+    val artistsListState = androidx.compose.foundation.lazy.rememberLazyListState()
     val context = LocalContext.current // Added context
     val haptic = LocalHapticFeedback.current
     val lastTabIndex by playerViewModel.lastLibraryTabIndexFlow.collectAsStateWithLifecycle()
@@ -1533,7 +1537,8 @@ fun LibraryScreen(
                                             onRegisterLocateCurrentSongAction = { songsLocateAction = it },
                                             sortOption = playerUiState.currentSongSortOption,
                                             storageFilter = playerUiState.currentStorageFilter,
-                                            hasCurrentSong = hasCurrentSong
+                                            hasCurrentSong = hasCurrentSong,
+                                            listState = songsListState
                                         )
                                     }
                                     LibraryTabId.ALBUMS -> {
@@ -1563,7 +1568,9 @@ fun LibraryScreen(
                                             onAlbumLongPress = onAlbumLongPress,
                                             onAlbumSelectionToggle = onAlbumSelectionToggle,
                                             getSelectionIndex = getAlbumSelectionIndex,
-                                            storageFilter = playerUiState.currentStorageFilter
+                                            storageFilter = playerUiState.currentStorageFilter,
+                                            listState = albumsListState,
+                                            gridState = albumsGridState
                                         )
                                     }
 
@@ -1585,7 +1592,8 @@ fun LibraryScreen(
                                             },
                                             isRefreshing = isRefreshing,
                                             onRefresh = onRefresh,
-                                            storageFilter = playerUiState.currentStorageFilter
+                                            storageFilter = playerUiState.currentStorageFilter,
+                                            listState = artistsListState
                                         )
                                     }
 

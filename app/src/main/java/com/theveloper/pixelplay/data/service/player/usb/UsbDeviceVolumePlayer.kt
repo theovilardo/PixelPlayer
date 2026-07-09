@@ -27,6 +27,25 @@ class UsbDeviceVolumePlayer(
         .setMaxVolume(controller.deviceVolumeMaxSteps)
         .build()
 
+    /**
+     * The wrapped ExoPlayer is built without `setDeviceVolumeControlEnabled(true)`, so it
+     * does not advertise the device-volume commands — and the media session downgrades a
+     * remote device without them to VOLUME_CONTROL_FIXED (volume keys ignored). Advertise
+     * them here; the overrides below are the implementation.
+     */
+    override fun getAvailableCommands(): Player.Commands =
+        super.getAvailableCommands()
+            .buildUpon()
+            .addAll(
+                Player.COMMAND_GET_DEVICE_VOLUME,
+                Player.COMMAND_SET_DEVICE_VOLUME_WITH_FLAGS,
+                Player.COMMAND_ADJUST_DEVICE_VOLUME_WITH_FLAGS
+            )
+            .build()
+
+    override fun isCommandAvailable(command: Int): Boolean =
+        availableCommands.contains(command)
+
     override fun getDeviceInfo(): DeviceInfo =
         if (controller.deviceVolumeAvailable()) remoteDeviceInfo else super.getDeviceInfo()
 

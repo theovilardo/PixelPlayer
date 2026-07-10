@@ -55,4 +55,7 @@ sealed class Screen(val route: String) {
     object NavidromeDashboard : Screen("navidrome_dashboard")
     object JellyfinDashboard : Screen("jellyfin_dashboard")
 
+    /** Offline local NLP command parser screen. */
+    object NlpCommand : Screen("nlp_command")
+
 }

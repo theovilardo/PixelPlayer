@@ -10,6 +10,7 @@
     <string name="nav_bar_home">Home</string>
     <string name="nav_bar_search">Search</string>
     <string name="nav_bar_library">Library</string>
+    <string name="nav_bar_smart">Smart</string>
 
     <!-- All files access dialog-->
     <string name="all_files_access_title">Special Permission Required</string>

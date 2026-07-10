@@ -60,6 +60,7 @@ import com.theveloper.pixelplay.presentation.viewmodel.PlayerViewModel
 import com.theveloper.pixelplay.presentation.viewmodel.PlaylistViewModel
 import kotlinx.coroutines.flow.first
 import com.theveloper.pixelplay.presentation.components.ScreenWrapper
+import com.theveloper.pixelplay.presentation.nlp.NlpCommandScreen
 
 @OptIn(UnstableApi::class)
 @SuppressLint("UnrememberedGetBackStackEntry")
@@ -492,6 +493,13 @@ fun AppNavigation(
                     com.theveloper.pixelplay.presentation.jellyfin.dashboard.JellyfinDashboardScreen(
                         onBack = { navController.popBackStack() }
                     )
+                }
+            }
+            composable(
+                Screen.NlpCommand.route,
+            ) {
+                ScreenWrapper(navController = navController, playerViewModel = playerViewModel, animatedVisibilityScope = this) {
+                    NlpCommandScreen()
                 }
             }
         }

@@ -54,6 +54,10 @@ class UsbAudioSink(
     private var wireScratch: ByteBuffer = EMPTY_BUFFER
     private var pcm16Scratch: ByteBuffer = EMPTY_BUFFER
 
+    /** Reused per-processor accumulators so the conversion path stays allocation-free. */
+    private var downmixScratch: ByteBuffer = EMPTY_HEAP
+    private var resampleScratch: ByteBuffer = EMPTY_HEAP
+
     private var startMediaTimeUs = 0L
     private var startMediaTimeSet = false
     private var flushBaseFrames = 0L
@@ -238,7 +242,7 @@ class UsbAudioSink(
         var stageChannels = source.channels
 
         downmixProcessor?.let { processor ->
-            stage = pushThrough(processor, stage)
+            stage = pushThrough(processor, stage, downmixScratch).also { downmixScratch = it }
             stageChannels = 2
         }
 
@@ -252,7 +256,7 @@ class UsbAudioSink(
                 stage = pcm16Scratch
                 stageEncoding = PcmRepacker.Encoding.PCM_16
             }
-            stage = pushThrough(processor, stage)
+            stage = pushThrough(processor, stage, resampleScratch).also { resampleScratch = it }
         }
 
         val candidate = format.candidate
@@ -280,14 +284,18 @@ class UsbAudioSink(
     }
 
     /**
-     * Runs [input] fully through an [AudioProcessor], accumulating every output chunk.
+     * Runs [input] fully through an [AudioProcessor], accumulating every output chunk into
+     * [scratch] (grown as needed — the caller stores the returned buffer back for reuse).
      * Only used on conversion paths (downmix/resample) — never on the bit-perfect path.
      */
-    private fun pushThrough(processor: AudioProcessor, input: ByteBuffer): ByteBuffer {
-        var accumulator = ByteBuffer.allocate(maxOf(input.remaining() * 2, 4096))
+    private fun pushThrough(processor: AudioProcessor, input: ByteBuffer, scratch: ByteBuffer): ByteBuffer {
+        var accumulator = scratch
+        accumulator.clear()
         fun append(chunk: ByteBuffer) {
             if (chunk.remaining() > accumulator.remaining()) {
-                val grown = ByteBuffer.allocate((accumulator.position() + chunk.remaining()) * 2)
+                val grown = ByteBuffer
+                    .allocate(maxOf((accumulator.position() + chunk.remaining()) * 2, 4096))
+                    .order(ByteOrder.LITTLE_ENDIAN)
                 accumulator.flip()
                 grown.put(accumulator)
                 accumulator = grown
@@ -473,6 +481,7 @@ class UsbAudioSink(
     private companion object {
         const val TAG = "UsbAudioSink"
         val EMPTY_BUFFER: ByteBuffer = ByteBuffer.allocateDirect(0).order(ByteOrder.LITTLE_ENDIAN)
+        val EMPTY_HEAP: ByteBuffer = ByteBuffer.allocate(0).order(ByteOrder.LITTLE_ENDIAN)
 
         fun ensureCapacity(buffer: ByteBuffer, needed: Int): ByteBuffer =
             if (buffer.capacity() >= needed) buffer

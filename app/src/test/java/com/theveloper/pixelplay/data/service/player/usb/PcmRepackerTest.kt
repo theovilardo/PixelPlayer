@@ -36,6 +36,34 @@ class PcmRepackerTest {
     }
 
     @Test
+    fun `s24 to 24-bit subslot is a pass-through`() {
+        // One stereo 24-bit frame — exercises the bulk-copy fast path.
+        val input = buffer(0x56, 0x34, 0x12, 0xAB, 0xCD, 0xEF)
+        val output = out(6)
+        PcmRepacker.repack(input, PcmRepacker.Encoding.PCM_24, 2, 2, 3, output)
+        assertThat(output.bytes()).containsExactly(0x56, 0x34, 0x12, 0xAB, 0xCD, 0xEF).inOrder()
+    }
+
+    @Test
+    fun `s32 to 32-bit subslot is a pass-through`() {
+        val input = buffer(0x01, 0x02, 0x03, 0x04, 0xFC, 0xFD, 0xFE, 0xFF)
+        val output = out(8)
+        PcmRepacker.repack(input, PcmRepacker.Encoding.PCM_32, 2, 2, 4, output)
+        assertThat(output.bytes())
+            .containsExactly(0x01, 0x02, 0x03, 0x04, 0xFC, 0xFD, 0xFE, 0xFF).inOrder()
+    }
+
+    @Test
+    fun `pass-through drops a trailing partial frame like the general path`() {
+        // 1.5 stereo s16 frames: only the whole frame is emitted, input fully consumed.
+        val input = buffer(0x34, 0x12, 0xDC, 0xFE, 0x99, 0x88)
+        val output = out(8)
+        PcmRepacker.repack(input, PcmRepacker.Encoding.PCM_16, 2, 2, 2, output)
+        assertThat(output.bytes()).containsExactly(0x34, 0x12, 0xDC, 0xFE).inOrder()
+        assertThat(input.hasRemaining()).isFalse()
+    }
+
+    @Test
     fun `s24 to 32-bit subslot left-justifies`() {
         // One mono sample 0x123456 → 0x12345600 LE
         val input = buffer(0x56, 0x34, 0x12)

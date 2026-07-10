@@ -72,6 +72,20 @@ object PcmRepacker {
         val frames = (in_.limit() - in_.position()) / frameBytes
 
         val applyGain = gainQ16 != UNITY_GAIN_Q16
+
+        // Identity fast path: integer PCM whose wire layout equals its source layout
+        // (16→2-byte, 24→3-byte, 32→4-byte subslot, same channels, unity gain) survives
+        // read/write unchanged sample-for-sample, so whole frames bulk-copy instead of
+        // going through the per-sample loop. This is the common bit-perfect case.
+        if (!applyGain && source != Encoding.FLOAT &&
+            source.bytesPerSample == subslotBytes && sourceChannels == targetChannels
+        ) {
+            in_.limit(in_.position() + frames * frameBytes) // drop any trailing partial frame
+            output.put(in_)
+            input.position(input.limit())
+            return
+        }
+
         val copyChannels = minOf(sourceChannels, targetChannels)
         for (frame in 0 until frames) {
             val frameBase = in_.position() + frame * frameBytes

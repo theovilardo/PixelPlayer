@@ -612,7 +612,8 @@ class MainActivity : ComponentActivity() {
             persistentListOf(
                 BottomNavItem("Home", R.string.nav_bar_home, R.drawable.rounded_home_24, R.drawable.home_24_rounded_filled, Screen.Home),
                 BottomNavItem("Search", R.string.nav_bar_search, R.drawable.rounded_search_24, R.drawable.rounded_search_24, Screen.Search),
-                BottomNavItem("Library", R.string.nav_bar_library, R.drawable.rounded_library_music_24, R.drawable.round_library_music_24, Screen.Library)
+                BottomNavItem("Library", R.string.nav_bar_library, R.drawable.rounded_library_music_24, R.drawable.round_library_music_24, Screen.Library),
+                BottomNavItem("Smart", R.string.nav_bar_smart, R.drawable.rounded_all_inclusive_24, R.drawable.rounded_all_inclusive_24, Screen.NlpCommand)
             )
         }
         val navBackStackEntry by navController.currentBackStackEntryAsState()

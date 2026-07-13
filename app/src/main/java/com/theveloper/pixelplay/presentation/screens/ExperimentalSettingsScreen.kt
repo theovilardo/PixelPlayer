@@ -43,7 +43,6 @@ import androidx.compose.material.icons.rounded.Rectangle
 import androidx.compose.material.icons.rounded.Title
 import androidx.compose.material.icons.rounded.ViewCarousel
 import androidx.compose.material.icons.rounded.BlurOn
-import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
@@ -788,9 +787,6 @@ fun ExperimentalSettingsScreen(
                            }
                         }
                     }
-                }
-            }
-
             item(key = "experimental_bottom_spacer") {
                 Spacer(modifier = Modifier.height(MiniPlayerHeight + 36.dp))
             }

@@ -170,6 +170,7 @@
     <string name="settings_language_korean">Coréen</string>
     <string name="settings_language_norwegian_bokmal">Norvégien (Bokmål)</string>
     <string name="settings_language_turkish">Turc</string>
+    <string name="settings_language_japanese">Japonais</string>
     <string name="settings_app_theme_title">Thème de l\'application</string>
     <string name="settings_app_theme_subtitle">Passer du mode clair au mode sombre, ou suivre l\'apparence du système.</string>
     <string name="settings_theme_light">Thème clair</string>

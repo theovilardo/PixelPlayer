@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PixelPlayer</string>
+    <string name="app_tagline">音楽プレイヤー</string>
+    <string name="app_name_change_title">アプリ名の変更について</string>
+    <string name="app_name_change_message">商標上の理由により、アプリ名を PixelPlay から PixelPlayer に変更しました。引き続きお楽しみください！</string>
+    <string name="app_name_change_do_not_show_again">今後表示しない</string>
+
+    <!-- Navigation Bar Labels -->
+    <string name="nav_bar_home">ホーム</string>
+    <string name="nav_bar_search">検索</string>
+    <string name="nav_bar_library">ライブラリ</string>
+
+    <!-- All files access dialog-->
+    <string name="all_files_access_title">特別な権限が必要です</string>
+    <string name="all_files_access_description">曲のメタデータ（.mp3 ファイル）を編集するには、PixelPlayer にすべてのファイルへの特別なアクセス権限が必要です。これにより、トラックのタグを直接変更できます。メタデータ編集を有効にするには、次の画面でこの権限を許可してください。</string>
+    <string name="grant_permission_button">権限を許可</string>
+
+    <!-- External Player -->
+    <string name="external_queue_label">すぐに再生</string>
+    <string name="external_playback_error">このオーディオファイルを開けませんでした。</string>
+    <string name="external_action_open_full_player">フルプレイヤーを開く</string>
+
+    <!-- App Shortcuts -->
+    <string name="shortcut_shuffle_short">シャッフル</string>
+    <string name="shortcut_shuffle_long">すべての曲をシャッフル</string>
+    <string name="tile_shuffle_all">すべてシャッフル</string>
+    <string name="tile_last_playlist">最後のプレイリスト</string>
+    <string name="tile_last_playlist_unavailable">開けるプレイリストがありません</string>
+
+    <!-- Playstore Announcement -->
+    <string name="playstore_dialog_action_open">Play ストアを開く</string>
+    <string name="playstore_dialog_action_continue_beta">ベータを続ける</string>
+    <string name="playstore_dialog_link_pending">Play ストアのリンクは GitHub の設定から有効化されます。</string>
+    <string name="playstore_dialog_title">PixelPlayer が Google Play で公開されました</string>
+    <string name="playstore_dialog_body">リリース更新は Google Play の安定版チャンネルをご利用ください。ベータビルドも引き続き提供されます。</string>
+    <string name="playstore_dialog_app_name">PixelPlayer</string>
+    <string name="playstore_dialog_release_announcement">リリースのお知らせ</string>
+    <string name="playstore_dialog_coming_soon">近日公開</string>
+
+    <!-- Brick breaker -->
+    <string name="easter_egg_thank_you">PixelPlayer をご利用いただきありがとうございます！</string>
+    <string name="brick_high">ハイスコア %1$d</string>
+    <string name="brick_cd_close">閉じる</string>
+    <string name="brick_stat_score">スコア</string>
+    <string name="brick_stat_lvl">レベル %1$d</string>
+    <string name="brick_stat_lives">ライフ</string>
+    <string name="brick_level_complete">レベルクリア！</string>
+    <string name="brick_game_over">ゲームオーバー</string>
+    <string name="brick_score_line">スコア: %1$d</string>
+    <string name="brick_try_again">もう一度？</string>
+    <string name="brick_next_level">次のレベル</string>
+    <string name="brick_restart">ゲームを再起動</string>
+    <string name="brick_tap_relaunch">タップして再起動</string>
+    <string name="brick_play_random">ランダムに音楽を再生</string>
+    <string name="brick_title">ブロック崩し</string>
+    <string name="brick_high_score">ハイスコア %1$d</string>
+    <string name="brick_play">プレイ</string>
+    <string name="brick_drag_paddle">ドラッグしてパドルを動かす</string>
+
+    <!-- Music Service -->
+    <string name="close_notification_player">プレイヤーを閉じる</string>
+    <string name="service_processing_action">再生操作を処理中…</string>
+    <string name="player_playback_error">再生エラー: %1$s</string>
+
+    <!-- Common Text & Labels -->
+    <string name="common_back">戻る</string>
+    <string name="common_ok">OK</string>
+    <string name="common_cancel">キャンセル</string>
+    <string name="common_dismiss">閉じる</string>
+    <string name="common_error">エラー</string>
+    <string name="common_search">検索</string>
+    <string name="common_clear_search">検索をクリア</string>
+    <string name="common_all">すべて</string>
+    <string name="common_confirm">確認</string>
+    <string name="common_saved">保存しました！</string>
+    <string name="common_selected">選択済み</string>
+    <string name="common_percentage_text">%1$d%%</string>
+    <string name="common_artist">アーティスト</string>
+    <string name="common_select_all">すべて選択</string>
+    <string name="common_clear">クリア</string>
+    <string name="common_error_unknown">不明なエラー</string>
+
+    <!-- Common Actions & Labels -->
+    <string name="common_save">保存</string>
+    <string name="common_done">完了</string>
+    <string name="common_reset">リセット</string>
+    <string name="common_apply">適用</string>
+    <string name="common_shuffle">シャッフル</string>
+    <string name="common_copy">コピー</string>
+    <string name="common_share">共有</string>
+    <string name="common_undo">元に戻す</string>
+    <string name="common_import">インポート</string>
+    <string name="common_delete">削除</string>
+    <string name="common_export">エクスポート</string>
+    <string name="common_merge">結合</string>
+    <string name="common_rename">名前を変更</string>
+    <string name="common_create">作成</string>
+    <string name="common_lyrics">歌詞</string>
+    <string name="common_settings">設定</string>
+    <string name="common_album_art">アルバムアート</string>
+    <string name="common_playlist">プレイリスト</string>
+    <string name="common_unknown_track">不明なトラック</string>
+    <string name="common_unknown_artist">不明なアーティスト</string>
+    <string name="common_unknown_album">不明なアルバム</string>
+    <string name="common_close">閉じる</string>
+    <string name="common_add">追加</string>
+    <string name="common_remove">削除</string>
+    <string name="common_play">再生</string>
+    <string name="common_previous_track">前のトラック</string>
+    <string name="common_next_track">次のトラック</string>
+    <string name="common_favorite">お気に入り</string>
+    <string name="common_pause">一時停止</string>
+    <string name="common_repeat">リピート</string>
+    <string name="common_options">オプション</string>
+    <string name="common_shuffle_play">シャッフル再生</string>
+    <string name="common_more_options_for">%1$s のその他のオプション</string>
+    <string name="common_expand_menu">メニューを展開</string>
+    <string name="common_next">次へ</string>
+    <string name="common_finish">完了</string>
+    <string name="common_reset_defaults">デフォルトに戻す</string>
+    <string name="common_export_all">すべてエクスポート</string>
+    <string name="common_merge_all">すべて結合</string>
+    <string name="common_share_all">すべて共有</string>
+    <string name="common_play_album">アルバムを再生</string>
+    <string name="common_shuffle_play_album">アルバムをシャッフル再生</string>
+    <string name="common_album_art_for_title">%1$s のアルバムアート</string>
+</resources>

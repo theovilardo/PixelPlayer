@@ -174,6 +174,7 @@
     <string name="settings_language_korean">Koreansk</string>
     <string name="settings_language_norwegian_bokmal">Norsk bokmål</string>
     <string name="settings_language_turkish">Tyrkisk</string>
+    <string name="settings_language_japanese">Japansk</string>
     <string name="settings_app_theme_title">App-tema</string>
     <string name="settings_app_theme_subtitle">Bytt mellom lyst, mørkt eller følg systemets utseende.</string>
     <string name="settings_theme_light">Lyst tema</string>

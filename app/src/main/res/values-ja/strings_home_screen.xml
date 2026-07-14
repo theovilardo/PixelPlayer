@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Top Bar -->
+    <string name="topbar_beta_letter">β</string>
+    <string name="topbar_beta_label">ベータ</string>
+    <string name="topbar_cd_cloud_streaming">クラウドストリーミング</string>
+    <string name="topbar_cd_changelog">変更履歴</string>
+    <string name="topbar_cloud_streaming_title">クラウドストリーミング</string>
+    <string name="topbar_cloud_streaming_subtitle">クラウドアカウントから音楽をストリーミング</string>
+
+    <!-- BetaInfoBottomSheet -->
+    <string name="beta_sheet_version">Beta 0.7.0</string>
+    <string name="beta_sheet_letter">β</string>
+    <string name="beta_sheet_welcome_title">PixelPlayer 0.7.0-beta へようこそ</string>
+    <string name="beta_sheet_welcome_body">バグ、クラッシュ、または試験的な機能が含まれている可能性があるベータビルドを使用しています。問題を報告して改善にご協力ください。</string>
+    <string name="beta_sheet_expect_title">期待されること</string>
+    <string name="beta_sheet_expect_1">バグ、クラッシュ、または未完成の機能が予期せず発生することがあります。</string>
+    <string name="beta_sheet_expect_2">一部の機能は予告なく変更または削除される場合があります。</string>
+    <string name="beta_sheet_expect_3">ベータビルドはリリース版より不安定な場合があります。</string>
+    <string name="beta_sheet_expect_4">既知の問題を報告する前に必ず最新版を確認してください。</string>
+    <string name="beta_sheet_expect_summary">テスト中にベータビルドが変更、破損、または改善される可能性があること。</string>
+    <string name="beta_sheet_github_title">GitHub Issue のショートカット</string>
+    <string name="beta_sheet_github_body">まず検索してから、バグ、クラッシュ、要望、質問に対する集中したレポートを作成してください。</string>
+    <string name="beta_sheet_open_issues">既存の Issue を開く</string>
+    <string name="beta_sheet_report_bug">Issue またはクラッシュを報告</string>
+    <string name="beta_sheet_report_body">再現手順、期待される結果、実際の結果、デバイス/OS の詳細を共有してください。</string>
+    <string name="beta_sheet_report_title">報告方法</string>
+    <string name="beta_sheet_report_summary">新しい Issue を開く前の簡単なチェックリスト。</string>
+    <string name="beta_sheet_before_title">Issue を開く前に</string>
+    <string name="beta_sheet_before_1">重複を避けるために既存のオープンおよびクローズ済みの Issue を検索してください。</string>
+    <string name="beta_sheet_before_2">最新の PixelPlayer バージョンに更新して問題が引き続き発生することを確認してください。</string>
+    <string name="beta_sheet_before_3">アプリを再起動して問題が続くことを確認してください。</string>
+    <string name="beta_sheet_before_4">再現を試みて正確な手順を書き留めてください。</string>
+    <string name="beta_sheet_issue_type_title">Issue の種類は？</string>
+    <string name="beta_sheet_issue_type_bug">バグ報告: 何かが正しく動作しない。</string>
+    <string name="beta_sheet_issue_type_feature">機能リクエスト: 新機能や改善の追加。</string>
+    <string name="beta_sheet_issue_type_question">質問: Discussions が有効な場合はそちらを使用するか、question ラベルで Issue を開いてください。</string>
+    <string name="beta_sheet_bug_title">バグ報告</string>
+    <string name="beta_sheet_bug_summary_text">何かが正しく動作しないまたはクラッシュする場合にこれらのフィールドをコピーしてください。</string>
+    <string name="beta_sheet_bug_template_title">バグ報告</string>
+    <string name="beta_sheet_bug_summary">概要:</string>
+    <string name="beta_sheet_bug_expected">期待される動作:</string>
+    <string name="beta_sheet_bug_actual">現在の動作:</string>
+    <string name="beta_sheet_bug_steps">再現手順: 1. 2. 3.</string>
+    <string name="beta_sheet_bug_frequency">頻度は？ 常時 / 時々 / まれに。</string>
+    <string name="beta_sheet_bug_screenshot">スクリーンショット / 動画: あれば。</string>
+    <string name="beta_sheet_bug_logs">ログ / スタックトレース: あれば。</string>
+    <string name="beta_sheet_env_title">環境</string>
+    <string name="beta_sheet_env_version">PixelPlayer バージョン:</string>
+    <string name="beta_sheet_env_source">インストール元: GitHub リリース、デバッグビルド、ナイトリービルドなど。</string>
+    <string name="beta_sheet_env_android">Android バージョン:</string>
+    <string name="beta_sheet_env_device">端末モデル:</string>
+    <string name="beta_sheet_env_extra">補足情報: SD カードの使用、特別な設定、権限など。</string>
+    <string name="beta_sheet_feature_title">機能リクエスト</string>
+    <string name="beta_sheet_feature_summary">新機能や改善を要望する場合にこれらのフィールドをコピーしてください。</string>
+    <string name="beta_sheet_feature_problem">問題の説明: 解決しようとしている問題は何ですか？</string>
+    <string name="beta_sheet_feature_solution">提案する解決策: どのように機能すればよいですか？</string>
+    <string name="beta_sheet_feature_alternatives">検討した代替案: 他のアプローチはありますか？</string>
+    <string name="beta_sheet_feature_scope">範囲: どの画面やフローが影響を受けますか？</string>
+    <string name="beta_sheet_feature_mockup">利用可能であればモックアップや参考画像。</string>
+    <string name="beta_sheet_quality_title">タイトル、プライバシー、範囲</string>
+    <string name="beta_sheet_quality_summary">報告をトリアージしやすく安全に共有できるようにします。</string>
+    <string name="beta_sheet_title_examples_title">良い Issue タイトルの例</string>
+    <string name="beta_sheet_title_example_1">イコライザー: プリセットタブを切り替えるとインジケーターがずれる</string>
+    <string name="beta_sheet_title_example_2">検索: 空のクエリで履歴リストが表示されない</string>
+    <string name="beta_sheet_title_example_3">機能: 「最近追加された」プレイリストの並び替えオプションを追加</string>
+    <string name="beta_sheet_avoid_title">避けるべきこと</string>
+    <string name="beta_sheet_avoid_1">「動かない」のような一般的な報告。</string>
+    <string name="beta_sheet_avoid_2">1 つの Issue に複数の無関係な問題を含める。</string>
+    <string name="beta_sheet_avoid_3">プライベートデータが含まれた未編集のログやスクリーンショット。</string>
+    <string name="beta_sheet_privacy_title">プライバシーについて</string>
+    <string name="beta_sheet_privacy_body">ログ、スクリーンショット、動画を投稿する前に個人情報やプライベートな情報を削除してください。</string>
+    <string name="beta_sheet_nightly_title">ナイトリービルド</string>
+    <string name="beta_sheet_nightly_summary">ナイトリーとリリースの違い、および破損した場合に含めるべき情報。</string>
+    <string name="beta_sheet_nightly_body">ナイトリービルドは最新のコミットから生成され、未完成の変更、一時的なバグ、またはリグレッションが含まれる場合があります。公式リリースよりも試験的です。</string>
+    <string name="beta_sheet_nightly_access">利用可能な場合はリポジトリの GitHub Actions ワークフローアーティファクトからアクセスできます。</string>
+    <string name="beta_sheet_nightly_report_title">ナイトリーの問題を報告する</string>
+    <string name="beta_sheet_nightly_report_body">ナイトリービルドで問題を報告する場合は、公式リリースではなくナイトリービルドで発生したことを必ず記載してください。可能であればビルド日、ワークフロー実行名または番号、コミット SHA を含めてください。また同じ問題が最新の公式リリースでも発生するか確認してください。</string>
+    <string name="beta05_title">Beta 0.5.0 アップグレード</string>
+    <string name="beta05_clean_install_title">クリーンインストール推奨</string>
+    <string name="beta05_clean_install_body">beta 0.5.0 からのアップデートの場合、このアップデートでは古いキャッシュ状態ではなく新しいライブラリデータが必要な場合があります。</string>
+    <string name="beta05_if_wrong_meta_title">メタデータやライブラリエントリがおかしい場合</string>
+    <string name="beta05_if_wrong_meta_body">曲のメタデータが間違っている、アーティストやアルバムが一致しない、または重複しているように見えるエントリは通常クリーンインストールで解決します。</string>
+    <string name="beta05_dont_show">今後表示しない</string>
+    <string name="beta05_got_it">了解</string>
+
+    <!-- Crash report dialog -->
+    <string name="crash_report_title">問題が発生しました</string>
+    <string name="crash_report_subtitle">前回のセッション中にアプリがクラッシュしました。クラッシュレポートを共有して修正にご協力ください。</string>
+    <string name="crash_report_date_line">日時: %1$s</string>
+    <string name="crash_report_error_label">エラー:</string>
+    <string name="crash_report_stack_preview_label">スタックトレース（プレビュー）:</string>
+    <string name="crash_report_clipboard_label">クラッシュログ</string>
+    <string name="crash_report_toast_log_copied">クラッシュログをクリップボードにコピーしました</string>
+    <string name="crash_report_share_subject">PixelPlayer クラッシュレポート</string>
+    <string name="crash_report_share_chooser">クラッシュレポートを共有</string>
+
+    <!-- Home Option -->
+    <string name="home_option_dj_mashup">DJ ミキサー</string>
+
+    <!-- Your Mix -->
+    <string name="home_your_mix_title">あなたの\nミックス</string>
+    <string name="home_empty_placeholder_title">まだ表示するデータがありません</string>
+    <string name="home_empty_placeholder_subtitle">PixelPlayer が曲を見つけるかソースを同期するとミックスがここに表示されます。</string>
+    <string name="home_empty_placeholder_refresh">更新</string>
+
+    <!-- DailyMixSection -->
+    <string name="home_daily_mix_title">デイリーミックス</string>
+    <string name="home_daily_mix_subtitle">履歴に基づく</string>
+    <string name="home_daily_mix_action_see_all">デイリーミックスをすべて確認</string>
+    <string name="home_daily_mix_queue_name">デイリーミックス</string>
+
+    <!-- DailyMixScreen -->
+    <string name="daily_mix_title">デイリーミックス</string>
+    <plurals name="daily_mix_songs_dot_duration">
+        <item quantity="other">%1$d 曲 • %2$s</item>
+    </plurals>
+    <string name="daily_mix_action_play_it">再生する</string>
+    <string name="daily_mix_cd_ai_playlist_generator">AI プレイリストジェネレーター</string>
+
+    <!-- DailyMixMenu -->
+    <string name="daily_mix_how_title">デイリーミックスの作られ方</string>
+    <string name="daily_mix_how_body">デイリーミックスはお気に入りのよく再生される曲から作られます。好みのアーティストやジャンルのトラックも追加されるので新しい音楽を発見できます。</string>
+    <string name="daily_mix_prompt_label">今日何を聴きたいか AI に伝えましょう</string>
+    <string name="daily_mix_cost_hint">コストを抑えるため少量のサンプルを使用します</string>
+    <string name="daily_mix_updating">更新中…</string>
+    <string name="daily_mix_update">デイリーミックスを更新</string>
+
+    <!-- AIPlaylistSheet -->
+    <string name="ai_playlist_headline_perfect">完璧にキュレーション</string>
+    <string name="ai_playlist_headline_daily_mix">デイリーミックス</string>
+    <string name="ai_playlist_subtitle_journey_ready">あなたのソニックジャーニーの準備ができました</string>
+    <string name="ai_playlist_subtitle_generator">AI プレイリストジェネレーター</string>
+    <string name="ai_playlist_description">雰囲気、ムード、アクティビティを説明して、ライブラリから AI に完璧なプレイリストをキュレーションさせましょう。</string>
+    <string name="ai_playlist_section_size">プレイリストのサイズ</string>
+    <string name="ai_playlist_min_songs">最小曲数</string>
+    <string name="ai_playlist_max_songs">最大曲数</string>
+    <string name="ai_playlist_prompt_placeholder">例: チルな夜の雰囲気、アップビートなワークアウトエネルギー…</string>
+    <string name="ai_playlist_tap_to_retry">タップして再試行</string>
+    <string name="ai_playlist_status_default">ソニックジャーニーが完成しました！</string>
+    <string name="ai_playlist_ready_to_play">再生準備完了</string>
+    <string name="ai_playlist_generating">生成中…</string>
+    <string name="ai_playlist_generate">プレイリストを生成</string>
+
+    <!-- RecentlyPlayedSection -->
+    <string name="home_recently_played_title">最近再生した曲</string>
+
+    <!-- RecentlyPlayedScreen -->
+    <string name="recently_played_title">最近再生した曲</string>
+    <string name="recently_played_action_play_latest">最新を再生</string>
+    <string name="recently_played_empty_title">%1$s に最近の再生はありません</string>
+    <string name="recently_played_empty_subtitle">範囲を変更するか、タイムラインを埋めるためにもっと曲を再生してください。</string>
+    <string name="recently_played_queue_name">最近再生した曲</string>
+    <string name="recently_played_date_today">今日</string>
+    <string name="recently_played_date_yesterday">昨日</string>
+
+    <!-- StatsOverviewCard -->
+    <string name="home_stats_overview_title">リスニング統計</string>
+    <string name="home_stats_overview_total_plays">総再生回数</string>
+    <string name="home_stats_overview_avg_per_day">1 日平均</string>
+    <string name="home_stats_overview_top_track">トップトラック</string>
+    <string name="home_stats_overview_top_track_line">%1$s • %2$d 回</string>
+
+    <!-- StatsScreen -->
+    <string name="stats_title">リスニング統計</string>
+    <string name="stats_cd_refresh">リスニング統計を更新</string>
+    <string name="stats_range_today">今日</string>
+    <string name="stats_range_week_to_date">今週</string>
+    <string name="stats_range_month_to_date">今月</string>
+    <string name="stats_range_year_to_date">今年</string>
+    <string name="stats_range_all_time">全期間</string>
+    <string name="stats_hero_listening">リスニング</string>
+    <string name="stats_hero_plays">再生</string>
+    <string name="stats_section_listening_timeline">リスニングタイムライン</string>
+    <string name="stats_timeline_metric_listening_time">リスニング時間</string>
+    <string name="stats_timeline_metric_listening_time_desc">選択した範囲でのリスニングの合計。</string>
+    <string name="stats_timeline_metric_play_count">再生回数</string>
+    <string name="stats_timeline_metric_play_count_desc">セグメントごとに完了したセッション数。</string>
+    <string name="stats_timeline_metric_avg_session">平均セッション</string>
+    <string name="stats_timeline_metric_avg_session_desc">各セグメントの平均リスニング時間。</string>
+    <string name="stats_timeline_support_day">4 時間ごとに分割して日々のリズムを確認できます。</string>
+    <string name="stats_timeline_support_week">日別バーで週ごとの習慣を比較しやすくします。</string>
+    <string name="stats_timeline_support_month">週別バーで月のトレンドを確認できます。</string>
+    <string name="stats_timeline_support_year">月別バーで年間の季節性を確認できます。</string>
+    <string name="stats_timeline_support_all">年別バーで全履歴を要約します。</string>
+    <string name="stats_empty_no_timeline_title">まだリスニングデータがありません</string>
+    <string name="stats_empty_no_timeline_subtitle">再生を始めてリスニングタイムラインを構築しましょう</string>
+    <string name="stats_rhythm_daily">日々のリズム</string>
+    <string name="stats_rhythm_weekly">週のリズム</string>
+    <string name="stats_rhythm_monthly">月のリズム</string>
+    <string name="stats_rhythm_year">年間一覧</string>
+    <string name="stats_rhythm_all_time">全期間の推移</string>
+    <string name="stats_grouped_4h">4 時間ごとのセグメントでグループ化</string>
+    <string name="stats_grouped_dow">曜日でグループ化</string>
+    <string name="stats_grouped_week_of_month">月の週でグループ化</string>
+    <string name="stats_grouped_by_month">月でグループ化</string>
+    <string name="stats_grouped_by_year">年でグループ化</string>
+    <string name="stats_peak_segment">ピークセグメント</string>
+    <string name="stats_n_plays">%1$d 回</string>
+    <string name="stats_em_dash">—</string>
+    <string name="stats_section_top_categories">トップカテゴリ</string>
+    <string name="stats_top_categories_subtitle">ジャンル、アーティスト、アルバム、曲ごとのリスニングを比較します。</string>
+    <string name="stats_dim_genre">ジャンル</string>
+    <string name="stats_dim_artist">アーティスト</string>
+    <string name="stats_dim_album">アルバム</string>
+    <string name="stats_dim_song">曲</string>
+    <string name="stats_card_listening_by_genre">ジャンル別リスニング</string>
+    <string name="stats_card_listening_by_artist">アーティスト別リスニング</string>
+    <string name="stats_card_listening_by_album">アルバム別リスニング</string>
+    <string name="stats_card_listening_by_song">曲別リスニング</string>
+    <string name="stats_plays_artists">%1$d 回 • %2$d アーティスト</string>
+    <string name="stats_plays_tracks">%1$d 回 • %2$d トラック</string>
+    <string name="stats_empty_no_category_title">まだカテゴリデータがありません</string>
+    <string name="stats_empty_no_category_subtitle">再生を始めてリスニングのハイライトを確認しましょう</string>
+    <string name="stats_section_listening_habits">リスニング習慣</string>
+    <string name="stats_empty_no_habits_title">まだ習慣データがありません</string>
+    <string name="stats_empty_no_habits_subtitle">あなたのことをより知ったらリスニング習慣を表示します。</string>
+    <string name="stats_habit_total_sessions">総セッション数</string>
+    <string name="stats_habit_avg_session">平均セッション</string>
+    <string name="stats_habit_longest_session">最長セッション</string>
+    <string name="stats_habit_sessions_per_day">セッション/日</string>
+    <string name="stats_habit_most_active_day">最もアクティブな日</string>
+    <string name="stats_habit_no_playback_yet">まだ再生履歴がありません</string>
+    <string name="stats_habit_peak_timeline_slot">ピークタイムラインスロット</string>
+    <string name="stats_section_top_artists">トップアーティスト</string>
+    <string name="stats_empty_no_artists_title">トップアーティストがいません</string>
+    <string name="stats_empty_no_artists_subtitle">聴き続けるとお気に入りのアーティストがここに表示されます。</string>
+    <string name="stats_avatar_placeholder">\?</string>
+    <string name="stats_ranked_artist">%1$d. %2$s</string>
+    <string name="stats_section_top_albums">トップアルバム</string>
+    <string name="stats_empty_no_albums_title">トップアルバムがありません</string>
+    <string name="stats_empty_no_albums_subtitle">よく聴くアルバムがここに表示されます。</string>
+    <string name="stats_ranked_album">%1$d. %2$s</string>
+    <string name="stats_track_concentration_title">トラック集中度</string>
+    <string name="stats_track_concentration_subtitle">トップトラック全体でリスニング時間がどのように分散しているか。</string>
+    <string name="stats_empty_no_concentration_title">まだ集中度データがありません</string>
+    <string name="stats_empty_no_concentration_subtitle">より多くのトラックを再生してリスニングの集中度を確認しましょう。</string>
+    <string name="stats_slice_top_1">トップ 1</string>
+    <string name="stats_slice_top_2_3">トップ 2-3</string>
+    <string name="stats_slice_others">その他</string>
+    <string name="stats_percent">%1$d%%</string>
+    <string name="stats_listening_concentration_title">リスニング集中度</string>
+    <string name="stats_top_three_share_line">トップ 3 トラックがリスニング時間の %1$d%% を占めています。</string>
+    <string name="stats_avg_plays_per_track">平均再生回数/トラック</string>
+    <string name="stats_unique_tracks">ユニークトラック</string>
+    <string name="stats_top_three_share_label">トップ 3 シェア</string>
+    <string name="stats_tracks_in_range_title">この期間のトラック</string>
+    <string name="stats_tracks_in_range_subtitle">選択した期間で最も再生されたトラック。</string>
+    <string name="stats_empty_no_tracks_title">トップトラックがありません</string>
+    <string name="stats_empty_no_tracks_subtitle">お気に入りを聴き続けるとここでハイライトされます。</string>
+    <string name="stats_collapse_tracks">トラックを折りたたむ</string>
+    <string name="stats_show_all_tracks">すべてのトラックを表示</string>
+
+    <!-- Time and Duration Formatting -->
+    <string name="duration_hours_minutes_long">%1$d 時間 %2$02d 分</string>
+    <string name="duration_minutes_long">%1$d 分</string>
+    <string name="duration_hours_minutes_medium">%1$d 時間 %2$02d 分</string>
+    <string name="duration_hours_medium">%1$d 時間</string>
+    <string name="duration_minutes_medium">%1$d 分</string>
+    <string name="duration_seconds_medium">%1$d 秒</string>
+    <string name="duration_hours_minutes_short">%1$d 時間 %2$02d 分</string>
+    <string name="duration_hours_short">%1$d 時間</string>
+    <string name="duration_minutes_short">%1$d 分</string>
+    <string name="duration_seconds_short">%1$d 秒</string>
+    <string name="time_ago_never">なし</string>
+    <string name="time_ago_just_now">たった今</string>
+    <string name="time_ago_day_singular">1 日前</string>
+    <string name="time_ago_days_plural">%1$d 日前</string>
+    <string name="time_ago_hour_singular">1 時間前</string>
+    <string name="time_ago_hours_plural">%1$d 時間前</string>
+    <string name="time_ago_minute_singular">1 分前</string>
+    <string name="time_ago_minutes_plural">%1$d 分前</string>
+    <string name="song_count_singular">%1$d 曲</string>
+    <string name="song_count_plural">%1$d 曲</string>
+    <string name="stats_week_label">第 %1$d 週</string>
+</resources>

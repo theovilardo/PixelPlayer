@@ -33,10 +33,12 @@ import androidx.sqlite.db.SupportSQLiteDatabase
         TelegramTopicEntity::class,
         JellyfinSongEntity::class,
         JellyfinPlaylistEntity::class,
+        SpotifySongEntity::class,
+        SpotifyPlaylistEntity::class,
         AiCacheEntity::class,
         AiUsageEntity::class
     ],
-    version = 42,
+    version = 43,
     exportSchema = true
 )
 abstract class PixelPlayDatabase : RoomDatabase() {
@@ -54,6 +56,7 @@ abstract class PixelPlayDatabase : RoomDatabase() {
     abstract fun qqmusicDao(): QqMusicDao
     abstract fun navidromeDao(): NavidromeDao
     abstract fun jellyfinDao(): JellyfinDao
+    abstract fun spotifyDao(): SpotifyDao
     abstract fun aiCacheDao(): AiCacheDao
     abstract fun aiUsageDao(): AiUsageDao
 
@@ -69,6 +72,45 @@ abstract class PixelPlayDatabase : RoomDatabase() {
         }
         val MIGRATION_8_9 = object : Migration(8, 9) {
             override fun migrate(db: SupportSQLiteDatabase) { /* no-op gap bridge */ }
+        }
+
+        val MIGRATION_42_43 = object : Migration(42, 43) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS spotify_songs (
+                        id TEXT NOT NULL PRIMARY KEY,
+                        spotify_id TEXT NOT NULL,
+                        playlist_id TEXT NOT NULL,
+                        title TEXT NOT NULL,
+                        artist TEXT NOT NULL,
+                        album TEXT NOT NULL,
+                        album_id TEXT,
+                        duration_ms INTEGER NOT NULL,
+                        album_art_url TEXT,
+                        track_number INTEGER NOT NULL,
+                        disc_number INTEGER,
+                        explicit INTEGER NOT NULL,
+                        date_added INTEGER NOT NULL
+                    )
+                """.trimIndent())
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_spotify_songs_spotify_id ON spotify_songs(spotify_id)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_spotify_songs_playlist_id ON spotify_songs(playlist_id)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_spotify_songs_date_added ON spotify_songs(date_added)")
+
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS spotify_playlists (
+                        id TEXT NOT NULL PRIMARY KEY,
+                        name TEXT NOT NULL,
+                        description TEXT,
+                        owner_name TEXT,
+                        cover_url TEXT,
+                        song_count INTEGER NOT NULL,
+                        is_public INTEGER,
+                        collaborative INTEGER NOT NULL,
+                        last_sync_time INTEGER NOT NULL
+                    )
+                """.trimIndent())
+            }
         }
 
         val MIGRATION_3_4 = object : Migration(3, 4) {

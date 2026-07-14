@@ -22,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import com.theveloper.pixelplay.R
@@ -29,6 +30,7 @@ import com.theveloper.pixelplay.presentation.jellyfin.auth.JellyfinLoginActivity
 import com.theveloper.pixelplay.presentation.navidrome.auth.NavidromeLoginActivity
 import com.theveloper.pixelplay.presentation.netease.auth.NeteaseLoginActivity
 import com.theveloper.pixelplay.presentation.qqmusic.auth.QqMusicLoginActivity
+import com.theveloper.pixelplay.presentation.spotify.auth.SpotifyLoginActivity
 import com.theveloper.pixelplay.presentation.telegram.auth.TelegramLoginActivity
 import com.theveloper.pixelplay.ui.theme.GoogleSansRounded
 
@@ -49,6 +51,8 @@ fun StreamingProviderSheet(
     onNavigateToNavidromeDashboard: () -> Unit = {},
     isJellyfinLoggedIn: Boolean = false,
     onNavigateToJellyfinDashboard: () -> Unit = {},
+    isSpotifyLoggedIn: Boolean = false,
+    onNavigateToSpotifyDashboard: () -> Unit = {},
     sheetState: SheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
@@ -161,6 +165,25 @@ fun StreamingProviderSheet(
                     )
 
                     ProviderRow(
+                        iconPainter = painterResource(R.drawable.ic_spotify),
+                        iconTint = Color.Unspecified,
+                        iconTileColor = Color(0xFF1DB954),
+                        iconSize = 26.dp,
+                        title = "Spotify",
+                        subtitle = if (isSpotifyLoggedIn) "Connected" else "Connect your Spotify library",
+                        shape = providerSegmentItemShape,
+                        isConnected = isSpotifyLoggedIn,
+                        onClick = {
+                            if (isSpotifyLoggedIn) {
+                                onNavigateToSpotifyDashboard()
+                            } else {
+                                context.startActivity(Intent(context, SpotifyLoginActivity::class.java))
+                            }
+                            onDismissRequest()
+                        }
+                    )
+
+                    ProviderRow(
                         iconPainter = painterResource(R.drawable.netease_cloud_music_logo_icon_206716__1_),
                         iconTint = Color(0xFFE85959),
                         title = "Netease Music",
@@ -203,6 +226,8 @@ fun StreamingProviderSheet(
 private fun ProviderRow(
     iconPainter: Painter,
     iconTint: Color,
+    iconTileColor: Color = iconTint,
+    iconSize: Dp = 22.dp,
     title: String,
     subtitle: String,
     shape: RoundedCornerShape,
@@ -274,13 +299,13 @@ private fun ProviderRow(
                     modifier = Modifier
                         .size(42.dp)
                         .clip(iconTileShape)
-                        .background(iconTint.copy(alpha = if (enabled) 0.14f else 0.1f)),
+                        .background(iconTileColor.copy(alpha = if (enabled) 0.14f else 0.1f)),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         painter = iconPainter,
                         contentDescription = null,
-                        modifier = Modifier.size(22.dp),
+                        modifier = Modifier.size(iconSize),
                         tint = iconTint
                     )
                 }

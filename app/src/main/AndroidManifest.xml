@@ -120,6 +120,30 @@
             android:theme="@style/Theme.PixelPlay"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity
+            android:name=".presentation.spotify.auth.SpotifyLoginActivity"
+            android:exported="false"
+            android:label="Spotify Login"
+            android:theme="@style/Theme.PixelPlay"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".presentation.spotify.auth.SpotifyAuthCallbackActivity"
+            android:exported="true"
+            android:label="Spotify Login"
+            android:theme="@style/Theme.PixelPlay">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="spotify-auth"
+                    android:scheme="pixelplay" />
+            </intent-filter>
+        </activity>
+
 
         <activity
             android:name=".ExternalPlayerActivity"

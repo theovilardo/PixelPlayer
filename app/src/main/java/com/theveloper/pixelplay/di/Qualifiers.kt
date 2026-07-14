@@ -10,6 +10,20 @@ import javax.inject.Qualifier
 annotation class DeezerRetrofit
 
 /**
+ * Qualifier for Spotify Web API Retrofit instance.
+ */
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class SpotifyRetrofit
+
+/**
+ * Qualifier for Spotify Accounts/Auth Retrofit instance.
+ */
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class SpotifyAuthRetrofit
+
+/**
  * Qualifier for Fast OkHttpClient (Short timeouts).
  */
 @Qualifier

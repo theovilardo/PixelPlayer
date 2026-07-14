@@ -36,6 +36,8 @@ import com.theveloper.pixelplay.data.media.SongMetadataEditor
 import com.theveloper.pixelplay.data.network.deezer.DeezerApiService
 import com.theveloper.pixelplay.data.network.netease.NeteaseApiService
 import com.theveloper.pixelplay.data.network.lyrics.LrcLibApiService
+import com.theveloper.pixelplay.data.network.spotify.SpotifyApiService
+import com.theveloper.pixelplay.data.network.spotify.SpotifyAuthApiService
 import com.theveloper.pixelplay.data.repository.ArtistImageRepository
 import com.theveloper.pixelplay.data.repository.LyricsRepository
 import com.theveloper.pixelplay.data.repository.LyricsRepositoryImpl
@@ -165,7 +167,8 @@ object AppModule {
             PixelPlayDatabase.MIGRATION_38_39,
             PixelPlayDatabase.MIGRATION_39_40,
             PixelPlayDatabase.MIGRATION_40_41,
-            PixelPlayDatabase.MIGRATION_41_42
+            PixelPlayDatabase.MIGRATION_41_42,
+            PixelPlayDatabase.MIGRATION_42_43
         )
             .addCallback(PixelPlayDatabase.createRuntimeArtifactsCallback())
             .setJournalMode(RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING)
@@ -244,6 +247,12 @@ object AppModule {
     @Provides
     fun provideNavidromeDao(database: PixelPlayDatabase): com.theveloper.pixelplay.data.database.NavidromeDao {
         return database.navidromeDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideSpotifyDao(database: PixelPlayDatabase): com.theveloper.pixelplay.data.database.SpotifyDao {
+        return database.spotifyDao()
     }
     
     @Singleton
@@ -578,6 +587,40 @@ object AppModule {
     /**
      * Provee el repositorio de imágenes de artistas.
      */
+    @Provides
+    @Singleton
+    @SpotifyRetrofit
+    fun provideSpotifyRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://api.spotify.com/")
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    @SpotifyAuthRetrofit
+    fun provideSpotifyAuthRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://accounts.spotify.com/")
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideSpotifyApiService(@SpotifyRetrofit retrofit: Retrofit): SpotifyApiService {
+        return retrofit.create(SpotifyApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSpotifyAuthApiService(@SpotifyAuthRetrofit retrofit: Retrofit): SpotifyAuthApiService {
+        return retrofit.create(SpotifyAuthApiService::class.java)
+    }
+
     @Provides
     @Singleton
     fun provideArtistImageRepository(

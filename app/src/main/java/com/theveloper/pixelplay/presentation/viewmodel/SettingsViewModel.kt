@@ -530,6 +530,7 @@ class SettingsViewModel @Inject constructor(
 
     val currentPath = fileExplorerStateHolder.currentPath
     val currentDirectoryChildren = fileExplorerStateHolder.currentDirectoryChildren
+    val flatDirectoryChildren = fileExplorerStateHolder.flatDirectoryChildren
     val blockedDirectories = fileExplorerStateHolder.blockedDirectories
     val availableStorages = fileExplorerStateHolder.availableStorages
     val selectedStorageIndex = fileExplorerStateHolder.selectedStorageIndex

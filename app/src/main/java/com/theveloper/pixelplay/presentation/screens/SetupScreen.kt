@@ -173,6 +173,7 @@ fun SetupScreen(
     val uiState by setupViewModel.uiState.collectAsStateWithLifecycle()
     val currentPath by setupViewModel.currentPath.collectAsStateWithLifecycle()
     val directoryChildren by setupViewModel.currentDirectoryChildren.collectAsStateWithLifecycle()
+    val flatDirectoryChildren by setupViewModel.flatDirectoryChildren.collectAsStateWithLifecycle(initialValue = emptyList())
     val availableStorages by setupViewModel.availableStorages.collectAsStateWithLifecycle()
     val selectedStorageIndex by setupViewModel.selectedStorageIndex.collectAsStateWithLifecycle()
     val isExplorerPriming by setupViewModel.isExplorerPriming.collectAsStateWithLifecycle()
@@ -346,6 +347,7 @@ fun SetupScreen(
                         uiState = uiState,
                         currentPath = currentPath,
                         directoryChildren = directoryChildren,
+                        flatDirectoryChildren = flatDirectoryChildren,
                         availableStorages = availableStorages,
                         selectedStorageIndex = selectedStorageIndex,
                         isExplorerPriming = isExplorerPriming,
@@ -452,6 +454,7 @@ fun DirectorySelectionPage(
     uiState: SetupUiState,
     currentPath: File,
     directoryChildren: List<DirectoryEntry>,
+    flatDirectoryChildren: List<DirectoryEntry>,
     availableStorages: List<StorageInfo>,
     selectedStorageIndex: Int,
     isExplorerPriming: Boolean,
@@ -511,6 +514,7 @@ fun DirectorySelectionPage(
         visible = showDirectoryPicker,
         currentPath = currentPath,
         directoryChildren = directoryChildren,
+        flatDirectoryChildren = flatDirectoryChildren,
         availableStorages = availableStorages,
         selectedStorageIndex = selectedStorageIndex,
         isLoading = uiState.isLoadingDirectories,

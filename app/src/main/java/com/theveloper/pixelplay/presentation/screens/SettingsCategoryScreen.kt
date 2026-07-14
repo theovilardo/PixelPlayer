@@ -216,6 +216,7 @@ fun SettingsCategoryScreen(
     val aiProvider by settingsViewModel.aiProvider.collectAsStateWithLifecycle()
     val currentPath by settingsViewModel.currentPath.collectAsStateWithLifecycle()
     val directoryChildren by settingsViewModel.currentDirectoryChildren.collectAsStateWithLifecycle()
+    val flatDirectoryChildren by settingsViewModel.flatDirectoryChildren.collectAsStateWithLifecycle(initialValue = emptyList())
     val availableStorages by settingsViewModel.availableStorages.collectAsStateWithLifecycle()
     val selectedStorageIndex by settingsViewModel.selectedStorageIndex.collectAsStateWithLifecycle()
     val isLoadingDirectories by settingsViewModel.isLoadingDirectories.collectAsStateWithLifecycle()
@@ -1453,6 +1454,7 @@ fun SettingsCategoryScreen(
         visible = showExplorerSheet,
         currentPath = currentPath,
         directoryChildren = directoryChildren,
+        flatDirectoryChildren = flatDirectoryChildren,
         availableStorages = availableStorages,
         selectedStorageIndex = selectedStorageIndex,
         isLoading = isLoadingDirectories,

@@ -68,6 +68,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -94,12 +95,17 @@ import com.theveloper.pixelplay.ui.theme.LocalShowScrollbar
 import com.theveloper.pixelplay.utils.StorageInfo
 import java.io.File
 
+enum class FileExplorerTab {
+    COLLAPSED, EXPANDED
+}
+
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun FileExplorerDialog(
     visible: Boolean,
     currentPath: File,
     directoryChildren: List<DirectoryEntry>,
+    flatDirectoryChildren: List<DirectoryEntry>,
     availableStorages: List<StorageInfo>,
     selectedStorageIndex: Int,
     isLoading: Boolean,
@@ -147,6 +153,7 @@ fun FileExplorerDialog(
                     FileExplorerContent(
                         currentPath = currentPath,
                         directoryChildren = directoryChildren,
+                        flatDirectoryChildren = flatDirectoryChildren,
                         availableStorages = availableStorages,
                         selectedStorageIndex = selectedStorageIndex,
                         isLoading = isLoading,
@@ -176,6 +183,7 @@ fun FileExplorerDialog(
 fun FileExplorerContent(
     currentPath: File,
     directoryChildren: List<DirectoryEntry>,
+    flatDirectoryChildren: List<DirectoryEntry>,
     availableStorages: List<StorageInfo>,
     selectedStorageIndex: Int,
     isLoading: Boolean,
@@ -213,6 +221,17 @@ fun FileExplorerContent(
     ) {
         directoryChildren.isEmpty() && (
             isLoading || isPriming || !isReady || !isCurrentDirectoryResolved
+        )
+    }
+    var currentTab by remember { mutableStateOf(FileExplorerTab.COLLAPSED) }
+    val showExpandedLoadingState = remember(
+        flatDirectoryChildren,
+        isLoading,
+        isPriming,
+        isReady
+    ) {
+        flatDirectoryChildren.isEmpty() && (
+            isLoading || isPriming || !isReady
         )
     }
     val loadingMessage = remember(isPriming, isReady) {
@@ -303,11 +322,25 @@ fun FileExplorerContent(
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(7.2.dp)
         ) {
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = stringResource(R.string.file_explorer_hint),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .padding(horizontal = 18.dp)
+            )
+
             // Only show storage tabs if there's more than one storage
             if (availableStorages.size > 1) {
                 PrimaryTabRow(
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .padding(horizontal = 18.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+                        .padding(5.dp),
                     selectedTabIndex = safeSelectedStorageIndex,
                     containerColor = Color.Transparent,
                     indicator = {
@@ -339,25 +372,64 @@ fun FileExplorerContent(
                     }
                 }
             }
-
-            Text(
-                text = stringResource(R.string.file_explorer_hint),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            PrimaryTabRow(
                 modifier = Modifier
-                    .padding(top = 10.dp)
+                    .fillMaxWidth()
                     .padding(horizontal = 18.dp)
-            )
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+                    .padding(5.dp),
+                selectedTabIndex = currentTab.ordinal,
+                containerColor = Color.Transparent,
+                indicator = {
+                    TabRowDefaults.PrimaryIndicator(
+                        modifier = Modifier.tabIndicatorOffset(
+                            selectedTabIndex = currentTab.ordinal,
+                            matchContentSize = true
+                        ),
+                        height = 3.dp,
+                        color = Color.Transparent
+                    )
+                },
+                divider = {}
+            ) {
+                TabAnimation(
+                    index = 0,
+                    title = "Folders",
+                    selectedIndex = currentTab.ordinal,
+                    onClick = { currentTab = FileExplorerTab.COLLAPSED }
+                ) {
+                    Text(
+                        text = "Folders",
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        fontFamily = GoogleSansRounded
+                    )
+                }
+                TabAnimation(
+                    index = 1,
+                    title = "All subfolders",
+                    selectedIndex = currentTab.ordinal,
+                    onClick = { currentTab = FileExplorerTab.EXPANDED }
+                ) {
+                    Text(
+                        text = "All subfolders",
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        fontFamily = GoogleSansRounded
+                    )
+                }
+            }
 
             FileExplorerHeader(
                 modifier = Modifier.padding(horizontal = 18.dp),
-                currentPath = currentPath,
+                currentPath = if (currentTab == FileExplorerTab.COLLAPSED) currentPath else rootDirectory,
                 rootDirectory = rootDirectory,
-                isAtRoot = isAtRoot,
+                isAtRoot = if (currentTab == FileExplorerTab.COLLAPSED) isAtRoot else true,
                 onNavigateUp = onNavigateUp,
                 onNavigateHome = onNavigateHome,
                 onNavigateTo = onNavigateTo,
-                navigationEnabled = true
+                navigationEnabled = currentTab == FileExplorerTab.COLLAPSED
             )
 
             Box(
@@ -367,17 +439,23 @@ fun FileExplorerContent(
             ) {
                 AnimatedContent(
                     targetState = Triple(
-                        currentPath,
-                        directoryChildren,
-                        listOf(isLoading, isPriming, isReady, isCurrentDirectoryResolved)
+                        currentTab,
+                        if (currentTab == FileExplorerTab.COLLAPSED) directoryChildren else flatDirectoryChildren,
+                        if (currentTab == FileExplorerTab.COLLAPSED) currentPath else null
                     ),
                     label = "directory_content",
                     transitionSpec = {
                         fadeIn(animationSpec = tween(220)) togetherWith fadeOut(animationSpec = tween(200))
                     }
-                ) { (_, children, _) ->
+                ) { (tab, children, _) ->
+                    val showLoading = if (tab == FileExplorerTab.COLLAPSED) {
+                        showLoadingState
+                    } else {
+                        showExpandedLoadingState
+                    }
+
                     when {
-                        showLoadingState -> ExplorerLoadingState(
+                        showLoading -> ExplorerLoadingState(
                             message = loadingMessage,
                             supportingText = loadingHint
                         )
@@ -412,7 +490,7 @@ fun FileExplorerContent(
                                         isBlocked = directoryEntry.isBlocked,
                                         onNavigate = { onNavigateTo(directoryEntry.file) },
                                         onToggleAllowed = { onToggleAllowed(directoryEntry.file) },
-                                        navigationEnabled = true
+                                        navigationEnabled = tab == FileExplorerTab.COLLAPSED
                                     )
                                 }
                                 item { Spacer(modifier = Modifier.height(76.dp)) }
@@ -546,7 +624,13 @@ private fun FileExplorerItem(
             .fillMaxWidth()
             .clip(shape)
             .background(containerColor)
-            .clickable(enabled = navigationEnabled) { onNavigate() }
+            .clickable {
+                if (navigationEnabled) {
+                    onNavigate()
+                } else {
+                    onToggleAllowed()
+                }
+            }
             .padding(horizontal = 14.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)

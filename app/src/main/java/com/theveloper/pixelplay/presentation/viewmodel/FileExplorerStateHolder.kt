@@ -125,6 +125,10 @@ class FileExplorerStateHolder(
     private val _currentDirectoryChildren = MutableStateFlow<List<DirectoryEntry>>(emptyList())
     val currentDirectoryChildren: StateFlow<List<DirectoryEntry>> = _currentDirectoryChildren.asStateFlow()
 
+    private val _rawFlatDirectoryChildren = MutableStateFlow<List<RawDirectoryEntry>>(emptyList())
+    private val _flatDirectoryChildren = MutableStateFlow<List<DirectoryEntry>>(emptyList())
+    val flatDirectoryChildren: StateFlow<List<DirectoryEntry>> = _flatDirectoryChildren.asStateFlow()
+
     private val mapperDispatcher = Dispatchers.Default
     private val prefetchDispatcher = Dispatchers.IO.limitedParallelism(2)
     private val loadMutex = Mutex()
@@ -180,6 +184,31 @@ class FileExplorerStateHolder(
             .flowOn(mapperDispatcher)
             .onEach {
                 _currentDirectoryChildren.value = it
+            }.launchIn(scope)
+
+        combine(
+            _rawFlatDirectoryChildren,
+            _allowedDirectories,
+            _blockedDirectories
+        ) { rawEntries, allowed, blocked ->
+            Triple(rawEntries, allowed, blocked)
+        }
+            .mapLatest { (rawEntries, allowed, blocked) ->
+                val resolver = DirectoryRuleResolver(allowed, blocked)
+                rawEntries.map { raw ->
+                    DirectoryEntry(
+                        file = raw.file,
+                        directAudioCount = raw.directAudioCount,
+                        totalAudioCount = raw.totalAudioCount,
+                        canonicalPath = raw.canonicalPath,
+                        displayName = raw.displayName,
+                        isBlocked = resolver.isBlocked(raw.canonicalPath)
+                    )
+                }
+            }
+            .flowOn(mapperDispatcher)
+            .onEach {
+                _flatDirectoryChildren.value = it
             }.launchIn(scope)
 
     }
@@ -331,6 +360,7 @@ class FileExplorerStateHolder(
             prefetchedDirectoryKeys.clear()
             resolvedDirectoryKeys.clear()
             mediaStoreDirectoryIndex = null
+            _rawFlatDirectoryChildren.value = emptyList()
         }
 
         if (updatePath) {
@@ -547,6 +577,17 @@ class FileExplorerStateHolder(
                 }
             }
         }
+
+        val rawFlatEntries = directAudioCountByPath.map { (path, directCount) ->
+            val totalCount = totalAudioCountByPath[path] ?: directCount
+            RawDirectoryEntry(
+                file = File(path),
+                directAudioCount = directCount,
+                totalAudioCount = totalCount,
+                canonicalPath = path
+            )
+        }.sortedWith(compareBy { it.file.name.lowercase() })
+        _rawFlatDirectoryChildren.value = rawFlatEntries
 
         MediaStoreDirectoryIndex(
             childrenByParent = childrenByParent.mapValues { it.value.toSet() },

@@ -522,7 +522,7 @@ fun LibraryScreen(
     var showMultiSelectionSheet by remember { mutableStateOf(false) }
     var selectedAlbums by remember { mutableStateOf<List<Album>>(emptyList()) }
     val selectedAlbumIds = remember(selectedAlbums) { selectedAlbums.map { it.id }.toSet() }
-    val isAlbumSelectionMode = selectedAlbums.isNotEmpty()
+    val isAlbumSelectionMode by remember { derivedStateOf { selectedAlbums.isNotEmpty() } }
     var showAlbumMultiSelectionSheet by remember { mutableStateOf(false) }
     var showBatchEditSheet by remember { mutableStateOf(false) }
 

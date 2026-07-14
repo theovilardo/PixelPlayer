@@ -215,6 +215,8 @@
     <string name="settings_lyrics_screen_section">Şarkı Sözü Ekranı</string>
     <string name="settings_immersive_lyrics_title">Sarmalayıcı Şarkı Sözleri</string>
     <string name="settings_immersive_lyrics_subtitle">Kontrolleri otomatik olarak gizler ve metni büyütür.</string>
+    <string name="settings_hide_controls_button_title">Kontrol düğmelerini gizle</string>
+    <string name="settings_hide_controls_button_subtitle">Şarkı sözleri ekranının altındaki tüm oynatma kontrollerini gizler.</string>
     <string name="settings_auto_hide_delay_title">Otomatik Gizleme Gecikmesi</string>
     <string name="settings_auto_hide_delay_subtitle">Kontrollerin gizlenmesinden önceki süre.</string>
     <string name="settings_auto_hide_delay_3s">3sn</string>

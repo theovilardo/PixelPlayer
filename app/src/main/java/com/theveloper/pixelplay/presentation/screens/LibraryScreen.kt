@@ -229,7 +229,6 @@ import com.theveloper.pixelplay.presentation.components.AutoScrollingTextOnDeman
 import com.theveloper.pixelplay.presentation.screens.CreatePlaylistDialog
 import com.theveloper.pixelplay.presentation.components.PlaylistBottomSheet
 import com.theveloper.pixelplay.presentation.components.PlaylistContainer
-import com.theveloper.pixelplay.presentation.components.subcomps.PlayingEqIcon
 import com.theveloper.pixelplay.ui.theme.GoogleSansRounded
 import java.util.Locale
 import androidx.compose.ui.platform.LocalContext
@@ -241,12 +240,14 @@ import kotlinx.coroutines.flow.first
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.LoadState
+import com.theveloper.pixelplay.MainActivity.Companion.LocalHazeState
 import com.theveloper.pixelplay.presentation.components.ExpressiveScrollBar
 import com.theveloper.pixelplay.ui.theme.LocalShowScrollbar
 import com.theveloper.pixelplay.presentation.components.LibrarySortBottomSheet
 import com.theveloper.pixelplay.presentation.components.subcomps.EnhancedSongListItem
 import com.theveloper.pixelplay.data.service.wear.PhoneWatchTransferState
 import com.theveloper.pixelplay.shared.WearTransferProgress
+import dev.chrisbanes.haze.hazeSource
 import java.io.File
 import kotlin.math.abs
 
@@ -839,7 +840,8 @@ fun LibraryScreen(
     val headerContainerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f)
 
     Scaffold(
-        modifier = Modifier.background(brush = gradientBrush),
+        modifier = Modifier.background(brush = gradientBrush)
+            .hazeSource(LocalHazeState.current),
         topBar = {
             Column(
                 modifier = Modifier.background(headerContainerColor)

@@ -26,6 +26,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -350,6 +351,7 @@ private fun DailyMixSongList(
                 onMoreOptionsClick = onMoreOptionsClick,
                 customShape = RoundedCornerShape(10.dp),
                 showAlbumArt = false,
+                stablePlayerStateFlow = playerViewModel.stablePlayerState,
                 onClick = {
                     playerViewModel.showAndPlaySong(
                         song = song,

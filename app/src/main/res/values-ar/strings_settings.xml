@@ -111,6 +111,8 @@
     <string name="setcat_navbar_corner_title">نصف قطر زوايا شريط التنقل</string>
     <string name="setcat_navbar_corner_subtitle">ضبط درجة تدوير زوايا شريط التنقل.</string>
     <string name="setcat_lyrics_screen">شاشة كلمات الأغاني</string>
+    <string name="settings_hide_controls_button_title">إخفاء أزرار التحكم</string>
+    <string name="settings_hide_controls_button_subtitle">إخفاء جميع عناصر التحكم في التشغيل أسفل شاشة كلمات الأغنية.</string>
     <string name="setcat_immersive_lyrics_title">كلمات غامرة وملء الشاشة</string>
     <string name="setcat_immersive_lyrics_subtitle">إخفاء عناصر التحكم تلقائياً وتكبير حجم الخط.</string>
     <string name="setcat_auto_hide_delay_label">مهلة الإخفاء التلقائي</string>

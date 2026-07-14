@@ -266,6 +266,7 @@ fun LibrarySongsTab(
                         isPlaying = false,
                         isLoading = true,
                         isCurrentSong = false,
+                        stablePlayerStateFlow = playerViewModel.stablePlayerState,
                         onMoreOptionsClick = {},
                         onClick = {}
                     )
@@ -359,6 +360,7 @@ fun LibrarySongsTab(
                                         isPlaying = false,
                                         isLoading = true,
                                         isCurrentSong = false,
+                                         stablePlayerStateFlow = playerViewModel.stablePlayerState,
                                         onMoreOptionsClick = {},
                                         onClick = {}
                                      )

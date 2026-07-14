@@ -62,7 +62,9 @@ import com.theveloper.pixelplay.data.netease.NeteaseStreamProxy
 import com.theveloper.pixelplay.data.navidrome.NavidromeStreamProxy
 import com.theveloper.pixelplay.data.qqmusic.QqMusicStreamProxy
 import androidx.core.net.toUri
+import androidx.media3.exoplayer.audio.TeeAudioProcessor
 import com.theveloper.pixelplay.data.diagnostics.AdvancedPerformanceDiagnostics
+import com.theveloper.pixelplay.data.media.AudioRmsSink
 
 data class ActiveDecoderInfo(
     val name: String,
@@ -267,6 +269,12 @@ class DualPlayerEngine @Inject constructor(
     private val onTransitionDisplayPlayerListeners = mutableListOf<(Player) -> Unit>()
     private val onTransitionFinishedListeners = mutableListOf<() -> Unit>()
 
+    private var onAmplitudeUpdateListener: ((Float) -> Unit)? = null
+
+    fun setOnAmplitudeUpdateListener(listener: ((Float) -> Unit)?) {
+        onAmplitudeUpdateListener = listener
+    }
+
     private var onPlayerAboutToBeReleasedListener: ((Player) -> Unit)? = null
 
     fun setOnPlayerAboutToBeReleasedListener(listener: (Player) -> Unit) {
@@ -347,6 +355,11 @@ class DualPlayerEngine @Inject constructor(
      * Reset to null after each transition.
      */
     var incomingTrackReplayGainVolume: Float? = null
+
+    val rmsSink = AudioRmsSink { amplitude ->
+        // amplitude 是 0.0f 到 1.0f 的值
+        onAmplitudeUpdateListener?.invoke(amplitude)
+    }
 
     private val focusChangeListener = AudioManager.OnAudioFocusChangeListener { focusChange ->
         when (focusChange) {
@@ -1029,6 +1042,7 @@ class DualPlayerEngine @Inject constructor(
     }
 
     private fun buildPlayer(): ExoPlayer {
+        val teeAudioProcessor = TeeAudioProcessor(rmsSink)
         val mediaCodecSelector = MediaCodecSelector { mimeType, requiresSecureDecoder, requiresTunnelingDecoder ->
             val decoderInfos = MediaCodecSelector.DEFAULT.getDecoderInfos(
                 mimeType,
@@ -1049,6 +1063,7 @@ class DualPlayerEngine @Inject constructor(
                     .setEnableAudioOutputPlaybackParameters(enableAudioOutputPlaybackParams)
                     .setAudioProcessorChain(
                         DefaultAudioSink.DefaultAudioProcessorChain(
+                            teeAudioProcessor,
                             HiResSampleRateCapAudioProcessor(),
                             SurroundDownmixProcessor()
                         )

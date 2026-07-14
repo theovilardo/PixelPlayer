@@ -112,6 +112,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import coil.size.Size
+import com.theveloper.pixelplay.MainActivity.Companion.LocalHazeState
 import com.theveloper.pixelplay.R
 import com.theveloper.pixelplay.data.model.Song
 import com.theveloper.pixelplay.presentation.components.MiniPlayerHeight
@@ -140,6 +141,7 @@ import sh.calvin.reorderable.rememberReorderableLazyListState
 import com.theveloper.pixelplay.presentation.components.LibrarySortBottomSheet
 import com.theveloper.pixelplay.data.model.SortOption
 import com.theveloper.pixelplay.data.model.PlaylistShapeType
+import dev.chrisbanes.haze.hazeSource
 import kotlinx.coroutines.launch
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -661,7 +663,8 @@ fun PlaylistDetailScreen(
                 if (localReorderableSongs.isEmpty()) {
                     Box(Modifier
                         .fillMaxSize()
-                        .weight(1f), Alignment.Center) {
+                        .weight(1f)
+                        .hazeSource(LocalHazeState.current), Alignment.Center) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Icon(Icons.Filled.MusicOff, null, Modifier.size(48.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                             Spacer(Modifier.height(8.dp))
@@ -693,7 +696,8 @@ fun PlaylistDetailScreen(
                                         smoothnessAsPercentTL = 60,
                                     )
                                 )
-                                .background(color = MaterialTheme.colorScheme.surfaceContainerHigh),
+                                .background(color = MaterialTheme.colorScheme.surfaceContainerHigh)
+                                .hazeSource(LocalHazeState.current),
                             verticalArrangement = Arrangement.spacedBy(8.dp),
                             contentPadding = PaddingValues(
                                 top = 12.dp,
@@ -750,6 +754,7 @@ fun PlaylistDetailScreen(
                                             }
                                         },
                                         isFromPlaylist = true,
+                                        playerViewModel = playerViewModel,
                                         isReorderModeEnabled = isReorderModeEnabled,
                                         isDragHandleVisible = isReorderModeEnabled,
                                         isRemoveButtonVisible = isRemoveModeEnabled,

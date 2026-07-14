@@ -41,6 +41,9 @@ import com.theveloper.pixelplay.R
 import com.theveloper.pixelplay.ui.theme.GoogleSansRounded
 import com.theveloper.pixelplay.ui.theme.PixelPlayStatusBarStyle
 import androidx.compose.ui.res.stringResource
+import com.theveloper.pixelplay.MainActivity.Companion.LocalHazeState
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.materials.HazeMaterials
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -116,7 +119,12 @@ fun HomeGradientTopBar(
     )
 
     TopAppBar(
-        modifier = Modifier.background(surfaceContainerHigh.copy(alpha = animatedAlpha)),
+        modifier = Modifier
+            .background(surfaceContainerHigh.copy(alpha = animatedAlpha * 0.4f))
+            .hazeEffect(
+                state = LocalHazeState.current,
+                style = HazeMaterials.regular() // 可以根据喜好换成 thin() 或 ultraThin()
+            ),
         title = { /* nada, usamos solo acciones */ },
         navigationIcon = {
             Row(

@@ -132,7 +132,9 @@ import androidx.compose.material.icons.outlined.Album
 import com.theveloper.pixelplay.utils.shapes.RoundedStarShape
 import androidx.compose.material.icons.outlined.MusicNote
 import androidx.compose.material.icons.outlined.PlayCircleOutline
+import com.theveloper.pixelplay.MainActivity.Companion.LocalHazeState
 import com.theveloper.pixelplay.ui.theme.ExpTitleTypography
+import dev.chrisbanes.haze.hazeSource
 
 private const val PULL_TO_REFRESH_MIN_DURATION_MS = 3500L
 
@@ -275,7 +277,8 @@ fun StatsScreen(
                 LazyColumn(
                     state = lazyListState,
                     modifier = Modifier
-                        .fillMaxSize(),
+                        .fillMaxSize()
+                        .hazeSource(LocalHazeState.current),
                     contentPadding = PaddingValues(
                         top = currentTopBarHeightDp + tabsHeight + tabIndicatorExtraSpacing + tabContentSpacing + 0.dp,
                         bottom = MiniPlayerHeight + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 16.dp

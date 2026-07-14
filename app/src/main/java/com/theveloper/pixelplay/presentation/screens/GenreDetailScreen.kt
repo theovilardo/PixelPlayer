@@ -90,7 +90,10 @@ import kotlinx.coroutines.launch
 import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape
 import kotlin.math.roundToInt
 import androidx.compose.ui.res.stringResource
+import com.theveloper.pixelplay.MainActivity.Companion.LocalHazeState
 import com.theveloper.pixelplay.presentation.components.subcomps.TightWrapText
+import dev.chrisbanes.haze.hazeSource
+import kotlinx.coroutines.flow.StateFlow
 
 // --- Data Models & Helpers ---
 
@@ -323,7 +326,7 @@ fun GenreDetailScreen(
                         // Offset the entire list down by the current "expansion" of the top bar
                         val extraHeight = (topBarHeight.value - minTopBarHeightPx).roundToInt()
                         IntOffset(0, extraHeight)
-                    }
+                    }.hazeSource(LocalHazeState.current)
             ) {
                 // Optimization: Limit rendered items during the navigation transition 
                 // to ensure the slide-in animation remains smooth.
@@ -356,7 +359,7 @@ fun GenreDetailScreen(
                             val selectionIndex = multiSelectionState.getSelectionIndex(item.song.id)
                             GenreSongItemWrapper(
                                 item = item,
-                                stablePlayerState = stablePlayerState,
+                                stablePlayerStateFlow = playerViewModel.stablePlayerState,
                                 onSongClick = { song ->
                                     playerViewModel.showAndPlaySong(song, uiState.sortedSongs, genreDisplayName)
                                 },
@@ -998,7 +1001,7 @@ fun GenreAlbumHeader(
 @Composable
 fun GenreSongItemWrapper(
     item: com.theveloper.pixelplay.presentation.viewmodel.GenreDetailListItem.SongItem,
-    stablePlayerState: StablePlayerState,
+    stablePlayerStateFlow: StateFlow<StablePlayerState>,
     onSongClick: (Song) -> Unit,
     onMoreOptionsClick: (Song) -> Unit,
     isSelectionMode: Boolean = false,
@@ -1011,6 +1014,8 @@ fun GenreSongItemWrapper(
     val isLastInAlbum = item.isLastInAlbum
     val isLastAlbumInSection = item.isLastAlbumInSection
     val useArtistStyle = item.useArtistStyle
+
+    val stablePlayerState by stablePlayerStateFlow.collectAsStateWithLifecycle()
 
     // Optimization: Cache shapes to avoid reallocation during scroll
     val songItemShape = remember(isFirstInAlbum, isLastInAlbum) {
@@ -1060,7 +1065,8 @@ fun GenreSongItemWrapper(
                  isSelected = isSelected,
                  selectionIndex = selectionIndex,
                  isSelectionMode = isSelectionMode,
-                 onLongPress = onLongPress
+                 onLongPress = onLongPress,
+                stablePlayerStateFlow = stablePlayerStateFlow,
              )
              
              if (isLastInAlbum) Spacer(Modifier.height(8.dp))

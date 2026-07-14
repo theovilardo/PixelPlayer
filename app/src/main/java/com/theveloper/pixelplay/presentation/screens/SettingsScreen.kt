@@ -85,7 +85,9 @@ import kotlinx.coroutines.launch
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import com.theveloper.pixelplay.MainActivity.Companion.LocalHazeState
 import com.theveloper.pixelplay.data.preferences.LaunchTab
+import dev.chrisbanes.haze.hazeSource
 
 // SettingsTopBar removed, replaced by CollapsibleCommonTopBar
 
@@ -208,7 +210,7 @@ fun SettingsScreen(
                     bottom = MiniPlayerHeight + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 8.dp
                 ),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize().hazeSource(LocalHazeState.current)
         ) {
             item {
                 val isDark = MaterialTheme.colorScheme.surface.luminance() < 0.5f

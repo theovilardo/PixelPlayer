@@ -104,6 +104,8 @@ import com.theveloper.pixelplay.utils.shapes.RoundedStarShape
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 import androidx.compose.ui.res.stringResource
+import com.theveloper.pixelplay.MainActivity.Companion.LocalHazeState
+import dev.chrisbanes.haze.hazeSource
 
 private const val UseSharedCollapsibleTopBarProbe = true
 
@@ -302,7 +304,7 @@ fun AlbumDetailScreen(
                                 val extraHeight =
                                     (topBarHeight.value - minTopBarHeightPx).roundToInt()
                                 IntOffset(0, extraHeight)
-                            },
+                            }.hazeSource(LocalHazeState.current),
                         contentPadding = PaddingValues(
                             top = minTopBarHeight + 8.dp,
                             start = 16.dp,
@@ -334,6 +336,7 @@ fun AlbumDetailScreen(
                                     isCurrentSong = stablePlayerState.currentSong?.id == song.id,
                                     isPlaying = stablePlayerState.isPlaying,
                                     showAlbumArt = false,
+                                    stablePlayerStateFlow = playerViewModel.stablePlayerState,
                                     onMoreOptionsClick = {
                                         playerViewModel.selectSongForInfo(song)
                                         showSongInfoBottomSheet = true

@@ -215,6 +215,8 @@
     <string name="settings_lyrics_screen_section">Lyrics Screen</string>
     <string name="settings_immersive_lyrics_title">Immersive Lyrics</string>
     <string name="settings_immersive_lyrics_subtitle">Auto-hide controls and enlarge text.</string>
+    <string name="settings_hide_controls_button_title">Hide Control Buttons</string>
+    <string name="settings_hide_controls_button_subtitle">Hide all playback controls at the bottom of the lyrics screen.</string>
     <string name="settings_auto_hide_delay_title">Auto-hide Delay</string>
     <string name="settings_auto_hide_delay_subtitle">Time before controls hide.</string>
     <string name="settings_auto_hide_delay_3s">3s</string>

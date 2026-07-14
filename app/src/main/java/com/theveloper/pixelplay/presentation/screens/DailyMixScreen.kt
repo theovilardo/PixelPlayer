@@ -94,6 +94,8 @@ import com.theveloper.pixelplay.presentation.components.subcomps.EnhancedSongLis
 import com.theveloper.pixelplay.presentation.components.subcomps.TightWrapText
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import com.theveloper.pixelplay.MainActivity.Companion.LocalHazeState
+import dev.chrisbanes.haze.hazeSource
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -252,6 +254,7 @@ fun DailyMixScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(backgroundBrush)
+            .hazeSource(LocalHazeState.current)
     ) {
         if (dailyMixSongs.isEmpty()) {
             Box(
@@ -356,6 +359,7 @@ fun DailyMixScreen(
                         song = song,
                         isCurrentSong = stablePlayerState.currentSong?.id == song.id,
                         isPlaying = currentSongId == song.id && isPlaying,
+                        stablePlayerStateFlow = playerViewModel.stablePlayerState,
                         onClick = { playerViewModel.showAndPlaySong(song, dailyMixSongs, dailyMixTitle, isVoluntaryPlay = false) },
                         onMoreOptionsClick = {
                             playerViewModel.selectSongForInfo(song)

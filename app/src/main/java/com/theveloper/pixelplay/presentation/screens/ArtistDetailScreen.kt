@@ -100,6 +100,8 @@ import coil.size.Size
 import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape
 import androidx.compose.ui.res.stringResource
 import com.theveloper.pixelplay.R
+import com.theveloper.pixelplay.presentation.viewmodel.StablePlayerState
+import kotlinx.coroutines.flow.StateFlow
 
 private const val UseSharedCollapsibleTopBarProbe = true
 
@@ -367,6 +369,7 @@ fun ArtistDetailScreen(
                                         songCount = section.songs.size,
                                         isCurrentSong = stablePlayerState.currentSong?.id == song.id,
                                         isPlaying = stablePlayerState.isPlaying,
+                                        stablePlayerStateFlow = playerViewModel.stablePlayerState,
                                         onSongClick = {
                                             playerViewModel.showAndPlaySong(song, section.songs)
                                         },
@@ -663,6 +666,7 @@ private fun ArtistAlbumSectionSongItem(
     songCount: Int,
     isCurrentSong: Boolean,
     isPlaying: Boolean,
+    stablePlayerStateFlow: StateFlow<StablePlayerState>,
     onSongClick: () -> Unit,
     onMoreOptionsClick: () -> Unit
 ) {
@@ -714,6 +718,7 @@ private fun ArtistAlbumSectionSongItem(
                 isPlaying = isPlaying,
                 showAlbumArt = false,
                 customShape = songItemShape,
+                stablePlayerStateFlow = stablePlayerStateFlow,
                 onMoreOptionsClick = { onMoreOptionsClick() },
                 onClick = onSongClick
             )

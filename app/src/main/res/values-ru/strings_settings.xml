@@ -215,6 +215,8 @@
     <string name="settings_lyrics_screen_section">Экран текстов песен</string>
     <string name="settings_immersive_lyrics_title">Иммерсивный режим</string>
     <string name="settings_immersive_lyrics_subtitle">Автоматически скрывать элементы управления и увеличивать текст.</string>
+    <string name="settings_hide_controls_button_title">Скрыть кнопки управления</string>
+    <string name="settings_hide_controls_button_subtitle">Скрывать все элементы управления воспроизведением внизу экрана с текстом.</string>
     <string name="settings_auto_hide_delay_title">Задержка скрытия</string>
     <string name="settings_auto_hide_delay_subtitle">Время до скрытия элементов управления.</string>
     <string name="settings_auto_hide_delay_3s">3 с</string>

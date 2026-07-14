@@ -136,8 +136,12 @@ import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.ui.text.style.TextGeometricTransform
 import androidx.compose.ui.text.style.TextOverflow
-import com.theveloper.pixelplay.presentation.components.subcomps.PlayingEqIcon
+import com.theveloper.pixelplay.MainActivity.Companion.LocalHazeState
+import com.theveloper.pixelplay.presentation.components.subcomps.PlayingEqIconV2
 import com.theveloper.pixelplay.utils.MultiLangRomanizer
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.materials.HazeMaterials
 
 internal data class LyricsSheetColors(
     val container: Color,
@@ -244,6 +248,7 @@ fun LyricsSheet(
     immersiveLyricsTimeout: Long,
     isImmersiveTemporarilyDisabled: Boolean,
     onSetImmersiveTemporarilyDisabled: (Boolean) -> Unit,
+    controlsButtonEnabled: Boolean,
     onSaveLyricsToFile: (Song, Lyrics, Boolean) -> Unit,
     onTranslateViaAi: () -> Unit,
     // BottomToggleRow Params
@@ -453,6 +458,7 @@ fun LyricsSheet(
     // Immersive Mode State
     var immersiveMode by remember { mutableStateOf(false) }
     var lastInteractionTime by remember { mutableLongStateOf(System.currentTimeMillis()) }
+    var controlsButtonVisible by remember { mutableStateOf(true) }
     var showMoreSheet by remember { mutableStateOf(false) }
     val moreSheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
@@ -487,12 +493,22 @@ fun LyricsSheet(
     }
 
     // Auto-hide controls logic
-    LaunchedEffect(immersiveLyricsEnabled, lastInteractionTime, showSyncedLyrics, isImmersiveTemporarilyDisabled) {
-        if (immersiveLyricsEnabled && showSyncedLyrics == true && !isImmersiveTemporarilyDisabled) {
-            delay(immersiveLyricsTimeout)
-            immersiveMode = true
+    LaunchedEffect(
+        immersiveLyricsEnabled,
+        lastInteractionTime,
+        controlsButtonEnabled,
+        showSyncedLyrics,
+        isImmersiveTemporarilyDisabled
+    ) {
+        if (controlsButtonEnabled) {
+            if (immersiveLyricsEnabled && showSyncedLyrics == true && !isImmersiveTemporarilyDisabled) {
+                delay(immersiveLyricsTimeout)
+                immersiveMode = true
+            } else {
+                immersiveMode = false
+            }
         } else {
-            immersiveMode = false
+            immersiveMode = true
         }
     }
 
@@ -636,16 +652,16 @@ fun LyricsSheet(
                     },
                     onDragEnd = {
                         isSwipeActive = false
-                        val committed = abs(dragOffset) > swipeThresholdPx && !hasTriggeredAction 
-                        
+                        val committed = abs(dragOffset) > swipeThresholdPx && !hasTriggeredAction
+
                         if (committed) {
                             if (dragOffset > 0) onPrev() else onNext()
                             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                         }
 
                         coroutineScope.launch {
-                             swipeProgress.animateTo(0f, tween(200))
-                             dragOffset = 0f
+                            swipeProgress.animateTo(0f, tween(200))
+                            dragOffset = 0f
                         }
                     },
                     onDragCancel = {
@@ -658,11 +674,11 @@ fun LyricsSheet(
                     onDrag = { change, dragAmount ->
                         change.consume()
                         resetImmersiveTimer()
-                        
+
                         if (!hasTriggeredAction) {
                             dragOffset += dragAmount.x
                             val progress = (abs(dragOffset) / swipeThresholdPx).coerceIn(0f, 1f)
-                            
+
                             coroutineScope.launch {
                                 swipeProgress.snapTo(progress)
                             }
@@ -670,7 +686,7 @@ fun LyricsSheet(
                     }
                 )
             },
-        containerColor = containerColor,
+//        containerColor = containerColor,
         contentColor = contentColor,
         // Removed TopBar and FAB
     ) { paddingValues ->
@@ -678,13 +694,13 @@ fun LyricsSheet(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = paddingValues.calculateTopPadding())
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null
-                ) {
-                    resetImmersiveTimer()
-                }
+//                    .padding(top = paddingValues.calculateTopPadding())
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) {
+                        resetImmersiveTimer()
+                    }
         ) {
             val initialSyncedLineIndex = remember(lyrics, playbackPositionFlow, lyricsSyncOffset) {
                 resolveCurrentLineIndex(
@@ -708,14 +724,15 @@ fun LyricsSheet(
                 AnimatedContent(
                     targetState = currentSong,
                     transitionSpec = {
-                        (fadeIn(animationSpec = tween(300)) + 
+                        (fadeIn(animationSpec = tween(300)) +
                          scaleIn(initialScale = 0.9f, animationSpec = tween(300)))
                         .togetherWith(fadeOut(animationSpec = tween(300)))
                     },
                     modifier = Modifier
                         .align(Alignment.TopStart)
                         .zIndex(2f)
-                        .wrapContentWidth(),
+                        .wrapContentWidth()
+                        .padding(top = paddingValues.calculateTopPadding()),
                     label = "headerAnimation"
                 ) { song ->
                     LyricsTrackInfo(
@@ -725,132 +742,140 @@ fun LyricsSheet(
                             .padding(
                                 top = 4.dp, bottom = 24.dp, start = 18.dp, end = 18.dp
                             )
+                            .clip(CircleShape)
                             .background(
-                                color = backgroundColor,
-                                shape = CircleShape
+                                color = backgroundColor.copy(0.6f),
                             )
                             .wrapContentWidth()
                             .animateContentSize(), // Animate width changes
-                        backgroundColor = backgroundColor, // Distinct solid background
-                        contentColor = onBackgroundColor,
-                        isPlaying = isPlaying
+                        backgroundColor = backgroundColor.copy(0.7f), // Distinct solid background
+                        containerColor = containerColor,
+                        contentColor = contentColor,
+                        isPlaying = isPlaying,
+                        stablePlayerStateFlow = stablePlayerStateFlow
                     )
                 }
 
-                when (showSyncedLyrics) {
-                    null -> {
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(top = 110.dp, bottom = 24.dp, start = 24.dp, end = 24.dp)
-                        ) {
-                            item(key = "loader_or_empty") {
-                                Box(
-                                    modifier = Modifier
-                                        .fillParentMaxSize(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    if (isLoadingLyrics) {
-                                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                            Text(
-                                                text = stringResource(R.string.lyrics_loading),
-                                                style = MaterialTheme.typography.titleMedium
-                                            )
-                                            Spacer(modifier = Modifier.height(8.dp))
-                                            LinearWavyProgressIndicator(
-                                                trackColor = accentColor.copy(alpha = 0.4f),
-                                                color = accentColor,
-                                                modifier = Modifier.width(100.dp)
-                                            )
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .background(containerColor)
+                ) {
+                    when (showSyncedLyrics) {
+                        null -> {
+                            LazyColumn(
+                                modifier = Modifier.fillMaxSize(),
+                                contentPadding = PaddingValues(top = 110.dp, bottom = 24.dp, start = 24.dp, end = 24.dp)
+                            ) {
+                                item(key = "loader_or_empty") {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillParentMaxSize(),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        if (isLoadingLyrics) {
+                                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                                Text(
+                                                    text = stringResource(R.string.lyrics_loading),
+                                                    style = MaterialTheme.typography.titleMedium
+                                                )
+                                                Spacer(modifier = Modifier.height(8.dp))
+                                                LinearWavyProgressIndicator(
+                                                    trackColor = accentColor.copy(alpha = 0.4f),
+                                                    color = accentColor,
+                                                    modifier = Modifier.width(100.dp)
+                                                )
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
-                    }
 
-                    true -> {
-                        lyrics?.synced?.let { synced ->
-                            SyncedLyricsList(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(horizontal = 24.dp),
-                                contentPadding = PaddingValues(top = 130.dp, bottom = 100.dp),
-                                lines = synced,
-                                listState = syncedListState,
-                                playbackPositionFlow = playbackPositionFlow,
-                                lyricsSyncOffset = lyricsSyncOffset,
-                                positionOverrideMs = previewSeekPositionMs,
-                                accentColor = lyricHighlightColor,
-                                textStyle = scaledTextStyle,
-                                onLineClick = { syncedLine -> 
-                                    onSeekTo(
-                                        resolveSeekPositionMs(
-                                            lineTimeMs = syncedLine.time.toLong(),
-                                            lyricsSyncOffsetMs = lyricsSyncOffset
-                                        )
-                                    )
-                                    resetImmersiveTimer()
-                                },
-                                highlightZoneFraction = highlightZoneFraction,
-                                highlightOffsetDp = highlightOffsetDp,
-                                autoscrollAnimationSpec = resolvedAutoscrollSpec,
-                                useAnimatedLyrics = useAnimatedLyrics,
-                                animatedLyricsBlurEnabled = animatedLyricsBlurEnabled && !disableBlurAllOver,
-                                animatedLyricsBlurStrength = animatedLyricsBlurStrength,
-                                immersiveMode = immersiveMode,
-                                lyricsAlignment = lyricsAlignment,
-                                showTranslation = showLyricsTranslation,
-                                showRomanization = showLyricsRomanization,
-                                footer = {
-                                    if (lyrics?.areFromRemote == true) {
-                                        item(key = "provider_text") {
-                                            ProviderText(
-                                                providerText = stringResource(R.string.lyrics_provided_by),
-                                                uri = stringResource(R.string.lyrics_lrclib_uri),
-                                                textAlign = TextAlign.Center,
-                                                accentColor = lyricHighlightColor,
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .padding(vertical = 16.dp)
+                        true -> {
+                            lyrics?.synced?.let { synced ->
+                                SyncedLyricsList(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(horizontal = 24.dp),
+                                    contentPadding = PaddingValues(top = 130.dp, bottom = 100.dp),
+                                    lines = synced,
+                                    listState = syncedListState,
+                                    playbackPositionFlow = playbackPositionFlow,
+                                    lyricsSyncOffset = lyricsSyncOffset,
+                                    positionOverrideMs = previewSeekPositionMs,
+                                    accentColor = lyricHighlightColor,
+                                    textStyle = scaledTextStyle,
+                                    onLineClick = { syncedLine ->
+                                        onSeekTo(
+                                            resolveSeekPositionMs(
+                                                lineTimeMs = syncedLine.time.toLong(),
+                                                lyricsSyncOffsetMs = lyricsSyncOffset
                                             )
+                                        )
+                                        resetImmersiveTimer()
+                                    },
+                                    highlightZoneFraction = highlightZoneFraction,
+                                    highlightOffsetDp = highlightOffsetDp,
+                                    autoscrollAnimationSpec = resolvedAutoscrollSpec,
+                                    useAnimatedLyrics = useAnimatedLyrics,
+                                    animatedLyricsBlurEnabled = animatedLyricsBlurEnabled && !disableBlurAllOver,
+                                    animatedLyricsBlurStrength = animatedLyricsBlurStrength,
+                                    immersiveMode = immersiveMode,
+                                    lyricsAlignment = lyricsAlignment,
+                                    showTranslation = showLyricsTranslation,
+                                    showRomanization = showLyricsRomanization,
+                                    footer = {
+                                        if (lyrics?.areFromRemote == true) {
+                                            item(key = "provider_text") {
+                                                ProviderText(
+                                                    providerText = stringResource(R.string.lyrics_provided_by),
+                                                    uri = stringResource(R.string.lyrics_lrclib_uri),
+                                                    textAlign = TextAlign.Center,
+                                                    accentColor = lyricHighlightColor,
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .padding(vertical = 16.dp)
+                                                )
+                                            }
                                         }
                                     }
-                                }
-                            )
-                        }
-                    }
-
-                    false -> {
-                        lyrics?.plain?.let { plain ->
-                            LazyColumn(
-                                modifier = Modifier.fillMaxSize(),
-                                state = staticListState,
-                                contentPadding = PaddingValues(
-                                    start = 24.dp,
-                                    end = 24.dp,
-                                    top = 130.dp,
-                                    bottom = 24.dp
                                 )
-                            ) {
-                                itemsIndexed(
-                                    items = plain,
-                                    key = { index, line -> "$index-$line" }
-                                ) { _, line ->
-                                    PlainLyricsLine(
-                                        line = line,
-                                        style = lyricsTextStyle,
-                                        lyricsAlignment = lyricsAlignment,
-                                        showTranslation = if (hasTranslatedLyrics) showLyricsTranslation else true,
-                                        showRomanization = if (hasRomanizedLyrics) showLyricsRomanization else true,
-                                        modifier = Modifier.fillMaxWidth()
+                            }
+                        }
+
+                        false -> {
+                            lyrics?.plain?.let { plain ->
+                                LazyColumn(
+                                    modifier = Modifier.fillMaxSize(),
+                                    state = staticListState,
+                                    contentPadding = PaddingValues(
+                                        start = 24.dp,
+                                        end = 24.dp,
+                                        top = 130.dp,
+                                        bottom = 24.dp
                                     )
-                                    Spacer(modifier = Modifier.height(16.dp))
+                                ) {
+                                    itemsIndexed(
+                                        items = plain,
+                                        key = { index, line -> "$index-$line" }
+                                    ) { _, line ->
+                                        PlainLyricsLine(
+                                            line = line,
+                                            style = lyricsTextStyle,
+                                            lyricsAlignment = lyricsAlignment,
+                                            showTranslation = if (hasTranslatedLyrics) showLyricsTranslation else true,
+                                            showRomanization = if (hasRomanizedLyrics) showLyricsRomanization else true,
+                                            modifier = Modifier.fillMaxWidth()
+                                        )
+                                        Spacer(modifier = Modifier.height(16.dp))
+                                    }
                                 }
                             }
                         }
                     }
                 }
-                
+
+
                 // Top Gradient for fade
                 Box(
                     modifier = Modifier
@@ -880,7 +905,7 @@ fun LyricsSheet(
 
             // Controls Section (Auto-hide in immersive mode)
             AnimatedVisibility(
-                visible = !immersiveMode,
+                visible = if (controlsButtonEnabled) { !immersiveMode } else false,
                 enter = expandVertically(expandFrom = Alignment.Top) + fadeIn(),
                 exit = shrinkVertically(shrinkTowards = Alignment.Top) + fadeOut()
             ) {
@@ -888,36 +913,40 @@ fun LyricsSheet(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(containerColor)
-                        .padding(bottom = paddingValues.calculateBottomPadding() + 10.dp, end = 16.dp, start = 16.dp)
+                        .padding(
+                            bottom = paddingValues.calculateBottomPadding() + 10.dp,
+                            end = 16.dp,
+                            start = 16.dp
+                        )
                         .pointerInput(Unit) {
                             awaitPointerEventScope {
                                 while (true) {
                                     val event = awaitPointerEvent()
                                     // Reset timer on any touch down or move in this area
                                     if (event.changes.any { it.pressed }) {
-                                         resetImmersiveTimer()
+                                        resetImmersiveTimer()
                                     }
                                 }
                             }
                         }
                 ) {
-                                AnimatedVisibility(
-                    visible = showSyncedLyrics == true && lyrics?.synced != null && showSyncControls,
-                    enter = expandVertically() + fadeIn(),
-                    exit = shrinkVertically() + fadeOut()
-                ) {
-                    LyricsSyncControls(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 8.dp),
-                        offsetMillis = lyricsSyncOffset,
-                        onOffsetChange = onLyricsSyncOffsetChange,
-                        backgroundColor = backgroundColor,
-                        accentColor = sheetColors.syncButtonContainer,
-                        onAccentColor = sheetColors.syncButtonContent,
-                        onBackgroundColor = onBackgroundColor
-                    )
-                }
+                    AnimatedVisibility(
+                        visible = showSyncedLyrics == true && lyrics?.synced != null && showSyncControls,
+                        enter = expandVertically() + fadeIn(),
+                        exit = shrinkVertically() + fadeOut()
+                    ) {
+                        LyricsSyncControls(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 8.dp),
+                            offsetMillis = lyricsSyncOffset,
+                            onOffsetChange = onLyricsSyncOffsetChange,
+                            backgroundColor = backgroundColor,
+                            accentColor = sheetColors.syncButtonContainer,
+                            onAccentColor = sheetColors.syncButtonContent,
+                            onBackgroundColor = onBackgroundColor
+                        )
+                    }
 
                 // Playback Controls Row
                 Row(
@@ -1071,6 +1100,7 @@ fun LyricsSheet(
                         }
                     },
                     immersiveLyricsEnabled = immersiveLyricsEnabled,
+                    controlsButtonEnabled = controlsButtonVisible,
                     isShuffleEnabled = isShuffleEnabled,
                     repeatMode = repeatMode,
                     isFavoriteProvider = isFavoriteProvider,
@@ -1092,7 +1122,7 @@ fun LyricsSheet(
 
        // Show Controls Button (Overlay)
        AnimatedVisibility(
-            visible = immersiveMode,
+            visible = if (controlsButtonEnabled) { immersiveMode } else false,
             enter = fadeIn() + slideInVertically { it / 2 },
             exit = fadeOut() + slideOutVertically { it / 2 },
             modifier = Modifier
@@ -1125,25 +1155,25 @@ fun LyricsSheet(
                    .align(overlayAlignment)
                    .size(100.dp) // Base size
                    .padding(
-                       start = if(isNext) 0.dp else 6.dp,
-                       end = if(isNext) 6.dp else 0.dp
+                       start = if (isNext) 0.dp else 6.dp,
+                       end = if (isNext) 6.dp else 0.dp
                    )
                    .graphicsLayer {
-                        val widthPx = size.width
-                        val initialOffset = if(isNext) widthPx else -widthPx
-                        translationX = initialOffset * (1f - swipeProgress.value)
+                       val widthPx = size.width
+                       val initialOffset = if (isNext) widthPx else -widthPx
+                       translationX = initialOffset * (1f - swipeProgress.value)
 
-                        scaleX = 0.8f + (swipeProgress.value * 0.2f)
-                        scaleY = 0.8f + (swipeProgress.value * 0.2f)
+                       scaleX = 0.8f + (swipeProgress.value * 0.2f)
+                       scaleY = 0.8f + (swipeProgress.value * 0.2f)
                    }
                    .background(
-                        color = accentColor, // No alpha modulation
-                        shape = RoundedCornerShape(
-                            topStart = if(isNext) 360.dp else 8.dp,
-                            bottomStart = if(isNext) 360.dp else 8.dp,
-                            topEnd = if(isNext) 8.dp else 360.dp,
-                            bottomEnd = if(isNext) 8.dp else 360.dp
-                        )
+                       color = accentColor, // No alpha modulation
+                       shape = RoundedCornerShape(
+                           topStart = if (isNext) 360.dp else 8.dp,
+                           bottomStart = if (isNext) 360.dp else 8.dp,
+                           topEnd = if (isNext) 8.dp else 360.dp,
+                           bottomEnd = if (isNext) 8.dp else 360.dp
+                       )
                    ),
                contentAlignment = Alignment.Center
            ) {
@@ -1987,8 +2017,10 @@ private fun LyricsTrackInfo(
     song: Song?,
     modifier: Modifier = Modifier,
     backgroundColor: Color,
+    containerColor: Color,
     contentColor: Color,
-    isPlaying: Boolean
+    isPlaying: Boolean,
+    stablePlayerStateFlow: StateFlow<StablePlayerState>
 ) {
     if (song == null) return
 
@@ -2073,12 +2105,13 @@ private fun LyricsTrackInfo(
             )
         }
 
-        PlayingEqIcon(
+        PlayingEqIconV2(
             modifier = Modifier
                 .padding(start = 8.dp, end = 18.dp)
                 .size(width = 18.dp, height = 16.dp),
             color = contentColor,
-            isPlaying = isPlaying
+            isPlaying = isPlaying,
+            stablePlayerStateFlow = stablePlayerStateFlow
         )
     }
 }

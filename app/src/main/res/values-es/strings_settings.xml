@@ -215,6 +215,8 @@
     <string name="settings_lyrics_screen_section">Pantalla de letras</string>
     <string name="settings_immersive_lyrics_title">Letras inmersivas</string>
     <string name="settings_immersive_lyrics_subtitle">Ocultar controles automáticamente y agrandar el texto.</string>
+    <string name="settings_hide_controls_button_title">Ocultar botones de control</string>
+    <string name="settings_hide_controls_button_subtitle">Oculta todos los controles de reproducción en la parte inferior de la pantalla de letras.</string>
     <string name="settings_auto_hide_delay_title">Retraso de ocultación automática</string>
     <string name="settings_auto_hide_delay_subtitle">Tiempo antes de que se oculten los controles.</string>
     <string name="settings_auto_hide_delay_3s">3 s</string>

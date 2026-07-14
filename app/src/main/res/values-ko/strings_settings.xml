@@ -215,6 +215,8 @@
     <string name="settings_lyrics_screen_section">가사 화면</string>
     <string name="settings_immersive_lyrics_title">몰입형 가사</string>
     <string name="settings_immersive_lyrics_subtitle">컨트롤을 자동으로 숨기고 텍스트를 확대합니다.</string>
+    <string name="settings_hide_controls_button_title">컨트롤 버튼 숨기기</string>
+    <string name="settings_hide_controls_button_subtitle">가사 화면 하단의 모든 재생 컨트롤을 숨깁니다.</string>
     <string name="settings_auto_hide_delay_title">자동 숨김 지연 시간</string>
     <string name="settings_auto_hide_delay_subtitle">컨트롤이 숨겨지기 전까지의 시간입니다.</string>
     <string name="settings_auto_hide_delay_3s">3초</string>

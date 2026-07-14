@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.Dp
@@ -39,6 +40,9 @@ import com.theveloper.pixelplay.presentation.components.scoped.rememberFullPlaye
 import com.theveloper.pixelplay.presentation.viewmodel.PlayerSheetState
 import com.theveloper.pixelplay.presentation.viewmodel.PlayerViewModel
 import com.theveloper.pixelplay.presentation.viewmodel.StablePlayerState
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.materials.HazeMaterials
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -54,6 +58,7 @@ internal fun BoxScope.UnifiedPlayerMiniAndFullLayers(
     bottomSheetOpenFraction: Float,
     fullPlayerVisualState: FullPlayerVisualState,
     containerHeight: Dp,
+    containerColor: Color,
     currentQueueSourceName: String,
     currentSheetContentState: PlayerSheetState,
     carouselStyle: String,
@@ -63,6 +68,7 @@ internal fun BoxScope.UnifiedPlayerMiniAndFullLayers(
     currentPositionProvider: () -> Long,
     isFavorite: Boolean,
     shouldRenderFullPlayer: Boolean = true,
+    hazeState: HazeState,
     currentHorizontalPaddingStartPxProvider: () -> Float,
     currentHorizontalPaddingEndPxProvider: () -> Float,
     onShowQueueClicked: () -> Unit,
@@ -128,6 +134,7 @@ internal fun BoxScope.UnifiedPlayerMiniAndFullLayers(
                         onNext = { playerViewModel.nextSong() },
                         canScroll = isMiniPlayerVisible && infrequentPlayerState.isPlaying,
                         modifier = Modifier.fillMaxSize()
+                            .hazeEffect(state = hazeState, HazeMaterials.ultraThin(containerColor = containerColor))
                     )
                 }
             }

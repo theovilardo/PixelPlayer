@@ -45,6 +45,8 @@ import com.theveloper.pixelplay.data.model.Genre
 import com.theveloper.pixelplay.data.model.Lyrics
 import com.theveloper.pixelplay.data.model.LyricsSourcePreference
 import com.theveloper.pixelplay.data.model.SearchFilterType
+import com.theveloper.pixelplay.data.model.SearchHistoryItem
+import com.theveloper.pixelplay.data.model.SearchResultItem
 import com.theveloper.pixelplay.data.model.Song
 import com.theveloper.pixelplay.data.model.SortOption
 import com.theveloper.pixelplay.data.model.toLibraryTabIdOrNull
@@ -444,6 +446,11 @@ class PlayerViewModel @Inject constructor(
     val aiStatus: StateFlow<String?> = aiStateHolder.aiStatus
     val aiError: StateFlow<String?> = aiStateHolder.aiError
 
+    // Search state (direct access bypasses 40-field playerUiState)
+    val searchResults: StateFlow<ImmutableList<SearchResultItem>> = searchStateHolder.searchResults
+    val selectedSearchFilter: StateFlow<SearchFilterType> = searchStateHolder.selectedSearchFilter
+    val searchHistory: StateFlow<ImmutableList<SearchHistoryItem>> = searchStateHolder.searchHistory
+
     private val _selectedSongForInfo = MutableStateFlow<Song?>(null)
     val selectedSongForInfo: StateFlow<Song?> = _selectedSongForInfo.asStateFlow()
 
@@ -535,14 +542,6 @@ class PlayerViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = false
     )
-
-    val hasGeminiApiKey: StateFlow<Boolean> = aiPreferencesRepository.geminiApiKey
-        .map { it.isNotBlank() }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = false
-        )
 
     val fullPlayerLoadingTweaks: StateFlow<FullPlayerLoadingTweaks> = userPreferencesRepository.fullPlayerLoadingTweaksFlow
         .stateIn(
@@ -646,7 +645,7 @@ class PlayerViewModel @Inject constructor(
 
     // Toast Events
     private val _toastEvents = MutableSharedFlow<String>(
-        extraBufferCapacity = 1,
+        extraBufferCapacity = 5,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
     val toastEvents = _toastEvents.asSharedFlow()
@@ -1140,13 +1139,6 @@ class PlayerViewModel @Inject constructor(
             initialValue = persistentListOf()
         )
 
-    val songCountFlow: StateFlow<Int> = musicRepository.getSongCountFlow()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = 0
-        )
-
     val hasCloudSongsFlow: StateFlow<Boolean?> = musicRepository.getCloudSongCountFlow()
         .map<Int, Boolean?> { it > 0 }
         .distinctUntilChanged()
@@ -1527,15 +1519,11 @@ class PlayerViewModel @Inject constructor(
 
 
 
+        // Deferred: legacy migrations run after init to avoid blocking first render
         viewModelScope.launch {
+            kotlinx.coroutines.delay(2000)
             userPreferencesRepository.migrateTabOrder()
-        }
-
-        viewModelScope.launch {
             userPreferencesRepository.ensureLibrarySortDefaults()
-        }
-
-        viewModelScope.launch {
             val legacyFavoriteIds = userPreferencesRepository.favoriteSongIdsFlow.first()
             if (legacyFavoriteIds.isNotEmpty()) {
                 val roomFavoriteIds = musicRepository.getFavoriteSongIdsOnce()
@@ -1677,8 +1665,12 @@ class PlayerViewModel @Inject constructor(
 
         // launchColorSchemeProcessor() - Handled by ThemeStateHolder and on-demand calls
 
-        loadPersistedDailyMix()
-        loadSearchHistory()
+        // Deferred: daily mix and search history load after first frame
+        viewModelScope.launch {
+            kotlinx.coroutines.delay(1500)
+            loadPersistedDailyMix()
+            loadSearchHistory()
+        }
 
         viewModelScope.launch {
             isSyncingStateFlow.collect { isSyncing ->
@@ -1797,7 +1789,7 @@ class PlayerViewModel @Inject constructor(
                     aiStatus = status,
                     aiError = error
                 )
-            }.collect { snapshot ->
+            }.distinctUntilChanged().collect { snapshot ->
                 _playerUiState.update {
                     it.copy(
                         showAiPlaylistSheet = snapshot.showAiPlaylistSheet,
@@ -1820,7 +1812,7 @@ class PlayerViewModel @Inject constructor(
                 libraryStateHolder.isLoadingCategories,
             ) { folders, loadingLibrary, loadingCategories ->
                 Triple(folders, loadingLibrary, loadingCategories)
-            }.collect { (folders, loadingLibrary, loadingCategories) ->
+            }.distinctUntilChanged().collect { (folders, loadingLibrary, loadingCategories) ->
                 _playerUiState.update {
                     it.copy(
                         musicFolders = folders,
@@ -1841,7 +1833,7 @@ class PlayerViewModel @Inject constructor(
                 libraryStateHolder.currentFavoriteSortOption,
             ) { songSort, albumSort, artistSort, folderSort, favoriteSort ->
                 SortOptionsSnapshot(songSort, albumSort, artistSort, folderSort, favoriteSort)
-            }.collect { snapshot ->
+            }.distinctUntilChanged().collect { snapshot ->
                 _playerUiState.update {
                     it.copy(
                         currentSongSortOption = snapshot.songSort,

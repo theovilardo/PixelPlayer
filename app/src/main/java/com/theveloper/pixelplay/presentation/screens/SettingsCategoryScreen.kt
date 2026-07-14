@@ -917,16 +917,16 @@ fun SettingsCategoryScreen(
                         }
                         SettingsCategory.AI_INTEGRATION -> {
                             val provider = com.theveloper.pixelplay.data.ai.provider.AiProvider.fromString(aiProvider)
-                            val currentCustomBaseUrl by settingsViewModel.customBaseUrl.collectAsStateWithLifecycle()
+                            val currentAiBaseUrl by settingsViewModel.currentAiBaseUrl.collectAsStateWithLifecycle()
 
                             // AI Provider Selection
                             SettingsSubsection(title = stringResource(R.string.settings_ai_provider_section)) {
-                                ThemeSelectorItem(
+                                SearchableProviderSelector(
                                     label = stringResource(R.string.settings_ai_provider_title),
                                     description = stringResource(R.string.settings_ai_provider_subtitle),
-                                    options = com.theveloper.pixelplay.data.ai.provider.AiProvider.entries.associate { it.name to it.displayName },
-                                    selectedKey = aiProvider,
-                                    onSelectionChanged = { settingsViewModel.onAiProviderChange(it) },
+                                    providers = com.theveloper.pixelplay.data.ai.provider.AiProvider.entries,
+                                    selectedProvider = aiProvider,
+                                    onProviderSelected = { settingsViewModel.onAiProviderChange(it) },
                                     leadingIcon = { Icon(Icons.Rounded.Science, null, tint = MaterialTheme.colorScheme.secondary) }
                                 )
                                 SwitchSettingItem(
@@ -1029,14 +1029,115 @@ fun SettingsCategoryScreen(
                             if (provider.hasConfigurableUrl) {
                                 SettingsSubsection(title = "API Base URL") {
                                     AiApiKeyItem(
-                                        apiKey = currentCustomBaseUrl,
-                                        onApiKeySave = { settingsViewModel.onCustomBaseUrlChange(it) },
+                                        apiKey = currentAiBaseUrl,
+                                        onApiKeySave = { settingsViewModel.onBaseUrlChange(it) },
                                         title = "Base URL",
                                         subtitle = "e.g. https://api.example.com/v1"
                                     )
                                 }
                             }
 
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            SettingsSubsection(title = stringResource(R.string.settings_ai_usage_report_section)) {
+                                val recentAiUsage by settingsViewModel.recentAiUsage.collectAsStateWithLifecycle()
+                                val totalPromptTokens by settingsViewModel.totalPromptTokens.collectAsStateWithLifecycle()
+                                val totalOutputTokens by settingsViewModel.totalOutputTokens.collectAsStateWithLifecycle()
+                                val totalThoughtTokens by settingsViewModel.totalThoughtTokens.collectAsStateWithLifecycle()
+
+                                val totalTokens = totalPromptTokens + totalOutputTokens + totalThoughtTokens
+                                val totalTokStr = String.format(Locale.US, "%,d", totalTokens)
+                                val promptTokStr = String.format(Locale.US, "%,d", totalPromptTokens)
+                                val outputTokStr = String.format(Locale.US, "%,d", totalOutputTokens)
+                                val thoughtTokStr = String.format(Locale.US, "%,d", totalThoughtTokens)
+
+                                ActionSettingsItem(
+                                    title = stringResource(R.string.settings_total_consumption_title),
+                                    subtitle = stringResource(
+                                        R.string.settings_ai_usage_tokens_subtitle,
+                                        totalTokStr,
+                                        promptTokStr,
+                                        outputTokStr,
+                                        thoughtTokStr
+                                    ),
+                                    icon = {
+                                        Icon(
+                                            painter = painterResource(R.drawable.rounded_monitoring_24),
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.tertiary
+                                        )
+                                    },
+                                    primaryActionLabel = stringResource(R.string.settings_ai_clear_logs),
+                                    onPrimaryAction = { settingsViewModel.clearAiUsageData() }
+                                )
+
+                                if (recentAiUsage.isNotEmpty()) {
+                                    Spacer(modifier = Modifier.height(12.dp))
+                                    var expanded by remember { mutableStateOf(false) }
+                                    val rotation by animateFloatAsState(targetValue = if (expanded) 180f else 0f)
+                                    
+                                    Surface(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable { expanded = !expanded },
+                                        color = Color.Transparent
+                                    ) {
+                                        Row(
+                                            modifier = Modifier.padding(vertical = 8.dp),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.SpaceBetween
+                                        ) {
+                                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                                Icon(
+                                                    painter = painterResource(R.drawable.rounded_monitoring_24),
+                                                    contentDescription = null,
+                                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                    modifier = Modifier.size(20.dp)
+                                                )
+                                                Spacer(modifier = Modifier.width(12.dp))
+                                                Text(
+                                                    text = stringResource(R.string.settings_ai_activity_log_title, recentAiUsage.size),
+                                                    style = MaterialTheme.typography.titleMedium.copy(fontFamily = GoogleSansRounded),
+                                                    color = MaterialTheme.colorScheme.onSurface
+                                                )
+                                            }
+                                            Icon(
+                                                imageVector = Icons.Rounded.ExpandMore,
+                                                contentDescription = if (expanded) stringResource(R.string.settings_ai_hide_logs) else stringResource(R.string.settings_ai_show_logs),
+                                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                modifier = Modifier.rotate(rotation)
+                                            )
+                                        }
+                                    }
+
+                                    AnimatedVisibility(
+                                        visible = expanded,
+                                        enter = expandVertically() + fadeIn(),
+                                        exit = shrinkVertically() + fadeOut()
+                                    ) {
+                                        Column(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(top = 8.dp, bottom = 8.dp)
+                                        ) {
+                                            val dateFormat = SimpleDateFormat("MMMM d, yyyy", Locale.getDefault())
+                                            val groupedUsage = recentAiUsage.groupBy { 
+                                                dateFormat.format(Date(it.timestamp)) 
+                                            }
+
+                                            groupedUsage.forEach { (date, items) ->
+                                                AiUsageDateHeader(date = date)
+                                                items.forEach { usage ->
+                                                    AiUsageLogItem(usage = usage)
+                                                }
+                                                Spacer(modifier = Modifier.height(8.dp))
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        SettingsCategory.GENERATION_PARAMETERS -> {
                             // Prompt Behavior Section
                             SettingsSubsection(
                                 title = stringResource(R.string.settings_prompt_behavior_section),
@@ -1140,6 +1241,8 @@ fun SettingsCategoryScreen(
                                 )
                             }
 
+                            Spacer(modifier = Modifier.height(16.dp))
+
                             // Song Data Configuration Section
                             SettingsSubsection(title = "Song Data Configuration") {
                                 val aiSampleSize by settingsViewModel.aiSampleSize.collectAsStateWithLifecycle()
@@ -1184,106 +1287,6 @@ fun SettingsCategoryScreen(
                                         )
                                     }
                                 )
-                            }
-
-                            Spacer(modifier = Modifier.height(16.dp))
-
-                            SettingsSubsection(title = stringResource(R.string.settings_ai_usage_report_section)) {
-                                val recentAiUsage by settingsViewModel.recentAiUsage.collectAsStateWithLifecycle()
-                                val totalPromptTokens by settingsViewModel.totalPromptTokens.collectAsStateWithLifecycle()
-                                val totalOutputTokens by settingsViewModel.totalOutputTokens.collectAsStateWithLifecycle()
-                                val totalThoughtTokens by settingsViewModel.totalThoughtTokens.collectAsStateWithLifecycle()
-
-                                val totalTokens = totalPromptTokens + totalOutputTokens + totalThoughtTokens
-                                val totalTokStr = String.format(Locale.US, "%,d", totalTokens)
-                                val promptTokStr = String.format(Locale.US, "%,d", totalPromptTokens)
-                                val outputTokStr = String.format(Locale.US, "%,d", totalOutputTokens)
-                                val thoughtTokStr = String.format(Locale.US, "%,d", totalThoughtTokens)
-
-                                ActionSettingsItem(
-                                    title = stringResource(R.string.settings_total_consumption_title),
-                                    subtitle = stringResource(
-                                        R.string.settings_ai_usage_tokens_subtitle,
-                                        totalTokStr,
-                                        promptTokStr,
-                                        outputTokStr,
-                                        thoughtTokStr
-                                    ),
-                                    icon = {
-                                        Icon(
-                                            painter = painterResource(R.drawable.rounded_monitoring_24),
-                                            contentDescription = null,
-                                            tint = MaterialTheme.colorScheme.tertiary
-                                        )
-                                    },
-                                    primaryActionLabel = stringResource(R.string.settings_ai_clear_logs),
-                                    onPrimaryAction = { settingsViewModel.clearAiUsageData() }
-                                )
-
-                                if (recentAiUsage.isNotEmpty()) {
-                                    Spacer(modifier = Modifier.height(12.dp))
-                                    var expanded by remember { mutableStateOf(false) }
-                                    val rotation by animateFloatAsState(targetValue = if (expanded) 180f else 0f)
-                                    
-                                    Surface(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .clickable { expanded = !expanded },
-                                        color = Color.Transparent
-                                    ) {
-                                        Row(
-                                            modifier = Modifier.padding(vertical = 8.dp),
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.SpaceBetween
-                                        ) {
-                                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                                Icon(
-                                                    painter = painterResource(R.drawable.rounded_monitoring_24),
-                                                    contentDescription = null,
-                                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                    modifier = Modifier.size(20.dp)
-                                                )
-                                                Spacer(modifier = Modifier.width(12.dp))
-                                                Text(
-                                                    text = stringResource(R.string.settings_ai_activity_log_title, recentAiUsage.size),
-                                                    style = MaterialTheme.typography.titleMedium.copy(fontFamily = GoogleSansRounded),
-                                                    color = MaterialTheme.colorScheme.onSurface
-                                                )
-                                            }
-                                            Icon(
-                                                imageVector = Icons.Rounded.ExpandMore,
-                                                contentDescription = if (expanded) stringResource(R.string.settings_ai_hide_logs) else stringResource(R.string.settings_ai_show_logs),
-                                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                modifier = Modifier.rotate(rotation)
-                                            )
-                                        }
-                                    }
-
-                                    AnimatedVisibility(
-                                        visible = expanded,
-                                        enter = expandVertically() + fadeIn(),
-                                        exit = shrinkVertically() + fadeOut()
-                                    ) {
-                                        Column(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(top = 8.dp, bottom = 8.dp)
-                                        ) {
-                                            val dateFormat = SimpleDateFormat("MMMM d, yyyy", Locale.getDefault())
-                                            val groupedUsage = recentAiUsage.groupBy { 
-                                                dateFormat.format(Date(it.timestamp)) 
-                                            }
-
-                                            groupedUsage.forEach { (date, items) ->
-                                                AiUsageDateHeader(date = date)
-                                                items.forEach { usage ->
-                                                    AiUsageLogItem(usage = usage)
-                                                }
-                                                Spacer(modifier = Modifier.height(8.dp))
-                                            }
-                                        }
-                                    }
-                                }
                             }
                         }
                         SettingsCategory.BACKUP_RESTORE -> {

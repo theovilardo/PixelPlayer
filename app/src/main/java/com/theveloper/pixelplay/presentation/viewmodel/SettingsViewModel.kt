@@ -333,87 +333,10 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    // Specific on-change methods for UI binding
-    fun onGeminiApiKeyChange(apiKey: String) {
+    fun onBaseUrlChange(baseUrl: String) {
         viewModelScope.launch {
-            aiPreferencesRepository.setApiKey(AiProvider.GEMINI, apiKey)
-            if (apiKey.isNotBlank()) fetchAvailableModels(apiKey, "GEMINI")
-            else clearModelsState("GEMINI")
-        }
-    }
-    fun onDeepseekApiKeyChange(apiKey: String) {
-        viewModelScope.launch {
-            aiPreferencesRepository.setApiKey(AiProvider.DEEPSEEK, apiKey)
-            if (apiKey.isNotBlank()) fetchAvailableModels(apiKey, "DEEPSEEK")
-            else clearModelsState("DEEPSEEK")
-        }
-    }
-    fun onGroqApiKeyChange(apiKey: String) {
-        viewModelScope.launch {
-            aiPreferencesRepository.setApiKey(AiProvider.GROQ, apiKey)
-            if (apiKey.isNotBlank()) fetchAvailableModels(apiKey, "GROQ")
-            else clearModelsState("GROQ")
-        }
-    }
-    fun onMistralApiKeyChange(apiKey: String) {
-        viewModelScope.launch {
-            aiPreferencesRepository.setApiKey(AiProvider.MISTRAL, apiKey)
-            if (apiKey.isNotBlank()) fetchAvailableModels(apiKey, "MISTRAL")
-            else clearModelsState("MISTRAL")
-        }
-    }
-    fun onNvidiaApiKeyChange(apiKey: String) {
-        viewModelScope.launch {
-            aiPreferencesRepository.setApiKey(AiProvider.NVIDIA, apiKey)
-            if (apiKey.isNotBlank()) fetchAvailableModels(apiKey, "NVIDIA")
-            else clearModelsState("NVIDIA")
-        }
-    }
-    fun onKimiApiKeyChange(apiKey: String) {
-        viewModelScope.launch {
-            aiPreferencesRepository.setApiKey(AiProvider.KIMI, apiKey)
-            if (apiKey.isNotBlank()) fetchAvailableModels(apiKey, "KIMI")
-            else clearModelsState("KIMI")
-        }
-    }
-    fun onGlmApiKeyChange(apiKey: String) {
-        viewModelScope.launch {
-            aiPreferencesRepository.setApiKey(AiProvider.GLM, apiKey)
-            if (apiKey.isNotBlank()) fetchAvailableModels(apiKey, "GLM")
-            else clearModelsState("GLM")
-        }
-    }
-    fun onOpenAiApiKeyChange(apiKey: String) {
-        viewModelScope.launch {
-            aiPreferencesRepository.setApiKey(AiProvider.OPENAI, apiKey)
-            if (apiKey.isNotBlank()) fetchAvailableModels(apiKey, "OPENAI")
-            else clearModelsState("OPENAI")
-        }
-    }
-    fun onOpenrouterApiKeyChange(apiKey: String) {
-        viewModelScope.launch {
-            aiPreferencesRepository.setApiKey(AiProvider.OPENROUTER, apiKey)
-            if (apiKey.isNotBlank()) fetchAvailableModels(apiKey, "OPENROUTER")
-            else clearModelsState("OPENROUTER")
-        }
-    }
-    fun onOllamaApiKeyChange(apiKey: String) {
-        viewModelScope.launch {
-            aiPreferencesRepository.setApiKey(AiProvider.OLLAMA, apiKey)
-            if (apiKey.isNotBlank()) fetchAvailableModels(apiKey, "OLLAMA")
-            else clearModelsState("OLLAMA")
-        }
-    }
-    fun onCustomApiKeyChange(apiKey: String) {
-        viewModelScope.launch {
-            aiPreferencesRepository.setApiKey(AiProvider.CUSTOM, apiKey)
-            if (apiKey.isNotBlank()) fetchAvailableModels(apiKey, "CUSTOM")
-            else clearModelsState("CUSTOM")
-        }
-    }
-    fun onCustomBaseUrlChange(baseUrl: String) {
-        viewModelScope.launch {
-            aiPreferencesRepository.setBaseUrl(AiProvider.CUSTOM, baseUrl)
+            val provider = AiProvider.fromString(aiProvider.value)
+            aiPreferencesRepository.setBaseUrl(provider, baseUrl)
         }
     }
 

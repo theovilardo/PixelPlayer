@@ -16,7 +16,7 @@ class AiClientFactory @Inject constructor() {
      * @return AiClient instance
      */
     fun createClient(provider: AiProvider, apiKey: String): AiClient {
-        if (apiKey.isBlank()) {
+        if (apiKey.isBlank() && provider.requiresApiKey) {
             throw IllegalArgumentException("API Key cannot be blank for ${provider.displayName}")
         }
         
@@ -24,39 +24,39 @@ class AiClientFactory @Inject constructor() {
             AiProvider.GEMINI -> GeminiAiClient(apiKey)
             AiProvider.DEEPSEEK -> GenericOpenAiClient(
                 apiKey = apiKey,
-                baseUrl = "https://api.deepseek.com",
+                baseUrl = "https://api.deepseek.com/v1",
                 defaultModelId = "deepseek-chat",
                 providerName = "DeepSeek"
             )
             AiProvider.GROQ -> GenericOpenAiClient(
                 apiKey = apiKey,
                 baseUrl = "https://api.groq.com/openai/v1",
-                defaultModelId = "llama-3.1-8b-instant",
+                defaultModelId = "llama-3.3-70b-versatile",
                 providerName = "Groq"
             )
             AiProvider.MISTRAL -> GenericOpenAiClient(
                 apiKey = apiKey,
                 baseUrl = "https://api.mistral.ai/v1",
-                defaultModelId = "mistral-large-latest",
+                defaultModelId = "mistral-large-2411",
                 providerName = "Mistral"
             )
             AiProvider.NVIDIA -> GenericOpenAiClient(
                 apiKey = apiKey,
                 baseUrl = "https://integrate.api.nvidia.com/v1",
-                defaultModelId = "meta/llama-3.1-8b-instruct",
+                defaultModelId = "nvidia/llama-3.1-nemotron-70b-instruct",
                 providerName = "NVIDIA NIM"
             )
             AiProvider.KIMI -> GenericOpenAiClient(
                 apiKey = apiKey,
                 baseUrl = "https://api.moonshot.cn/v1",
-                defaultModelId = "moonshot-v1-8k",
-                providerName = "Moonshot Kimi"
+                defaultModelId = "moonshot-v1-auto",
+                providerName = "Kimi"
             )
             AiProvider.GLM -> GenericOpenAiClient(
                 apiKey = apiKey,
                 baseUrl = "https://open.bigmodel.cn/api/paas/v4",
-                defaultModelId = "glm-4",
-                providerName = "Zhipu GLM"
+                defaultModelId = "glm-4-plus",
+                providerName = "GLM"
             )
             AiProvider.OPENAI -> GenericOpenAiClient(
                 apiKey = apiKey,
@@ -67,7 +67,7 @@ class AiClientFactory @Inject constructor() {
             AiProvider.OPENROUTER -> GenericOpenAiClient(
                 apiKey = apiKey,
                 baseUrl = "https://openrouter.ai/api/v1",
-                defaultModelId = "google/gemini-2.0-flash-lite-preview-02-05:free",
+                defaultModelId = "google/gemini-2.5-flash-preview-04-17:free",
                 providerName = "OpenRouter"
             )
             AiProvider.OLLAMA -> GenericOpenAiClient(

@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import timber.log.Timber
 import java.security.MessageDigest
+import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -27,9 +28,9 @@ class AiHandler @Inject constructor(
     private val promptEngine: AiSystemPromptEngine,
     @AppScope private val appScope: CoroutineScope
 ) {
-    // Cooldown timer: Provider -> Expiry Timestamp
-    private val providerCooldowns = mutableMapOf<AiProvider, Long>()
-    private val COOLDOWN_DURATION_MS = 1000L * 60 * 5 // 5 minutes
+    // Cooldown timer: Provider -> Expiry Timestamp (thread-safe, auto-cleans expired)
+    private val providerCooldowns = ConcurrentHashMap<AiProvider, Long>()
+    private val COOLDOWN_DURATION_MS = 1000L * 60 * 2 // 2 minutes (was 5)
 
     // Cache TTL: 30 minutes — prevents stale results from being served indefinitely
     private val CACHE_TTL_MS = 1000L * 60 * 30
@@ -97,7 +98,13 @@ class AiHandler @Inject constructor(
         presencePenalty: Float,
         frequencyPenalty: Float,
     ): GenerationResult {
-        val client = clientFactory.createClient(provider, apiKey)
+        val client = if (provider.hasConfigurableUrl) {
+            val configuredUrl = preferencesRepo.getBaseUrl(provider).first()
+            if (configuredUrl.isNotBlank()) clientFactory.createClientWithUrl(provider, apiKey, configuredUrl)
+            else clientFactory.createClient(provider, apiKey)
+        } else {
+            clientFactory.createClient(provider, apiKey)
+        }
         val requestedModel = getModel(provider).ifBlank { client.getDefaultModel() }
 
         suspend fun callWithModel(model: String): String {
@@ -163,6 +170,18 @@ class AiHandler @Inject constructor(
         context: String = ""
     ): String {
         val params = getGenerationParams()
+        val effectiveMaxTokens = if (type == AiSystemPromptType.LYRICS) {
+            // Lyrics translation needs more output tokens because each original
+            // line is followed by its translation (2x output). Also factor in
+            // the full lyrics text in the prompt. Use at least 4096, at most
+            // 16384, scaling linearly with input length.
+            val estimatedInputChars = prompt.length
+            val estimatedOutputChars = estimatedInputChars * 2
+            val estimatedOutputTokens = (estimatedOutputChars / 4).coerceAtLeast(4096)
+            estimatedOutputTokens.coerceAtMost(16384)
+        } else {
+            params.maxTokens
+        }
         val effectiveTemperature = if (params.temperature == 0.7f) {
             if (temperature == 0.7f) {
                 when (type) {
@@ -171,6 +190,7 @@ class AiHandler @Inject constructor(
                     AiSystemPromptType.TAGGING -> 0.4f
                     AiSystemPromptType.PLAYLIST, AiSystemPromptType.DAILY_MIX -> 0.6f
                     AiSystemPromptType.PERSONA -> 0.85f
+                    AiSystemPromptType.LYRICS -> 0.7f
                     AiSystemPromptType.GENERAL -> 0.7f
                 }
             } else temperature
@@ -191,9 +211,12 @@ class AiHandler @Inject constructor(
             }
         }
 
+        // Clean up expired cooldowns so stale entries never accumulate
+        val now = System.currentTimeMillis()
+        providerCooldowns.entries.removeIf { it.value < now }
+
         val providersToTry = com.theveloper.pixelplay.data.ai.provider.AiProviderSupport.buildProviderChain(userProvider)
         val failedProviders = mutableListOf<String>()
-        val now = System.currentTimeMillis()
 
         for (provider in providersToTry) {
             val cooldownExpiry = providerCooldowns[provider] ?: 0L
@@ -204,7 +227,7 @@ class AiHandler @Inject constructor(
 
             try {
                 val apiKey = getApiKey(provider)
-                if (apiKey.isBlank()) {
+                if (apiKey.isBlank() && provider.requiresApiKey) {
                     failedProviders.add("${provider.name}: no API key configured")
                     continue
                 }
@@ -220,7 +243,7 @@ class AiHandler @Inject constructor(
                     temperature = effectiveTemperature,
                     topP = params.topP,
                     topK = params.topK,
-                    maxTokens = params.maxTokens,
+                    maxTokens = effectiveMaxTokens,
                     presencePenalty = params.presencePenalty,
                     frequencyPenalty = params.frequencyPenalty,
                 )

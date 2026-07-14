@@ -10,7 +10,9 @@
     <string name="settings_category_behavior_title">Perilaku</string>
     <string name="settings_category_behavior_subtitle">Gerakan, haptik, dan perilaku navigasi</string>
     <string name="settings_category_ai_title">Integrasi AI (β)</string>
-    <string name="settings_category_ai_subtitle">Penyedia AI, kunci API, dan pengaturan model</string>
+    <string name="settings_category_ai_subtitle">AI providers, API keys, model selection, and activity logs</string>
+    <string name="settings_category_generation_parameters_title">Generation Parameters</string>
+    <string name="settings_category_generation_parameters_subtitle">Temperature, sampling, prompts, and song data configuration</string>
     <string name="settings_category_backup_title">Cadangkan &amp; Pulihkan</string>
     <string name="settings_category_backup_subtitle">Ekspor dan pulihkan data aplikasi pribadi Anda</string>
     <string name="settings_category_developer_title">Opsi Pengembang</string>

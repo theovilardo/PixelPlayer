@@ -10,7 +10,9 @@
     <string name="settings_category_behavior_title">동작</string>
     <string name="settings_category_behavior_subtitle">제스처, 햅틱 및 내비게이션 동작</string>
     <string name="settings_category_ai_title">AI 연동 (β)</string>
-    <string name="settings_category_ai_subtitle">AI 제공업체, API 키 및 모델 설정</string>
+    <string name="settings_category_ai_subtitle">AI providers, API keys, model selection, and activity logs</string>
+    <string name="settings_category_generation_parameters_title">Generation Parameters</string>
+    <string name="settings_category_generation_parameters_subtitle">Temperature, sampling, prompts, and song data configuration</string>
     <string name="settings_category_backup_title">백업 및 복구</string>
     <string name="settings_category_backup_subtitle">개인 앱 데이터 내보내기 및 복구</string>
     <string name="settings_category_developer_title">개발자 옵션</string>

@@ -10,7 +10,9 @@
     <string name="settings_category_behavior_title">Atferd</string>
     <string name="settings_category_behavior_subtitle">Gester, haptikk og navigasjonsatferd</string>
     <string name="settings_category_ai_title">AI-integrasjon (β)</string>
-    <string name="settings_category_ai_subtitle">AI-leverandører, API-nøkler og modellinnstillinger</string>
+    <string name="settings_category_ai_subtitle">AI providers, API keys, model selection, and activity logs</string>
+    <string name="settings_category_generation_parameters_title">Generation Parameters</string>
+    <string name="settings_category_generation_parameters_subtitle">Temperature, sampling, prompts, and song data configuration</string>
     <string name="settings_category_backup_title">Sikkerhetskopiering og gjenoppretting</string>
     <string name="settings_category_backup_subtitle">Eksporter og gjenopprett dine personlige app-data</string>
     <string name="settings_category_developer_title">Utvikleralternativer</string>

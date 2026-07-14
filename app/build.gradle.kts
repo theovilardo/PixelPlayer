@@ -81,6 +81,7 @@ android {
             ?: "b18441a1ff607e10a989891a5462e627"
         buildConfigField("int", "TELEGRAM_API_ID", telegramApiId)
         buildConfigField("String", "TELEGRAM_API_HASH", "\"$telegramApiHash\"")
+        buildConfigField("String", "BUILD_TYEPE", "\"${project.gradle.startParameter.taskNames.toString()}\"")
     }
 
     signingConfigs {
@@ -95,6 +96,7 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
+            buildConfigField("String", "BUILD_TYPE", "\"debug\"")
         }
 
         release {
@@ -110,10 +112,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "BUILD_TYPE", "\"release\"")
         }
 
         create("benchmark") {
             initWith(getByName("release"))
+            buildConfigField("String", "BUILD_TYPE", "\"benchmark\"")
             matchingFallbacks += listOf("release")
             isDebuggable = false
         }

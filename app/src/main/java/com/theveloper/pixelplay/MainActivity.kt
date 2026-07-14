@@ -316,7 +316,7 @@ class MainActivity : ComponentActivity() {
                                 targetState = showSetupScreen,
                                 transitionSpec = {
                                     if (targetState) {
-                                        // Transition to Setup
+                                        // Transition to Set up
                                         fadeIn(animationSpec = tween(400)) togetherWith fadeOut(animationSpec = tween(400))
                                     } else {
                                         // Transition from Setup to Main App
@@ -1157,7 +1157,7 @@ private class BlurEffectCache {
     private var cached: androidx.compose.ui.graphics.RenderEffect? = null
 
     fun get(radiusPx: Float): androidx.compose.ui.graphics.RenderEffect? {
-        if (radiusPx <= 0f) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || radiusPx <= 0f) {
             lastRadiusPx = 0f
             cached = null
             return null

@@ -637,6 +637,15 @@
     <string name="about_maintainer_subtitle">The person behind PixelPlayer.</string>
     <string name="about_spotlight_title">Community spotlight</string>
     <string name="about_spotlight_subtitle">Recognition for collaborators with major impact.</string>
+    <string name="about_licenses_title">Licenses and notices</string>
+    <string name="about_licenses_subtitle">Attribution for dependencies and earlier contributions.</string>
+    <string name="about_open_source_licenses">Open source licenses</string>
+    <string name="about_open_source_licenses_subtitle">Dependency licenses and third-party notices</string>
+    <string name="open_source_licenses_screen_title">Open source licenses</string>
+    <string name="third_party_notices_action">MIT-era notice</string>
+    <string name="third_party_notices_title">Third-party notices</string>
+    <string name="third_party_notices_close">Close</string>
+    <string name="third_party_notices_load_error">The bundled third-party notice could not be loaded.</string>
     <string name="about_contributors_section_title">Open source contributors</string>
     <string name="about_contributors_section_subtitle">Live contributor list from GitHub.</string>
     <string name="about_contributions_format">%1$d contrib.</string>

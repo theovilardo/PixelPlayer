@@ -202,6 +202,8 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 This project is licensed under a Proprietary License - see the [LICENSE](LICENSE) file for details.
 
+Portions contributed before 2026-05-12 remain available under the MIT License; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
 ---
 
 <p align="center">

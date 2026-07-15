@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_tap_to_open">Clique para abrir</string>
+    <string name="widget_album_art">Arte de álbum</string>
+    <string name="widget_album_art_placeholder">Área reservada da arte de álbum</string>
+    <string name="cd_favorite">Favorito</string>
+    <string name="cd_play">Tocar</string>
+    <string name="cd_pause">Pausar</string>
+    <string name="widget_tap_to_play">Clique para tocar</string>
+    <string name="widget_preview_song_title">Título da faixa</string>
+    <string name="widget_preview_artist">Artista</string>
+    <string name="cd_repeat">Repetir</string>
+    <string name="widget_wavy_progress_bar_desc">Barra de progresso, %1$d por cento</string>
+
+    <!-- Lyrics more bottom sheet -->
+    <string name="lyrics_more_appearance">Aparência</string>
+    <string name="lyrics_more_alignment">Alinhamento</string>
+    <string name="lyrics_more_controls">Controles</string>
+    <string name="lyrics_more_dialog_reset_title">Resetar letras?</string>
+    <string name="lyrics_more_dialog_reset_message">Tem certeza de que deseja resetar as letras para essa faixa?</string>
+    <string name="lyrics_more_hide_sync_controls">Esconder controles de sincronização</string>
+    <string name="lyrics_more_adjust_sync">Ajustar sincronização</string>
+    <string name="lyrics_more_show_romanization">Mostrar romanização</string>
+    <string name="lyrics_more_show_translations">Mostrar tradução</string>
+    <string name="lyrics_more_disable_immersive_once">Desabilitar imersão (único)</string>
+    <string name="lyrics_more_keep_screen_on">Manter tela ligada</string>
+    <string name="cd_lyrics_align_left">Alinhar letras à esquerda</string>
+    <string name="cd_lyrics_align_center">Alinhar letras ao centro</string>
+    <string name="cd_lyrics_align_right">Alinha letras à direita</string>
+
+    <!-- No internet -->
+    <string name="no_internet_dialog_title">Sem conexão com a internet</string>
+    <string name="no_internet_dialog_message">Esse conteúdo depende de uma conexão à internet. Por favor, cheque suas configurações de rede e tente novamente.</string>
+    <string name="offline_screen_title">Você está offline</string>
+    <string name="offline_screen_message">Por favor, cheque sua conexão com a internet e tente novamente para acessar esse conteúdo.</string>
+
+    <!-- Equalizer preset dialogs -->
+    <string name="equalizer_save_custom_preset_title">Salvar predefinição personalizada</string>
+    <string name="equalizer_save_custom_preset_body">Insira um nome para sua predefinição de equalizador personalizada.</string>
+    <string name="equalizer_preset_name_label">Nome da predefinição</string>
+    <string name="equalizer_rename_preset_title">Renomear predefinição</string>
+    <string name="error_name_empty">Nome não pode estar vazio</string>
+    <string name="action_save">Salvar</string>
+    <string name="action_rename">Renomear</string>
+
+    <!-- AI metadata sheet -->
+    <string name="ai_metadata_headline_success">Etiquetado perfeitamente!</string>
+    <string name="ai_metadata_headline_default">Metadados de IA</string>
+    <string name="ai_metadata_subtitle_generating">Consultando o guia de Mix Diário…</string>
+    <string name="ai_metadata_subtitle_review">Revise e refine os detalhes gerados</string>
+    <string name="song_field_title">Título</string>
+    <string name="song_field_artist">Artista</string>
+    <string name="song_field_album">Álbum</string>
+    <string name="song_field_album_artist">Artista do álbum</string>
+    <string name="song_field_genre">Gênero</string>
+    <string name="song_field_composer">Compositor</string>
+    <string name="action_try_again">Tentar novamente</string>
+    <string name="action_apply_changes">Aplicar mudanças</string>
+
+    <!-- Edit song metadata sheet -->
+    <string name="edit_song_info_dialog_title">Editando metadados da faixa</string>
+    <string name="edit_song_info_dialog_body">Editar os metadados de uma faixa pode alterar como ela é mostrada e organizada em sua biblioteca. As mudanças são permanentes e talvez sejam irreversíveis.</string>
+    <string name="edit_song_got_it">Entendido</string>
+    <string name="cd_info_icon">Informação</string>
+    <string name="edit_song_toolbar_title">Editar faixa</string>
+    <string name="cd_use_gemini_ai">Usar IA Gemini</string>
+    <string name="cd_show_metadata_info">Mostrar informação</string>
+    <string name="song_field_track_number">Número da faixa</string>
+    <string name="song_field_disc_number">Número do disco</string>
+    <string name="song_field_replaygain_track_db">ReplayGain da faixa (dB)</string>
+    <string name="song_field_replaygain_album_db">ReplayGain do álbum (dB)</string>
+    <string name="placeholder_replaygain_track_example">-6.50</string>
+    <string name="placeholder_replaygain_album_example">-8.20</string>
+    <string name="cd_replaygain_track">ReplayGain da faixa</string>
+    <string name="cd_replaygain_album">ReplayGain do álbum</string>
+    <string name="cd_song_title_icon">Título</string>
+    <string name="cd_track_number_icon">Número da faixa</string>
+    <string name="cd_disc_number_icon">Número do disco</string>
+    <string name="cd_search_lyrics_lrclib">Pesquisar letras em lrclib.net</string>
+    <string name="edit_song_cover_art_heading">Arte da capa</string>
+    <string name="edit_song_cover_art_hint">Selecione uma imagem quadrada e dê um toque nela para que a faixa fique bonita pelo app.</string>
+    <string name="edit_song_change_cover_art">Mudar arte de capa</string>
+    <string name="edit_song_delete_cover_art">Apagar arte de capa</string>
+    <string name="cd_cover_art_preview">Pré-visualização da nova arte de capa</string>
+    <string name="cd_current_song_cover_art">Arte de capa da faixa atual</string>
+    <string name="edit_song_crop_dialog_title">Ajustar sua arte de capa</string>
+    <string name="edit_song_crop_dialog_hint">Utilize gestos de pinça e arraste para encontrar o enquadramento desejado.</string>
+    <string name="edit_song_apply_cover_art">Aplicar arte de capa</string>
+    <string name="edit_song_unable_to_load_image">Não foi possível carregar a imagem selecionada</string>
+
+    <!-- Song info bottom sheet -->
+    <string name="song_info_share_chooser_title">Compartilhar arquivo de faixa via</string>
+    <string name="cd_play_song_action">Tocar faixa</string>
+    <string name="cd_share_song_file">Compartilhar arquivo da faixa</string>
+    <string name="cd_add_to_queue">Adicionar à fila</string>
+    <string name="cd_play_next_in_queue">Tocar como próxima da fila</string>
+    <string name="cd_add_to_playlist">Adicionar à playlist</string>
+    <string name="action_add_to_queue">Adicionar à fila</string>
+    <string name="action_queue_next">Próximo</string>
+    <string name="song_info_checking_watch">Verificando relógio</string>
+    <string name="song_info_transferring_percent">Transferindo %1$d%%</string>
+    <string name="song_info_transferring_to_watch">Transferindo para relógio</string>
+    <string name="song_info_transfer_in_progress">Transferência em progresso</string>
+    <string name="song_info_send_to_watch">Enviar para relógio</string>
+    <string name="song_info_watch_unavailable">Relógio não disponível</string>
+    <string name="cd_send_song_to_watch">Enviar faixa para o relógio</string>
+    <string name="cd_watch_unavailable">Relógio não disponível</string>
+    <string name="song_info_set_as_short">Definir como</string>
+    <string name="song_info_choose_tone">Definir como som</string>
+    <string name="cd_choose_song_tone">Escolha como usar essa faixa como som do sistema</string>
+    <string name="song_info_set_ringtone">Definir como toque</string>
+    <string name="cd_set_song_as_ringtone">Definir faixa como toque</string>
+    <string name="song_info_tone_picker_title">Usar essa faixa como</string>
+    <string name="song_info_tone_picker_body">Escolha onde PixelPlayer deve armazenar esse som.</string>
+    <string name="song_info_tone_ringtone_title">Toque de telefone</string>
+    <string name="song_info_tone_ringtone_subtitle">Chamadas recebidas</string>
+    <string name="song_info_tone_notification_title">Som de notificação</string>
+    <string name="song_info_tone_notification_subtitle">Alertas de mensagem e de apps</string>
+    <string name="song_info_tone_alarm_title">Toque de alarme</string>
+    <string name="song_info_tone_alarm_subtitle">Alarmes do relógio</string>
+    <string name="song_info_tone_confirm_title">Confirmar mudança do som</string>
+    <string name="song_info_tone_confirm_body">Definir \"%1$s\" como seu %2$s?</string>
+    <string name="song_info_tone_confirm_action">Definir som</string>
+    <string name="song_info_tone_success">Definir \"%1$s\" como seu %2$s</string>
+    <string name="song_info_tone_ringtone_label">toque de telefone</string>
+    <string name="song_info_tone_notification_label">som de notificação</string>
+    <string name="song_info_tone_alarm_label">toque de alarme</string>
+    <string name="song_info_ringtone_permission_prompt">Habilite \"Mudar configurações do sistema\", e retorne ao PixelPlayer para continuar automaticamente.</string>
+    <string name="song_info_ringtone_permission_missing">\"Mudar configurações do sistema\" não foi habilitado.</string>
+    <string name="song_info_ringtone_success">Definir \"%1$s\" como seu toque de telefone</string>
+    <string name="song_info_ringtone_local_only">Apenas faixas locais podem ser utilizadas como toque de telefone.</string>
+    <string name="song_info_ringtone_missing_file">Não foi possível preparar a faixa para usar como toque de telefone.</string>
+    <string name="song_info_ringtone_failed">Não foi possível definir como toque de telefone: %1$s</string>
+    <string name="song_info_label_duration">Duração</string>
+    <string name="song_info_label_song_metadata">Informações da faixa</string>
+    <string name="cd_duration_icon">Duração</string>
+    <string name="cd_genre_icon">Gênero</string>
+    <string name="cd_album_icon">Álbum</string>
+    <string name="cd_artist_icon">Artista</string>
+    <string name="cd_audio_format_icon">Formato de áudio</string>
+    <string name="cd_provider_icon">Provedor</string>
+    <string name="cd_file_icon">Arquivo</string>
+    <string name="cd_edit_song_metadata">Editar metadados da faixa</string>
+    <string name="cd_remove_from_favorites">Remover dos favoritos</string>
+    <string name="cd_add_to_favorites">Adicionar aos favoritos</string>
+    <string name="song_info_tab_options">Opções</string>
+    <string name="song_info_tab_options_badge">OPÇÕES</string>
+    <string name="song_info_tab_details">Detalhes</string>
+    <string name="song_info_tab_info_badge">INFO</string>
+    <string name="cd_details_tab">Detalhes</string>
+
+    <!-- Multi-selection bottom sheet -->
+    <string name="multi_selection_songs_count_upper">%1$d FAIXAS</string>
+    <string name="multi_selection_selected">selecionada(s)</string>
+    <string name="cd_play_all">Tocar todas</string>
+    <string name="action_play_all">Tocar todas</string>
+    <string name="cd_like_all">Curtir todas</string>
+    <string name="cd_unlike_all">Descurtir todas</string>
+    <string name="cd_share_all_as_zip">Compartilhar todas como ZIP</string>
+    <string name="cd_add_all_to_queue">Adicionar todas à fila</string>
+    <string name="cd_delete_all_songs">Apagar todas</string>
+    <string name="action_delete_all">Apagar todas</string>
+
+    <string name="playlist_dismissed_message">Playlist dispensada</string>
+    <string name="action_undo">Desfazer</string>
+    <string name="home_option_dj_mashup">Mashup do DJ</string>
+    <string name="create_playlist_dialog_title">Nova playlist</string>
+    <string name="create_playlist_name_label">Nome da playlist</string>
+    <string name="create_playlist_name_placeholder">Minha playlist</string>
+    <string name="action_create">Criar</string>
+    <string name="playlist_picker_add_songs_title">Adicionar %1$d faixas em…</string>
+    <string name="playlist_picker_select_playlists">Selecionar playlists</string>
+    <string name="search_playlists_hint">Pesquisar playlists…</string>
+
+    <string name="multi_selection_playlists_count_upper">%1$d PLAYLISTS</string>
+    <string name="cd_export_all">Exportar todas</string>
+    <string name="cd_merge_all">Mesclar todas</string>
+    <string name="cd_share_all">Compartilhar todas</string>
+    <string name="action_export">Exportar</string>
+    <string name="action_merge">Mesclar</string>
+
+    <string name="reorder_tabs_sheet_title">Reordenar abas da biblioteca</string>
+    <string name="reorder_tabs_reset_dialog_title">Resetar ordem</string>
+    <string name="reorder_tabs_reset_dialog_body">Restaurar a ordem padrão das abas?</string>
+    <string name="reorder_tabs_reordering">Reordenando abas…</string>
+    <string name="cd_drag_handle">Mover</string>
+    <string name="cd_reset">Resetar</string>
+    <string name="action_done">Pronto</string>
+</resources>

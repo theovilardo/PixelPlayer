@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="sharing_playlists_message">
+        <item quantity="one">Compartilhando %d playlist</item>
+        <item quantity="other">Compartilhando %d playlists</item>
+    </plurals>
+    <plurals name="exported_playlists_message">
+        <item quantity="one">%1$d playlist exportada para %2$s</item>
+        <item quantity="other">%1$d playlists exportadas para %2$s</item>
+    </plurals>
+    <plurals name="n_songs_added_to_queue">
+        <item quantity="one">%d faixa adicionada à fila</item>
+        <item quantity="other">%d faixas adicionadas à fila</item>
+    </plurals>
+    <plurals name="n_songs_will_play_next">
+        <item quantity="one">%d faixa vai tocar depois</item>
+        <item quantity="other">%d faixas vão tocar depois</item>
+    </plurals>
+    <plurals name="n_songs_added_to_favorites">
+        <item quantity="one">%d faixa adicionada aos favoritos</item>
+        <item quantity="other">%d faixas adicionadas aos favoritos</item>
+    </plurals>
+    <plurals name="n_songs_removed_from_favorites">
+        <item quantity="one">%d faixa removida dos favoritos</item>
+        <item quantity="other">%d faixas removidas dos favoritos</item>
+    </plurals>
+    <plurals name="n_files_deleted">
+        <item quantity="one">%d arquivo apagado</item>
+        <item quantity="other">%d arquivos apagados</item>
+    </plurals>
+    <plurals name="delete_songs_confirmation_title">
+        <item quantity="one">Apagar %d faixa?</item>
+        <item quantity="other">Apagar %d faixas?</item>
+    </plurals>
+    <plurals name="sleep_timer_play_count_times">
+        <item quantity="one">%d vez</item>
+        <item quantity="other">%d vezes</item>
+    </plurals>
+</resources>

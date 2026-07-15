@@ -62,9 +62,12 @@ fun PlaylistBottomSheet(
     playlistViewModel: PlaylistViewModel = hiltViewModel(),
     currentPlaylistId: String? = null
 ) {
-    val playlistCreatedAndSongsAddedMessage = stringResource(R.string.playlist_sheet_created_and_songs_added)
-    val setAiProviderApiKeyFirstMessage = stringResource(R.string.library_toast_set_ai_provider_api_key_first)
-    val songAddedToPlaylistsMessage = stringResource(R.string.playlist_sheet_song_added_to_playlists)
+    val playlistCreatedAndSongsAddedMessage =
+        stringResource(R.string.playlist_sheet_created_and_songs_added)
+    val setAiProviderApiKeyFirstMessage =
+        stringResource(R.string.library_toast_set_ai_provider_api_key_first)
+    val songAddedToPlaylistsMessage =
+        stringResource(R.string.playlist_sheet_song_added_to_playlists)
     val commonSavedMessage = stringResource(R.string.common_saved)
     val saveActionText = stringResource(R.string.common_save)
     val internalStorageText = stringResource(R.string.playlist_sheet_internal_storage)
@@ -77,33 +80,40 @@ fun PlaylistBottomSheet(
     )
 
     var searchQuery by remember { mutableStateOf("") }
+
     val filteredPlaylists = remember(searchQuery, playlistUiState.playlists) {
         if (searchQuery.isBlank()) playlistUiState.playlists
         else playlistUiState.playlists.filter { it.name.contains(searchQuery, true) }
     }
+
     val hasActiveAiProviderApiKey by playerViewModel.hasActiveAiProviderApiKey.collectAsStateWithLifecycle()
 
-    val selectedPlaylists = remember {
-        mutableStateMapOf<String, Boolean>().apply {
-            if (songs.size == 1) {
-                // Single song: pre-select playlists containing it
-                val songId = songs.first().id
-                filteredPlaylists.forEach {
-                    put(it.id, it.songIds.contains(songId))
-                }
-            } else {
-                // Multiple songs: start empty (additive only)
-                filteredPlaylists.forEach {
-                    put(it.id, false)
-                }
-            }
+    // Capture the initial membership snapshot once when the sheet opens.
+    // For a single song: true = song is already in that playlist.
+    // For multiple songs: always false (additive-only mode).
+    val initialSelection = remember {
+        if (songs.size == 1) {
+            val songId = songs.first().id
+            filteredPlaylists.associate { it.id to it.songIds.contains(songId) }
+        } else {
+            filteredPlaylists.associate { it.id to false }
         }
     }
 
-    val isAnyPlaylistSelected = selectedPlaylists.values.any { it }
+    val selectedPlaylists = remember {
+        mutableStateMapOf<String, Boolean>().apply {
+            putAll(initialSelection)
+        }
+    }
+
+    // Save is enabled whenever the current selection differs from the initial state,
+    // including the case where all playlists are deselected (remove from all).
+    val hasSelectionChanged = selectedPlaylists.any { (id, checked) ->
+        initialSelection[id] != checked
+    }
 
     val alpha by animateFloatAsState(
-        targetValue = if (isAnyPlaylistSelected) 1f else 0.4f,
+        targetValue = if (hasSelectionChanged) 1f else 0.4f,
         label = "fab_alpha"
     )
 
@@ -113,7 +123,6 @@ fun PlaylistBottomSheet(
         contentWindowInsets = { BottomSheetDefaults.modalWindowInsets } // Manejo de insets como el teclado
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-
             Column {
                 Row(
                     modifier = Modifier
@@ -122,7 +131,7 @@ fun PlaylistBottomSheet(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                     Text(
+                    Text(
                         if (songs.size > 1) {
                             stringResource(R.string.playlist_sheet_add_songs_title, songs.size)
                         } else {
@@ -132,6 +141,7 @@ fun PlaylistBottomSheet(
                         fontFamily = GoogleSansRounded
                     )
                 }
+
                 OutlinedTextField(
                     value = searchQuery,
                     colors = TextFieldDefaults.colors(
@@ -152,14 +162,11 @@ fun PlaylistBottomSheet(
                     shape = CircleShape,
                     singleLine = true,
                     trailingIcon = {
-                        if (searchQuery.isNotEmpty()) IconButton(onClick = {
-                            searchQuery = ""
-                        }) { Icon(Icons.Filled.Clear, null) }
+                        if (searchQuery.isNotEmpty()) IconButton(onClick = { searchQuery = "" }) {
+                            Icon(Icons.Filled.Clear, null)
+                        }
                     }
                 )
-
-
-
 
                 LibraryActionRow(
                     modifier = Modifier.padding(
@@ -167,10 +174,7 @@ fun PlaylistBottomSheet(
                         start = 10.dp,
                         end = 10.dp
                     ),
-                    //currentPage = pagerState.currentPage,
-                    onMainActionClick = {
-                        showCreatePlaylistDialog = true
-                    },
+                    onMainActionClick = { showCreatePlaylistDialog = true },
                     iconRotation = 0f,
                     showSortButton = false,
                     showImportButton = false,
@@ -194,7 +198,7 @@ fun PlaylistBottomSheet(
                     navController = null,
                     playerViewModel = playerViewModel,
                     isAddingToPlaylist = true,
-                    currentSong = songs.firstOrNull() ?: Song.emptySong(), // Fallback safe
+                    currentSong = songs.firstOrNull() ?: Song.emptySong(),
                     filteredPlaylists = filteredPlaylists,
                     selectedPlaylists = selectedPlaylists
                 )
@@ -203,10 +207,9 @@ fun PlaylistBottomSheet(
                     CreatePlaylistDialogRedesigned(
                         onDismiss = { showCreatePlaylistDialog = false },
                         onCreate = { name ->
-                            // Pass all selected songs to the new playlist
                             playlistViewModel.createPlaylist(name, songIds = songs.map { it.id })
                             showCreatePlaylistDialog = false
-                            onDismiss() // Close sheet after creation + add
+                            onDismiss()
                             playerViewModel.sendToast(playlistCreatedAndSongsAddedMessage)
                         },
                         onGenerateClick = {
@@ -225,31 +228,31 @@ fun PlaylistBottomSheet(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(bottom = 18.dp, end = 8.dp)
-                    .graphicsLayer {
-                        this.alpha = alpha
-                    },
+                    .graphicsLayer { this.alpha = alpha },
                 shape = CircleShape,
                 onClick = {
-                    if (!isAnyPlaylistSelected) return@MediumExtendedFloatingActionButton
-
+                    if (!hasSelectionChanged) return@MediumExtendedFloatingActionButton
                     if (songs.size == 1) {
-                         playlistViewModel.addOrRemoveSongFromPlaylists(
+                        playlistViewModel.addOrRemoveSongFromPlaylists(
                             songs.first().id,
                             selectedPlaylists.filter { it.value }.keys.toList(),
                             currentPlaylistId
                         )
                     } else {
-                         // Batch add
-                         val selectedPlaylistIds = selectedPlaylists.filter { it.value }.keys.toList()
-                         if (selectedPlaylistIds.isNotEmpty()) {
-                             playlistViewModel.addSongsToPlaylists(
-                                 songs.map { it.id },
-                                 selectedPlaylistIds
-                             )
-                         }
+                        // Batch add: multi-song mode is additive only
+                        val selectedPlaylistIds =
+                            selectedPlaylists.filter { it.value }.keys.toList()
+                        if (selectedPlaylistIds.isNotEmpty()) {
+                            playlistViewModel.addSongsToPlaylists(
+                                songs.map { it.id },
+                                selectedPlaylistIds
+                            )
+                        }
                     }
                     onDismiss()
-                    playerViewModel.sendToast(if (songs.size > 1) songAddedToPlaylistsMessage else commonSavedMessage)
+                    playerViewModel.sendToast(
+                        if (songs.size > 1) songAddedToPlaylistsMessage else commonSavedMessage
+                    )
                     playerViewModel.multiSelectionStateHolder.clearSelection()
                 },
                 icon = { Icon(Icons.Rounded.Save, saveActionText) },

@@ -1,5 +1,6 @@
 [versions]
 accompanistDrawablepainter = "0.37.3"
+aboutLibraries = "15.0.3"
 agp = "9.2.1"
 app = "1.7.0"
 googleGenai = "1.60.0"
@@ -110,6 +111,8 @@ playServicesWearable = "20.0.1"
 
 [libraries]
 accompanist-drawablepainter = { module = "com.google.accompanist:accompanist-drawablepainter", version.ref = "accompanistDrawablepainter" }
+aboutlibraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "aboutLibraries" }
+aboutlibraries-compose-m3 = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutLibraries" }
 
 lifecycleprocess = { module = "androidx.lifecycle:lifecycle-process", version.ref = "lifecycleRuntimeKtx" }
 junitplatformlauncher = { group = "org.junit.platform", name = "junit-platform-launcher", version.ref = "junitJupiter" }
@@ -270,6 +273,7 @@ apache-httpclient = { module = "org.apache.httpcomponents:httpclient", version.r
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+aboutlibraries = { id = "com.mikepenz.aboutlibraries.plugin.android", version.ref = "aboutLibraries" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin"}
 

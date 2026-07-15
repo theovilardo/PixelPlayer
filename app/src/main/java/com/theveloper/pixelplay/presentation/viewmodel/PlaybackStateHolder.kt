@@ -94,6 +94,37 @@ class PlaybackStateHolder @Inject constructor(
         _sliderUiMounted.value = mounted
     }
 
+    // 用于节流的时间戳
+    private var lastAmplitudeUpdateTimeMs = 0L
+
+    /* -------------------------------------------------------------------------- */
+    /* Audio EQ Visualizer                          */
+    /* -------------------------------------------------------------------------- */
+
+    /**
+     * 高频调用的音频振幅更新通道。
+     * 注意：此方法会被 ExoPlayer 的后台音频线程高频调用，绝对不能包含任何 IPC
+     * 或复杂的耗时逻辑！
+     */
+    fun updateAudioAmplitude(amplitude: Float) {
+        val nowMs = SystemClock.elapsedRealtime()
+
+        // 节流：限制更新频率约为 50ms 一次 (20 FPS)，避免 StateFlow 频繁发射导致 UI 掉帧
+        if (nowMs - lastAmplitudeUpdateTimeMs >= 50L) {
+            lastAmplitudeUpdateTimeMs = nowMs
+
+            // 直接操作底层的 _stablePlayerState，避开 updateStablePlayerState 中的耗时逻辑
+            _stablePlayerState.update { current ->
+                // 只有当振幅发生有意义的改变时才更新，避免无意义的重组
+                if (current.audioAmplitude != amplitude) {
+                    current.copy(audioAmplitude = amplitude)
+                } else {
+                    current
+                }
+            }
+        }
+    }
+
     // Internal State
     private var isSeeking = false
     private var remoteSeekUnlockJob: Job? = null
@@ -670,11 +701,13 @@ class PlaybackStateHolder @Inject constructor(
                     }
 
                     _stablePlayerState.update { state ->
+                        val finalAmplitude = if (isRemotePlaying || mediaController?.isPlaying == true) state.audioAmplitude else 0f
                         if (
                             state.totalDuration == duration &&
                             state.isPlaying == isRemotePlaying &&
                             state.playWhenReady == remotePlayWhenReady &&
-                            state.isBuffering == (remotePlayback?.isBuffering ?: false)
+                            state.isBuffering == (remotePlayback?.isBuffering ?: false) &&
+                            state.audioAmplitude == finalAmplitude
                         ) {
                             state
                         } else {
@@ -682,7 +715,8 @@ class PlaybackStateHolder @Inject constructor(
                                 totalDuration = duration,
                                 isPlaying = isRemotePlaying,
                                 playWhenReady = remotePlayWhenReady,
-                                isBuffering = remotePlayback?.isBuffering ?: false
+                                isBuffering = remotePlayback?.isBuffering ?: false,
+                                audioAmplitude = finalAmplitude,
                             )
                         }
                     }

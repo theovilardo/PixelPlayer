@@ -215,6 +215,8 @@
     <string name="settings_lyrics_screen_section">歌词界面</string>
     <string name="settings_immersive_lyrics_title">沉浸式歌词</string>
     <string name="settings_immersive_lyrics_subtitle">自动隐藏控件并放大文本。</string>
+    <string name="settings_hide_controls_button_title">隐藏控制按钮</string>
+    <string name="settings_hide_controls_button_subtitle">隐藏歌词界面底部的所有播放控制按钮。</string>
     <string name="settings_auto_hide_delay_title">自动隐藏延迟</string>
     <string name="settings_auto_hide_delay_subtitle">控件隐藏前的时间。</string>
     <string name="settings_auto_hide_delay_3s">3秒</string>

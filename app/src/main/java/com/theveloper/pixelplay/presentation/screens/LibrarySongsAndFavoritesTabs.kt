@@ -268,6 +268,7 @@ fun LibraryFavoritesTab(
                                     isPlaying = false,
                                     isLoading = true,
                                     isCurrentSong = false,
+                                    stablePlayerStateFlow = playerViewModel.stablePlayerState,
                                     onMoreOptionsClick = {},
                                     onClick = {}
                                 )
@@ -331,6 +332,7 @@ fun LibrarySongsTabPaginated(
                         isPlaying = false,
                         isLoading = true,
                         isCurrentSong = false,
+                        stablePlayerStateFlow = playerViewModel.stablePlayerState,
                         onMoreOptionsClick = {},
                         onClick = {}
                     )
@@ -448,6 +450,7 @@ fun LibrarySongsTabPaginated(
                                         isPlaying = isPlayingThisSong,
                                         isCurrentSong = stablePlayerState.currentSong?.id == song.id,
                                         isLoading = false,
+                                        stablePlayerStateFlow = playerViewModel.stablePlayerState,
                                         onMoreOptionsClick = rememberedOnMoreOptionsClick,
                                         onClick = rememberedOnClick
                                     )
@@ -457,6 +460,7 @@ fun LibrarySongsTabPaginated(
                                         isPlaying = false,
                                         isLoading = true,
                                         isCurrentSong = false,
+                                        stablePlayerStateFlow = playerViewModel.stablePlayerState,
                                         onMoreOptionsClick = {},
                                         onClick = {}
                                     )

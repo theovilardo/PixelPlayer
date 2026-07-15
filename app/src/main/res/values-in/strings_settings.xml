@@ -211,6 +211,8 @@
     <string name="settings_lyrics_screen_section">Layar Lirik</string>
     <string name="settings_immersive_lyrics_title">Lirik Imersif</string>
     <string name="settings_immersive_lyrics_subtitle">Sembunyikan kontrol otomatis dan perbesar teks.</string>
+    <string name="settings_hide_controls_button_title">Sembunyikan tombol kontrol</string>
+    <string name="settings_hide_controls_button_subtitle">Sembunyikan semua kontrol pemutaran di bagian bawah layar lirik.</string>
     <string name="settings_auto_hide_delay_title">Penundaan Sembunyi Otomatis</string>
     <string name="settings_auto_hide_delay_subtitle">Waktu sebelum kontrol disembunyikan.</string>
     <string name="settings_auto_hide_delay_3s">3d</string>

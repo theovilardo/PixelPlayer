@@ -40,6 +40,7 @@ import com.theveloper.pixelplay.data.model.Song
 import com.theveloper.pixelplay.presentation.viewmodel.PlayerViewModel
 import com.theveloper.pixelplay.presentation.viewmodel.PlaylistViewModel
 import com.theveloper.pixelplay.presentation.viewmodel.StablePlayerState
+import dev.chrisbanes.haze.HazeState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.flow.map
 import kotlin.math.roundToInt
@@ -90,7 +91,8 @@ internal fun UnifiedPlayerQueueLayer(
     onQueueDrag: (Float) -> Unit,
     onQueueRelease: (Float, Float) -> Unit,
     queuePredictiveBackProgress: Animatable<Float, AnimationVector1D>,
-    queuePredictiveBackSwipeEdge: State<Int?>
+    queuePredictiveBackSwipeEdge: State<Int?>,
+    hazeState: HazeState
 ) {
     if (!shouldRenderLayer) return
 
@@ -167,7 +169,8 @@ internal fun UnifiedPlayerQueueLayer(
                     onQueueRelease = onQueueRelease,
                     predictiveBackProgress = queuePredictiveBackProgress,
                     predictiveBackSwipeEdge = queuePredictiveBackSwipeEdge,
-                    queueSheetOffset = queueSheetOffset
+                    queueSheetOffset = queueSheetOffset,
+                    hazeState = hazeState
                 )
             }
         }
@@ -304,7 +307,8 @@ internal fun UnifiedPlayerQueueAndSongInfoHost(
     onNavigateToArtist: (Song) -> Unit,
     onNavigateToGenre: (Song) -> Unit,
     queuePredictiveBackProgress: Animatable<Float, AnimationVector1D>,
-    queuePredictiveBackSwipeEdge: State<Int?>
+    queuePredictiveBackSwipeEdge: State<Int?>,
+    hazeState: HazeState
 ) {
     if (!shouldRenderHost) return
 
@@ -437,7 +441,8 @@ internal fun UnifiedPlayerQueueAndSongInfoHost(
                 onQueueDrag = onQueueDrag,
                 onQueueRelease = onQueueRelease,
                 queuePredictiveBackProgress = queuePredictiveBackProgress,
-                queuePredictiveBackSwipeEdge = queuePredictiveBackSwipeEdge
+                queuePredictiveBackSwipeEdge = queuePredictiveBackSwipeEdge,
+                hazeState = hazeState
             )
 
             UnifiedPlayerSongInfoLayer(

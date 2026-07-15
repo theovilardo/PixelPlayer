@@ -91,6 +91,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import com.theveloper.pixelplay.MainActivity.Companion.LocalHazeState
 import com.theveloper.pixelplay.R
 import com.theveloper.pixelplay.presentation.components.CollapsibleCommonTopBar
 import com.theveloper.pixelplay.presentation.components.MiniPlayerHeight
@@ -104,6 +105,7 @@ import com.theveloper.pixelplay.presentation.viewmodel.LocalMusicStorageSummary
 import com.theveloper.pixelplay.presentation.viewmodel.MemorySummary
 import com.theveloper.pixelplay.presentation.viewmodel.PlaybackCompatibilitySummary
 import com.theveloper.pixelplay.presentation.viewmodel.PlayerViewModel
+import dev.chrisbanes.haze.hazeSource
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -232,7 +234,7 @@ private fun DeviceCapabilitiesContent(
             bottom = MiniPlayerHeight + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 16.dp
         ),
         verticalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = modifier
+        modifier = modifier.hazeSource(LocalHazeState.current)
     ) {
         item {
             PlaybackReadinessCard(

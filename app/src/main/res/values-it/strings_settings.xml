@@ -215,6 +215,8 @@
     <string name="settings_lyrics_screen_section">Schermata testi</string>
     <string name="settings_immersive_lyrics_title">Testi immersivi</string>
     <string name="settings_immersive_lyrics_subtitle">Nascondi automaticamente controlli e ingrandisci testo.</string>
+    <string name="settings_hide_controls_button_title">Nascondi i pulsanti di controllo</string>
+    <string name="settings_hide_controls_button_subtitle">Nascondi tutti i controlli di riproduzione in fondo alla schermata dei testi.</string>
     <string name="settings_auto_hide_delay_title">Ritardo auto-nascondi</string>
     <string name="settings_auto_hide_delay_subtitle">Tempo prima che i controlli si nascondano.</string>
     <string name="settings_auto_hide_delay_3s">3s</string>

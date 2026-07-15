@@ -143,7 +143,6 @@ import com.theveloper.pixelplay.R
 import com.theveloper.pixelplay.data.model.Song
 import com.theveloper.pixelplay.presentation.components.AutoScrollingText
 import com.theveloper.pixelplay.presentation.components.SmartImage
-import com.theveloper.pixelplay.presentation.components.subcomps.PlayingEqIcon
 import com.theveloper.pixelplay.presentation.components.player.AnimatedPlaybackControls
 import com.theveloper.pixelplay.presentation.viewmodel.PlayerUiState
 import com.theveloper.pixelplay.presentation.viewmodel.PlayerViewModel
@@ -192,6 +191,12 @@ import kotlinx.coroutines.flow.map
 import java.util.RandomAccess
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import com.theveloper.pixelplay.presentation.components.subcomps.PlayingEqIconV2
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.materials.HazeMaterials
 import kotlin.math.abs
 
 private data class QueueUndoBarProjection(
@@ -254,6 +259,7 @@ fun QueueBottomSheet(
     modifier: Modifier = Modifier,
     tonalElevation: Dp = 10.dp,
     shape: RoundedCornerShape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+    hazeState: HazeState
 ) {
     val colors = MaterialTheme.colorScheme
     var showTimerOptions by rememberSaveable { mutableStateOf(false) }
@@ -758,7 +764,7 @@ fun QueueBottomSheet(
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
-            Column {
+            Column(modifier = Modifier.hazeSource(hazeState)) {
                 val headerTopPadding = WindowInsets.statusBars
                     .asPaddingValues()
                     .calculateTopPadding() + 10.dp
@@ -892,6 +898,7 @@ fun QueueBottomSheet(
                                         swipeStateIdentity = itemStableKey,
                                         onDismissSong = { onRemoveSong(song.id) },
                                         isFromPlaylist = true,
+                                        playerViewModel = viewModel,
                                         onMoreOptionsClick = { onSongInfoClick(song) },
                                         dragHandle = {
                                             IconButton(
@@ -937,7 +944,8 @@ fun QueueBottomSheet(
                                 .padding(
                                     top = 24.dp,
                                     end = 14.dp,
-                                    bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 14.dp
+                                    bottom = WindowInsets.navigationBars.asPaddingValues()
+                                        .calculateBottomPadding() + 14.dp
                                 )
                         )
                     }
@@ -953,6 +961,19 @@ fun QueueBottomSheet(
                     targetValue = if (isFabExpanded) 45f else 0f,
                     label = "fabRotation"
                 )
+
+                val fabShape = remember {
+                    AbsoluteSmoothCornerShape(
+                        cornerRadiusTR = 50.dp,
+                        smoothnessAsPercentTR = 60,
+                        cornerRadiusTL = 8.dp,
+                        smoothnessAsPercentTL = 60,
+                        cornerRadiusBR = 50.dp,
+                        smoothnessAsPercentBR = 60,
+                        cornerRadiusBL = 8.dp,
+                        smoothnessAsPercentBL = 60
+                    )
+                }
 
                 val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
@@ -974,6 +995,7 @@ fun QueueBottomSheet(
                         isTimerActive = isTimerActiveDerived,
                         onToggleShuffle = onToggleShuffle,
                         onToggleRepeat = onToggleRepeat,
+                        hazeState = hazeState,
                         onTimerClick = { showTimerOptions = true }
                     )
 
@@ -1409,30 +1431,36 @@ private fun QueueControlsToolbar(
     onToggleShuffle: () -> Unit,
     onToggleRepeat: () -> Unit,
     onTimerClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    hazeState: HazeState
 ) {
     val activeColors = IconButtonDefaults.filledIconButtonColors(
-        containerColor = MaterialTheme.colorScheme.primary,
+        containerColor = MaterialTheme.colorScheme.primary.copy(0.4f),
         contentColor = MaterialTheme.colorScheme.onPrimary
     )
     val inactiveColors = IconButtonDefaults.filledTonalIconButtonColors(
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer.copy(0.4f),
         contentColor = MaterialTheme.colorScheme.onSurfaceVariant
     )
 
+    val shape = AbsoluteSmoothCornerShape(
+        cornerRadiusTR = 8.dp,
+        smoothnessAsPercentTR = 60,
+        cornerRadiusTL = 50.dp,
+        smoothnessAsPercentTL = 60,
+        cornerRadiusBR = 8.dp,
+        smoothnessAsPercentBR = 60,
+        cornerRadiusBL = 50.dp,
+        smoothnessAsPercentBL = 60
+    )
+
     Surface(
-        modifier = modifier.fillMaxHeight(),
-        shape = AbsoluteSmoothCornerShape(
-            cornerRadiusTR = 8.dp,
-            smoothnessAsPercentTR = 60,
-            cornerRadiusTL = 50.dp,
-            smoothnessAsPercentTL = 60,
-            cornerRadiusBR = 8.dp,
-            smoothnessAsPercentBR = 60,
-            cornerRadiusBL = 50.dp,
-            smoothnessAsPercentBL = 60
-        ),
-        color = MaterialTheme.colorScheme.surfaceContainerHighest,
+        modifier = modifier
+            .fillMaxHeight()
+            .clip(shape)
+            .hazeEffect(state = hazeState, HazeMaterials.ultraThin()),
+        shape = shape,
+        color = MaterialTheme.colorScheme.surfaceContainerHighest.copy(0.4f),
         shadowElevation = 0.dp
     ) {
         Row(
@@ -1876,6 +1904,7 @@ fun SaveQueueAsPlaylistSheet(
         }
     }
 
+@androidx.annotation.OptIn(UnstableApi::class)
 @Composable
 fun QueuePlaylistSongItem(
     modifier: Modifier = Modifier,
@@ -1893,7 +1922,8 @@ fun QueuePlaylistSongItem(
     enableSwipeToDismiss: Boolean = false,
     swipeStateIdentity: Long = 0L,
     onDismissSong: () -> Unit = {},
-    isFromPlaylist: Boolean
+    isFromPlaylist: Boolean,
+    playerViewModel: PlayerViewModel
 ) {
     val colors = MaterialTheme.colorScheme
 
@@ -2085,12 +2115,13 @@ fun QueuePlaylistSongItem(
 
                     if (isCurrentSong) {
                         if (isPlaying != null) {
-                            PlayingEqIcon(
+                            PlayingEqIconV2(
                                 modifier = Modifier
                                     .padding(start = 8.dp)
                                     .size(width = 18.dp, height = 16.dp),
                                 color = colors.secondary,
-                                isPlaying = isPlaying
+                                isPlaying = isPlaying,
+                                stablePlayerStateFlow = playerViewModel.stablePlayerState
                             )
                             Spacer(Modifier.width(4.dp))
                             if (!isRemoveButtonVisible) {

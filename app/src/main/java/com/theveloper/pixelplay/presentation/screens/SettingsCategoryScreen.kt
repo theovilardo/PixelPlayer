@@ -146,6 +146,7 @@ import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import com.theveloper.pixelplay.MainActivity.Companion.LocalHazeState
 import kotlin.math.roundToInt
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -177,6 +178,7 @@ import com.theveloper.pixelplay.presentation.viewmodel.LyricsRefreshProgress
 import com.theveloper.pixelplay.presentation.viewmodel.PlayerViewModel
 import com.theveloper.pixelplay.presentation.viewmodel.SettingsViewModel
 import com.theveloper.pixelplay.ui.theme.GoogleSansRounded
+import dev.chrisbanes.haze.hazeSource
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -395,13 +397,15 @@ fun SettingsCategoryScreen(
 
     Box(
         modifier =
-            Modifier.nestedScroll(nestedScrollConnection).fillMaxSize()
+            Modifier
+                .nestedScroll(nestedScrollConnection)
+                .fillMaxSize()
     ) {
         val currentTopBarHeightDp = with(density) { topBarHeight.value.toDp() }
         
         LazyColumn(
             state = lazyListState,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().hazeSource(LocalHazeState.current),
             contentPadding = PaddingValues(
                 top = currentTopBarHeightDp + 8.dp,
                 start = 16.dp,
@@ -703,6 +707,21 @@ fun SettingsCategoryScreen(
                                         leadingIcon = { Icon(Icons.Rounded.Timer, null, tint = MaterialTheme.colorScheme.secondary) }
                                     )
                                 }
+
+                                SwitchSettingItem(
+                                    title = stringResource(R.string.settings_hide_controls_button_title),
+                                    subtitle = stringResource(R.string.settings_hide_controls_button_subtitle),
+                                    checked = !uiState.controlsButtonEnabled,
+                                    onCheckedChange = { settingsViewModel.setControlsButtonEnabled(!it) },
+                                    leadingIcon = {
+                                        Icon(
+                                            painterResource(R.drawable.rounded_bottom_panel_close_24),
+                                            null,
+                                            tint = MaterialTheme.colorScheme.secondary
+                                        )
+                                    }
+                                )
+
                             }
 
                             SettingsSubsection(
@@ -1436,7 +1455,7 @@ fun SettingsCategoryScreen(
             Box(modifier = Modifier
                 .fillMaxSize()
                 .pointerInput(Unit) {
-                   awaitPointerEventScope {
+                    awaitPointerEventScope {
                         while (true) {
                             awaitPointerEvent()
                         }

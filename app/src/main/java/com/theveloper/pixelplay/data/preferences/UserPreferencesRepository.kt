@@ -221,6 +221,7 @@ class UserPreferencesRepository @Inject constructor(
             longPreferencesKey("advanced_performance_diagnostics_expires_at_epoch_ms")
         val IMMERSIVE_LYRICS_ENABLED = booleanPreferencesKey("immersive_lyrics_enabled")
         val IMMERSIVE_LYRICS_TIMEOUT = longPreferencesKey("immersive_lyrics_timeout")
+        val CONTROLS_BUTTONS_ENABLED = booleanPreferencesKey("controls_button_enabled")
         val USE_ANIMATED_LYRICS = booleanPreferencesKey("use_animated_lyrics")
         val ANIMATED_LYRICS_BLUR_ENABLED = booleanPreferencesKey("animated_lyrics_blur_enabled")
         val ANIMATED_LYRICS_BLUR_STRENGTH = androidx.datastore.preferences.core.floatPreferencesKey("animated_lyrics_blur_strength")
@@ -1111,6 +1112,13 @@ suspend fun markDirectoryRulesVersionApplied(version: Int) {
 
     suspend fun setImmersiveLyricsTimeout(timeout: Long) {
         dataStore.edit { it[PreferencesKeys.IMMERSIVE_LYRICS_TIMEOUT] = timeout }
+    }
+
+    val controlsButtonEnabledFlow: Flow<Boolean> =
+        pref { it[PreferencesKeys.CONTROLS_BUTTONS_ENABLED] ?: true }
+
+    suspend fun setControlsButtonEnabled(enabled: Boolean) {
+        dataStore.edit { it[PreferencesKeys.CONTROLS_BUTTONS_ENABLED] = enabled }
     }
 
     val useAnimatedLyricsFlow: Flow<Boolean> =

@@ -54,6 +54,8 @@ import com.theveloper.pixelplay.presentation.components.ShimmerBox
 import androidx.compose.ui.res.stringResource
 import com.theveloper.pixelplay.R
 import com.theveloper.pixelplay.presentation.components.SmartImage
+import com.theveloper.pixelplay.presentation.viewmodel.StablePlayerState
+import kotlinx.coroutines.flow.StateFlow
 
 @Immutable
 private data class EnhancedSongAnimationTarget(
@@ -97,6 +99,7 @@ fun EnhancedSongListItem(
     selectionIndex: Int? = null,
     isSelectionMode: Boolean = false,
     showMoreOptionsButton: Boolean = true,
+    stablePlayerStateFlow: StateFlow<StablePlayerState>,
     onLongPress: () -> Unit = {},
     onMoreOptionsClick: (Song) -> Unit,
     onClick: () -> Unit
@@ -362,12 +365,13 @@ fun EnhancedSongListItem(
                 val showTrailingAction = showMoreOptionsButton && !isSelectionMode
 
                 if (showPlayingIndicator) {
-                     PlayingEqIcon(
+                     PlayingEqIconV2(
                          modifier = Modifier
                              .padding(start = 8.dp)
                              .size(width = 18.dp, height = 16.dp),
                          color = contentColor,
-                         isPlaying = isPlaying
+                         isPlaying = isPlaying,
+                         stablePlayerStateFlow = stablePlayerStateFlow
                      )
                 }
 

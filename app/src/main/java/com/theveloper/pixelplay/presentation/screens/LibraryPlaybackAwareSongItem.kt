@@ -55,6 +55,7 @@ internal fun LibraryPlaybackAwareSongItem(
         isSelected = isSelected,
         selectionIndex = selectionIndex,
         isSelectionMode = isSelectionMode,
+        stablePlayerStateFlow = playerViewModel.stablePlayerState,
         onLongPress = onLongPress,
         onMoreOptionsClick = onMoreOptionsClick,
         onClick = onClick

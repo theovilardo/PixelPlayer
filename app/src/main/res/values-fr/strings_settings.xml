@@ -211,6 +211,8 @@
     <string name="settings_lyrics_screen_section">Écran des paroles</string>
     <string name="settings_immersive_lyrics_title">Paroles immersives</string>
     <string name="settings_immersive_lyrics_subtitle">Masquer auto les contrôles et agrandir le texte.</string>
+    <string name="settings_hide_controls_button_title">Masquer les boutons de contrôle</string>
+    <string name="settings_hide_controls_button_subtitle">Masquer toutes les commandes de lecture en bas de l\'écran des paroles.</string>
     <string name="settings_auto_hide_delay_title">Délai de masquage auto</string>
     <string name="settings_auto_hide_delay_subtitle">Temps avant que les contrôles ne se masquent.</string>
     <string name="settings_auto_hide_delay_3s">3s</string>

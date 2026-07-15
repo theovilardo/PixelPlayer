@@ -215,6 +215,8 @@
     <string name="settings_lyrics_screen_section">Lyrics-Ansicht</string>
     <string name="settings_immersive_lyrics_title">Immersive Lyrics</string>
     <string name="settings_immersive_lyrics_subtitle">Steuerung automatisch ausblenden und Text im Vollbild genießen.</string>
+    <string name="settings_hide_controls_button_title">Steuerungsschaltflächen ausblenden</string>
+    <string name="settings_hide_controls_button_subtitle">Alle Wiedergabesteuerelemente am unteren Rand des Textbildschirms ausblenden.</string>
     <string name="settings_auto_hide_delay_title">Ausblend-Verzögerung</string>
     <string name="settings_auto_hide_delay_subtitle">Wie lange die Steuerung sichtbar bleibt, bevor sie ausblendet.</string>
     <string name="settings_auto_hide_delay_3s">3s</string>

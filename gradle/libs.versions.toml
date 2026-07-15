@@ -21,6 +21,7 @@ foundation = "1.11.3"
 glance = "1.3.0-alpha01"
 graphicsShapes = "1.1.0"
 gson = "2.14.0"
+haze = "1.7.2"
 hiltAndroid = "2.59.2"
 hiltNavigationCompose = "1.3.0"
 ktor = "3.5.0"
@@ -115,6 +116,8 @@ accompanist-drawablepainter = { module = "com.google.accompanist:accompanist-dra
 aboutlibraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "aboutLibraries" }
 aboutlibraries-compose-m3 = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutLibraries" }
 
+haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
+haze-materials = { module = "dev.chrisbanes.haze:haze-materials", version.ref = "haze" }
 lifecycleprocess = { module = "androidx.lifecycle:lifecycle-process", version.ref = "lifecycleRuntimeKtx" }
 junitplatformlauncher = { group = "org.junit.platform", name = "junit-platform-launcher", version.ref = "junitJupiter" }
 worktesting = { group = "androidx.work", name = "work-testing", version.ref = "workRuntimeKtx" }
@@ -150,6 +153,8 @@ androidx-media3-exoplayer-midi = { module = "androidx.media3:media3-exoplayer-mi
 androidx-media3-session = { module = "androidx.media3:media3-session", version.ref = "media3Session" }
 androidx-media3-transformer = { module = "androidx.media3:media3-transformer", version.ref = "media3Transformer" }
 androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3Session" }
+androidx-media3-common = { module = "androidx.media3:media3-common", version.ref = "media3Session" }
+androidx-media3-common-ktx = { module = "androidx.media3:media3-common-ktx", version.ref = "media3Session" }
 androidx-media3-exoplayer-ffmpeg = { module = "org.jellyfin.media3:media3-ffmpeg-decoder", version = "1.9.0+1" }
 androidx-media-router = { module = "androidx.mediarouter:mediarouter", version.ref = "mediaRouter" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }

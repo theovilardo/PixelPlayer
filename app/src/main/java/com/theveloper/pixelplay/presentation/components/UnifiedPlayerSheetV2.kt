@@ -36,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
@@ -88,6 +89,10 @@ import com.theveloper.pixelplay.presentation.viewmodel.PlayerSheetState
 import com.theveloper.pixelplay.presentation.viewmodel.PlayerViewModel
 import com.theveloper.pixelplay.presentation.viewmodel.StablePlayerState
 import com.theveloper.pixelplay.ui.theme.LocalPixelPlayDarkTheme
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.LocalHazeStyle
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.materials.HazeMaterials
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -115,13 +120,13 @@ fun UnifiedPlayerSheetV2(
     collapsedStateHorizontalPadding: Dp = 12.dp,
     navController: NavHostController,
     hideMiniPlayer: Boolean = false,
-    isNavBarHidden: Boolean = false
+    isNavBarHidden: Boolean = false,
+    hazeState: HazeState
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val latestContext by rememberUpdatedState(context)
     var showNoInternetDialog by remember { mutableStateOf(false) }
-
     // MediaStore write-permission launcher (for metadata editing without MANAGE_EXTERNAL_STORAGE)
     val writePermissionLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.StartIntentSenderForResult()
@@ -622,11 +627,12 @@ fun UnifiedPlayerSheetV2(
             .fillMaxWidth()
             .layout { measurable, constraints ->
                 val translationY = visualSheetTranslationYProvider().roundToInt()
-                val overshoot = if (currentSheetContentState == PlayerSheetState.EXPANDED && !isDragging) {
-                    -translationY
-                } else {
-                    if (translationY < 0) -translationY else 0
-                }
+                val overshoot =
+                    if (currentSheetContentState == PlayerSheetState.EXPANDED && !isDragging) {
+                        -translationY
+                    } else {
+                        if (translationY < 0) -translationY else 0
+                    }
                 val targetHeight = constraints.maxHeight + overshoot
                 val placeable = measurable.measure(
                     constraints.copy(
@@ -669,9 +675,10 @@ fun UnifiedPlayerSheetV2(
                                     .toInt().coerceAtLeast(0)
                                 val endPaddingPx = currentHorizontalPaddingEndPxProvider()
                                     .toInt().coerceAtLeast(0)
-                                val innerWidth = (constraints.maxWidth - startPaddingPx - endPaddingPx)
-                                    .coerceAtLeast(0)
-                                
+                                val innerWidth =
+                                    (constraints.maxWidth - startPaddingPx - endPaddingPx)
+                                        .coerceAtLeast(0)
+
                                 val placeable = measurable.measure(
                                     constraints.copy(
                                         minWidth = innerWidth,
@@ -694,11 +701,19 @@ fun UnifiedPlayerSheetV2(
                                 shape = sheetInteractionState.playerShadowShape,
                                 clip = false
                             )
+                            .clip(sheetInteractionState.playerShadowShape)
+                            // 1. 在背景之上应用 Haze 模糊特效
+//                            .hazeEffect(
+//                                state = hazeState,
+//                                style = HazeMaterials.ultraThin()
+//                            )
+                            // 2. 将原本的背景颜色设为透明或半透明
                             .background(
+                                // 如果想要完全通透的模糊效果，使用 Color.Transparent
+                                // 如果想保留原本的专辑主题色/深色模式色调，可以保留 playerAreaBackground 但降低透明度
                                 color = playerAreaBackground,
                                 shape = sheetInteractionState.playerShadowShape
                             )
-                            .clip(sheetInteractionState.playerShadowShape)
                             // innerLayout:
                             // Measures the actual player content with full screen height targetContentHeightPx
                             // so that it can render correctly, while reporting targetHeightPx to the outer
@@ -757,6 +772,7 @@ fun UnifiedPlayerSheetV2(
                             bottomSheetOpenFraction = bottomSheetOpenFraction,
                             fullPlayerVisualState = fullPlayerVisualState,
                             containerHeight = containerHeight,
+                            containerColor = playerAreaBackground,
                             currentQueueSourceName = currentQueueSourceName,
                             currentSheetContentState = currentSheetContentState,
                             carouselStyle = carouselStyle,
@@ -766,6 +782,7 @@ fun UnifiedPlayerSheetV2(
                             currentPositionProvider = positionToDisplayProvider,
                             isFavorite = isFavorite,
                             shouldRenderFullPlayer = shouldRenderFullPlayer,
+                            hazeState = hazeState,
                             currentHorizontalPaddingStartPxProvider = currentHorizontalPaddingStartPxProvider,
                             currentHorizontalPaddingEndPxProvider = currentHorizontalPaddingEndPxProvider,
                             onShowQueueClicked = sheetActionHandlers.openQueueSheet,
@@ -862,7 +879,8 @@ fun UnifiedPlayerSheetV2(
                 onNavigateToArtist = sheetActionHandlers.onNavigateToArtist,
                 onNavigateToGenre = sheetActionHandlers.onNavigateToGenre,
                 queuePredictiveBackProgress = queuePredictiveBackProgress,
-                queuePredictiveBackSwipeEdge = queuePredictiveBackSwipeEdgeState
+                queuePredictiveBackSwipeEdge = queuePredictiveBackSwipeEdgeState,
+                hazeState = hazeState
             )
         }
     }

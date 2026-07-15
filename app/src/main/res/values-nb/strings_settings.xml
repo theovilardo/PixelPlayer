@@ -215,6 +215,8 @@
     <string name="settings_lyrics_screen_section">Sangtekst-skjerm</string>
     <string name="settings_immersive_lyrics_title">Immersiv sangtekst</string>
     <string name="settings_immersive_lyrics_subtitle">Skjul kontroller automatisk og forstørr tekst.</string>
+    <string name="settings_hide_controls_button_title">Skjul kontrollknapper</string>
+    <string name="settings_hide_controls_button_subtitle">Skjul alle avspillingskontroller nederst på tekstskjermen.</string>
     <string name="settings_auto_hide_delay_title">Forsinkelse for autoskjuling</string>
     <string name="settings_auto_hide_delay_subtitle">Tid før kontrollene skjules.</string>
     <string name="settings_auto_hide_delay_3s">3s</string>

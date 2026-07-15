@@ -292,6 +292,8 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer.ffmpeg)
     implementation(libs.androidx.media3.exoplayer.midi)
     implementation(libs.androidx.media3.transformer)
+    implementation(libs.androidx.media3.common)
+    implementation(libs.androidx.media3.common.ktx)
     implementation(libs.androidx.mediarouter)
     implementation(libs.androidx.media)
     implementation(libs.coil.compose)
@@ -343,6 +345,8 @@ dependencies {
         exclude(group = "androidx.compose.runtime")
         exclude(group = "androidx.compose.ui")
     }
+    implementation(libs.haze)
+    implementation(libs.haze.materials)
 
     // Projects
     implementation(project(":shared"))

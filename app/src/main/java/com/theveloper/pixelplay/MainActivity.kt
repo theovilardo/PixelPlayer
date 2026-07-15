@@ -87,6 +87,8 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Color
 import com.theveloper.pixelplay.presentation.viewmodel.PlayerSheetState
 
 import androidx.compose.ui.unit.Dp
@@ -152,6 +154,14 @@ import com.theveloper.pixelplay.presentation.utils.AppHapticsConfig
 import com.theveloper.pixelplay.presentation.utils.LocalAppHapticsConfig
 import com.theveloper.pixelplay.presentation.utils.NoOpHapticFeedback
 import com.theveloper.pixelplay.utils.CrashLogData
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.HazeTint
+import dev.chrisbanes.haze.haze
+import dev.chrisbanes.haze.hazeChild
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.materials.HazeMaterials
 import javax.annotation.concurrent.Immutable
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -191,6 +201,12 @@ class MainActivity : ComponentActivity() {
 
     private val requestAllFilesAccessLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { _ ->
         // Handle the result in onResume
+    }
+
+    companion object {
+        val LocalHazeState = staticCompositionLocalOf<HazeState> {
+            error("No HazeState provided")
+        }
     }
 
     @CallSuper
@@ -306,7 +322,9 @@ class MainActivity : ComponentActivity() {
                     }
 
                     Surface(
-                        modifier = Modifier.fillMaxSize().graphicsLayer { alpha = contentAlpha }, 
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .graphicsLayer { alpha = contentAlpha },
                         color = MaterialTheme.colorScheme.background
                     ) {
                         if (showSetupScreen == null) {
@@ -682,7 +700,7 @@ class MainActivity : ComponentActivity() {
         val scopedHapticFeedback = remember(platformHapticFeedback, appHapticsConfig.enabled) {
             if (appHapticsConfig.enabled) platformHapticFeedback else NoOpHapticFeedback
         }
-
+        val hazeState = remember { HazeState() }
         val systemNavBarInset = sanitizeNavigationBarBottomInset(
             WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
         )
@@ -775,7 +793,8 @@ class MainActivity : ComponentActivity() {
 
         CompositionLocalProvider(
             LocalAppHapticsConfig provides appHapticsConfig,
-            LocalHapticFeedback provides scopedHapticFeedback
+            LocalHapticFeedback provides scopedHapticFeedback,
+            LocalHazeState provides hazeState
         ) {
             AppSidebarDrawer(
                 drawerState = drawerState,
@@ -858,13 +877,21 @@ class MainActivity : ComponentActivity() {
                                         // hide and the route-based hide as a pure translation,
                                         // so child items never resize or get clipped/squished.
                                         val expansionHide = if (showPlayerContentArea) {
-                                            playerViewModel.playerContentExpansionFraction.value.coerceIn(0f, 1f)
+                                            playerViewModel.playerContentExpansionFraction.value.coerceIn(
+                                                0f,
+                                                1f
+                                            )
                                         } else {
                                             0f
                                         }
-                                        val routeHide = (1f - navBarVisibilityProgressState.value).coerceIn(0f, 1f)
+                                        val routeHide =
+                                            (1f - navBarVisibilityProgressState.value).coerceIn(
+                                                0f,
+                                                1f
+                                            )
                                         val hideFraction = maxOf(expansionHide, routeHide)
-                                        translationY = (componentHeightPx + shadowOverflowPx + bottomBarPaddingPx) * hideFraction
+                                        translationY =
+                                            (componentHeightPx + shadowOverflowPx + bottomBarPaddingPx) * hideFraction
                                         alpha = 1f
                                     }
                                     .height(navBarHeight)
@@ -873,23 +900,39 @@ class MainActivity : ComponentActivity() {
                                         // Animated corner shape resolved in the draw phase:
                                         // animating the radius re-clips this layer only — no
                                         // recomposition and no layout pass for the bar.
-                                        val fraction = playerViewModel.playerContentExpansionFraction.value
+                                        val fraction =
+                                            playerViewModel.playerContentExpansionFraction.value
                                         val safeFraction = fraction.coerceIn(0f, 1f)
                                         val topDp = when {
                                             navBarStyle == NavBarStyle.DEFAULT -> animatedDefaultTopCornerRadius.value
-                                            navBarStyle == NavBarStyle.FULL_WIDTH -> lerp(navBarCornerRadius.dp, 26.dp, safeFraction)
+                                            navBarStyle == NavBarStyle.FULL_WIDTH -> lerp(
+                                                navBarCornerRadius.dp,
+                                                26.dp,
+                                                safeFraction
+                                            )
+
                                             showPlayerContentArea -> if (fraction < 0.2f) {
-                                                lerp(navBarCornerRadius.dp, 26.dp, (fraction / 0.2f).coerceIn(0f, 1f))
+                                                lerp(
+                                                    navBarCornerRadius.dp,
+                                                    26.dp,
+                                                    (fraction / 0.2f).coerceIn(0f, 1f)
+                                                )
                                             } else {
                                                 26.dp
                                             }
+
                                             else -> navBarCornerRadius.dp
                                         }
                                         val bottomDp = when (navBarStyle) {
                                             NavBarStyle.FULL_WIDTH -> 0.dp
                                             else -> animatedNavBarCornerRadius.value
                                         }
-                                        shape = navBarShapeCache.get(this, topDp.toPx(), bottomDp.toPx(), useSmoothCorners)
+                                        shape = navBarShapeCache.get(
+                                            this,
+                                            topDp.toPx(),
+                                            bottomDp.toPx(),
+                                            useSmoothCorners
+                                        )
                                         clip = true
                                         shadowElevation = navBarElevationPx
                                     },
@@ -903,7 +946,12 @@ class MainActivity : ComponentActivity() {
                                     compactMode = navBarCompactMode,
                                     bottomBarPadding = bottomBarPadding,
                                     onSearchIconDoubleTap = onSearchIconDoubleTap,
-                                    modifier = Modifier.fillMaxSize()
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .hazeEffect(
+                                            state = LocalHazeState.current,
+                                            style = HazeMaterials.ultraThin()
+                                        )
                                 )
                             }
                         }
@@ -949,17 +997,23 @@ class MainActivity : ComponentActivity() {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
+//                                .hazeSource(hazeState)
                                 .graphicsLayer {
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                                         if (disableBlurAllOver) {
                                             renderEffect = null
                                         } else {
                                             val expansion = expansionFractionProvider()
-                                            val fraction = (expansion * (1f - predictiveBackCollapseFraction)).coerceIn(0f, 1f)
+                                            val fraction =
+                                                (expansion * (1f - predictiveBackCollapseFraction)).coerceIn(
+                                                    0f,
+                                                    1f
+                                                )
                                             // Quantize to 2px steps: rebuild the RenderEffect only
                                             // when the blur crosses a step, reuse the cached object
                                             // every other frame.
-                                            val quantizedBlurPx = (fraction * 120f / 2f).roundToInt() * 2f
+                                            val quantizedBlurPx =
+                                                (fraction * 120f / 2f).roundToInt() * 2f
                                             renderEffect = blurEffectCache.get(quantizedBlurPx)
                                         }
                                     }
@@ -1009,7 +1063,8 @@ class MainActivity : ComponentActivity() {
                             hideMiniPlayer = shouldHideMiniPlayer,
                             containerHeight = containerHeight,
                             navController = navController,
-                            isNavBarHidden = isNavBarEffectivelyHidden
+                            isNavBarHidden = isNavBarEffectivelyHidden,
+                            hazeState = LocalHazeState.current
                         )
 
                         val dismissUndoBarSlice by remember {
@@ -1042,7 +1097,11 @@ class MainActivity : ComponentActivity() {
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(MiniPlayerHeight)
-                                    .padding(horizontal = 14.dp),
+                                    .padding(horizontal = 14.dp)
+                                    .hazeEffect(
+                                        state = LocalHazeState.current,
+                                        style = HazeMaterials.regular()
+                                    ),
                                 onUndo = onUndoDismissPlaylist,
                                 onClose = onCloseDismissUndoBar,
                                 durationMillis = dismissUndoBarSlice.durationMillis

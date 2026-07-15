@@ -85,6 +85,7 @@ fun LyricsMoreBottomSheet(
     onShowTranslationChange: (Boolean) -> Unit,
     onShowRomanizationChange: (Boolean) -> Unit,
     immersiveLyricsEnabled: Boolean,
+    controlsButtonEnabled: Boolean,
     // BottomToggleRow params
     isShuffleEnabled: Boolean,
     repeatMode: Int,
@@ -331,7 +332,7 @@ fun LyricsMoreBottomSheet(
             val isSyncVisible = showSyncedLyrics
             val isRomanizationVisible = hasRomanizedLyrics
             val isTranslationVisible = hasTranslatedLyrics
-            val isImmersiveVisible = showSyncedLyrics && immersiveLyricsEnabled
+            val isImmersiveVisible = showSyncedLyrics && (immersiveLyricsEnabled || controlsButtonEnabled)
             val isKeepScreenOnVisible = true
 
             if (isSyncVisible || isRomanizationVisible || isTranslationVisible || isKeepScreenOnVisible) {

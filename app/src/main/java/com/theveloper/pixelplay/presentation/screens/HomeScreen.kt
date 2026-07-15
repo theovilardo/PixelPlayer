@@ -9,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -49,6 +50,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -111,6 +113,7 @@ import com.theveloper.pixelplay.presentation.viewmodel.PlayerViewModel
 import com.theveloper.pixelplay.presentation.viewmodel.SettingsViewModel
 import com.theveloper.pixelplay.presentation.viewmodel.StatsViewModel
 import com.theveloper.pixelplay.ui.theme.ExpTitleTypography
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.delay
@@ -121,6 +124,12 @@ import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape
 import androidx.compose.ui.res.stringResource
 
 private const val HomeLoadingPlaceholderMinDurationMillis = 1200L
+private val HomeTabletBreakpoint = 600.dp
+
+private data class HomeTabletModule(
+    val key: String,
+    val content: @Composable () -> Unit
+)
 
 // Modern HomeScreen with collapsible top bar and staggered grid layout
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -305,6 +314,111 @@ fun HomeScreen(
     val shouldShowCleanInstallDisclaimer =
         settingsUiState.beta05CleanInstallDisclaimerDismissed == false &&
             !cleanInstallDisclaimerDismissedThisSession
+    val yourMixModule: @Composable () -> Unit = {
+        HomeYourMixModule(
+            yourMixSongs = yourMixSongs,
+            song = yourMixSong,
+            isShuffleEnabled = isShuffleEnabled,
+            shouldShowYourMixLoadingPlaceholder = shouldShowYourMixLoadingPlaceholder,
+            onRefresh = {
+                homePlaceholderRefreshGeneration++
+                settingsViewModel.refreshLibrary()
+                playerViewModel.forceUpdateDailyMix()
+            },
+            onPlayShuffled = {
+                if (usesFallbackHomeMix) {
+                    playerViewModel.shuffleAllSongs(queueName = "Your Mix")
+                } else {
+                    playerViewModel.playSongsShuffled(
+                        songsToPlay = yourMixSongs,
+                        queueName = "Your Mix",
+                        startAtZero = true,
+                    )
+                }
+            }
+        )
+    }
+    val albumArtCollageModule: @Composable () -> Unit = {
+        HomeAlbumArtCollageModule(
+            songs = yourMixSongs,
+            basePattern = settingsUiState.collagePattern,
+            isAutoRotate = settingsUiState.collageAutoRotate,
+            onSongClick = { song ->
+                if (usesFallbackHomeMix) {
+                    playerViewModel.showAndPlaySongFromLibrary(song, queueName = "Your Mix")
+                } else {
+                    playerViewModel.showAndPlaySong(song, yourMixSongs, "Your Mix")
+                }
+            }
+        )
+    }
+    val dailyMixModule: @Composable () -> Unit = {
+        DailyMixSection(
+            songs = dailyMixSongs,
+            onClickOpen = {
+                navController.navigateSafely(Screen.DailyMixScreen.route)
+            },
+            onNavigateToAlbum = { song ->
+                navController.navigateSafelyReplacing(
+                    route = Screen.AlbumDetail.createRoute(song.albumId),
+                    patternToPop = Screen.AlbumDetail.route
+                )
+            },
+            onNavigateToArtist = { song ->
+                navController.navigateSafelyReplacing(
+                    route = Screen.ArtistDetail.createRoute(song.artistId),
+                    patternToPop = Screen.ArtistDetail.route
+                )
+            },
+            onNavigateToGenre = { song ->
+                song.genre?.let {
+                    navController.navigateSafely(Screen.GenreDetail.createRoute(java.net.URLEncoder.encode(it, "UTF-8")))
+                }
+            },
+            playerViewModel = playerViewModel
+        )
+    }
+    val recentlyPlayedModule: @Composable () -> Unit = {
+        RecentlyPlayedSection(
+            songs = recentlyPlayedSongs,
+            onSongClick = { song ->
+                if (recentlyPlayedQueue.isNotEmpty()) {
+                    playerViewModel.playSongs(
+                        songsToPlay = recentlyPlayedQueue,
+                        startSong = song,
+                        queueName = "Recently Played"
+                    )
+                }
+            },
+            onOpenAllClick = {
+                navController.navigateSafely(Screen.RecentlyPlayed.route)
+            },
+            themeStateHolder = playerViewModel.themeStateHolder,
+            currentSongId = currentSong?.id,
+            contentPadding = PaddingValues(start = 8.dp, end = 24.dp)
+        )
+    }
+    val statsModule: @Composable () -> Unit = {
+        StatsOverviewCard(
+            summary = homeStatsOverview,
+            onClick = { navController.navigateSafely(Screen.Stats.route) }
+        )
+    }
+    val tabletModules = buildList {
+        add(HomeTabletModule(key = "tablet_your_mix", content = yourMixModule))
+        if (yourMixSongs.isNotEmpty()) {
+            add(HomeTabletModule(key = "tablet_album_art_collage", content = albumArtCollageModule))
+        }
+        if (dailyMixSongs.isNotEmpty()) {
+            add(HomeTabletModule(key = "tablet_daily_mix", content = dailyMixModule))
+        }
+        if (recentlyPlayedSongs.size >= RecentlyPlayedSectionMinSongsToShow) {
+            add(HomeTabletModule(key = "tablet_recently_played", content = recentlyPlayedModule))
+        }
+        if (homeStatsOverview != null) {
+            add(HomeTabletModule(key = "tablet_listening_stats", content = statsModule))
+        }
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -332,163 +446,76 @@ fun HomeScreen(
                 )
             }
         ) { innerPadding ->
-            LazyColumn(
-                state = listState,
+            BoxWithConstraints(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background),
-                contentPadding = PaddingValues(
-                    top = innerPadding.calculateTopPadding(),
-                    bottom = paddingValuesParent.calculateBottomPadding()
-                            + 38.dp + bottomPadding
-                ),
-                verticalArrangement = Arrangement.spacedBy(24.dp)
+                    .background(MaterialTheme.colorScheme.background)
             ) {
-                if (yourMixSongs.isEmpty()) {
-                    item(
-                        key = "your_mix_placeholder",
-                        contentType = "your_mix_placeholder"
-                    ) {
-                        if (shouldShowYourMixLoadingPlaceholder) {
-                            YourMixLoadingPlaceholder()
-                        } else {
-                            YourMixEmptyPlaceholder(
-                                onRefresh = {
-                                    homePlaceholderRefreshGeneration++
-                                    settingsViewModel.refreshLibrary()
-                                    playerViewModel.forceUpdateDailyMix()
-                                }
-                            )
+                val isTabletLayout = maxWidth >= HomeTabletBreakpoint
+
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(
+                        top = innerPadding.calculateTopPadding(),
+                        bottom = paddingValuesParent.calculateBottomPadding()
+                                + 38.dp + bottomPadding
+                    ),
+                    verticalArrangement = Arrangement.spacedBy(if (isTabletLayout) 20.dp else 24.dp)
+                ) {
+                    if (isTabletLayout) {
+                        item(
+                            key = tabletModules.joinToString(
+                                separator = "_",
+                                prefix = "tablet_columns_"
+                            ) { it.key },
+                            contentType = "tablet_module_columns"
+                        ) {
+                            HomeTabletModuleColumns(modules = tabletModules)
                         }
-                    }
-                } else {
-                    item(
-                        key = "your_mix_header",
-                        contentType = "your_mix_header"
-                    ) {
-                        YourMixHeader(
-                            song = yourMixSong,
-                            isShuffleEnabled = isShuffleEnabled,
-                            onPlayShuffled = {
-                                if (usesFallbackHomeMix) {
-                                    playerViewModel.shuffleAllSongs(queueName = "Your Mix")
-                                } else {
-                                    playerViewModel.playSongsShuffled(
-                                        songsToPlay = yourMixSongs,
-                                        queueName = "Your Mix",
-                                        startAtZero = true,
-                                    )
-                                }
-                            }
-                        )
-                    }
-                }
-
-                // Collage
-                if (yourMixSongs.isNotEmpty()) {
-                    item(
-                        key = "album_art_collage",
-                        contentType = "album_art_collage"
-                    ) {
-                        val basePattern = settingsUiState.collagePattern
-                        val isAutoRotate = settingsUiState.collageAutoRotate
-                        val patterns = remember { CollagePattern.entries }
-
-                        val activePattern = if (isAutoRotate) {
-                            var rotationIndex by rememberSaveable { mutableIntStateOf(-1) }
-                            LaunchedEffect(Unit) { rotationIndex++ }
-                            remember(rotationIndex) {
-                                patterns[rotationIndex.coerceAtLeast(0) % patterns.size]
-                            }
-                        } else {
-                            basePattern
+                    } else {
+                        item(
+                            key = if (yourMixSongs.isEmpty()) "your_mix_placeholder" else "your_mix_header",
+                            contentType = if (yourMixSongs.isEmpty()) "your_mix_placeholder" else "your_mix_header"
+                        ) {
+                            yourMixModule()
                         }
 
-                        AlbumArtCollage(
-                            modifier = Modifier.fillMaxWidth(),
-                            songs = yourMixSongs,
-                            padding = 14.dp,
-                            height = 400.dp,
-                            pattern = activePattern,
-                            onSongClick = { song ->
-                                if (usesFallbackHomeMix) {
-                                    playerViewModel.showAndPlaySongFromLibrary(song, queueName = "Your Mix")
-                                } else {
-                                    playerViewModel.showAndPlaySong(song, yourMixSongs, "Your Mix")
-                                }
+                        if (yourMixSongs.isNotEmpty()) {
+                            item(
+                                key = "album_art_collage",
+                                contentType = "album_art_collage"
+                            ) {
+                                albumArtCollageModule()
                             }
-                        )
-                    }
-                }
+                        }
 
-                // Daily Mix
-                if (dailyMixSongs.isNotEmpty()) {
-                    item(
-                        key = "daily_mix_section",
-                        contentType = "daily_mix_section"
-                    ) {
-                        DailyMixSection(
-                            songs = dailyMixSongs,
-                            onClickOpen = {
-                                navController.navigateSafely(Screen.DailyMixScreen.route)
-                            },
-                            onNavigateToAlbum = { song ->
-                                navController.navigateSafelyReplacing(
-                                    route = Screen.AlbumDetail.createRoute(song.albumId),
-                                    patternToPop = Screen.AlbumDetail.route
-                                )
-                            },
-                            onNavigateToArtist = { song ->
-                                navController.navigateSafelyReplacing(
-                                    route = Screen.ArtistDetail.createRoute(song.artistId),
-                                    patternToPop = Screen.ArtistDetail.route
-                                )
-                            },
-                            onNavigateToGenre = { song ->
-                                song.genre?.let {
-                                    navController.navigateSafely(Screen.GenreDetail.createRoute(java.net.URLEncoder.encode(it, "UTF-8")))
-                                }
-                            },
-                            playerViewModel = playerViewModel
-                        )
-                    }
-                }
+                        if (dailyMixSongs.isNotEmpty()) {
+                            item(
+                                key = "daily_mix_section",
+                                contentType = "daily_mix_section"
+                            ) {
+                                dailyMixModule()
+                            }
+                        }
 
-                if (recentlyPlayedSongs.size >= RecentlyPlayedSectionMinSongsToShow) {
-                    item(
-                        key = "recently_played_section",
-                        contentType = "recently_played_section"
-                    ) {
-                        RecentlyPlayedSection(
-                            songs = recentlyPlayedSongs,
-                            onSongClick = { song ->
-                                if (recentlyPlayedQueue.isNotEmpty()) {
-                                    playerViewModel.playSongs(
-                                        songsToPlay = recentlyPlayedQueue,
-                                        startSong = song,
-                                        queueName = "Recently Played"
-                                    )
-                                }
-                            },
-                            onOpenAllClick = {
-                                navController.navigateSafely(Screen.RecentlyPlayed.route)
-                            },
-                            themeStateHolder = playerViewModel.themeStateHolder,
-                            currentSongId = currentSong?.id,
-                            contentPadding = PaddingValues(start = 8.dp, end = 24.dp)
-                        )
-                    }
-                }
+                        if (recentlyPlayedSongs.size >= RecentlyPlayedSectionMinSongsToShow) {
+                            item(
+                                key = "recently_played_section",
+                                contentType = "recently_played_section"
+                            ) {
+                                recentlyPlayedModule()
+                            }
+                        }
 
-                if (homeStatsOverview != null) {
-                    item(
-                        key = "listening_stats_preview",
-                        contentType = "listening_stats_preview"
-                    ) {
-                        StatsOverviewCard(
-                            summary = homeStatsOverview,
-                            onClick = { navController.navigateSafely(Screen.Stats.route) }
-                        )
+                        if (homeStatsOverview != null) {
+                            item(
+                                key = "listening_stats_preview",
+                                contentType = "listening_stats_preview"
+                            ) {
+                                statsModule()
+                            }
+                        }
                     }
                 }
             }
@@ -583,6 +610,100 @@ fun HomeScreen(
             }
         )
     }
+}
+
+@Composable
+private fun HomeTabletModuleColumns(
+    modules: List<HomeTabletModule>
+) {
+    val leftColumnModules = modules.filterIndexed { index, _ -> index % 2 == 0 }
+    val rightColumnModules = modules.filterIndexed { index, _ -> index % 2 == 1 }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalAlignment = Alignment.Top
+    ) {
+        HomeTabletModuleColumn(
+            modules = leftColumnModules,
+            modifier = Modifier.weight(1f)
+        )
+        HomeTabletModuleColumn(
+            modules = rightColumnModules,
+            modifier = Modifier.weight(1f)
+        )
+    }
+}
+
+@Composable
+private fun HomeTabletModuleColumn(
+    modules: List<HomeTabletModule>,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        modules.forEach { module ->
+            key(module.key) {
+                module.content()
+            }
+        }
+    }
+}
+
+@Composable
+private fun HomeYourMixModule(
+    yourMixSongs: ImmutableList<Song>,
+    song: String,
+    isShuffleEnabled: Boolean,
+    shouldShowYourMixLoadingPlaceholder: Boolean,
+    onRefresh: () -> Unit,
+    onPlayShuffled: () -> Unit
+) {
+    if (yourMixSongs.isEmpty()) {
+        if (shouldShowYourMixLoadingPlaceholder) {
+            YourMixLoadingPlaceholder()
+        } else {
+            YourMixEmptyPlaceholder(onRefresh = onRefresh)
+        }
+    } else {
+        YourMixHeader(
+            song = song,
+            isShuffleEnabled = isShuffleEnabled,
+            onPlayShuffled = onPlayShuffled
+        )
+    }
+}
+
+@Composable
+private fun HomeAlbumArtCollageModule(
+    songs: ImmutableList<Song>,
+    basePattern: CollagePattern,
+    isAutoRotate: Boolean,
+    onSongClick: (Song) -> Unit
+) {
+    val patterns = remember { CollagePattern.entries }
+    val activePattern = if (isAutoRotate) {
+        var rotationIndex by rememberSaveable { mutableIntStateOf(-1) }
+        LaunchedEffect(Unit) { rotationIndex++ }
+        remember(rotationIndex) {
+            patterns[rotationIndex.coerceAtLeast(0) % patterns.size]
+        }
+    } else {
+        basePattern
+    }
+
+    AlbumArtCollage(
+        modifier = Modifier.fillMaxWidth(),
+        songs = songs,
+        padding = 14.dp,
+        height = 400.dp,
+        pattern = activePattern,
+        onSongClick = onSongClick
+    )
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)

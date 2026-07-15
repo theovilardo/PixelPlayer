@@ -1,4 +1,4 @@
-package com.theveloper.pixelplay.presentation.components.scoped
+﻿package com.theveloper.pixelplay.presentation.components.scoped
 
 import android.os.Build
 import androidx.activity.compose.BackHandler
@@ -34,9 +34,12 @@ internal fun PlayerSheetPredictiveBackHandler(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             PredictiveBackHandler(enabled = enabled) { progressFlow ->
                 try {
+                    val startingExpansionFraction = playerViewModel.playerContentExpansionFraction.value
                     progressFlow.collect { backEvent ->
                         onSwipeEdgeChanged(backEvent.swipeEdge)
                         playerViewModel.updatePredictiveBackCollapseFraction(backEvent.progress)
+                        val contractedFraction = ((1f - backEvent.progress) * startingExpansionFraction).coerceIn(0f, 1f)
+                        playerViewModel.playerContentExpansionFraction.snapTo(contractedFraction)
                     }
                     scope.launch {
                         val progressAtRelease = playerViewModel.predictiveBackCollapseFraction.value
@@ -48,6 +51,7 @@ internal fun PlayerSheetPredictiveBackHandler(
                         )
                         playerViewModel.updatePredictiveBackCollapseFraction(1f)
                         playerViewModel.collapsePlayerSheet()
+                        playerViewModel.playerContentExpansionFraction.snapTo(0f)
                         playerViewModel.updatePredictiveBackCollapseFraction(0f)
                         onSwipeEdgeChanged(null)
                     }
@@ -62,8 +66,13 @@ internal fun PlayerSheetPredictiveBackHandler(
 
                         if (playerViewModel.sheetState.value == PlayerSheetState.EXPANDED) {
                             playerViewModel.expandPlayerSheet()
+                            playerViewModel.playerContentExpansionFraction.animateTo(
+                                targetValue = 1f,
+                                animationSpec = tween(animationDurationMs)
+                            )
                         } else {
                             playerViewModel.collapsePlayerSheet()
+                            playerViewModel.playerContentExpansionFraction.snapTo(0f)
                         }
 
                         onSwipeEdgeChanged(null)

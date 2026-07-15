@@ -1,4 +1,4 @@
-package com.theveloper.pixelplay.presentation.components
+﻿package com.theveloper.pixelplay.presentation.components
 
 import android.widget.Toast
 import com.theveloper.pixelplay.presentation.components.ExpressiveOfflineDialog
@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.ui.layout.layout
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.MotionScheme
@@ -115,7 +116,8 @@ fun UnifiedPlayerSheetV2(
     collapsedStateHorizontalPadding: Dp = 12.dp,
     navController: NavHostController,
     hideMiniPlayer: Boolean = false,
-    isNavBarHidden: Boolean = false
+    isNavBarHidden: Boolean = false,
+    isNavRailHidden: Boolean = false
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -620,6 +622,7 @@ fun UnifiedPlayerSheetV2(
     Surface(
         modifier = Modifier
             .fillMaxWidth()
+            .widthIn(max = 450.dp)
             .layout { measurable, constraints ->
                 val translationY = visualSheetTranslationYProvider().roundToInt()
                 val overshoot = if (currentSheetContentState == PlayerSheetState.EXPANDED && !isDragging) {
@@ -772,7 +775,8 @@ fun UnifiedPlayerSheetV2(
                             onQueueDragStart = sheetActionHandlers.beginQueueDrag,
                             onQueueDrag = sheetActionHandlers.dragQueueBy,
                             onQueueRelease = sheetActionHandlers.endQueueDrag,
-                            onShowCastClicked = castSheetState.openCastSheet
+                            onShowCastClicked = castSheetState.openCastSheet,
+                            isNavRailHidden = isNavRailHidden,
                         )
                     }
                 }
@@ -815,6 +819,7 @@ fun UnifiedPlayerSheetV2(
                                 )
                                 queuePredictiveBackSwipeEdge = null
                             }
+
                         }
                     } catch (_: kotlin.coroutines.cancellation.CancellationException) {
                         scope.launch {
@@ -831,6 +836,7 @@ fun UnifiedPlayerSheetV2(
                     sheetActionHandlers.animateQueueSheet(false)
                 }
             }
+
 
             val queuePredictiveBackSwipeEdgeState = rememberUpdatedState(queuePredictiveBackSwipeEdge)
 

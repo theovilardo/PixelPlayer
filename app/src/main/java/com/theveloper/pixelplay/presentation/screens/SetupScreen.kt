@@ -56,8 +56,10 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -643,7 +645,7 @@ private fun isIgnoringBatteryOptimizationsNow(context: Context): Boolean {
 @Composable
 fun WelcomePage() {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
+        //horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxSize()
@@ -672,7 +674,7 @@ fun WelcomePage() {
                 ),
             )
         }
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(4.dp))
         Surface(
             shape = CircleShape,
             color = MaterialTheme.colorScheme.surface,
@@ -707,7 +709,7 @@ fun WelcomePage() {
                 .clip(RoundedCornerShape(20.dp))
         ){
             MaterialYouVectorDrawable(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.requiredWidth(380.dp).align(Alignment.CenterEnd),
                 drawableResId = R.drawable.welcome_art
             )
             SineWaveLine(
@@ -722,7 +724,7 @@ fun WelcomePage() {
                 alpha = 0.95f,
                 strokeWidth = 16.dp,
                 amplitude = 4.dp,
-                waves = 7.6f,
+                wavesDensity = 7.6f,
                 phase = 0f
             )
             Box(
@@ -748,7 +750,7 @@ fun WelcomePage() {
                 alpha = 0.95f,
                 strokeWidth = 4.dp,
                 amplitude = 4.dp,
-                waves = 7.6f,
+                wavesDensity = 7.6f,
                 phase = 0f
             )
         }
@@ -1005,6 +1007,7 @@ fun ThemeSelectionPage(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
+            .widthIn(max = 540.dp)
             .fillMaxSize()
             .padding(24.dp)
     ) {
@@ -1188,6 +1191,7 @@ fun LibraryLayoutPage(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
+            .widthIn(max = 540.dp)
             .fillMaxSize()
             .padding(24.dp)
     ) {
@@ -1527,6 +1531,7 @@ fun FinishPage() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
+            .widthIn(max = 540.dp)
             .fillMaxSize()
             .padding(16.dp)
     ) {
@@ -1556,6 +1561,7 @@ fun PermissionPageLayout(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
+            .widthIn(max = 540.dp)
             .fillMaxSize()
             .padding(24.dp)
     ) {
@@ -1654,7 +1660,7 @@ private fun SetupRestoreDialog(
         )
     ) {
         Surface(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().widthIn(max = 540.dp),
             color = MaterialTheme.colorScheme.surfaceContainerLowest
         ) {
             Scaffold(
@@ -1924,6 +1930,7 @@ fun LibraryNavigationPillSetupShow(
     // IntrinsicSize.Min en el Row + fillMaxHeight en los hijos asegura misma altura
     Row(
         modifier = Modifier
+            .widthIn(max = 540.dp)
             .padding(start = 4.dp)
             .height(IntrinsicSize.Min),
         verticalAlignment = Alignment.CenterVertically,
@@ -2219,6 +2226,7 @@ fun NavBarLayoutPage(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
+            .widthIn(max = 540.dp)
             .fillMaxSize()
             .padding(24.dp)
     ) {
@@ -2348,6 +2356,7 @@ fun NavBarPreview(isDefault: Boolean) {
             containerColor = MaterialTheme.colorScheme.surfaceBright
         ),
         modifier = Modifier
+            .widthIn(max = 540.dp)
             .fillMaxWidth()
             .height(200.dp) // Taller to show bottom part clearly
             .padding(horizontal = 8.dp)

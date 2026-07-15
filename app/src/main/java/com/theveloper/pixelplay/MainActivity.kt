@@ -1,4 +1,4 @@
-package com.theveloper.pixelplay
+﻿package com.theveloper.pixelplay
 
 import com.theveloper.pixelplay.presentation.navigation.navigateSafely
 
@@ -46,7 +46,9 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -54,6 +56,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.material3.CircularWavyProgressIndicator
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -80,16 +84,20 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.widthIn
 import com.theveloper.pixelplay.presentation.viewmodel.PlayerSheetState
 
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.core.net.toUri
@@ -122,6 +130,7 @@ import com.theveloper.pixelplay.presentation.components.DrawerDestination
 import com.theveloper.pixelplay.presentation.components.MiniPlayerBottomSpacer
 import com.theveloper.pixelplay.presentation.components.MiniPlayerHeight
 import com.theveloper.pixelplay.presentation.components.PlayerInternalNavigationBar
+import com.theveloper.pixelplay.presentation.components.PlayerInternalNavigationRail
 import com.theveloper.pixelplay.presentation.components.PlayStoreAnnouncementDefaults
 import com.theveloper.pixelplay.presentation.components.PlayStoreAnnouncementDialog
 import com.theveloper.pixelplay.presentation.components.PlayStoreAnnouncementUiModel
@@ -608,6 +617,11 @@ class MainActivity : ComponentActivity() {
     private fun MainUI(playerViewModel: PlayerViewModel, navController: NavHostController) {
         Trace.beginSection("MainActivity.MainUI")
 
+        val configuration = LocalConfiguration.current
+        val useNavigationRail = remember(configuration) {
+            configuration.screenWidthDp > 600
+        }
+
         val commonNavItems = remember {
             persistentListOf(
                 BottomNavItem("Home", R.string.nav_bar_home, R.drawable.rounded_home_24, R.drawable.home_24_rounded_filled, Screen.Home),
@@ -704,8 +718,14 @@ class MainActivity : ComponentActivity() {
         )
         val bottomBarPadding = animatedBottomBarPadding
         val navBarHeight = resolveNavBarSurfaceHeight(navBarStyle, systemNavBarInset, navBarCompactMode)
-        val navBarOccupiedHeight by remember(systemNavBarInset, navBarCompactMode) {
-            derivedStateOf { resolveNavBarOccupiedHeight(systemNavBarInset, navBarCompactMode) }
+        val navBarOccupiedHeight by remember(systemNavBarInset, navBarCompactMode, useNavigationRail) {
+            derivedStateOf {
+                if (useNavigationRail) {
+                    systemNavBarInset
+                } else {
+                    resolveNavBarOccupiedHeight(systemNavBarInset, navBarCompactMode)
+                }
+            }
         }
         val navBarVisibilityProgressState = animateFloatAsState(
             targetValue = if (shouldHideNavigationBar) 0f else 1f,
@@ -799,7 +819,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                 modifier = Modifier.fillMaxSize(),
                 bottomBar = {
-                    if (shouldRenderNavigationBar) {
+                    if (shouldRenderNavigationBar && !useNavigationRail) {
                         val currentSongId by remember {
                             playerViewModel.stablePlayerState
                                 .map { it.currentSong?.id }
@@ -840,6 +860,7 @@ class MainActivity : ComponentActivity() {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .widthIn(max = 540.dp)
                                 .height(navBarOccupiedHeight)
                                 .clipToBounds()
                         ) {
@@ -851,6 +872,7 @@ class MainActivity : ComponentActivity() {
                                 modifier = Modifier
                                     .align(Alignment.BottomCenter)
                                     .fillMaxWidth()
+                                    .widthIn(max = 540.dp)
                                     .padding(bottom = bottomBarPadding)
                                     .onSizeChanged { componentHeightPx = it.height }
                                     .graphicsLayer {
@@ -871,7 +893,7 @@ class MainActivity : ComponentActivity() {
                                     .padding(horizontal = horizontalPadding)
                                     .graphicsLayer {
                                         // Animated corner shape resolved in the draw phase:
-                                        // animating the radius re-clips this layer only — no
+                                        // animating the radius re-clips this layer only 閳?no
                                         // recomposition and no layout pass for the bar.
                                         val fraction = playerViewModel.playerContentExpansionFraction.value
                                         val safeFraction = fraction.coerceIn(0f, 1f)
@@ -903,20 +925,56 @@ class MainActivity : ComponentActivity() {
                                     compactMode = navBarCompactMode,
                                     bottomBarPadding = bottomBarPadding,
                                     onSearchIconDoubleTap = onSearchIconDoubleTap,
-                                    modifier = Modifier.fillMaxSize()
+                                    modifier = Modifier.fillMaxSize().widthIn(max = 540.dp)
                                 )
                             }
                         }
                     }
                 }
                 ) { innerPadding ->
-                    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-                        val density = LocalDensity.current
-                        val containerHeight = this.maxHeight
-                        val screenHeightPx = remember(containerHeight, density) {
-                            with(density) { containerHeight.toPx() }
+                    val appNavigationPadding = remember(innerPadding, useNavigationRail, shouldRenderNavigationBar) {
+                        if (useNavigationRail && shouldRenderNavigationBar) {
+                            androidx.compose.foundation.layout.PaddingValues(
+                                start = innerPadding.calculateStartPadding(LayoutDirection.Ltr) + 80.dp,
+                                top = innerPadding.calculateTopPadding(),
+                                end = innerPadding.calculateEndPadding(LayoutDirection.Ltr),
+                                bottom = innerPadding.calculateBottomPadding()
+                            )
+                        } else {
+                            innerPadding
                         }
+                    }
 
+                    Row(modifier = Modifier.fillMaxSize()) {
+                        if (useNavigationRail && shouldRenderNavigationBar) {
+                            PlayerInternalNavigationRail(
+                                navController = navController,
+                                navItems = commonNavItems,
+                                currentRoute = currentRoute,
+                                onSearchIconDoubleTap = { playerViewModel.onSearchNavIconDoubleTapped() },
+                                onOpenSidebar = { scope.launch { drawerState.open() } },
+                                modifier = Modifier
+                                    .layout { measurable, constraints ->
+                                        val expansionHide = playerViewModel.playerContentExpansionFraction.value.coerceIn(0f, 1f)
+                                        val routeHide = (1f - navBarVisibilityProgressState.value).coerceIn(0f, 1f)
+                                        val hideFraction = maxOf(expansionHide, routeHide)
+                                        val placeable = measurable.measure(constraints)
+                                        val shrinkBy = (placeable.width * hideFraction).roundToInt()
+                                        layout(placeable.width - shrinkBy, placeable.height) {
+                                            placeable.placeRelative(0, 0)
+                                        }
+                                    }
+                                    .graphicsLayer {
+                                        // reading state here is fine: graphicsLayer runs per frame, not per layout
+                                        val expansionHide = playerViewModel.playerContentExpansionFraction.value.coerceIn(0f, 1f)
+                                        val routeHide = (1f - navBarVisibilityProgressState.value).coerceIn(0f, 1f)
+                                        val hideFraction = maxOf(expansionHide, routeHide)
+                                        // size.width is already reduced by the layout modifier above
+                                        translationX = -size.width * hideFraction
+                                        alpha = 1f - hideFraction
+                                    }
+                            )
+                        }
                         val showPlayerContentInitially by remember {
                             playerViewModel.stablePlayerState
                                 .map { it.currentSong?.id != null }
@@ -926,7 +984,30 @@ class MainActivity : ComponentActivity() {
                         val shouldHideMiniPlayer by remember(currentRoute) {
                             derivedStateOf { currentRoute in routesWithHiddenMiniPlayer }
                         }
-
+                        val density = LocalDensity.current
+                        val collapsedMaxWidthDp by remember {
+                            derivedStateOf {
+                                val expansionHide = playerViewModel.playerContentExpansionFraction.value.coerceIn(0f, 1f)
+                                val routeHide = (1f - navBarVisibilityProgressState.value).coerceIn(0f, 1f)
+                                val hideFraction = maxOf(expansionHide, routeHide)
+                                lerp(450.dp, 2000.dp, hideFraction)
+                            }
+                        }
+                        BoxWithConstraints(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .then(
+                                    if (useNavigationRail) {
+                                        Modifier.widthIn(max = if (showPlayerContentInitially && !shouldHideMiniPlayer) collapsedMaxWidthDp else Dp.Infinity)
+                                    } else {
+                                        Modifier.widthIn(max = 540.dp)
+                                    }
+                                )
+                        ) {
+                        val containerHeight = this.maxHeight
+                        val screenHeightPx = remember(containerHeight, density) {
+                            with(density) { containerHeight.toPx() }
+                        }
                         val miniPlayerH = with(density) { MiniPlayerHeight.toPx() }
                         val totalSheetHeightWhenContentCollapsedPx = if (showPlayerContentInitially && !shouldHideMiniPlayer) miniPlayerH else 0f
 
@@ -968,7 +1049,7 @@ class MainActivity : ComponentActivity() {
                             AppNavigation(
                                 playerViewModel = playerViewModel,
                                 navController = navController,
-                                paddingValues = innerPadding,
+                                paddingValues = appNavigationPadding,
                                 userPreferencesRepository = userPreferencesRepository,
                                 onSearchBarActiveChange = { isSearchBarActive = it },
                                 onOpenSidebar = { scope.launch { drawerState.open() } }
@@ -980,7 +1061,7 @@ class MainActivity : ComponentActivity() {
                                 playerViewModel.playerContentExpansionFraction.value > 0.01f
                             }
                         }
-                        AnimatedVisibility(
+                        androidx.compose.animation.AnimatedVisibility(
                             visible = isExpandedOrExpanding,
                             enter = fadeIn(animationSpec = tween(durationMillis = 350)),
                             exit = fadeOut(animationSpec = tween(durationMillis = 350)),
@@ -1009,7 +1090,8 @@ class MainActivity : ComponentActivity() {
                             hideMiniPlayer = shouldHideMiniPlayer,
                             containerHeight = containerHeight,
                             navController = navController,
-                            isNavBarHidden = isNavBarEffectivelyHidden
+                            isNavBarHidden = isNavBarEffectivelyHidden,
+                            isNavRailHidden = useNavigationRail
                         )
 
                         val dismissUndoBarSlice by remember {
@@ -1029,7 +1111,7 @@ class MainActivity : ComponentActivity() {
                             { playerViewModel.hideDismissUndoBar() }
                         }
 
-                        AnimatedVisibility(
+                        androidx.compose.animation.AnimatedVisibility(
                             visible = dismissUndoBarSlice.isVisible,
                             enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
                             exit = slideOutVertically(targetOffsetY = { -it }) + fadeOut(),
@@ -1061,6 +1143,7 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 }
+            }
             }
         }
 

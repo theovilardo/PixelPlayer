@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
@@ -69,7 +70,8 @@ internal fun BoxScope.UnifiedPlayerMiniAndFullLayers(
     onQueueDragStart: () -> Unit,
     onQueueDrag: (Float) -> Unit,
     onQueueRelease: (Float, Float) -> Unit,
-    onShowCastClicked: () -> Unit
+    onShowCastClicked: () -> Unit,
+    isNavRailHidden: Boolean
 ) {
     currentSong?.let { currentSongNonNull ->
         miniPlayerScheme?.let { readyScheme ->
@@ -116,7 +118,7 @@ internal fun BoxScope.UnifiedPlayerMiniAndFullLayers(
                         .zIndex(miniPlayerZIndex)
                 ) {
                     val isMiniPlayerVisible by remember {
-                        derivedStateOf { playerContentExpansionFraction.value < 0.01f }
+                        derivedStateOf { playerContentExpansionFraction.value < 0.000001f } //0.01f is really huge for it
                     }
                     MiniPlayerContentInternal(
                         song = currentSongNonNull,
@@ -127,7 +129,9 @@ internal fun BoxScope.UnifiedPlayerMiniAndFullLayers(
                         onPrevious = { playerViewModel.previousSong() },
                         onNext = { playerViewModel.nextSong() },
                         canScroll = isMiniPlayerVisible && infrequentPlayerState.isPlaying,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize().then(
+                            if (isNavRailHidden && !isMiniPlayerVisible) Modifier.padding(end = 80.dp) else Modifier
+                        )
                     )
                 }
             }

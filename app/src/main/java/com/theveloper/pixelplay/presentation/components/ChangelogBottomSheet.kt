@@ -165,7 +165,7 @@ fun ChangelogBottomSheet(
                 alpha = 0.95f,
                 strokeWidth = 4.dp,
                 amplitude = 4.dp,
-                waves = 7.6f,
+                wavesDensity = 7.6f,
                 phase = 0f
             )
 

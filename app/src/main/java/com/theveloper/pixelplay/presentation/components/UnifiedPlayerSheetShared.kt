@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Pause
@@ -83,6 +84,7 @@ internal fun MiniPlayerContentInternal(
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .widthIn(max = 450.dp)
             .height(MiniPlayerHeight)
             .padding(start = 10.dp, end = 12.dp),
         verticalAlignment = Alignment.CenterVertically

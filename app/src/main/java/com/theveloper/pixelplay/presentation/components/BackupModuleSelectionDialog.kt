@@ -76,6 +76,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.ui.res.stringResource
 
 @OptIn(
@@ -135,7 +136,7 @@ fun BackupModuleSelectionDialog(
                 label = "import_module_selection_dialog"
             ) {
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize().widthIn(max = 540.dp),
                     color = MaterialTheme.colorScheme.surfaceContainerLowest
                 ) {
                     Scaffold(

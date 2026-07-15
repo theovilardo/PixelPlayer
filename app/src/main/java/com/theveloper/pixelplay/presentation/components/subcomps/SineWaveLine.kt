@@ -22,7 +22,7 @@ import kotlin.math.sin
  * @param alpha Opacidad (0f..1f).
  * @param strokeWidth Grosor de la línea (Dp).
  * @param amplitude Amplitud de la onda (Dp) — la altura máxima desde el centro.
- * @param waves Número de ondas completas a lo largo del ancho (ej: 1f = una onda).
+ * @param wavesDensity Density of wave (float) - as the number in standard screen width 380dp
  * @param phase Desplazamiento de fase estático (radianes). Se usa solo si animate = false.
  * @param animate Si es true, activa una animación de desplazamiento infinita.
  * @param animationDurationMillis Duración en milisegundos de un ciclo completo de animación.
@@ -36,7 +36,7 @@ fun SineWaveLine(
     alpha: Float = 1f,
     strokeWidth: Dp = 2.dp,
     amplitude: Dp = 8.dp,
-    waves: Float = 2f,
+    wavesDensity: Float = 7.6f,
     phase: Float = 0f,
     animate: Boolean? = false,
     animationDurationMillis: Int = 2000,
@@ -80,8 +80,8 @@ fun SineWaveLine(
             moveTo(0f, centerY + (ampPx * sin(currentPhase)))
             for (i in 1 until samples) {
                 val x = i * step
-                // theta recorre 0..(2π * waves)
-                val theta = (x / w) * (2f * PI.toFloat() * waves) + currentPhase
+                // theta recorre 0..(2π * wavesDensity)
+                val theta = (x / w) * (2f * PI.toFloat() * (wavesDensity) * size.width / 380.dp.toPx()) + currentPhase
                 val y = centerY + ampPx * sin(theta)
                 lineTo(x, y)
             }

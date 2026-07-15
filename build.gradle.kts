@@ -14,7 +14,7 @@ plugins {
 allprojects {
     configurations.all {
         resolutionStrategy {
-            force("org.jetbrains.kotlin:kotlin-metadata-jvm:2.4.0")
+            force("org.jetbrains.kotlin:kotlin-metadata-jvm:2.4.10")
             force("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.9.0")
         }
     }

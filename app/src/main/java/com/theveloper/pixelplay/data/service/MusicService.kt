@@ -1426,8 +1426,9 @@ class MusicService : MediaLibraryService() {
             // Let the debounced updater handle it to prevent UI freezes.
             widgetUpdateManager.requestFullUpdate(false)
             mediaSession?.let { refreshMediaSessionUi(it) }
-            schedulePlaybackSnapshotPersist()
-        }
+                                            schedulePlaybackSnapshotPersist()
+                notifyLastFmNowPlaying(mediaItem)
+                        }
 
         override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
             // Some devices/apps deliver title/artist/art after transition callback.
@@ -2913,4 +2914,28 @@ class MusicService : MediaLibraryService() {
         }
         return future
     }
+
+    // ---- Last.fm -------------------------------------------------------
+    @Inject
+    lateinit var lastFmRepository: com.theveloper.pixelplay.data.lastfm.LastFmRepository
+
+    /**
+     * Triggers Last.fm updateNowPlaying + schedules a scrobble for [mediaItem].
+     * Called from [playerListener.onMediaItemTransition].
+     */
+    private fun notifyLastFmNowPlaying(mediaItem: MediaItem?) {
+        mediaItem ?: return
+        val track = mediaItem.mediaMetadata.title?.toString()?.takeIf { it.isNotBlank() } ?: return
+        val artist = mediaItem.mediaMetadata.artist?.toString()?.takeIf { it.isNotBlank() } ?: return
+        val album = mediaItem.mediaMetadata.albumTitle?.toString()
+        val durationMs = mediaItem.mediaMetadata.extras
+            ?.getLong("duration", 0L) ?: 0L
+        engine.onLastFmTrackStarted(
+            track = track,
+            artist = artist,
+            album = album,
+            durationMs = durationMs
+        )
+    }
+
 }

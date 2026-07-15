@@ -1386,4 +1386,48 @@ suspend fun markDirectoryRulesVersionApplied(version: Int) {
     /** Increments [value] by 1, wrapping back to 0 on overflow. */
     private fun incrementWrapped(value: Int?) =
         if (value == null || value == Int.MAX_VALUE) 0 else value + 1
+
+    // ---- Last.fm -------------------------------------------------------
+
+    private object LastFmKeys {
+        val SESSION_KEY = stringPreferencesKey("lastfm_session_key")
+        val USERNAME = stringPreferencesKey("lastfm_username")
+        val SCROBBLING_ENABLED = booleanPreferencesKey("lastfm_scrobbling_enabled")
+    }
+
+    /** Returns the stored Last.fm session key, or null if not logged in. */
+    val lastFmSessionKeyFlow: Flow<String?> =
+        dataStore.data.map { it[LastFmKeys.SESSION_KEY] }
+
+    /** Returns the stored Last.fm username, or null if not logged in. */
+    val lastFmUsernameFlow: Flow<String?> =
+        dataStore.data.map { it[LastFmKeys.USERNAME] }
+
+    /** Returns whether Last.fm scrobbling is enabled (defaults true when logged in). */
+    val lastFmScrobblingEnabledFlow: Flow<Boolean> =
+        dataStore.data.map { it[LastFmKeys.SCROBBLING_ENABLED] ?: true }
+
+    /** Persists the Last.fm session key and username after a successful auth. */
+    suspend fun setLastFmSession(sessionKey: String, username: String) {
+        dataStore.edit {
+            it[LastFmKeys.SESSION_KEY] = sessionKey
+            it[LastFmKeys.USERNAME] = username
+            it[LastFmKeys.SCROBBLING_ENABLED] = true
+        }
+    }
+
+    /** Clears all Last.fm credentials (logout). */
+    suspend fun clearLastFmSession() {
+        dataStore.edit {
+            it.remove(LastFmKeys.SESSION_KEY)
+            it.remove(LastFmKeys.USERNAME)
+            it.remove(LastFmKeys.SCROBBLING_ENABLED)
+        }
+    }
+
+    /** Enables or disables Last.fm scrobbling without logging out. */
+    suspend fun setLastFmScrobblingEnabled(enabled: Boolean) {
+        dataStore.edit { it[LastFmKeys.SCROBBLING_ENABLED] = enabled }
+    }
+
 }

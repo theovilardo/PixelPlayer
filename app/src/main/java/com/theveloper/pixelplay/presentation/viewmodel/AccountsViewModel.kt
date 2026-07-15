@@ -9,6 +9,7 @@ import com.theveloper.pixelplay.data.netease.NeteaseRepository
 import com.theveloper.pixelplay.data.qqmusic.QqMusicRepository
 import com.theveloper.pixelplay.data.repository.MusicRepository
 import com.theveloper.pixelplay.data.telegram.TelegramRepository
+import com.theveloper.pixelplay.data.lastfm.LastFmRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +29,8 @@ enum class ExternalServiceAccount {
     NETEASE,
     QQ_MUSIC,
     NAVIDROME,
-    JELLYFIN
+    JELLYFIN,
+    LAST_FM
 }
 
 data class ExternalAccountUiModel(
@@ -52,7 +54,8 @@ class AccountsViewModel @Inject constructor(
     private val neteaseRepository: NeteaseRepository,
     private val qqMusicRepository: QqMusicRepository,
     private val navidromeRepository: NavidromeRepository,
-    private val jellyfinRepository: JellyfinRepository
+    private val jellyfinRepository: JellyfinRepository,
+    private val lastFmRepository: LastFmRepository
 ) : ViewModel() {
 
     private val loggingOutServices = MutableStateFlow<Set<ExternalServiceAccount>>(emptySet())
@@ -259,6 +262,7 @@ class AccountsViewModel @Inject constructor(
                         ExternalServiceAccount.QQ_MUSIC -> qqMusicRepository.logout()
                         ExternalServiceAccount.NAVIDROME -> navidromeRepository.logout()
                         ExternalServiceAccount.JELLYFIN -> jellyfinRepository.logout()
+                                            ExternalServiceAccount.LAST_FM -> lastFmRepository.logout()
                     }
                 }
             } finally {
@@ -274,4 +278,32 @@ class AccountsViewModel @Inject constructor(
             "$count $plural"
         }
     }
+
+    // ---- Last.fm -------------------------------------------------------
+
+    /** One-shot UI state for Last.fm auth: null = idle, true = success, false = failed. */
+    private val _lastFmLoginResult = MutableStateFlow<Result<Unit>?>(null)
+    val lastFmLoginResult: StateFlow<Result<Unit>?> = _lastFmLoginResult
+
+    /** Last.fm username from persisted preferences, or null if not logged in. */
+    val lastFmUsername: StateFlow<String?> = lastFmRepository.usernameFlow
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    /**
+     * Authenticates with Last.fm using the Mobile Auth flow (username + password → session key).
+     * https://www.last.fm/api/mobileauth
+     */
+    fun loginLastFm(username: String, password: String) {
+        viewModelScope.launch {
+            _lastFmLoginResult.value = null
+            val result = runCatching { lastFmRepository.login(username, password) }
+            _lastFmLoginResult.value = result
+        }
+    }
+
+    /** Clears the one-shot login result after the UI has consumed it. */
+    fun consumeLastFmLoginResult() {
+        _lastFmLoginResult.value = null
+    }
+
 }

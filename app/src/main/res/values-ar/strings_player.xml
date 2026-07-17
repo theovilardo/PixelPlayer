@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <!-- Player UI & Playback Controls -->
+    <string name="player_cd_collapse">طي المشغل</string>
+    <string name="player_now_playing">يتم تشغيله الآن</string>
+    <string name="player_cd_cloud_stream">بث سحابي</string>
+    <string name="player_cd_cast">بث لاسلكي (Cast)</string>
+    <string name="player_cd_bluetooth">بلوتوث</string>
+    <string name="player_cd_local_playback">تشغيل محلي</string>
+    <string name="player_connecting">جاري الاتصال…</string>
+    <string name="player_cd_open_queue">فتح قائمة الانتظار</string>    
+
+    <!-- CastBottomSheet -->
+    <string name="cast_perm_title">الاستعداد للاتصال</string>
+    <string name="cast_perm_body">اسمح لـ PixelPlayer برؤية الأجهزة القريبة وشبكة الـ Wi‑Fi الحالية حتى نتمكن من الحفاظ على مزامنة البث، وصوت البلوتوث، ومكبرات الصوت.</string>
+    <string name="cast_perm_nearby_title">الأجهزة القريبة</string>
+    <string name="cast_perm_nearby_desc">مطلوبة لقراءة والتحكم في أجهزة الصوت المتصلة عبر البلوتوث.</string>
+    <string name="cast_perm_location_title">موقع شبكة الـ Wi‑Fi</string>
+    <string name="cast_perm_location_desc">يتطلب نظام أندرويد إذون الموقع لمشاركة شبكة الـ Wi‑Fi (SSID) التي تتصل بها لتحديد أجهزة البث المتوافقة.</string>
+    <string name="cast_allow_access">السماح بالوصول</string>
+    <string name="cast_perm_footer">نحن نستخدم هذه الصلاحيات فقط لربط الأجهزة البينية — كالبث، والتحكم في مكبرات الصوت القريبة، ومزامنة الصوت.</string>
+    <string name="cast_title_connect">توصيل الجهاز</string>
+    <string name="cast_scanning_nearby">جاري الفحص بالقرب منك</string>
+    <string name="cast_subtitle_session">جلسة البث</string>
+    <string name="cast_connecting">جاري الاتصال</string>
+    <string name="cast_connected">تم الاتصال</string>
+    <string name="cast_this_phone">هذا الهاتف</string>
+    <string name="cast_bluetooth_audio">صوت البلوتوث</string>
+    <string name="cast_local_playback">تشغيل محلي</string>
+    <string name="cast_playing">جاري التشغيل</string>
+    <string name="cast_paused">متوقف مؤقتاً</string>
+    <string name="cast_volume_device">مستوى صوت الجهاز</string>
+    <string name="cast_volume_phone">مستوى صوت الهاتف</string>
+    <string name="cast_volume_levels">%1$d/%2$d</string>
+    <string name="cast_cd_battery">مستوى البطارية</string>
+    <string name="cast_cd_volume_level">مستوى الصوت</string>
+    <string name="cast_disconnect">قطع الاتصال</string>
+    <string name="cast_connectivity">الاتصال</string>
+    <string name="cast_turn_on_wifi_bt">قم بتفعيل الـ Wi-Fi أو البلوتوث</string>
+    <string name="cast_cd_refresh_connections">تحديث الاتصالات</string>
+    <string name="cast_wifi">Wi-Fi</string>
+    <string name="cast_wifi_off">مغلق</string>
+    <string name="cast_wifi_on">مفعّل</string>
+    <string name="cast_wifi_connected">متصل</string>
+    <string name="cast_bluetooth">بلوتوث</string>
+    <string name="cast_bt_off">مغلق</string>
+    <string name="cast_bt_on">مفعّل</string>
+    <string name="cast_bt_connected">متصل</string>
+    <string name="cast_nearby_devices">الأجهزة القريبة</string>
+    <string name="cast_cd_refresh_devices">تحديث الأجهزة</string>
+    <string name="cast_status_connected">متصل</string>
+    <string name="cast_status_connecting">جاري الاتصال</string>
+    <string name="cast_status_available_connect">متاح للاتصال</string>
+    <string name="cast_status_available">متاح</string>
+    <string name="cast_connecting_ellipsis">جاري الاتصال...</string>
+    <string name="cast_searching">جاري البحث عن أجهزة…</string>
+    <string name="cast_searching_hint">تأكد من أن التلفزيون أو مكبر الصوت قيد التشغيل ومتصل بنفس شبكة الـ Wi‑Fi.</string>
+    <string name="cast_tab_controls">عناصر التحكم</string>
+    <string name="cast_tab_devices">الأجهزة</string>
+    
+    <!-- Casting & Remote Playback -->
+    <string name="cast_server_channel_name">خادم وسائط البث (Cast)</string>
+    <string name="cast_server_notification_title">جاري البث إلى الجهاز</string>
+    <string name="cast_server_notification_text">تقديم الوسائط إلى جهاز البث</string>
+    <string name="cast_server_foreground_error">%1$s: %2$s</string>
+    <string name="cast_seek_unavailable_for_format">التقديم والتأخير غير متاح مؤقتاً لتنسيق الصوت هذا أثناء البث لأنه قد يتسبب في إنهاء جلسة البث قسرياً.</string>
+
+    <!-- Sleep Timer -->
+    <string name="sleep_timer_title">مؤقت النوم</string>
+    <string name="sleep_timer_zero_minutes_format">المؤقت</string>
+    <string name="sleep_timer_n_minutes_format">%1$d دقيقة</string>
+    <string name="sleep_timer_set_for_minutes_toast">تم ضبط المؤقت لمدة %1$d دقيقة.</string>
+    <string name="sleep_timer_play_count_one_time">مرة واحدة</string>
+    <plurals name="sleep_timer_play_count_n_times">
+        <item quantity="zero">ولا مرة</item>
+        <item quantity="one">مرة واحدة</item>
+        <item quantity="two">مرتين</item>
+        <item quantity="few">%d مرات</item>
+        <item quantity="many">%d مرة</item>
+        <item quantity="other">%d مرة</item>
+    </plurals>
+    <string name="sleep_timer_play_count_label">عدد مرات التشغيل: %1$s</string>
+    <string name="sleep_timer_end_of_current_track">نهاية المسار الحالي</string>
+    <string name="sleep_timer_eot_toast">سيتوقف التشغيل عند نهاية المسار.</string>
+    <string name="sleep_timer_cd_switch_on">تفعيل المفتاح</string>
+    <string name="sleep_timer_custom_time">وقت مخصص</string>
+    <string name="sleep_timer_cancel_timer">إلغاء المؤقت</string>
+    <string name="sleep_timer_display_eot">نهاية المسار</string>
+    <string name="sleep_timer_cancelled_toast">تم إلغاء المؤقت.</string>
+    <string name="sleep_timer_eot_no_song_toast">لا يمكن تفعيل خيار نهاية المسار: لا توجد أغنية نشطة حالياً.</string>
+    <string name="sleep_timer_eot_song_changed_toast">تم إلغاء تفعيل مؤقت نهاية المسار: تغيرت الأغنية من %1$s إلى %2$s.</string>
+    <string name="sleep_timer_label_previous_track">المسار السابق</string>
+    <string name="sleep_timer_label_current_track">المسار الحالي</string>
+    <string name="sleep_timer_ui_set_custom_duration">ضبط مدة مخصصة</string>
+
+    <!-- QueueBottomSheet -->
+    <string name="queue_next_up_label">التالي في قائمة الانتظار</string>
+    <string name="queue_tracks_empty">قائمة الانتظار فارغة حالياً.</string>
+    <plurals name="queue_tracks_lined_up">
+        <item quantity="zero">لا توجد مسارات مجهزة.</item>
+        <item quantity="one">مسار واحد مجهز.</item>
+        <item quantity="two">مساران مجهزان.</item>
+        <item quantity="few">%d مسارات مجهزة.</item>
+        <item quantity="many">%d مساراً مجهزاً.</item>
+        <item quantity="other">%d مساراً مجهزاً.</item>
+    </plurals>
+    <string name="queue_source_fallback_label">قائمة الانتظار</string>
+    <string name="queue_empty_label">قائمة الانتظار فارغة.</string>
+    <string name="queue_cd_reorder_song">إعادة ترتيب الأغنية</string>
+    <string name="queue_cd_toggle_shuffle_action">تبديل الوضع العشوائي</string>
+    <string name="queue_cd_toggle_repeat_action">تبديل وضع التكرار</string>
+    <string name="queue_cd_sleep_timer_action">مؤقت النوم</string>
+    <string name="queue_cd_more_action">المزيد من الإجراءات</string>
+    <string name="queue_action_locate_current_song">تحديد موقع الأغنية الحالية</string>
+    <string name="queue_action_clear_queue">مسح قائمة الانتظار</string>
+    <string name="queue_dialog_clear_queue_title">مسح قائمة الانتظار</string>
+    <string name="queue_dialog_clear_queue_message">هل أنت متأكد من أنك تريد مسح جميع الأغاني من قائمة الانتظار باستثناء الأغنية الحالية؟</string>
+    <string name="queue_action_save_as_playlist">حفظ كقائمة تشغيل</string>
+    <string name="queue_save_playlist_named">قائمة انتظار %1$s</string>
+    <string name="queue_save_playlist_current">قائمة الانتظار الحالية</string>
+    <string name="queue_cd_dismiss_song">تجاهل الأغنية</string>
+    <string name="queue_song_removed">تمت إزالته</string>
+    <string name="queue_save_as_playlist_sheet_title">حفظ كقائمة تشغيل</string>
+    <string name="queue_save_as_playlist_deselect_all">إلغاء تحديد الكل</string>
+    <string name="queue_save_as_playlist_name_label">اسم قائمة التشغيل</string>
+    <string name="queue_save_as_playlist_search_placeholder">البحث عن أغاني لتضمينها…</string>
+    <string name="queue_save_as_playlist_search_no_match">لا توجد أغاني تطابق \"%1$s\"</string>
+    <plurals name="queue_save_as_playlist_n_songs_selected">
+        <item quantity="zero">لم يتم تحديد أي أغنية</item>
+        <item quantity="one">تم تحديد أغنية واحدة</item>
+        <item quantity="two">تم تحديد أغنيتين</item>
+        <item quantity="few">تم تحديد %d أغانٍ</item>
+        <item quantity="many">تم تحديد %d أغنية</item>
+        <item quantity="other">تم تحديد %d أغنية</item>
+    </plurals>
+    <string name="queue_save_as_playlist_format">حفظ باسم: %1$s</string>
+    <string name="queue_save_as_playlist_name_placeholder">أدخل اسماً لقائمة التشغيل</string>
+    <string name="queue_cd_remove_from_playlist">إزالة من قائمة التشغيل</string>
+    <string name="queue_more_options_for_song">المزيد من الخيارات لـ %1$s</string>
+
+    <!-- LyricsSheet -->
+    <string name="lyrics_title">كلمات الأغاني</string>
+    <string name="lyrics_loading">جاري تحميل كلمات الأغنية…</string>
+    <string name="lyrics_mode_synced">متزامنة</string>
+    <string name="lyrics_mode_static">ثابتة</string>
+    <string name="lyrics_options">خيارات كلمات الأغاني</string>
+    <string name="lyrics_offset_minus_half">−0.5</string>
+    <string name="lyrics_offset_minus_point_one">−0.1</string>
+    <string name="lyrics_offset_plus_point_one">+0.1</string>
+    <string name="lyrics_offset_plus_half">+0.5</string>
+    <string name="lyrics_offset_zero">0 ثانية</string>
+    <string name="lyrics_offset_seconds_fmt">%1$+.1f ثانية</string>
+    
+    <!-- LyricsRepository -->
+    <string name="lyrics_failed_to_search">فشل البحث عن كلمات الأغنية</string>
+    <string name="lyrics_failed_to_fetch_from_remote">فشل جلب كلمات الأغنية من الخادم البعيد</string>
+    <string name="lyrics_fetch_timeout">انتهت مهلة الاتصال. يرجى التحقق من اتصالك بالإنترنت.</string>
+    <string name="lyrics_network_error">خطأ في الشبكة. يرجى التحقق من اتصالك بالإنترنت.</string>
+    <string name="lyrics_server_error">خطأ في الخادم (رمز %d). يرجى المحاولة مرة أخرى لاحقاً.</string>
+    
+    <!-- LyricsStateHolder -->
+    <string name="lyrics_already_available">كلمات الأغنية متوفرة بالفعل. تم تخطي الجلب عبر الإنترنت.</string>
+    <string name="lyrics_embedded_already_available">تم العثور على كلمات مدمجة بالفعل. تم تخطي الجلب عبر الإنترنت.</string>
+    <string name="lyrics_local_lrc_already_available">تم العثور على ملف كلمات محلي (.lrc) بالفعل. تم تخطي الجلب عبر الإنترنت.</string>
+
+    <!-- LyricsMoreBottomSheet -->
+    <string name="lyrics_save_title">حفظ كلمات الأغنية</string>
+    <string name="lyrics_translate_via_ai">الترجمة بواسطة الذكاء الاصطناعي</string>
+    <string name="lyrics_translate_already_translated">تحتوي هذه الكلمات على ترجمة بالفعل</string>
+    <string name="lyrics_translate_already_in_target_language">هذه الكلمات مكتوبة بالفعل بهذه اللغة</string>
+    <string name="lyrics_translate_api_not_configured">لم يتم تهيئة واجهة برمجة التطبيقات (API)</string>
+    <string name="lyrics_translate_success">تمت ترجمة كلمات الأغنية بنجاح!</string>
+    <string name="lyrics_translate_progress">جاري ترجمة كلمات الأغنية…</string>
+    <string name="lyrics_reset_imported">إعادة تعيين الكلمات المستوردة</string>
+    <string name="lyrics_reset_dialog_title">إعادة تعيين كلمات الأغنية؟</string>
+    <string name="lyrics_reset_dialog_message">هل أنت متأكد من أنك تريد إعادة تعيين كلمات هذه الأغنية؟</string>
+    <string name="lyrics_appearance_section">المظهر</string>
+    <string name="lyrics_appearance_alignment">المحاذاة</string>
+    <string name="lyrics_appearance_align_left">محاذاة الكلمات لليسار</string>
+    <string name="lyrics_appearance_align_center">محاذاة الكلمات للوسط</string>
+    <string name="lyrics_appearance_align_right">محاذاة الكلمات لليمين</string>
+    <string name="lyrics_controls_section">عناصر التحكم</string>
+    <string name="lyrics_controls_adjust_sync">ضبط المزامنة</string>
+    <string name="lyrics_controls_hide_sync">إخفاء عناصر تحكم المزامنة</string>
+    <string name="lyrics_controls_show_romanization">إظهار اللتننة (Romanization)</string>
+    <string name="lyrics_controls_show_translations">إظهار الترجمات</string>
+    <string name="lyrics_controls_disable_immersive_once">إيقاف الوضع الغامر (لمرة واحدة)</string>
+    <string name="lyrics_controls_keep_screen_on">إبقاء الشاشة قيد التشغيل</string>
+    
+    <!-- LyricsSheet save dialog -->
+    <string name="lyrics_save_dialog_title">حفظ كلمات الأغنية</string>
+    <string name="lyrics_save_dialog_message">اختر النسخة المراد حفظها:</string>
+    <string name="lyrics_save_synced">متزامنة (مع الطوابع الزمنية)</string>
+    <string name="lyrics_save_plain">عادية (نص فقط)</string>
+
+    <!-- FetchLyricsDialog -->
+    <string name="lyrics_search_online_prompt">هل تود البحث عن كلمات الأغنية عبر الإنترنت؟</string>
+    <string name="lyrics_fetch_show_options_title">إظهار خيارات كلمات الأغاني</string>
+    <string name="lyrics_fetch_show_options_subtitle">فتح نافذة الاختيار دائماً بدلاً من التطبيق التلقائي لأول نتيجة مطابقة</string>
+    <string name="lyrics_searching">جاري البحث عن كلمات الأغنية…</string>
+    <string name="lyrics_not_found">لم يتم العثور على كلمات الأغنية</string>
+    <string name="lyrics_custom_search_hint">لم نتمكن من العثور على الكلمات تلقائياً. يمكنك تعديل العنوان أو اسم الفنان والمحاولة بالبحث يدوياً.</string>
+    <string name="lyrics_custom_search_field_title">عنوان الأغنية</string>
+    <string name="lyrics_custom_search_field_artist">الفنان (اختياري)</string>
+    <string name="lyrics_found_n_matches_format">تم العثور على %d نتيجة مطابقة</string>
+    <string name="lyrics_synced_badge">متزامنة</string>
+    <string name="lyrics_artist_album_line">%1$s • %2$s</string>
+    <string name="lyrics_provided_by">تتوفر كلمات الأغاني بواسطة</string>
+    <string name="lyrics_lrclib_uri">https://lrclib.net/</string>
+</resources>

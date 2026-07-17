@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <string name="equalizer_error_name_empty">لا يمكن أن يكون الاسم فارغاً</string>
+    <string name="equalizer_action_rename">إعادة تسمية</string>
+
+    <string name="equalizer_change_view_mode_cd">تغيير وضع العرض</string>
+    <string name="equalizer_disable_cd">تعطيل معادل الصوت</string>
+    <string name="equalizer_enable_cd">تفعيل معادل الصوت</string>
+    <string name="equalizer_edit_tab_title">تعديل</string>
+    <string name="equalizer_edit_presets_cd">تعديل الأنماط المسبقة</string>
+    <string name="equalizer_custom_preset_cd">نمط مخصص</string>
+    <string name="equalizer_presets_cd">الأنماط المسبقة</string>
+    <string name="equalizer_action_update">تحديث</string>
+    <string name="equalizer_bass_boost">تضخيم الباس (Bass Boost)</string>
+    <string name="equalizer_virtualizer">المجسم (Virtualizer)</string>
+    <string name="equalizer_loudness">جهارة الصوت (Loudness)</string>
+    <string name="equalizer_effect_not_supported">غير مدعوم</string>
+    <string name="equalizer_effect_not_supported_device">غير مدعوم على هذا الجهاز</string>
+    <string name="equalizer_volume">مستوى الصوت</string>
+    <string name="equalizer_frequency_response">استجابة التردد</string>
+    <string name="equalizer_unit_hz">هرتز</string>
+    <string name="equalizer_unit_khz">كيلوهرتز</string>
+    <string name="equalizer_action_save_new">حفظ كجديد</string>
+
+    <string name="equalizer_presets_saved_title">الأنماط المحفوظة</string>
+    <string name="equalizer_presets_empty">لم يتم حفظ أي أنماط مخصصة بعد.</string>
+    <string name="equalizer_presets_cd_unpin">إلغاء التثبيت</string>
+    <string name="equalizer_presets_cd_pin">تثبيت</string>
+    <string name="equalizer_presets_cd_rename">إعادة تسمية</string>
+    <string name="equalizer_presets_cd_delete">حذف</string>
+
+    <string name="equalizer_presets_save_custom_title">حفظ نمط مخصص</string>
+    <string name="equalizer_presets_save_custom_body">أدخل اسماً لنمط معادل الصوت المخصص الجديد.</string>
+    <string name="equalizer_preset_name_placeholder">اسم النمط</string>
+    <string name="equalizer_presets_rename_title">إعادة تسمية النمط</string>
+
+    <string name="equalizer_manage_presets_title">إدارة الأنماط المسبقة</string>
+    <string name="equalizer_presets_drag_hint">اسحب لإعادة الترتيب • اضغط على العين للإظهار أو الإخفاء</string>
+    <string name="equalizer_cd_reorder">إعادة الترتيب</string>
+    <string name="equalizer_reset_presets_title">إعادة تعيين الأنماط</string>
+    <string name="equalizer_reset_presets_message">سيؤدي هذا إلى استعادة الترتيب والظهور الافتراضي للأنماط المسبقة. هل تريد المتابعة؟</string>
+    <string name="equalizer_cd_reset_presets_default">إعادة تعيين إلى الافتراضي</string>
+    <string name="equalizer_cd_visible">مرئي</string>
+    <string name="equalizer_cd_hidden">مخفي</string>
+</resources>

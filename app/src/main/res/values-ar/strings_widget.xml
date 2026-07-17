@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="glance_widget_description">ودجت مستجيب يتكيف تلقائياً مع حجمه</string>
+    <string name="widget_bar_4x1_desc">شريط مشغل مدمج</string>
+    <string name="widget_control_4x2_desc">عناصر تحكم كاملة مع خياري الخلط والتكرار</string>
+    <string name="widget_grid_2x2_desc">مشغل مربع بسيط وموجز</string>
+
+    <string name="widget_tap_to_open">انقر للفتح</string>
+    <string name="widget_album_art">غلاف الألبوم</string>
+    <string name="widget_album_art_placeholder">مواضع غلاف الألبوم المؤقتة</string>
+
+    <string name="widget_tap_to_play">انقر للتشغيل</string>
+    <string name="widget_preview_song_title">عنوان الأغنية</string>
+    <string name="widget_preview_artist">الفنان</string>
+
+    <string name="widget_wavy_progress_bar_desc">شريط التقدم، %1$d بالمئة</string>
+</resources>

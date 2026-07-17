@@ -1,0 +1,597 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <!-- Library Screen -->
+    <string name="library_screen_title">المكتبة</string>
+    <string name="library_tabs_sheet_title">تبويبات المكتبة</string>
+    <string name="library_tabs_sheet_subtitle">انتقل مباشرة إلى أي تبويب أو أعد ترتيبها.</string>
+    <string name="library_reorder_tabs_label">إعادة ترتيب التبويبات</string>
+
+    <!-- Library Tab Names -->
+    <string name="library_tab_songs">الأغاني</string>
+    <string name="library_tab_albums">الألبومات</string>
+    <string name="library_tab_artists">الفنانون</string>
+    <string name="library_tab_playlists">قوائم التشغيل</string>
+    <string name="library_tab_folders">المجلدات</string>
+    <string name="library_tab_liked">المفضلة</string>
+
+    <!-- Library Toasts -->
+    <string name="library_toast_playlist_created">تم إنشاء قائمة التشغيل بنجاح</string>
+    <string name="library_toast_set_ai_provider_api_key_first">يرجى تعيين مفتاح واجهة برمجة التطبيقات (API Key) لمزود الذكاء الاصطناعي أولاً</string>
+    <string name="library_toast_set_gemini_api_key_first">يرج تعيين مفتاح واجهة برمجة التطبيقات (API Key) لـ Gemini أولاً</string>
+    <string name="library_toast_added_to_queue">تمت الإضافة إلى قائمة الانتظار</string>
+    <string name="library_toast_playing_next">سيتم التشغيل تالياً</string>
+
+    <!-- Library Toolbar & Navigation -->
+    <string name="library_cd_watch_transfer">مراقبة النقل</string>
+    <string name="library_cd_open_settings">الإعدادات</string>
+    <string name="library_tab_edit">تعديل</string>
+    <string name="library_cd_reorder_tabs">إعادة ترتيب التبويبات</string>
+    <string name="library_cd_expand_tab_menu">توسيع القائمة</string>
+
+    <!-- Library Multi-Selection & Folders -->
+    <string name="library_toast_max_albums_selection">يمكنك تحديد ما يصل إلى %1$d ألبومات</string>
+    <string name="library_folder_name_fallback">مجلد</string>
+    <string name="library_cd_folder">مجلد</string>
+
+    <!-- Library Sort & View Bottom Sheet -->
+    <string name="library_sort_by_title">فرز حسب</string>
+    <string name="library_sort_section_view">المظهر</string>
+    <string name="library_sort_toggle_playlist_view">عرض قائمة التشغيل</string>
+    <string name="library_view_mode_grid">شبكة</string>
+    <string name="library_view_mode_list">قائمة</string>
+    <string name="library_storage_internal">الذاكرة الداخلية</string>
+    <string name="library_storage_sd_card">بطاقة SD</string>
+    <string name="library_storage_sd_card_unavailable">بطاقة SD غير متوفرة حالياً.</string>
+    <string name="library_sort_section_cloud">السحابة</string>
+    <string name="library_sort_toggle_telegram_channels">قنوات تليجرام السحابية</string>
+    <string name="library_telegram_topics_display_title">عرض المواضيع</string>
+    <string name="library_telegram_topic_mode_channels">القنوات</string>
+    <string name="library_telegram_topic_mode_topics">المواضيع</string>
+    <string name="library_telegram_topic_mode_both">كلاهما</string>
+    <string name="library_cloud_sources_heading">السحابة</string>
+    <string name="library_cloud_only_label">السحابة فقط</string>
+
+    <!-- Library AI Metadata Processing -->
+    <string name="library_generating_ai_metadata">جاري توليد البيانات الوصفية بالذكاء الاصطناعي…</string>
+
+    <!-- Library list errors -->
+    <string name="library_error_loading_songs">خطأ أثناء تحميل الأغاني</string>
+    <string name="library_album_detail_error_loading_albums">خطأ أثناء تحميل الألبومات</string>
+    <string name="library_artist_error_loading_artists">خطأ أثناء تحميل الفنانين</string>
+    <string name="library_action_retry">إعادة المحاولة</string>
+
+    <!-- Library empty (paginated) -->
+    <string name="library_no_songs_in_library_message">لم يتم العثور على أغانٍ في مكتبتك.</string>
+    <string name="library_no_songs_rescan_hint">جرّب إعادة فحص مكتبتك من الإعدادات إذا كانت لديك موسيقى على جهازك.</string>
+    <string name="library_cd_no_songs_in_library">لم يتم العثور على أغانٍ</string>
+
+    <!-- Library action row -->
+    <string name="library_action_new">جديد</string>
+    <string name="library_cd_create_new_playlist">إنشاء قائمة تشغيل جديدة</string>
+    <string name="library_cd_import_m3u_playlist">استيراد قائمة تشغيل M3U</string>
+    <string name="library_cd_locate_current_song">تحديد موقع الأغنية الحالية</string>
+    <string name="library_storage_filter_all_songs">كل الأغاني</string>
+    <string name="library_storage_filter_online">سحابي</string>
+    <string name="library_storage_filter_offline">محلي</string>
+    <string name="library_cd_sort_options">خيارات الفرز</string>
+    <!-- Library selection action row -->
+    <string name="library_selection_all">الكل</string>
+    <string name="library_selection_deselect">إلغاء التحديد</string>
+    <string name="library_selection_more_options">المزيد من الخيارات</string>
+
+    <!-- Library Syncing -->
+    <string name="library_sync_scanning">جاري فحص ملفات الموسيقى…</string>
+    <string name="library_sync_processing">جاري معالجة الملفات…</string>
+    <string name="library_sync_files_progress">%1$d من %2$d ملفات</string>
+    <string name="library_sync_in_progress">جاري مزامنة المكتبة…</string>
+    <string name="library_sync_complete">اكتملت المزامنة</string>
+    <string name="library_sync_pending">في الانتظار…</string>
+    <string name="library_syncing">جاري مزامنة المكتبة…</string>
+    <string name="library_sync_cache">جاري تنظيف ذاكرة التخزين المؤقت لغلاف الألبومات…</string>
+    <string name="library_sync_cloud">جاري مزامنة المصادر السحابية…</string>
+    <string name="library_sync_lyrics">جاري فحص كلمات الأغاني…</string>
+
+    <!-- Library Empty State -->
+    <string name="library_empty_songs_all_title">لا توجد أغانٍ بعد</string>
+    <string name="library_empty_songs_all_subtitle">أضف موسيقى إلى جهازك أو قم بمزامنة مصدر سحابي لبدء الاستماع.</string>
+    <string name="library_empty_songs_offline_title">لم يتم العثور على أغانٍ محلية</string>
+    <string name="library_empty_songs_offline_subtitle">جرّب تصفية مصدر آخر أو أعد فحص مكتبة الجهاز.</string>
+    <string name="library_empty_songs_online_title">لم يتم العثور على أغانٍ سحابية</string>
+    <string name="library_empty_songs_online_subtitle">قم بمزامنة أغاني تليجرام أو NetEase، أو تحوّل إلى المصدر المحلي.</string>
+    <string name="library_empty_albums_all_title">لا توجد ألبومات متوفرة</string>
+    <string name="library_empty_albums_all_subtitle">ستظهر الألبومات هنا بمجرد أن تحتوي مكتبتك على مسارات مجمعة.</string>
+    <string name="library_empty_albums_offline_title">لم يتم العثور على ألبومات محلية</string>
+    <string name="library_empty_albums_offline_subtitle">المسارات المحلية مطلوبة لإنشاء مجموعات ألبومات محلية.</string>
+    <string name="library_empty_albums_online_title">لم يتم العثور على ألبومات سحابية</string>
+    <string name="library_empty_albums_online_subtitle">ستظهر الأغاني السحابية التي تحتوي على بيانات الألبوم هنا بعد المزامنة.</string>
+    <string name="library_empty_artists_all_title">لا يوجد فنانون متوفرون</string>
+    <string name="library_empty_artists_all_subtitle">يظهر الفنانون بعد فهرسة الأغاني من أي مصدر.</string>
+    <string name="library_empty_artists_offline_title">لم يتم العثور على فنانين محليين</string>
+    <string name="library_empty_artists_offline_subtitle">لا تتوفر بيانات وصفية للفنانين للأغاني المحلية حالياً.</string>
+    <string name="library_empty_artists_online_title">لم يتم العثور على فنانين سحابيين</string>
+    <string name="library_empty_artists_online_subtitle">تظهر إدخالات الفنانين السحابيين عند مزامنة الأغاني عن بُعد.</string>
+    <string name="library_empty_liked_all_title">لا توجد أغانٍ مفضلة بعد</string>
+    <string name="library_empty_liked_all_subtitle">اضغط على أيقونة القلب أثناء تشغيل أغنية لحفظها هنا.</string>
+    <string name="library_empty_liked_offline_title">لا توجد أغانٍ محلية مفضلة</string>
+    <string name="library_empty_liked_offline_subtitle">قم بتغيير تصفية المصدر أو أضف أغانٍ من جهازك إلى المفضلة.</string>
+    <string name="library_empty_liked_online_title">لا توجد أغانٍ سحابية مفضلة</string>
+    <string name="library_empty_liked_online_subtitle">أضف مسارات تليجرام أو NetEase إلى المفضلة لرؤيتها في هذا العرض.</string>
+    <string name="library_empty_folders_title">لم يتم العثور على مجلدات</string>
+    <string name="library_empty_folders_subtitle">ستظهر مجلدات وحدة التخزين الداخلية التي تحتوي على موسيقى هنا.</string>
+    <string name="library_empty_playlists_title">لا توجد قوائم تشغيل بعد</string>
+    <string name="library_empty_playlists_subtitle">أنشئ أول قائمة تشغيل لتنظيم مكتبتك.</string>
+
+    <!-- SongInfoBottomSheet, MultiSelectionBottomSheet, PlaylistMultiSelectionBottomSheet -->
+    <string name="song_info_cd_edit_metadata">تعديل البيانات الوصفية للأغنية</string>
+    <string name="song_info_action_play">تشغيل</string>
+    <string name="song_info_cd_play">تشغيل الأغنية</string>
+    <string name="song_info_action_play_all">تشغيل الكل</string>
+    <string name="song_info_cd_play_all">تشغيل الكل</string>
+    <string name="song_info_cd_add_to_favorites">إضافة إلى المفضلة</string>
+    <string name="song_info_cd_add_to_favorites_all">إضافة الكل إلى المفضلة</string>
+    <string name="song_info_cd_remove_from_favorites">إزالة من المفضلة</string>
+    <string name="song_info_cd_remove_from_favorites_all">إزالة الكل من المفضلة</string>
+    <string name="song_info_share_chooser_title">مشاركة ملف الأغنية عبر</string>
+    <string name="song_info_cd_share_song_file">مشاركة ملف الأغنية</string>
+    <string name="song_info_cd_share_all_as_zip">مشاركة الكل كملف ZIP</string>
+    <string name="song_info_error_share_song">تعذر مشاركة الأغنية: %1$s</string>
+    <string name="song_info_action_add_to_queue">إضافة إلى قائمة الانتظار</string>
+    <string name="song_info_cd_add_to_queue">إضافة إلى قائمة الانتظار</string>
+    <string name="song_info_action_queue_next">التالي</string>
+    <string name="song_info_cd_queue_next">التشغيل تالياً في قائمة الانتظار</string>
+    <string name="song_info_cd_add_to_playlist">إضافة إلى قائمة التشغيل</string>
+    <string name="song_info_action_delete">حذف</string>
+    <string name="song_info_action_delete_all">حذف الكل</string>
+    <string name="song_info_checking_watch">جاري التحقق من الساعة</string>
+    <string name="song_info_transferring_percent">جاري النقل %1$d%%</string>
+    <string name="song_info_transferring_to_watch">جاري النقل إلى الساعة</string>
+    <string name="song_info_transfer_in_progress">عملية النقل جارية</string>
+    <string name="song_info_send_to_watch">إرسال إلى الساعة</string>
+    <string name="song_info_watch_unavailable">الساعة غير متوفرة</string>
+    <string name="song_info_cd_send_to_watch">إرسال الأغنية إلى الساعة</string>
+    <string name="song_info_cd_watch_unavailable">الساعة غير متوفرة</string>
+    <string name="song_info_set_sound_as_short">تعيين كـ</string>
+    <string name="song_info_set_sound_as_long">تعيين كنغمة نظام</string>
+    <string name="song_info_cd_set_sound_as">اختر كيفية استخدام هذه الأغنية كنغمة للنظام</string>
+    <string name="song_info_tone_picker_title">استخدام هذه الأغنية كـ</string>
+    <string name="song_info_tone_picker_body">اختر المكان الذي يجب أن يقوم PixelPlayer بتثبيت هذا الصوت فيه.</string>
+    <string name="song_info_tone_ringtone_title">نغمة رنين الهاتف</string>
+    <string name="song_info_tone_ringtone_subtitle">المكالمات الواردة</string>
+    <string name="song_info_tone_notification_title">صوت الإشعار</string>
+    <string name="song_info_tone_notification_subtitle">الرسائل وتنبيهات التطبيقات</string>
+    <string name="song_info_tone_alarm_title">صوت المنبه</string>
+    <string name="song_info_tone_alarm_subtitle">منبهات الساعة</string>
+    <string name="song_info_tone_confirm_title">تأكيد تغيير الصوت</string>
+    <string name="song_info_tone_confirm_body">هل تريد تعيين \"%1$s\" كـ %2$s الخاصة بك؟</string>
+    <string name="song_info_tone_confirm_action">تعيين الصوت</string>
+    <string name="song_info_tone_success">تم تعيين \"%1$s\" كـ %2$s الخاصة بك</string>
+    <string name="song_info_tone_ringtone_label">نغمة رنين</string>
+    <string name="song_info_tone_notification_label">صوت إشعار</string>
+    <string name="song_info_tone_alarm_label">صوت منبه</string>
+    <string name="song_info_ringtone_permission_prompt">يرجى تفعيل خيار \"تعديل إعدادات النظام\"، ثم العودة إلى PixelPlayer للإكمال تلقائياً.</string>
+    <string name="song_info_ringtone_permission_missing">لم يتم تفعيل صلاحية تعديل إعدادات النظام.</string>
+    <string name="song_info_ringtone_success">تم تعيين \"%1$s\" كنغمة رنين خاصة بك</string>
+    <string name="song_info_ringtone_local_only">يمكن استخدام الأغاني المحلية فقط كنغمات رنين.</string>
+    <string name="song_info_ringtone_missing_file">تعذر إعداد ملف الصوت هذا ليصبح نغمة رنين.</string>
+    <string name="song_info_ringtone_failed">تعذر تعيين نغمة الرنين: %1$s</string>
+    <string name="song_info_tab_options">الخيارات</string>
+    <string name="song_info_tab_options_badge">الخيارات</string>
+    <string name="song_info_tab_info">التفاصيل</string>
+    <string name="song_info_tab_info_badge">التفاصيل</string>
+    <string name="song_info_duration_label">المدة</string>
+    <string name="song_info_genre_label">النوع</string>
+    <string name="song_info_album_label">الألبوم</string>
+    <string name="song_info_artist_label">الفنان</string>
+    <string name="song_info_audio_format_label">معلومات الأغنية</string>
+    <string name="song_info_cd_provider">المزود</string>
+    <string name="song_info_cd_file">الملف</string>
+    <string name="multi_selection_songs_count_upper">%1$d أغنية</string>
+    <string name="multi_selection_songs_selected">تم تحديدها</string>
+    <string name="multi_selection_playlists_count_upper">%1$d قائمة تشغيل</string>
+    <string name="multi_selection_albums_count_upper">%1$d ألبوم</string>
+    <string name="multi_selection_albums_selected">تم تحديدها</string>
+    <string name="multi_selection_albums_selected_limit">الحد الأقصى: %1$d ألبومات لكل تحديد.</string>
+    <string name="multi_selection_albums_queue_hint">عمليات الإضافة لقائمة الانتظار والتشغيل تحترم ترتيب تحديدك.</string>
+    <string name="multi_selection_genres_count_upper">%1$d نوع موسيقي</string>
+    <string name="multi_selection_genres_selected">تم تحديدها</string>
+    <string name="multi_selection_genres_queue_hint">إجراء عمليات دفعة واحدة على جميع الأغاني ضمن هذه الأنواع الموسيقية.</string>
+
+    <!-- Sort Option Display Names -->
+    <string name="sort_display_default_order">الترتيب الافتراضي</string>
+    <string name="sort_display_title_az">العنوان (أ-ي)</string>
+    <string name="sort_display_title_za">العنوان (ي-أ)</string>
+    <string name="sort_display_artist">الفنان</string>
+    <string name="sort_display_artist_za">الفنان (ي-أ)</string>
+    <string name="sort_display_album">الألبوم</string>
+    <string name="sort_display_album_za">الألبوم (ي-أ)</string>
+    <string name="sort_display_date_added">تاريخ الإضافة</string>
+    <string name="sort_display_date_added_oldest">تاريخ الإضافة (الأقدم أولاً)</string>
+    <string name="sort_display_duration">المدة</string>
+    <string name="sort_display_duration_shortest">المدة (الأقصر أولاً)</string>
+    <string name="sort_display_release_year">سنة الإصدار</string>
+    <string name="sort_display_release_year_oldest">سنة الإصدار (الأقدم أولاً)</string>
+    <string name="sort_display_fewest_songs">الأقل أغانٍ</string>
+    <string name="sort_display_most_songs">الأكثر أغانٍ</string>
+    <string name="sort_display_name_az">الاسم (أ-ي)</string>
+    <string name="sort_display_name_za">الاسم (ي-أ)</string>
+    <string name="sort_display_num_songs_most">عدد الأغاني (الأكثر)</string>
+    <string name="sort_display_num_songs_fewest">عدد الأغاني (الأقل)</string>
+    <string name="sort_display_date_created">تاريخ الإنشاء</string>
+    <string name="sort_display_date_created_oldest">تاريخ الإنشاء (الأقدم أولاً)</string>
+    <string name="sort_display_date_liked">تاريخ الإعجاب</string>
+    <string name="sort_display_date_liked_oldest">تاريخ الإعجاب (الأقدم أولاً)</string>
+    <string name="sort_display_fewest_subfolders">الأقل مجلدات فرعية</string>
+    <string name="sort_display_most_subfolders">الأكثر مجلدات فرعية</string>
+
+    <!-- Sort Option Method Labels -->
+    <string name="sort_method_title">العنوان</string>
+    <string name="sort_method_artist">الفنان</string>
+    <string name="sort_method_album">الألبوم</string>
+    <string name="sort_method_date_added">تاريخ الإضافة</string>
+    <string name="sort_method_duration">المدة</string>
+    <string name="sort_method_release_year">سنة الإصدار</string>
+    <string name="sort_method_song_count">عدد الأغاني</string>
+    <string name="sort_method_name">الاسم</string>
+    <string name="sort_method_num_songs">عدد الأغاني</string>
+    <string name="sort_method_date_created">تاريخ الإنشاء</string>
+    <string name="sort_method_date_liked">تاريخ الإعجاب</string>
+    <string name="sort_method_subfolder_count">عدد المجلدات الفرعية</string>
+
+    <!-- LibrarySortBottomSheet-->
+    <string name="library_sort_source">المصدر</string>
+    <string name="library_sort_order">الترتيب</string>
+    <string name="library_sort_descending">تنازلي</string>
+    <string name="library_sort_ascending">تصاعدي</string>
+    <string name="library_sort_original_order">الترتيب الأصلي</string>
+    <string name="library_sort_tap_ascending">انقر للتبديل إلى التصاعدي</string>
+    <string name="library_sort_tap_descending">انقر للتبديل إلى التنازلي</string>
+    <string name="library_sort_keeps_order">هذا الفرز يحافظ على ترتيبه الأصلي</string>
+    <string name="library_sort_cd_switch_on">المفتاح مفعّل</string>
+
+    <!-- ReorderTabsSheet-->
+    <string name="reorder_tabs_sheet_title">إعادة ترتيب تبويبات المكتبة</string>
+    <string name="reorder_tabs_reset_dialog_title">إعادة تعيين الترتيب</string>
+    <string name="reorder_tabs_reset_dialog_body">هل تريد إعادة تعيين ترتيب التبويبات إلى الوضع الافتراضي؟</string>
+    <string name="reorder_tabs_reordering">جاري إعادة ترتيب التبويبات…</string>
+    <string name="reorder_tabs_cd_drag_handle">مقبض السحب</string>
+
+    <!-- PlayerArtistPickerBottomSheet -->
+    <string name="artist_picker_title">اختر فناناً</string>
+    <string name="artist_picker_count_single">فنان واحد</string>
+    <string name="artist_picker_count_multiple">%1$d فنانين</string>
+    <string name="artist_picker_primary_label">الفنان الرئيسي</string>
+    <string name="artist_picker_shortcut_label">صفحة الفنان</string>
+
+    <!-- Watch Transfer Dialog + Foreground Service -->
+    <string name="watch_transfer_action_cancel">إلغاء النقل</string>
+    <string name="watch_transfer_bytes_progress">%1$s / %2$s</string>
+    <string name="watch_transfer_channel_description">يعرض التقدم المباشر لعمليات نقل الموسيقى من الهاتف إلى الساعة</string>
+    <string name="watch_transfer_channel_name">نقل البيانات إلى الساعة</string>
+    <string name="watch_transfer_dialog_title">جاري الإرسال إلى الساعة</string>
+    <string name="watch_transfer_status_cancelled">تم الإلغاء</string>
+    <string name="watch_transfer_status_cancelled_service">تم إلغاء النقل</string>
+    <string name="watch_transfer_status_complete_service">اكتمل النقل</string>
+    <string name="watch_transfer_status_completed">مكتمل</string>
+    <string name="watch_transfer_status_failed">فشل النقل</string>
+    <string name="watch_transfer_status_failed_service">فشل عملية النقل</string>
+    <string name="watch_transfer_status_multiple_active">توجد عدة عمليات نقل نشطة</string>
+    <string name="watch_transfer_bullet_step">%1$s • %2$s</string>
+    <string name="watch_transfer_status_preparing">جاري التحضير</string>
+    <string name="watch_transfer_status_preparing_service">جاري تحضير النقل إلى الساعة</string>
+    <string name="watch_transfer_status_preparing_transfer">جاري تحضير النقل…</string>
+    <string name="watch_transfer_status_sending_n_to_watch">جاري إرسال %1$d أغنية إلى الساعة</string>
+    <string name="watch_transfer_status_sending_to_watch">جاري الإرسال إلى الساعة</string>
+    <string name="watch_transfer_status_starting">جاري بدء النقل…</string>
+    <string name="watch_transfer_status_starting_short">جاري البدء</string>
+    <string name="watch_transfer_status_transferring">جاري النقل</string>
+    <string name="watch_transfer_summary_n">عدد عمليات النقل: %1$d</string>
+
+    <!-- EditSongSheet -->
+    <string name="edit_song_toolbar_title">تعديل الأغنية</string>
+    <string name="edit_song_cd_show_metadata_info">إظهار المعلومات</string>
+    <string name="edit_song_dialog_title">تعديل البيانات الوصفية للأغنية</string>
+    <string name="edit_song_dialog_body">قد يؤثر تعديل البيانات الوصفية للأغنية على كيفية عرضها وتنظيمها في مكتبتك. هذه التغييرات دائمة وقد لا يمكن التراجع عنها.</string>
+    <string name="edit_song_dialog_got_it">فهمت ذلك</string>
+    <string name="edit_song_cd_info_icon">معلومات</string>
+    <string name="edit_song_cover_art_heading">غلاف الألبوم</string>
+    <string name="edit_song_cover_art_hint">اختر صورة مربعة وقم بضبطها بدقة ليظهر غلاف الألبوم بشكل رائع في جميع أنحاء التطبيق.</string>
+    <string name="edit_song_action_change_cover">تغيير غلاف الألبوم</string>
+    <string name="edit_song_action_delete_cover">حذف غلاف الألبوم</string>
+    <string name="edit_song_field_title">العنوان</string>
+    <string name="edit_song_field_artist">الفنان</string>
+    <string name="edit_song_field_album">الألبوم</string>
+    <string name="edit_song_field_album_artist">فنان الألبوم</string>
+    <string name="edit_song_field_genre">النوع</string>
+    <string name="edit_song_field_composer">الملحن</string>
+    <string name="edit_song_field_track_number">رقم المسار</string>
+    <string name="edit_song_field_disc_number">رقم القرص</string>
+    <string name="edit_song_field_replaygain_track">تعديل الصوت للمسار ReplayGain (ديسيبل)</string>
+    <string name="edit_song_field_replaygain_album">تعديل الصوت للألبوم ReplayGain (ديسيبل)</string>
+    <string name="edit_song_replaygain_track_placeholder">-6.50</string>
+    <string name="edit_song_replaygain_album_placeholder">-8.20</string>
+    <string name="edit_song_cd_cover_preview">معاينة غلاف الألبوم الجديد</string>
+    <string name="edit_song_cd_current_cover">غلاف الألبوم الحالي للأغنية</string>
+    <string name="edit_song_crop_dialog_title">ضبط غلاف الألبوم</string>
+    <string name="edit_song_crop_dialog_hint">استخدم إيماءات القرص والسحب للوصول إلى الإطار المثالي.</string>
+    <string name="edit_song_action_apply_cover">تطبيق غلاف الألبوم</string>
+    <string name="edit_song_unable_to_load_image">تعذر تحميل الصورة المحددة</string>
+    <string name="edit_song_cd_search_lyrics_lrclib">البحث عن كلمات الأغاني على lrclib.net</string>
+
+    <!-- EditMultipleSongsSheet -->
+    <string name="batch_edit_toolbar_title">تعديل %d أغنية</string>
+    <string name="batch_edit_info_message">سيتم تحديث الحقول المعدلة فقط. اترك الحقول فارغة للاحتفاظ بالقيم الحالية.</string>
+    <string name="batch_edit_mixed_values">(قيم مختلطة)</string>
+    <string name="batch_edit_optional">(اختياري - اترك الحقل فارغاً للتخطي)</string>
+    <string name="batch_edit_success">تم تحديث %d أغنية بنجاح</string>
+    <string name="batch_edit_partial_success">تم تحديث %1$d من أصل %2$d أغنية. تعذر تعديل بعض الملفات.</string>
+    <string name="batch_edit_failed">فشل تحديث الأغاني</string>
+    <string name="batch_edit_cover_art_heading">غلاف الألبوم للمجموعة</string>
+    <string name="batch_edit_cover_art_hint">سيؤدي هذا إلى استبدال غلاف الألبوم لجميع الأغاني المحددة البالغ عددها %d</string>
+    <string name="batch_edit_set_cover_art">تعيين غلاف الألبوم للكل</string>
+    <string name="batch_edit_remove_all_art">إزالة جميع أغلفة الألبومات</string>
+    <string name="batch_edit_multiple_covers">(أغلفة متعددة ومختلفة)</string>
+
+    <!-- Playlist dismissed message -->
+    <string name="playlist_dismissed_message">تم تجاهل قائمة التشغيل</string>
+
+    <!-- PlaylistCreationDialogs -->
+    <string name="playlist_creation_create_playlist_title">إنشاء قائمة تشغيل</string>
+    <string name="playlist_creation_create_playlist_subtitle">اختر طريقة الإنشاء.</string>
+    <string name="playlist_creation_mode_manual_title">يدوي</string>
+    <string name="playlist_creation_mode_manual_subtitle">صمم الغلاف والأيقونة والشكل واشمل الأغاني بنفسك.</string>
+    <string name="playlist_creation_mode_ai_title">بواسطة الذكاء الاصطناعي</string>
+    <string name="playlist_creation_mode_ai_subtitle_enabled">توليد قائمة تشغيل منسقة مع خيارات تحكم متقدمة.</string>
+    <string name="playlist_creation_mode_ai_subtitle_disabled">يتطلب تهيئة مفتاح واجهة برمجة التطبيقات (Gemini API key) في الإعدادات.</string>
+    <string name="playlist_creation_setup_api_key">إعداد مفتاح API</string>
+
+    <!-- AI playlist lab -->
+    <string name="playlist_creation_ai_lab_title">مختبر قوائم التشغيل بالذكاء الاصطناعي</string>
+    <string name="playlist_creation_ai_reset">إعادة تعيين</string>
+    <string name="playlist_creation_ai_generating">جاري التوليد…</string>
+    <string name="playlist_creation_ai_generate">توليد</string>
+    <string name="playlist_creation_ai_section_intent">الهدف</string>
+    <string name="playlist_creation_ai_name_optional">اسم قائمة التشغيل (اختياري)</string>
+    <string name="playlist_creation_ai_feel_label">ما هو الطابع الذي تريده لقائمة التشغيل هذه؟</string>
+    <string name="playlist_creation_ai_feel_placeholder">مثال: قيادة وقت الغروب مع أنغام هادئة</string>
+    <string name="playlist_creation_ai_section_direction">الاتجاه</string>
+    <string name="playlist_creation_ai_mood_label">الحالة المزاجية</string>
+    <string name="playlist_creation_ai_activity_label">النشاط</string>
+    <string name="playlist_creation_ai_era_label">الحقبة الزمنية</string>
+    <string name="playlist_creation_ai_section_curation">محرك التنسيق</string>
+    <string name="playlist_creation_ai_energy_label">الحيوية</string>
+    <string name="playlist_creation_ai_energy_desc">التحكم في إيقاع وسرعة الأغاني. 1 = هادئ/بطيء، 5 = حيوية عالية/سريع.</string>
+    <string name="playlist_creation_ai_discovery_label">الاستكشاف</string>
+    <string name="playlist_creation_ai_discovery_desc">التحكم في مدى معرفتك بالاختيارات. 1 = الأغاني المفضلة الأكثر تشغيلاً، 5 = أغاني نادرة وغير مشغلة بكثرة.</string>
+    <string name="playlist_creation_ai_min_songs">أقل عدد أغانٍ</string>
+    <string name="playlist_creation_ai_max_songs">أقصى عدد أغانٍ</string>
+    <string name="playlist_creation_ai_section_filters">الفلاتر</string>
+    <string name="playlist_creation_ai_prioritize_genres">منح الأولوية لأنواع موسيقية (اختياري)</string>
+    <string name="playlist_creation_ai_prioritize_genres_placeholder">مثال: synthwave, indie pop</string>
+    <string name="playlist_creation_ai_avoid_genres">تجنب أنواع موسيقية (اختياري)</string>
+    <string name="playlist_creation_ai_avoid_genres_placeholder">مثال: metal, hard trap</string>
+    <string name="playlist_creation_ai_preferred_language">اللغة المفضلة (اختياري)</string>
+    <string name="playlist_creation_ai_preferred_language_placeholder">مثال: الإنجليزية، العربية، معزوفة موسيقية</string>
+    <string name="playlist_creation_ai_prioritize_favorites">منح الأولوية للمفضلة</string>
+    <string name="playlist_creation_ai_avoid_explicit">تجنب الكلمات غير اللائقة</string>
+    <string name="playlist_creation_ai_section_prompt_preview">معاينة الأمر (Prompt)</string>
+    <string name="playlist_creation_ai_prompt_preview_empty">سيظهر أمرك النهائي هنا بمجرد إضافة تفضيلاتك.</string>
+    <string name="playlist_creation_ai_hero_title">تنسيق بدقة عالية</string>
+    <string name="playlist_creation_ai_hero_subtitle">حدد الحالة المزاجية، النشاط، القيود، والعمق.</string>
+    <string name="playlist_creation_ai_hero_library_note">سيستخدم الذكاء الاصطناعي الأغاني من مكتبتك المحلية فقط.</string>
+    <string name="playlist_creation_ai_error_add_instruction">أضف توجيهاً واحداً على الأقل للذكاء الاصطناعي.</string>
+    <string name="playlist_creation_ai_error_song_range">يرجى تحديد نطاق أغانٍ صالح.</string>
+    <string name="playlist_creation_ai_level_out_of_five">5/%1$d</string>
+    <string name="playlist_creation_ai_custom_chip">مخصص…</string>
+    <string name="playlist_creation_ai_enter_custom_title">أدخل قيمة مخصصة</string>
+    <string name="playlist_creation_ai_enter_custom_label">أدخل قيمتك المخصصة</string>
+
+    <!-- AI prompt -->
+    <string name="playlist_creation_ai_era_any">أي حقبة</string>
+    <string name="playlist_creation_ai_prompt_core_request">الطلب الأساسي: %1$s.</string>
+    <string name="playlist_creation_ai_prompt_mood">المزاج المستهدف: %1$s.</string>
+    <string name="playlist_creation_ai_prompt_activity">سياق النشاط: %1$s.</string>
+    <string name="playlist_creation_ai_prompt_era">التركيز على الحقبة: %1$s.</string>
+    <string name="playlist_creation_ai_prompt_prioritize_genres">الأولوية للأنواع: %1$s.</string>
+    <string name="playlist_creation_ai_prompt_avoid_genres">تجنب الأنواع: %1$s.</string>
+    <string name="playlist_creation_ai_prompt_preferred_language">اللغة المفضلة: %1$s.</string>
+    <string name="playlist_creation_ai_prompt_energy">مستوى الحيوية المستهدف: 5/%1$d.</string>
+    <string name="playlist_creation_ai_prompt_discovery">مستوى الاستكشاف المستهدف: 5/%1$d حيث 1 مألوف و 5 أغاني نادرة.</string>
+    <string name="playlist_creation_ai_prompt_prioritize_favorites">منح الأولوية للأغاني الأقرب لمفضلات المستمع عندما يكون ذلك ممكناً.</string>
+    <string name="playlist_creation_ai_prompt_avoid_explicit">تجنب الكلمات غير اللائقة كلما توفرت بدائل.</string>
+    <string name="playlist_creation_ai_prompt_smooth_transitions">الحفاظ على سلاسة الانتقالات وتجنب تكرار نفس الفنان بشكل متتابع.</string>
+    <string-array name="playlist_creation_ai_mood_options">
+        <item>هادئ</item>
+        <item>حيوي</item>
+        <item>سعيد</item>
+        <item>غامض</item>
+        <item>رومانسي</item>
+        <item>كئيب</item>
+    </string-array>
+    <string-array name="playlist_creation_ai_activity_options">
+        <item>تمارين رياضية</item>
+        <item>تركيز</item>
+        <item>رحلة على الطريق</item>
+        <item>حفلة</item>
+        <item>دراسة</item>
+        <item>وقت متأخر من الليل</item>
+    </string-array>
+    <string-array name="playlist_creation_ai_era_options">
+        <item>@string/playlist_creation_ai_era_any</item>
+        <item>السبعينات</item>
+        <item>الثمانينات</item>
+        <item>التسعينات</item>
+        <item>الألفينات</item>
+        <item>2010s</item>
+        <item>2020s</item>
+    </string-array>
+
+    <!-- PlaylistContainer -->
+    <string name="playlist_container_no_playlist_created">لم يتم إنشاء أي قائمة تشغيل.</string>
+    <string name="playlist_container_new_playlist_hint">المس زر \"قائمة تشغيل جديدة\" للبدء.</string>
+    <string name="playlist_container_create_playlist_title">قائمة تشغيل جديدة</string>
+    <string name="playlist_container_create_playlist_name_label">اسم قائمة التشغيل</string>
+    <string name="playlist_container_create_playlist_name_placeholder">قائمة التشغيل الخاصة بي</string>
+
+    <!-- PlaylistBottomSheet -->
+    <string name="playlist_sheet_add_songs_title">إضافة %1$d أغنية إلى…</string>
+    <string name="playlist_sheet_select_playlists">اختر قوائم التشغيل</string>
+    <string name="playlist_sheet_search_playlists_hint">البحث عن قوائم التشغيل…</string>
+    <string name="playlist_sheet_song_added_to_playlists">تمت إضافة الأغاني إلى قوائم التشغيل</string>
+    <string name="playlist_sheet_created_and_songs_added">تم إنشاء قائمة التشغيل وإضافة الأغاني إليها</string>
+    <string name="playlist_sheet_internal_storage">وحدة التخزين الداخلية</string>
+
+    <!-- SongPickerBottomSheet -->
+    <string name="song_picker_title">إضافة أغانٍ</string>
+    <string name="song_picker_cd_confirm_add_songs">إضافة الأغاني المحددة</string>
+    <string name="song_picker_action_add">إضافة</string>
+    <string name="song_picker_search_label">بحث أو تصفية الأغاني…</string>
+    <string name="song_picker_filter_favorites">المفضلة</string>
+    <string name="song_picker_error_load_failed">فشل تحميل الأغاني</string>
+    <string name="song_picker_load_more">تحميل المزيد</string>
+
+    <!-- Merge Playlists Dialog -->
+    <string name="merge_playlists_dialog_title">دمج قوائم التشغيل</string>
+    <string name="merge_playlists_dialog_prompt">أدخل اسماً لقائمة التشغيل المدمجة:</string>
+    <string name="merge_playlists_dialog_placeholder">قائمة تشغيل مدمجة</string>
+    <string name="merge_playlists_dialog_body">سيؤدي هذا إلى دمج %1$d من قوائم التشغيل المحددة في قائمة واحدة.</string>
+
+    <!-- PlayerViewModel -->
+    <string name="player_view_model_no_valid_songs">لم يتم العثور على أغانٍ صالحة لتشغيلها</string>
+    <string name="player_view_model_song_not_found_in_list">الأغنية غير موجودة في القائمة الحالية</string>
+    <string name="player_view_model_could_not_locate_song">تعذر تحديد موقع الأغنية</string>
+    <string name="player_view_model_no_songs_in_library_toast">لا توجد أغانٍ في المكتبة</string>
+    <string name="player_view_model_playback_stopped_eot">توقف التشغيل: انتهى %1$s (نهاية المسار).</string>
+    <string name="player_view_model_default_track_title">مسار</string>
+    <string name="player_view_model_no_songs_to_shuffle">لا توجد أغانٍ لخلطها.</string>
+    <string name="player_view_model_queue_name_selected_albums">الألبومات المحددة</string>
+    <string name="player_view_model_no_playable_songs_in_albums">لم يتم العثور على أغانٍ قابلة للتشغيل في الألبومات المحددة</string>
+    <string name="player_view_model_no_playable_songs_in_genres">لم يتم العثور على أغانٍ قابلة للتشغيل في الأنواع الموسيقية المحددة</string>
+    <string name="player_view_model_only_first_n_albums_queued">تمت إضافة أول %1$d ألبومات فقط إلى قائمة الانتظار</string>
+    <string name="player_view_model_albums_queued_format">تمت إضافة %1$d ألبومات إلى قائمة الانتظار (%2$d أغنية)</string>
+    <string name="player_view_model_could_not_queue_albums">تعذر إضافة الألبومات المحددة إلى قائمة الانتظار</string>
+    <string name="player_view_model_all_songs_already_in_favorites">جميع الأغاني موجودة بالفعل في المفضلة</string>
+    <string name="player_view_model_no_songs_were_in_favorites">لم تكن أي من الأغاني في المفضلة</string>
+    <string name="player_view_model_creating_zip">جاري إنشاء ملف ZIP…</string>
+    <string name="player_view_model_share_zip_failed_format">فشلت المشاركة: %1$s</string>
+    <plurals name="player_view_model_n_songs_added_to_queue">
+        <item quantity="zero">لم تضف أي أغنية لقائمة الانتظار</item>
+        <item quantity="one">تمت إضافة أغنية واحدة إلى قائمة الانتظار</item>
+        <item quantity="two">تمت إضافة أغنيتين إلى قائمة الانتظار</item>
+        <item quantity="few">تمت إضافة %d أغانٍ إلى قائمة الانتظار</item>
+        <item quantity="many">تمت إضافة %d أغنية إلى قائمة الانتظار</item>
+        <item quantity="other">تمت إضافة %d أغنية إلى قائمة الانتظار</item>
+    </plurals>
+    <plurals name="player_view_model_n_songs_will_play_next">
+        <item quantity="zero">لن يتم تشغيل أي أغنية تالياً</item>
+        <item quantity="one">ستعمل أغنية واحدة تالياً</item>
+        <item quantity="two">ستعمل أغنيتان تالياً</item>
+        <item quantity="few">ستعمل %d أغانٍ تالياً</item>
+        <item quantity="many">ستعمل %d أغنية تالياً</item>
+        <item quantity="other">ستعمل %d أغنية تالياً</item>
+    </plurals>
+    <plurals name="player_view_model_n_songs_added_to_favorites">
+        <item quantity="zero">لم تضف أي أغنية للمفضلة</item>
+        <item quantity="one">تمت إضافة أغنية واحدة إلى المفضلة</item>
+        <item quantity="two">تمت إضافة أغنيتين إلى المفضلة</item>
+        <item quantity="few">تمت إضافة %d أغانٍ إلى المفضلة</item>
+        <item quantity="many">تمت إضافة %d أغنية إلى المفضلة</item>
+        <item quantity="other">تمت إضافة %d أغنية إلى المفضلة</item>
+    </plurals>
+    <plurals name="player_view_model_n_songs_removed_from_favorites">
+        <item quantity="zero">لم تزل أي أغنية من المفضلة</item>
+        <item quantity="one">تمت إزالة أغنية واحدة من المفضلة</item>
+        <item quantity="two">تمت إزالة أغنيتين من المفضلة</item>
+        <item quantity="few">تمت إزالة %d أغانٍ من المفضلة</item>
+        <item quantity="many">تمت إزالة %d أغنية من المفضلة</item>
+        <item quantity="other">تمت إزالة %d أغنية من المفضلة</item>
+    </plurals>
+
+    <!-- PlaylistViewModel -->
+    <string name="playlist_view_model_none_to_share">لا توجد قوائم تشغيل لمشاركتها</string>
+    <string name="playlist_view_model_share_chooser_title">مشاركة قوائم التشغيل</string>
+    <string name="playlist_view_model_share_failed">فشلت المشاركة: %1$s</string>
+    <string name="playlist_view_model_none_to_export">لا توجد قوائم تشغيل لتصديرها</string>
+    <string name="playlist_view_model_export_failed">فشل التصدير: %1$s</string>
+    <string name="playlist_view_model_export_folder_display">الموسيقى/PixelPlayer Exports</string>
+    <string name="playlist_view_model_ai_gemini_key_required">يرجى تهيئة مفتاح Gemini API في الإعدادات.</string>
+    <string name="playlist_view_model_restored_toast">تمت استعادة قائمة التشغيل</string>
+    <plurals name="playlist_view_model_sharing_message">
+        <item quantity="zero">لا توجد قوائم تشغيل للمشاركة</item>
+        <item quantity="one">جاري مشاركة قائمة تشغيل واحدة</item>
+        <item quantity="two">جاري مشاركة قائمتي تشغيل</item>
+        <item quantity="few">جاري مشاركة %d قوائم تشغيل</item>
+        <item quantity="many">جاري مشاركة %d قائمة تشغيل</item>
+        <item quantity="other">جاري مشاركة %d قائمة تشغيل</item>
+    </plurals>
+    <plurals name="playlist_view_model_exported_message">
+        <item quantity="zero">لم يتم تصدير أي قائمة تشغيل</item>
+        <item quantity="one">تم تصدير قائمة تشغيل واحدة إلى %2$s</item>
+        <item quantity="two">تم تصدير قائمتي تشغيل إلى %2$s</item>
+        <item quantity="few">تم تصدير %1$d قوائم تشغيل إلى %2$s</item>
+        <item quantity="many">تم تصدير %1$d قائمة تشغيل إلى %2$s</item>
+        <item quantity="other">تم تصدير %1$d قائمة تشغيل إلى %2$s</item>
+    </plurals>
+
+    <!-- AlbumDetailViewModel -->
+    <string name="album_detail_invalid_id">معرف ألبوم غير صالح</string>
+    <string name="album_detail_id_not_found">لم يتم العثور على معرف الألبوم</string>
+    <string name="album_detail_error_loading_album">خطأ أثناء تحميل بيانات الألبوم: %s</string>
+    <string name="album_detail_not_found">لم يتم العثور على الألبوم</string>
+
+    <!-- ArtistDetailViewModel -->
+    <string name="artist_detail_invalid_id">معرف فنان غير صالح</string>
+    <string name="artist_detail_id_not_found">لم يتم العثور على معرف الفنان</string>
+    <string name="artist_error_loading_artist">خطأ أثناء تحميل بيانات الفنان: %s</string>
+    <string name="artist_detail_not_found">تعذر العثور على الفنان</string>
+
+    <!-- SongRemovalStateHolder -->
+    <string name="song_removal_cannot_delete_currently_playing">لا يمكن حذف الأغنية التي يتم تشغيلها حالياً</string>
+    <string name="song_removal_batch_delete_files_deleted_skipped_format">تم حذف %1$d ملفات (تم تخطي %2$d ملفات - قيد التشغيل)</string>
+    <string name="song_removal_batch_delete_partial_format">تم حذف %1$d من أصل %2$d ملفات</string>
+    <string name="song_removal_delete_files_failed">فشل حذف الملفات</string>
+    <string name="song_removal_file_deleted">تم حذف الملف</string>
+    <string name="song_removal_delete_file_not_found">تعذر حذف الملف أو أنه غير موجود</string>
+    <string name="song_removal_deletion_cancelled">تم إلغاء الحذف</string>
+    <string name="song_removal_dialog_delete_song_title">هل تريد حذف الأغنية؟</string>
+    <string name="song_removal_dialog_delete_song_message">\"%1$s\" بواسطة %2$s\n\nسيتم حذف هذه الأغنية نهائياً من جهازك ولا يمكن استعادتها.</string>
+    <string name="song_removal_delete_songs_permanent_message">سيتم حذف هذه الأغاني نهائياً من جهازك ولا يمكن استعادتها.</string>
+    <plurals name="song_removal_n_files_deleted">
+        <item quantity="zero">لم يتم حذف أي ملف</item>
+        <item quantity="one">تم حذف ملف واحد</item>
+        <item quantity="two">تم حذف ملفين</item>
+        <item quantity="few">تم حذف %d ملفات</item>
+        <item quantity="many">تم حذف %d ملفاً</item>
+        <item quantity="other">تم حذف %d ملفاً</item>
+    </plurals>
+    <plurals name="song_removal_delete_songs_confirmation_title">
+        <item quantity="zero">هل تريد حذف الأغاني؟</item>
+        <item quantity="one">هل تريد حذف أغنية واحدة؟</item>
+        <item quantity="two">هل تريد حذف أغنيتين؟</item>
+        <item quantity="few">هل تريد حذف %d أغانٍ؟</item>
+        <item quantity="many">هل تريد حذف %d أغنية؟</item>
+        <item quantity="other">هل تريد حذف %d أغنية؟</item>
+    </plurals>
+
+    <!-- MetadataEditStateHolder -->
+    <string name="metadata_edit_updated_successfully">تم تحديث البيانات الوصفية بنجاح</string>
+    <string name="metadata_edit_updating_n_songs">جاري تحديث %1$d أغنية…</string>
+    <string name="metadata_edit_batch_genre_updated_all">تم تحديث %1$d أغنية بنجاح!</string>
+    <string name="metadata_edit_batch_genre_updated_partial">تم تحديث %1$d أغنية. الفاشلة: %2$d</string>
+    <string name="metadata_edit_lyrics_saved_successfully">تم حفظ كلمات الأغنية بنجاح</string>
+    <string name="metadata_edit_lyrics_save_failed">فشل حفظ كلمات الأغنية</string>
+    <string name="metadata_edit_lyrics_none_to_save">لا توجد كلمات متاحة لحفظها</string>
+    <string name="metadata_edit_permission_denied_edit_files">تم رفض الإذن – لا يمكن تعديل الملفات</string>
+    <string name="metadata_edit_permission_denied_save_lyrics">تم رفض الإذن – لا يمكن حفظ كلمات الأغاني</string>
+    <string name="metadata_edit_permission_denied_edit_this_file">تم رفض الإذن – لا يمكن تعديل هذا الملف</string>
+
+    <!-- AiStateHolder -->
+    <string name="ai_state_error_api_key">يرجى تهيئة مفتاح API صالح لمزود الذكاء الاصطناعي المحدد في الإعدادات.</string>
+    <string name="ai_state_error_generic">خطأ في الذكاء الاصطناعي: %s</string>
+    <string name="ai_state_error_quota">رفض مزود الذكاء الاصطناعي الطلب لعدم وجود رصيد كافٍ أو حصة استخدام متوفرة بالحساب.</string>
+    <string name="ai_state_error_model_unavailable">نموذج الذكاء الاصطناعي المحدد لم يعد متوفراً. حاول PixelPlayer التبديل تلقائياً إلى نموذج مدعوم.</string>
+    <string name="ai_state_no_songs_found">لم يتمكن الذكاء الاصطناعي من العثور على أي أغانٍ تناسب طلبك.</string>
+    <string name="ai_state_prompt_empty">اكتب فكرة لـ \"الميكس اليومي\" الخاص بك</string>
+    <string name="ai_state_daily_mix_updated">تم تحديث الميكس اليومي بواسطة الذكاء الاصطناعي</string>
+    <string name="ai_state_could_not_update">تعذر التحديث: %s</string>
+    <string name="ai_state_no_songs_for_mix">لم يتمكن الذكاء الاصطناعي من العثور على أغانٍ لهذا الميكس</string>
+</resources>

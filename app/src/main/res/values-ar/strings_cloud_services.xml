@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="telegram_login_title">تسجيل الدخول إلى تيليجرام</string>
+    <string name="telegram_edit_number_chip">أنت تقوم بتعديل رقمك الآن. إرسال الرمز مجدداً سيؤدي إلى استبدال الرمز السابق.</string>
+    <string name="telegram_working">جاري العمل…</string>
+    <string name="telegram_status_initializing">جاري تهيئة تيليجرام…</string>
+    <string name="telegram_status_logging_out">جاري تسجيل الخروج…</string>
+    <string name="telegram_status_closing">جاري إغلاق الجلسة…</string>
+    <string name="telegram_status_closed">تم إغلاق الجلسة. يرجى إعادة فتح تسجيل الدخول للمتابعة.</string>
+    <string name="telegram_status_preparing">جاري إعداد جلسة تيليجرام الآمنة…</string>
+    <string name="telegram_status_waiting">في انتظار رد تيليجرام…</string>
+    <string name="telegram_connect">ربط تيليجرام</string>
+    <string name="telegram_connect_subtitle">قم بربط حساب تيليجرام لبث الموسيقى من قنواتك ومحادثاتك.</string>
+    <string name="telegram_phone_number_title">رقم الهاتف</string>
+    <string name="telegram_phone_number_subtitle">أدخل رقم تيليجرام الخاص بك. يمكنك العودة وتعديله لاحقاً.</string>
+    <string name="telegram_phone_number_hint">رقم الهاتف</string>
+    <string name="telegram_phone_country_placeholder">1</string>
+    <string name="telegram_phone_local_placeholder">5551234567</string>
+    <string name="telegram_send_code">إرسال الرمز</string>
+    <string name="telegram_verification_code_title">رمز التحقق</string>
+    <string name="telegram_verification_code_subtitle">أدخل رمز التحقق المرسل إلى تطبيق تيليجرام الخاص بك.</string>
+    <string name="telegram_verification_code_hint">رمز التحقق</string>
+    <string name="telegram_password_title">كلمة المرور (التحقق بخطوتين)</string>
+    <string name="telegram_password_subtitle">حسابك محمي بكلمة مرور إضافية للتحقق بخطوتين. يرجى إدخالها أدناه.</string>
+    <string name="telegram_password_hint">كلمة المرور</string>
+    <string name="telegram_login_button">تسجيل الدخول</string>
+    <string name="telegram_success">تم ربط حساب تيليجرام بنجاح!</string>
+    <string name="telegram_channels_title">القنوات المتزامنة</string>
+    <string name="telegram_channels_subtitle">إدارة القنوات العامة التي يتم جلب ملفات الصوت منها تلقائياً.</string>
+
+    <string name="cloud_disconnect_title">قطع اتصال %1$s؟</string>
+    <string name="cloud_disconnect_body">سيؤدي هذا إلى إزالة الحساب ومسح جميع الأغاني المستوردة من هذا المصدر من مكتبتك المزامنة.</string>
+    <string name="cloud_disconnect_action">قطع الاتصال</string>
+    <string name="cloud_status_connected_as">متصل كـ %1$s</string>
+    <string name="cloud_status_connected">متصل</string>
+    <string name="cloud_status_unknown_account">حساب مجهول</string>
+
+    <string name="drive_connect_title">ربط Google Drive</string>
+    <string name="drive_connect_subtitle">قم بربط حساب جوجل لبث وتشغيل ملفات الموسيقى المخزنة في سحابتك.</string>
+    <string name="drive_status_preparing">جاري إعداد اتصال Google Drive…</string>
+    <string name="drive_status_waiting">في انتظار مصادقة جوجل…</string>
+    <string name="drive_status_syncing">جاري مزامنة ملفات Google Drive…</string>
+    <string name="drive_error_auth">فشلت مصادقة Google Drive: %1$s</string>
+    <string name="drive_error_scan">فشل فحص مجلدات Google Drive.</string>
+
+    <string name="jellyfin_connect_title">ربط خادم Jellyfin</string>
+    <string name="jellyfin_connect_subtitle">قم بالاتصال بخادم Jellyfin الشخصي الخاص بك لبث مكتبتك الموسيقية بالكامل.</string>
+    <string name="jellyfin_server_url_title">رابط الخادم (Server URL)</string>
+    <string name="jellyfin_server_url_hint">https://jellyfin.example.com:8096</string>
+    <string name="jellyfin_username_title">اسم المستخدم</string>
+    <string name="jellyfin_username_hint">اسم المستخدم</string>
+    <string name="jellyfin_password_title">كلمة المرور</string>
+    <string name="jellyfin_password_hint">كلمة المرور</string>
+    <string name="jellyfin_connect_button">الاتصال بالخادم</string>
+    <string name="jellyfin_status_connecting">جاري الاتصال بخادم Jellyfin…</string>
+    <string name="jellyfin_error_connect">فشل الاتصال بخادم Jellyfin. يرجى التحقق من الرابط والشبكة.</string>
+    <string name="jellyfin_error_auth">اسم المستخدم أو كلمة المرور غير صحيحة لخادم Jellyfin.</string>
+
+    <string name="auth_webview_action_done">تم</string>
+    <string name="auth_webview_loading">جاري تحميل صفحة تسجيل الدخول الآمنة…</string>
+    <string name="auth_webview_failed_error">فشل تحميل واجهة الـ WebView.</string>
+
+    <string name="auth_netease_cookie_error">فشل قراءة ملفات تعريف الارتباط (Cookies) لـ NetEase: %1$s</string>
+    <string name="auth_netease_exit_title">الخروج من تسجيل دخول NetEase؟</string>
+    <string name="auth_netease_http_error">خطأ HTTP %1$d أثناء تحميل NetEase.</string>
+    <string name="auth_netease_incomplete_error">لم يتم رصد تسجيل الدخول بعد. أكمل تسجيل الدخول في NetEase قبل الضغط على \"تم\".</string>
+    <string name="auth_netease_login_title">تسجيل الدخول إلى NetEase Music</string>
+    <string name="auth_netease_security_msg">ملاحظة أمنية: يتم إدخال كلمة المرور الخاصة بك فقط داخل صفحات ويب NetEase الرسمية. يقوم PixelPlayer بحفظ ملفات تعريف ارتباط الجلسة (MUSIC_U) فقط لمزامنة مكتبتك الموسيقية.</string>
+    <string name="auth_netease_title">موسيقى NetEase</string>
+
+    <string name="auth_qq_cookie_error">فشل قراءة ملفات تعريف الارتباط (Cookies) لـ QQ Music: %1$s</string>
+    <string name="auth_qq_exit_title">الخروج من تسجيل دخول QQ Music؟</string>
+    <string name="auth_qq_http_error">خطأ HTTP %1$d أثناء تحميل QQ Music.</string>
+    <string name="auth_qq_incomplete_error">لم يتم رصد تسجيل الدخول بعد. أكمل تسجيل الدخول في QQ Music قبل الضغط على \"تم\".</string>
+    <string name="auth_qq_login_title">تسجيل الدخول إلى QQ Music</string>
+    <string name="auth_qq_security_msg">ملاحظة أمنية: يتم إدخال كلمة المرور الخاصة بك فقط داخل صفحات ويب QQ Music الرسمية. يقوم PixelPlayer بحفظ ملفات تعريف ارتباط الجلسة المصادق عليها فقط لمزامنة مكتبتك الموسيقية.</string>
+    <string name="auth_qq_title">موسيقى QQ Music</string>
+</resources>

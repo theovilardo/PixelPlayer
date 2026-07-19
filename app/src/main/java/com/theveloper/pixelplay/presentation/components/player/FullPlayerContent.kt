@@ -204,6 +204,7 @@ fun FullPlayerContent(
     loadingTweaks: FullPlayerLoadingTweaks,
     isSheetDragGestureActive: Boolean = false,
     playerViewModel: PlayerViewModel, // For stable state like totalDuration and lyrics
+    playerAreaBackground: Color = Color.Black,
     // State Providers
     currentPositionProvider: () -> Long,
     isPlayingProvider: () -> Boolean,
@@ -217,6 +218,7 @@ fun FullPlayerContent(
     isCastConnecting: Boolean = false,
     // Event Handlers
     onPlayPause: () -> Unit,
+    onToggleVinylPlayer: () -> Unit,
     onSeek: (Long) -> Unit,
     onNext: () -> Unit,
     onPrevious: () -> Unit,
@@ -517,6 +519,8 @@ fun FullPlayerContent(
             onAlbumClick = { albumSong ->
                 playerViewModel.triggerAlbumNavigationFromPlayer(albumSong.albumId)
             },
+            playerViewModel = playerViewModel,
+            playerAreaBackground = playerAreaBackground,
             modifier = modifier
         )
     }
@@ -755,6 +759,31 @@ fun FullPlayerContent(
                             horizontalArrangement = Arrangement.spacedBy(6.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
+                            // Vinyl Player Button
+                            Box(
+                                modifier = Modifier
+                                    .size(height = 42.dp, width = 50.dp)
+                                    .clip(
+                                        RoundedCornerShape(
+                                            topStart = 50.dp,
+                                            topEnd = 6.dp,
+                                            bottomStart = 50.dp,
+                                            bottomEnd = 6.dp
+                                        )
+                                    )
+                                    .background(playerOnAccentColor.copy(alpha = 0.7f))
+                                    .clickable {
+                                        onToggleVinylPlayer()
+                                    },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.rounded_album_24),
+                                    contentDescription = "Vinyl Player",
+                                    tint = playerAccentColor
+                                )
+                            }
+
                             val showCastLabel = isCastConnecting || (isRemotePlaybackActive && selectedRouteName != null)
                             val isBluetoothActive =
                                 isBluetoothEnabled && !bluetoothName.isNullOrEmpty() && !isRemotePlaybackActive && !isCastConnecting
@@ -765,16 +794,10 @@ fun FullPlayerContent(
                             }
                             val castCornersExpanded = 50.dp
                             val castCornersCompact = 6.dp
-                            val castTopStart = castCornersExpanded
-                            val castTopEnd by animateDpAsState(
-                                targetValue = if (showCastLabel) castCornersExpanded else castCornersCompact,
-                                animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow)
-                            )
-                            val castBottomStart = castCornersExpanded
-                            val castBottomEnd by animateDpAsState(
-                                targetValue = if (showCastLabel) castCornersExpanded else castCornersCompact,
-                                animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow)
-                            )
+                            val castTopStart = castCornersCompact
+                            val castTopEnd = castCornersCompact
+                            val castBottomStart = castCornersCompact
+                            val castBottomEnd = castCornersCompact
                             val castContainerColor = playerOnAccentColor.copy(alpha = 0.7f)
                             Box(
                                 modifier = Modifier
@@ -1018,6 +1041,8 @@ private fun FullPlayerAlbumCoverSection(
     requestedScrollIndex: Int?,
     onSongSelected: (Song, Int) -> Unit,
     onAlbumClick: (Song) -> Unit,
+    playerViewModel: PlayerViewModel,
+    playerAreaBackground: Color,
     modifier: Modifier = Modifier
 ) {
     val shouldDelay = loadingTweaks.delayAll || loadingTweaks.delayAlbumCarousel
@@ -1081,27 +1106,44 @@ private fun FullPlayerAlbumCoverSection(
                 }
             }
         ) {
-            AlbumCarouselSection(
-                currentSong = song,
-                queue = currentPlaybackQueue,
-                expansionFraction = 1f,
-                currentMediaItemIndex = currentMediaItemIndex,
-                requestedScrollIndex = requestedScrollIndex,
-                onSongSelected = { newSong, index ->
-                    if (newSong.id != song.id || index != currentMediaItemIndex) {
-                        onSongSelected(newSong, index)
-                    }
-                },
-                onAlbumClick = onAlbumClick,
-                carouselStyle = carouselStyle,
-                modifier = Modifier
-                    .height(carouselHeight)
-                    .graphicsLayer {
-                        scaleX = albumArtScale
-                        scaleY = albumArtScale
+            val showVinylPlayer by playerViewModel.showVinylPlayer.collectAsStateWithLifecycle()
+            
+            if (showVinylPlayer) {
+                com.theveloper.pixelplay.presentation.components.VinylPlayerLayout(
+                    modifier = Modifier
+                        .height(carouselHeight)
+                        .fillMaxWidth()
+                        .graphicsLayer {
+                            scaleX = albumArtScale
+                            scaleY = albumArtScale
+                        },
+                    albumArtUrl = song.albumArtUriString,
+                    isPlaying = isPlayingProvider(),
+                    backgroundColor = playerAreaBackground
+                )
+            } else {
+                AlbumCarouselSection(
+                    currentSong = song,
+                    queue = currentPlaybackQueue,
+                    expansionFraction = 1f,
+                    currentMediaItemIndex = currentMediaItemIndex,
+                    requestedScrollIndex = requestedScrollIndex,
+                    onSongSelected = { newSong, index ->
+                        if (newSong.id != song.id || index != currentMediaItemIndex) {
+                            onSongSelected(newSong, index)
+                        }
                     },
-                albumArtQuality = albumArtQuality
-            )
+                    onAlbumClick = onAlbumClick,
+                    carouselStyle = carouselStyle,
+                    modifier = Modifier
+                        .height(carouselHeight)
+                        .graphicsLayer {
+                            scaleX = albumArtScale
+                            scaleY = albumArtScale
+                        },
+                    albumArtQuality = albumArtQuality
+                )
+            }
         }
     }
 }
@@ -1546,6 +1588,7 @@ private fun SongMetadataDisplaySection(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                // Vinyl Player Button (Left part of the segment)
                 Box(
                     modifier = Modifier
                         .size(height = 42.dp, width = 50.dp)
@@ -1558,6 +1601,22 @@ private fun SongMetadataDisplaySection(
                             )
                         )
                         .background(chipColor)
+                        .clickable { playerViewModel.toggleVinylPlayer() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.rounded_album_24),
+                        contentDescription = "Vinyl Player",
+                        tint = chipContentColor
+                    )
+                }
+
+                // Lyrics Button (Middle part of the segment)
+                Box(
+                    modifier = Modifier
+                        .size(height = 42.dp, width = 50.dp)
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(chipColor)
                         .clickable { onClickLyrics() },
                     contentAlignment = Alignment.Center
                 ) {
@@ -1567,6 +1626,8 @@ private fun SongMetadataDisplaySection(
                         tint = chipContentColor
                     )
                 }
+
+                // Queue Button (Right part of the segment)
                 Box(
                     modifier = Modifier
                         .size(height = 42.dp, width = 50.dp)

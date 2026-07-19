@@ -215,6 +215,7 @@ class PlayerViewModel @Inject constructor(
     val playlistSelectionStateHolder: PlaylistSelectionStateHolder,
     private val playbackDispatchStateHolder: PlaybackDispatchStateHolder,
     private val mediaControllerSyncStateHolder: MediaControllerSyncStateHolder,
+    private val vinylStateHolder: VinylStateHolder,
     private val sessionToken: SessionToken,
     private val mediaControllerFactory: com.theveloper.pixelplay.data.media.MediaControllerFactory
 ) : ViewModel() {
@@ -435,6 +436,12 @@ class PlayerViewModel @Inject constructor(
 
     fun setMiniPlayerDismissing(dismissing: Boolean) {
         _isMiniPlayerDismissing.value = dismissing
+    }
+
+    val showVinylPlayer: StateFlow<Boolean> = vinylStateHolder.showVinylPlayer
+
+    fun toggleVinylPlayer() {
+        vinylStateHolder.toggleVinylPlayer()
     }
 
     // AI Ecosystem: States delegated to AiStateHolder for centralized management

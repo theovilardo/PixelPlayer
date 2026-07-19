@@ -25,8 +25,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.util.lerp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -45,7 +43,6 @@ import com.theveloper.pixelplay.presentation.viewmodel.StablePlayerState
 internal fun BoxScope.UnifiedPlayerMiniAndFullLayers(
     currentSong: Song?,
     miniPlayerScheme: ColorScheme?,
-    overallSheetTopCornerRadiusProvider: () -> Dp,
     infrequentPlayerState: StablePlayerState,
     isCastConnecting: Boolean,
     isPreparingPlayback: Boolean,
@@ -69,7 +66,8 @@ internal fun BoxScope.UnifiedPlayerMiniAndFullLayers(
     onQueueDragStart: () -> Unit,
     onQueueDrag: (Float) -> Unit,
     onQueueRelease: (Float, Float) -> Unit,
-    onShowCastClicked: () -> Unit
+    onShowCastClicked: () -> Unit,
+    onToggleVinylPlayer: () -> Unit
 ) {
     currentSong?.let { currentSongNonNull ->
         miniPlayerScheme?.let { readyScheme ->
@@ -243,7 +241,9 @@ internal fun BoxScope.UnifiedPlayerMiniAndFullLayers(
                         lyricsProvider = lyricsProvider,
                         isCastConnecting = isCastConnecting,
                         isFavoriteProvider = isFavoriteProvider,
+                        playerAreaBackground = albumColorScheme.background,
                         onPlayPause = onPlayPause,
+                        onToggleVinylPlayer = onToggleVinylPlayer,
                         onSeek = onSeek,
                         onNext = onNext,
                         onPrevious = onPrevious,
@@ -340,11 +340,13 @@ internal fun UnifiedPlayerPrewarmLayer(
                     lyricsProvider = lyricsProvider,
                     isCastConnecting = isCastConnecting,
                     isFavoriteProvider = isFavoriteProvider,
+                    playerAreaBackground = albumColorScheme.background,
                     onShowQueueClicked = onShowQueueClicked,
                     onQueueDragStart = onQueueDragStart,
                     onQueueDrag = onQueueDrag,
                     onQueueRelease = onQueueRelease,
                     onPlayPause = onPlayPause,
+                    onToggleVinylPlayer = {},
                     onSeek = onSeek,
                     onNext = onNext,
                     onPrevious = onPrevious,

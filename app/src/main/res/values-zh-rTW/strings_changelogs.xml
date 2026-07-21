@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="changelog_title">更新紀錄</string>
+    <string name="changelog_view_github">在 GitHub 上檢視</string>
+    <string name="changelog_sec_improvements">改進</string>
+    <string name="changelog_sec_fixes">修復</string>
+    <string name="changelog_sec_whats_new">新功能</string>
+    <string name="changelog_sec_added">新增</string>
+    <string-array name="changelog_020_added">
+        <item>支援 Chromecast 從您的裝置投射音訊。</item>
+        <item>應用程式內更新紀錄，讓您隨時了解最新功能。</item>
+        <item>支援嵌入式和外部的 .LRC 歌詞檔案。</item>
+        <item>支援離線歌詞。</item>
+        <item>同步歌詞（與歌曲同步）。</item>
+        <item>檢視完整佇列的新介面。</item>
+        <item>支援在佇列中重新排序和移除歌曲。</item>
+        <item>迷你播放器手勢（向下滑動關閉）。</item>
+        <item>新增了更多 Material 動畫。</item>
+        <item>新增設定項以自訂外觀。</item>
+        <item>新增設定項以清除快取。</item>
+    </string-array>
+    <string-array name="changelog_020_improvements">
+        <item>使用者介面的全面重新設計。</item>
+        <item>播放器的全面重新設計。</item>
+        <item>媒體庫效能改進。</item>
+        <item>提升了應用程式的啟動速度。</item>
+        <item>AI 現在能提供更好的結果。</item>
+    </string-array>
+    <string-array name="changelog_020_fixes">
+        <item>修復了標籤編輯器中的各種錯誤。</item>
+        <item>修復了播放通知未被清除的錯誤。</item>
+        <item>修復了導致應用程式當機的幾個錯誤。</item>
+    </string-array>
+    <string-array name="changelog_030_whats_new">
+        <item>引入了更豐富的聽歌統計中心，可深入了解您的播放工作階段。</item>
+        <item>推出了懸浮快速播放器，可立即開啟並預覽本機檔案。</item>
+        <item>新增了包含樹狀導覽器和「播放清單就緒」檢視畫面的資料夾標籤頁。</item>
+    </string-array>
+    <string-array name="changelog_030_improvements">
+        <item>改進了整體 Material 3 UI，帶來更簡潔、更連貫的體驗。</item>
+        <item>中繼資料編輯現已支援變更封面。</item>
+        <item>最佳化應用程式內的動畫和過渡效果，使導覽更加流暢。</item>
+        <item>增強了藝人介面的布局，細節更豐富且更精美。</item>
+        <item>升級了 DailyMix 和 YourMix 的生成，選擇更加智慧且多樣化。</item>
+        <item>強化了 AI 播放清單的產生能力。</item>
+        <item>改進了搜尋相關性和展示方式，以便更快地發現內容。</item>
+        <item>擴大了對更多音訊檔案格式的支援。</item>
+    </string-array>
+    <string-array name="changelog_030_fixes">
+        <item>解決了中繼資料異常問題，確保各處的歌曲詳細資訊保持準確。</item>
+        <item>還原了通知快速操作，以便可靠地跳轉回播放介面。</item>
+    </string-array>
+    <string-array name="changelog_040_improvements">
+        <item>導覽欄重大重新設計</item>
+        <item>用於選擇來源資料夾的全新檔案管理員</item>
+        <item>全新的連線與投放功能</item>
+        <item>遠端裝置之間的無縫切換</item>
+        <item>歌曲間無縫過渡</item>
+        <item>淡入淡出控制</item>
+        <item>全新的自訂過渡功能（僅限播放清單）</item>
+        <item>關閉應用程式後繼續播放</item>
+        <item>UI 最佳化</item>
+        <item>統計功能改進</item>
+        <item>重新設計並增加了更多功能的佇列控制</item>
+        <item>改進了對不同檔案格式的播放和中繼資料編輯支援</item>
+        <item>改進的權限控制器</item>
+        <item>修復了一些小錯誤</item>
+    </string-array>
+    <string-array name="changelog_050_improvements">
+        <item>Material 3 Expressive UI 全面升級</item>
+        <item>10 段等化器與音效</item>
+        <item>全新的媒體庫同步流程</item>
+        <item>AI 整合（Gemini 模型）</item>
+        <item>M3U 播放清單匯入/匯出</item>
+        <item>整合 Deezer 藝人封面</item>
+        <item>自訂播放清單封面</item>
+        <item>設定架構重構</item>
+        <item>佇列與播放器動畫</item>
+        <item>基線設定檔案 (Baseline Profiles) 與效能最佳化</item>
+        <item>具有同步位移調整功能的更佳歌詞系統</item>
+    </string-array>
+    <string-array name="changelog_050_fixes">
+        <item>投放穩定性改進</item>
+        <item>播放面板穩定性</item>
+        <item>一般錯誤修復與程式碼清理</item>
+    </string-array>
+    <string-array name="changelog_060_whats_new">
+        <item>現已支援 Android Auto 車載播放。</item>
+        <item>已支援 Wear OS，包括更完善的手錶對手機播放控制。</item>
+        <item>擴展了雲端整合，改進了對 Telegram、網易雲音樂、QQ 音樂和 Google Drive 的支援。</item>
+        <item>「最近播放」和持久化佇列還原功能，讓您的聽歌工作階段隨時就緒。</item>
+        <item>現已包含備份與還原 v3 以及賬號管理工具。</item>
+        <item>歌詞功能更加智慧，增加了手動搜尋備用方案和儲存最佳化。</item>
+    </string-array>
+    <string-array name="changelog_060_improvements">
+        <item>大幅最佳化了啟動、媒體庫、佇列和播放器互動的效能。</item>
+        <item>重新設計了播放器、投放、歌詞、藝人和流派介面，帶來更流暢的體驗。</item>
+        <item>導覽和搜尋流程更加可靠，路徑處理更加安全。</item>
+        <item>提升了音訊播放在更多裝置 and 格式上的相容性。</item>
+        <item>擴展了歌曲、專輯和播放清單的多選操作流程。</item>
+    </string-array>
+    <string-array name="changelog_060_fixes">
+        <item>佇列和隨機播放行為現已更加穩定且符合預期。</item>
+        <item>修復了幾個背景播放和投放的邊緣情況。</item>
+        <item>修復了睡眠定時器、檔案標籤頁導覽以及導致專輯藝人當機的問題。</item>
+        <item>改善了小元件載入和服務穩定性，減少了裝置發熱/記憶體問題。</item>
+        <item>全域的一般錯誤修復和介面細節打磨。</item>
+    </string-array>
+    <string-array name="changelog_070_whats_new">
+        <item>Wear OS：支援音樂傳輸、本機播放、佇列同步以及從手錶進行遠端控制。</item>
+        <item>AI：整合了 Groq AI 和 OpenRouter（實驗性），並進行了 Token 最佳化。</item>
+        <item>雲端：新增了 Jellyfin 支援。</item>
+        <item>歌詞：帶有專屬開關的同步翻譯，支援酷狗 LRC 格式，自訂文字對齊方式，以及改進了遠端載入。</item>
+        <item>UI/UX：緊湊的導覽欄模式，從專輯封面提取調色盤的動態主題，長標題跑馬燈效果，以及全新的排序選項。</item>
+        <item>Telegram：原生話題 (Topics) 支援和增強的顯示模式。</item>
+    </string-array>
+    <string-array name="changelog_070_improvements">
+        <item>音訊引擎：全面重構，支援更多格式（MIDI、ALAC、M4A）並進行了解碼器最佳化。</item>
+        <item>效率：大幅降低能耗，修復裝置發熱問題，以及背景工作最佳化 (SyncWorker)。</item>
+        <item>資料庫：大規模的查詢最佳化，並重新設計了封面快取以防止資料丟失。</item>
+        <item>啟動：透過基線設定檔案 (Baseline Profile) 最佳化了載入時間。</item>
+    </string-array>
+    <string-array name="changelog_070_fixes">
+        <item>播放：修復了 Opus/MP3 的延遲、淡入淡出期間的 ReplayGain 錯誤，以及三星解碼器上的啟動問題。</item>
+        <item>穩定性：消除了啟動、藝人導覽和 Android 12+ 裝置上的當機問題。</item>
+        <item>UI：修復了封面閃爍、非拉丁語系文字溢出，以及導覽欄/迷你播放器的行為問題。</item>
+        <item>安全性：強化了憑證處理、儲存權限以及與媒體伺服器的通訊安全性。</item>
+    </string-array>
+    <string-array name="changelog_070_added">
+        <item>在地化：西班牙文、法文、俄文、簡體中文、印尼文、義大利文</item>
+    </string-array>
+    <string-array name="changelog_075_whats_new">
+        <item>整合 Google Drive，並加入播放器生命週期管理。</item>
+        <item>支援批次編輯歌曲中繼資料（標籤與封面圖片）。</item>
+        <item>支援 AI 歌詞翻譯，並可自訂 Wear OS 偏好設定。</item>
+        <item>新增延遲診斷工具，以及搜尋畫面的多選功能。</item>
+        <item>新增阿拉伯文與土耳其文支援，並提供在地化的 HTTP 網址區域網路選項。</item>
+    </string-array>
+    <string-array name="changelog_075_improvements">
+        <item>大幅降低耗電量（音訊卸載與介面輪詢控制）。</item>
+        <item>最佳化播放佇列管理（加快插入速度並明確指定索引）。</item>
+        <item>轉場畫面加入 Material 3 Expressive 動態動畫。</item>
+        <item>透過節流掃描重構媒體庫同步流程。</item>
+    </string-array>
+    <string-array name="changelog_075_fixes">
+        <item>解決播放時的延遲、斷續、跳音與緩衝問題。</item>
+        <item>修正外部歌曲刪除後的同步與中繼資料一致性問題。</item>
+        <item>修正 Wear OS 與手機上的記憶體問題、當機與版面顯示異常。</item>
+    </string-array>
+</resources>

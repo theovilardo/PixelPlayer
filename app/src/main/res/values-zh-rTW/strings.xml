@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PixelPlayer</string>
+    <string name="app_tagline">音樂播放器</string>
+    <string name="app_name_change_title">應用程式名稱變更</string>
+    <string name="app_name_change_message">由於商標相關問題，我們將應用程式名稱從 PixelPlay 變更為 PixelPlayer。請繼續享受音樂！</string>
+    <string name="app_name_change_do_not_show_again">不再顯示</string>
+
+    <!-- Navigation Bar Labels -->
+    <string name="nav_bar_home">首頁</string>
+    <string name="nav_bar_search">搜尋</string>
+    <string name="nav_bar_library">音樂庫</string>
+
+    <!-- All files access dialog-->
+    <string name="all_files_access_title">需要特殊權限</string>
+    <string name="all_files_access_description">若要編輯歌曲的中繼資料（.mp3 檔案），PixelPlayer 需要所有檔案的特殊存取權。這可讓應用程式直接修改歌曲標籤。請在下一個畫面授予權限，以啟用中繼資料編輯功能。</string>
+    <string name="grant_permission_button">授予權限</string>
+
+    <!-- External Player -->
+    <string name="external_queue_label">快速播放</string>
+    <string name="external_playback_error">無法開啟該音訊檔案。</string>
+    <string name="external_action_open_full_player">開啟完整播放器</string>
+
+    <!-- App Shortcuts -->
+    <string name="shortcut_shuffle_short">隨機播放</string>
+    <string name="shortcut_shuffle_long">隨機播放所有歌曲</string>
+    <string name="tile_shuffle_all">全部隨機播放</string>
+    <string name="tile_last_playlist">最近播放清單</string>
+    <string name="tile_last_playlist_unavailable">沒有可開啟的播放清單</string>
+
+    <!-- Playstore Announcement -->
+    <string name="playstore_dialog_action_open">開啟 Play 商店</string>
+    <string name="playstore_dialog_action_continue_beta">繼續使用 Beta 版</string>
+    <string name="playstore_dialog_link_pending">Play 商店連結將透過 GitHub 設定啟用。</string>
+    <string name="playstore_dialog_title">PixelPlayer 現已上線 Google Play</string>
+    <string name="playstore_dialog_body">請在 Google Play 上使用穩定版以取得正式更新，同時我們仍會保持 Beta 測試版本的更新。</string>
+    <string name="playstore_dialog_app_name">PixelPlayer</string>
+    <string name="playstore_dialog_release_announcement">發布公告</string>
+    <string name="playstore_dialog_coming_soon">敬請期待</string>
+
+    <!-- Brick breaker -->
+    <string name="easter_egg_thank_you">感謝您使用 PixelPlayer！</string>
+    <string name="brick_high">最高分 %1$d</string>
+    <string name="brick_cd_close">關閉</string>
+    <string name="brick_stat_score">分數</string>
+    <string name="brick_stat_lvl">第 %1$d 關</string>
+    <string name="brick_stat_lives">生命</string>
+    <string name="brick_level_complete">關卡完成！</string>
+    <string name="brick_game_over">游戲結束</string>
+    <string name="brick_score_line">分數：%1$d</string>
+    <string name="brick_try_again">再試一次？</string>
+    <string name="brick_next_level">下一關</string>
+    <string name="brick_restart">重新開始游戲</string>
+    <string name="brick_tap_relaunch">輕觸重新啟動</string>
+    <string name="brick_play_random">隨機播放音樂</string>
+    <string name="brick_title">打磚塊</string>
+    <string name="brick_high_score">最高分 %1$d</string>
+    <string name="brick_play">開始</string>
+    <string name="brick_drag_paddle">拖曳以移動擋板</string>
+
+    <!-- Music Service -->
+    <string name="close_notification_player">關閉播放器</string>
+    <string name="service_processing_action">正在處理播放操作…</string>
+    <string name="player_playback_error">播放錯誤：%1$s</string>
+
+    <!-- Common Text & Labels -->
+    <string name="common_back">返回</string>
+    <string name="common_ok">確定</string>
+    <string name="common_cancel">取消</string>
+    <string name="common_dismiss">關閉</string>
+    <string name="common_error">錯誤</string>
+    <string name="common_search">搜尋</string>
+    <string name="common_clear_search">清除搜尋</string>
+    <string name="common_all">全部</string>
+    <string name="common_confirm">確認</string>
+    <string name="common_saved">已儲存！</string>
+    <string name="common_selected">已選擇</string>
+    <string name="common_percentage_text">%1$d%%</string>
+    <string name="common_artist">藝人</string>
+    <string name="common_select_all">全選</string>
+    <string name="common_clear">清除</string>
+    <string name="common_error_unknown">未知錯誤</string>
+
+    <!-- Common Actions & Labels -->
+    <string name="common_save">儲存</string>
+    <string name="common_done">完成</string>
+    <string name="common_reset">重設</string>
+    <string name="common_apply">套用</string>
+    <string name="common_shuffle">隨機播放</string>
+    <string name="common_copy">複製</string>
+    <string name="common_share">分享</string>
+    <string name="common_undo">復原</string>
+    <string name="common_import">匯入</string>
+    <string name="common_delete">刪除</string>
+    <string name="common_export">匯出</string>
+    <string name="common_merge">合併</string>
+    <string name="common_rename">重新命名</string>
+    <string name="common_create">建立</string>
+    <string name="common_lyrics">歌詞</string>
+    <string name="common_settings">設定</string>
+    <string name="common_album_art">專輯封面</string>
+    <string name="common_playlist">播放清單</string>
+    <string name="common_unknown_track">未知歌曲</string>
+    <string name="common_unknown_artist">未知藝人</string>
+    <string name="common_unknown_album">未知專輯</string>
+    <string name="common_close">關閉</string>
+    <string name="common_add">新增</string>
+    <string name="common_remove">移除</string>
+    <string name="common_play">播放</string>
+    <string name="common_previous_track">上一首</string>
+    <string name="common_next_track">下一首</string>
+    <string name="common_favorite">收藏</string>
+    <string name="common_pause">暫停</string>
+    <string name="common_repeat">循環播放</string>
+    <string name="common_options">選項</string>
+    <string name="common_shuffle_play">隨機播放</string>
+    <string name="common_more_options_for">%1$s 的更多選項</string>
+    <string name="common_expand_menu">展開菜單</string>
+    <string name="common_next">下一步</string>
+    <string name="common_finish">結束</string>
+    <string name="common_reset_defaults">還原預設設定</string>
+    <string name="common_export_all">匯出全部</string>
+    <string name="common_merge_all">合併全部</string>
+    <string name="common_share_all">分享全部</string>
+    <string name="common_play_album">播放專輯</string>
+    <string name="common_shuffle_play_album">隨機播放專輯</string>
+    <string name="common_album_art_for_title">%1$s 的專輯封面</string>
+</resources>

@@ -50,6 +50,7 @@ import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.DragIndicator
 import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Shuffle
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -103,6 +104,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
@@ -203,6 +205,13 @@ fun PlaylistDetailScreen(
     var showEditPlaylistDialog by remember { mutableStateOf(false) }
     var showDeleteConfirmation by remember { mutableStateOf(false) }
     var searchQuery by remember(playlistId) { mutableStateOf("") }
+
+    LaunchedEffect(searchQuery.isNotBlank()) {
+        if (searchQuery.isNotBlank()) {
+            isReorderModeEnabled = false
+            isRemoveModeEnabled = false
+        }
+    }
 
     val m3uExportLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("audio/x-mpegurl")
@@ -364,6 +373,7 @@ fun PlaylistDetailScreen(
             ) {
                 val actionButtonsHeight = 42.dp
                 val playbackControlBottomPadding = if (isFolderPlaylist) 8.dp else 6.dp
+                if (searchQuery.isBlank()) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -667,6 +677,7 @@ fun PlaylistDetailScreen(
                         }
                     }
                 }
+                }
 
                 if (localReorderableSongs.isNotEmpty()) {
                     SearchFilterTextField(
@@ -689,6 +700,20 @@ fun PlaylistDetailScreen(
                                 playlistEmptyAddHint
                             }
                             Text(emptyMessage, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                    }
+                } else if (displayedSongs.isEmpty()) {
+                    Box(Modifier
+                        .fillMaxSize()
+                        .weight(1f), Alignment.Center) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Icon(Icons.Rounded.Search, null, Modifier.size(48.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Spacer(Modifier.height(8.dp))
+                            Text(
+                                stringResource(R.string.search_no_results_for_query, searchQuery),
+                                style = MaterialTheme.typography.titleMedium,
+                                textAlign = TextAlign.Center
+                            )
                         }
                     }
                 } else {

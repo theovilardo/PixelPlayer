@@ -28,12 +28,10 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.AudioFile
 import androidx.compose.material.icons.rounded.Cloud
 import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.FilterChip
@@ -48,12 +46,10 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LargeExtendedFloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import com.theveloper.pixelplay.data.model.StorageFilter
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -337,7 +333,7 @@ fun SongPickerSelectionPane(
     Column(
         modifier = modifier.fillMaxSize()
     ) {
-        SongPickerSearchField(
+        SearchFilterTextField(
             searchQuery = searchQuery,
             onSearchQueryChange = { searchQuery = it }
         )
@@ -428,44 +424,6 @@ fun SongPickerSelectionPane(
             }
         }
     }
-}
-
-@Composable
-private fun SongPickerSearchField(
-    searchQuery: String,
-    onSearchQueryChange: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    OutlinedTextField(
-        value = searchQuery,
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-            disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent,
-            unfocusedTrailingIconColor = Color.Transparent,
-            focusedSupportingTextColor = Color.Transparent,
-        ),
-        onValueChange = onSearchQueryChange,
-        label = { Text(stringResource(R.string.song_picker_search_label)) },
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        shape = CircleShape,
-        singleLine = true,
-        leadingIcon = {
-            Icon(Icons.Rounded.Search, contentDescription = null)
-        },
-        trailingIcon = {
-            if (searchQuery.isNotEmpty()) {
-                IconButton(onClick = { onSearchQueryChange("") }) {
-                    Icon(Icons.Filled.Clear, null)
-                }
-            }
-        }
-    )
 }
 
 @OptIn(UnstableApi::class)

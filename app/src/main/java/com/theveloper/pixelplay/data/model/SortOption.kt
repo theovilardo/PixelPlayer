@@ -117,6 +117,24 @@ sealed class SortOption(
         methodKey = "song_duration",
         direction = SortDirection.Ascending
     )
+    object SongListeningTime : SortOption(
+        storageKey = "song_listening_time",
+        displayName = "Listening Time",
+        displayNameRes = R.string.sort_display_listening_time,
+        methodLabel = "Listening Time",
+        methodLabelRes = R.string.sort_method_listening_time,
+        methodKey = "song_listening_time",
+        direction = SortDirection.Descending
+    )
+    object SongListeningTimeAsc : SortOption(
+        storageKey = "song_listening_time_asc",
+        displayName = "Listening Time (Least First)",
+        displayNameRes = R.string.sort_display_listening_time_least,
+        methodLabel = "Listening Time",
+        methodLabelRes = R.string.sort_method_listening_time,
+        methodKey = "song_listening_time",
+        direction = SortDirection.Ascending
+    )
 
     // Album Sort Options
     object AlbumTitleAZ : SortOption(
@@ -442,7 +460,9 @@ sealed class SortOption(
                 SongDateAdded,
                 SongDateAddedAsc,
                 SongDuration,
-                SongDurationAsc
+                SongDurationAsc,
+                SongListeningTime,
+                SongListeningTimeAsc
             )
         }
 

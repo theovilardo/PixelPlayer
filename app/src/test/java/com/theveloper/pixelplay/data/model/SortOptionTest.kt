@@ -10,6 +10,7 @@ class SortOptionTest {
         assertEquals(SortOption.SongTitleAZ, SortOption.SongTitleZA.methodOption())
         assertEquals(SortOption.SongArtist, SortOption.SongArtistDesc.methodOption())
         assertEquals(SortOption.SongDateAdded, SortOption.SongDateAddedAsc.methodOption())
+        assertEquals(SortOption.SongListeningTime, SortOption.SongListeningTimeAsc.methodOption())
         assertEquals(SortOption.SongDefaultOrder, SortOption.SongDefaultOrder.methodOption())
     }
 
@@ -39,6 +40,8 @@ class SortOptionTest {
         assertEquals(SortOption.SongTitleAZ, SortOption.SongTitleZA.flipDirection())
         assertEquals(SortOption.LikedSongDateLikedAsc, SortOption.LikedSongDateLiked.flipDirection())
         assertEquals(SortOption.FolderSongCountAsc, SortOption.FolderSongCountDesc.flipDirection())
+        assertEquals(SortOption.SongListeningTimeAsc, SortOption.SongListeningTime.flipDirection())
+        assertEquals(SortOption.SongListeningTime, SortOption.SongListeningTimeAsc.flipDirection())
         assertEquals(SortOption.SongDefaultOrder, SortOption.SongDefaultOrder.flipDirection())
     }
 

@@ -209,6 +209,8 @@
     <string name="sort_display_date_added_oldest">Date Added (Oldest First)</string>
     <string name="sort_display_duration">Duration</string>
     <string name="sort_display_duration_shortest">Duration (Shortest First)</string>
+    <string name="sort_display_listening_time">Listening Time</string>
+    <string name="sort_display_listening_time_least">Listening Time (Least First)</string>
     <string name="sort_display_release_year">Release Year</string>
     <string name="sort_display_release_year_oldest">Release Year (Oldest First)</string>
     <string name="sort_display_fewest_songs">Fewest Songs</string>
@@ -230,6 +232,7 @@
     <string name="sort_method_album">Album</string>
     <string name="sort_method_date_added">Date Added</string>
     <string name="sort_method_duration">Duration</string>
+    <string name="sort_method_listening_time">Listening Time</string>
     <string name="sort_method_release_year">Release Year</string>
     <string name="sort_method_song_count">Song Count</string>
     <string name="sort_method_name">Name</string>

@@ -129,4 +129,22 @@
     <string-array name="changelog_070_added">
         <item>Lokalisierung: Spanisch, Französisch, Russisch, Vereinfachtes Chinesisch, Indonesisch, Italienisch</item>
     </string-array>
+    <string-array name="changelog_075_whats_new">
+        <item>Google Drive-Integration mit Player-Lebenszyklus-Management.</item>
+        <item>Batch-Bearbeitung von Song-Metadaten (Tags und Cover-Art).</item>
+        <item>KI-Übersetzung von Songtexten mit anpassbaren Wear OS-Einstellungen.</item>
+        <item>Latenzdiagnose-Tool und Mehrfachauswahl auf dem Suchbildschirm.</item>
+        <item>Arabische &amp; Türkische Unterstützung, mit lokalisierten http-URL-Lokalisierungsoptionen.</item>
+    </string-array>
+    <string-array name="changelog_075_improvements">
+        <item>Drastische Akku-Ersparnis (Audio-Offloading und UI-Polling-Gates).</item>
+        <item>Optimiertes Queue-Management (schnellere Einfügungen und explizite Indizierung).</item>
+        <item>Material 3 Expressive Motion-Animationen für Übergangsbildschirme.</item>
+        <item>Überarbeitete Bibliothekssynchronisierung mittels gedrosseltem Scannen.</item>
+    </string-array>
+    <string-array name="changelog_075_fixes">
+        <item>Behobene Ruckel-/Aussetzer bei der Wiedergabe und Pufferungsprobleme.</item>
+        <item>Behobene Synchronisation externer Songlöschungen und Metadatenkonsistenz.</item>
+        <item>Behobene Speicherprobleme, Abstürze und Layout-Fehler auf Wear OS und Telefon.</item>
+    </string-array>
 </resources>

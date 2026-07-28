@@ -1,0 +1,566 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <!-- Library Screen -->
+    <string name="library_screen_title">音乐库</string>
+    <string name="library_tabs_sheet_title">媒体库选项卡</string>
+    <string name="library_tabs_sheet_subtitle">直接跳转到任意选项卡或对它们进行重新排序。</string>
+    <string name="library_reorder_tabs_label">重新排序选项卡</string>
+
+    <!-- Library Tab Names -->
+    <string name="library_tab_songs">歌曲</string>
+    <string name="library_tab_albums">专辑</string>
+    <string name="library_tab_artists">艺术家</string>
+    <string name="library_tab_playlists">播放列表</string>
+    <string name="library_tab_folders">文件夹</string>
+    <string name="library_tab_liked">已收藏</string>
+
+    <!-- Library Toasts -->
+    <string name="library_toast_playlist_created">播放列表创建成功</string>
+    <string name="library_toast_set_ai_provider_api_key_first">请先设置您的 AI 提供商 API 密钥</string>
+    <string name="library_toast_set_gemini_api_key_first">请先设置您的 Gemini API 密钥</string>
+    <string name="library_toast_added_to_queue">已添加到队列</string>
+    <string name="library_toast_playing_next">下一首播放</string>
+
+    <!-- Library Toolbar & Navigation -->
+    <string name="library_cd_watch_transfer">手表传输</string>
+    <string name="library_cd_open_settings">设置</string>
+    <string name="library_tab_edit">编辑</string>
+    <string name="library_cd_reorder_tabs">重新排序选项卡</string>
+    <string name="library_cd_expand_tab_menu">展开菜单</string>
+
+    <!-- Library Multi-Selection & Folders -->
+    <string name="library_toast_max_albums_selection">您最多可以选择 %1$d 张专辑</string>
+    <string name="library_folder_name_fallback">文件夹</string>
+    <string name="library_cd_folder">文件夹</string>
+
+    <!-- Library Sort & View Bottom Sheet -->
+    <string name="library_sort_by_title">排序方式</string>
+    <string name="library_sort_section_view">视图</string>
+    <string name="library_sort_toggle_playlist_view">播放列表视图</string>
+    <string name="library_view_mode_grid">网格</string>
+    <string name="library_view_mode_list">列表</string>
+    <string name="library_storage_internal">内部存储</string>
+    <string name="library_storage_sd_card">SD 卡</string>
+    <string name="library_storage_sd_card_unavailable">SD 卡目前不可用。</string>
+    <string name="library_sort_section_cloud">云端</string>
+    <string name="library_sort_toggle_telegram_channels">Telegram 云端频道</string>
+    <string name="library_telegram_topics_display_title">话题显示 (Topics)</string>
+    <string name="library_telegram_topic_mode_channels">频道</string>
+    <string name="library_telegram_topic_mode_topics">话题</string>
+    <string name="library_telegram_topic_mode_both">全部</string>
+    <string name="library_cloud_sources_heading">云端</string>
+    <string name="library_cloud_only_label">仅云端</string>
+
+    <!-- Library AI Metadata Processing -->
+    <string name="library_generating_ai_metadata">正在使用 AI 生成元数据…</string>
+
+    <!-- Library list errors -->
+    <string name="library_error_loading_songs">加载歌曲时出错</string>
+    <string name="library_album_detail_error_loading_albums">加载专辑时出错</string>
+    <string name="library_artist_error_loading_artists">加载艺术家时出错</string>
+    <string name="library_action_retry">重试</string>
+
+    <!-- Library empty (paginated) -->
+    <string name="library_no_songs_in_library_message">在您的媒体库中未找到歌曲。</string>
+    <string name="library_no_songs_rescan_hint">如果您设备上有音乐，请尝试在设置中重新扫描媒体库。</string>
+    <string name="library_cd_no_songs_in_library">未找到歌曲</string>
+
+    <!-- Library action row -->
+    <string name="library_action_new">新建</string>
+    <string name="library_cd_create_new_playlist">创建新播放列表</string>
+    <string name="library_cd_import_m3u_playlist">导入 M3U 播放列表</string>
+    <string name="library_cd_locate_current_song">定位当前歌曲</string>
+    <string name="library_storage_filter_all_songs">所有歌曲</string>
+    <string name="library_storage_filter_online">云端</string>
+    <string name="library_storage_filter_offline">本地</string>
+    <string name="library_cd_sort_options">排序选项</string>
+
+    <!-- Library selection action row -->
+    <string name="library_selection_all">全选</string>
+    <string name="library_selection_deselect">取消选择</string>
+    <string name="library_selection_more_options">更多选项</string>
+
+    <!-- Library Syncing -->
+    <string name="library_sync_scanning">正在扫描音乐文件…</string>
+    <string name="library_sync_processing">正在处理文件…</string>
+    <string name="library_sync_files_progress">第 %1$d 个，共 %2$d 个文件</string>
+    <string name="library_sync_in_progress">正在同步媒体库…</string>
+    <string name="library_sync_complete">同步完成</string>
+    <string name="library_sync_pending">等待中…</string>
+    <string name="library_syncing">正在同步媒体库…</string>
+    <string name="library_sync_cache">正在清理专辑封面缓存…</string>
+    <string name="library_sync_cloud">正在同步云端数据源…</string>
+    <string name="library_sync_lyrics">正在扫描歌词…</string>
+
+    <!-- Library Empty State -->
+    <string name="library_empty_songs_all_title">暂无歌曲</string>
+    <string name="library_empty_songs_all_subtitle">将音乐添加到您的设备或同步云端数据源以开始收听。</string>
+    <string name="library_empty_songs_offline_title">未找到本地歌曲</string>
+    <string name="library_empty_songs_offline_subtitle">尝试其他数据源过滤或重新扫描您的设备媒体库。</string>
+    <string name="library_empty_songs_online_title">未找到云端歌曲</string>
+    <string name="library_empty_songs_online_subtitle">同步 Telegram 或网易云音乐歌曲，或切换到本地源。</string>
+    <string name="library_empty_albums_all_title">暂无专辑</string>
+    <string name="library_empty_albums_all_subtitle">一旦您的媒体库对曲目进行分组，专辑就会显示在这里。</string>
+    <string name="library_empty_albums_offline_title">未找到本地专辑</string>
+    <string name="library_empty_albums_offline_subtitle">需要本地歌曲才能构建本地专辑组。</string>
+    <string name="library_empty_albums_online_title">未找到云端专辑</string>
+    <string name="library_empty_albums_online_subtitle">同步后，带有专辑数据的云端歌曲将显示在这里。</string>
+    <string name="library_empty_artists_all_title">暂无艺术家</string>
+    <string name="library_empty_artists_all_subtitle">从任何来源为歌曲建立索引后，将显示艺术家。</string>
+    <string name="library_empty_artists_offline_title">未找到本地艺术家</string>
+    <string name="library_empty_artists_offline_subtitle">目前没有本地歌曲的艺术家元数据可用。</string>
+    <string name="library_empty_artists_online_title">未找到云端艺术家</string>
+    <string name="library_empty_artists_online_subtitle">同步远程歌曲时会显示云端艺术家条目。</string>
+    <string name="library_empty_liked_all_title">暂无收藏歌曲</string>
+    <string name="library_empty_liked_all_subtitle">在播放歌曲时点击心形图标将其保存在这里。</string>
+    <string name="library_empty_liked_offline_title">无本地收藏歌曲</string>
+    <string name="library_empty_liked_offline_subtitle">切换数据源过滤或收藏您设备中的歌曲。</string>
+    <string name="library_empty_liked_online_title">无云端收藏歌曲</string>
+    <string name="library_empty_liked_online_subtitle">收藏 Telegram 或网易云音乐的曲目，即可在此视图中看到它们。</string>
+    <string name="library_empty_folders_title">未找到文件夹</string>
+    <string name="library_empty_folders_subtitle">包含音乐的内部存储文件夹将显示在这里。</string>
+    <string name="library_empty_playlists_title">暂无播放列表</string>
+    <string name="library_empty_playlists_subtitle">创建您的第一个播放列表来整理您的媒体库。</string>
+
+    <!-- SongInfoBottomSheet, MultiSelectionBottomSheet, PlaylistMultiSelectionBottomSheet -->
+    <string name="song_info_cd_edit_metadata">编辑歌曲元数据</string>
+    <string name="song_info_action_play">播放</string>
+    <string name="song_info_cd_play">播放歌曲</string>
+    <string name="song_info_action_play_all">全部播放</string>
+    <string name="song_info_cd_play_all">全部播放</string>
+    <string name="song_info_cd_add_to_favorites">添加到收藏</string>
+    <string name="song_info_cd_add_to_favorites_all">全部添加到收藏</string>
+    <string name="song_info_cd_remove_from_favorites">取消收藏</string>
+    <string name="song_info_cd_remove_from_favorites_all">全部取消收藏</string>
+    <string name="song_info_share_chooser_title">分享歌曲文件</string>
+    <string name="song_info_cd_share_song_file">分享歌曲文件</string>
+    <string name="song_info_cd_share_all_as_zip">作为 ZIP 全部打包分享</string>
+    <string name="song_info_error_share_song">无法分享歌曲：%1$s</string>
+    <string name="song_info_action_add_to_queue">添加到队列</string>
+    <string name="song_info_cd_add_to_queue">添加到队列</string>
+    <string name="song_info_action_queue_next">下一首播放</string>
+    <string name="song_info_cd_queue_next">在队列中下一首播放</string>
+    <string name="song_info_cd_add_to_playlist">添加到播放列表</string>
+    <string name="song_info_action_delete">删除</string>
+    <string name="song_info_action_delete_all">全部删除</string>
+    <string name="song_info_checking_watch">正在检查手表</string>
+    <string name="song_info_transferring_percent">正在传输 %1$d%%</string>
+    <string name="song_info_transferring_to_watch">正在传至手表</string>
+    <string name="song_info_transfer_in_progress">传输进行中</string>
+    <string name="song_info_send_to_watch">发送至手表</string>
+    <string name="song_info_watch_unavailable">手表不可用</string>
+    <string name="song_info_cd_send_to_watch">将歌曲发送至手表</string>
+    <string name="song_info_cd_watch_unavailable">手表不可用</string>
+    <string name="song_info_set_sound_as_short">设为</string>
+    <string name="song_info_set_sound_as_long">设为声音</string>
+    <string name="song_info_cd_set_sound_as">选择如何将此歌曲用作系统声音</string>
+    <string name="song_info_tone_picker_title">将此歌曲用作</string>
+    <string name="song_info_tone_picker_body">选择 PixelPlayer 应在哪里安装此声音。</string>
+    <string name="song_info_tone_ringtone_title">手机铃声</string>
+    <string name="song_info_tone_ringtone_subtitle">来电</string>
+    <string name="song_info_tone_notification_title">通知音</string>
+    <string name="song_info_tone_notification_subtitle">消息和应用提醒</string>
+    <string name="song_info_tone_alarm_title">闹钟音</string>
+    <string name="song_info_tone_alarm_subtitle">时钟闹钟</string>
+    <string name="song_info_tone_confirm_title">确认更改声音</string>
+    <string name="song_info_tone_confirm_body">将“%1$s”设为您的 %2$s？</string>
+    <string name="song_info_tone_confirm_action">设置声音</string>
+    <string name="song_info_tone_success">已将“%1$s”设为您的 %2$s</string>
+    <string name="song_info_tone_ringtone_label">铃声</string>
+    <string name="song_info_tone_notification_label">通知音</string>
+    <string name="song_info_tone_alarm_label">闹钟音</string>
+    <string name="song_info_ringtone_permission_prompt">启用“修改系统设置”，然后返回 PixelPlayer 自动完成。</string>
+    <string name="song_info_ringtone_permission_missing">未启用“修改系统设置”。</string>
+    <string name="song_info_ringtone_success">已将“%1$s”设为您的铃声</string>
+    <string name="song_info_ringtone_local_only">只有本地歌曲才能设为铃声。</string>
+    <string name="song_info_ringtone_missing_file">无法将此音频文件准备为铃声。</string>
+    <string name="song_info_ringtone_failed">无法设置铃声：%1$s</string>
+    <string name="song_info_tab_options">选项</string>
+    <string name="song_info_tab_options_badge">选项</string>
+    <string name="song_info_tab_info">信息</string>
+    <string name="song_info_tab_info_badge">信息</string>
+    <string name="song_info_duration_label">时长</string>
+    <string name="song_info_genre_label">流派</string>
+    <string name="song_info_album_label">专辑</string>
+    <string name="song_info_artist_label">艺术家</string>
+    <string name="song_info_audio_format_label">歌曲信息</string>
+    <string name="song_info_cd_provider">提供商</string>
+    <string name="song_info_cd_file">文件</string>
+    <string name="multi_selection_songs_count_upper">%1$d 首歌曲</string>
+    <string name="multi_selection_songs_selected">已选择</string>
+    <string name="multi_selection_playlists_count_upper">%1$d 个播放列表</string>
+    <string name="multi_selection_albums_count_upper">%1$d 张专辑</string>
+    <string name="multi_selection_albums_selected">已选择</string>
+    <string name="multi_selection_albums_selected_limit">限制：每次选择最多 %1$d 张专辑。</string>
+    <string name="multi_selection_albums_queue_hint">加入队列及播放将遵循您的选择顺序。</string>
+    <string name="multi_selection_genres_count_upper">%1$d 个流派</string>
+    <string name="multi_selection_genres_selected">已选择</string>
+    <string name="multi_selection_genres_queue_hint">对这些流派中的所有歌曲进行批量操作。</string>
+
+    <!-- Sort Option Display Names -->
+    <string name="sort_display_default_order">默认顺序</string>
+    <string name="sort_display_title_az">标题 (A-Z)</string>
+    <string name="sort_display_title_za">标题 (Z-A)</string>
+    <string name="sort_display_artist">艺术家</string>
+    <string name="sort_display_artist_za">艺术家 (Z-A)</string>
+    <string name="sort_display_album">专辑</string>
+    <string name="sort_display_album_za">专辑 (Z-A)</string>
+    <string name="sort_display_date_added">添加时间</string>
+    <string name="sort_display_date_added_oldest">添加时间 (最早优先)</string>
+    <string name="sort_display_duration">时长</string>
+    <string name="sort_display_duration_shortest">时长 (最短优先)</string>
+    <string name="sort_display_release_year">发行年份</string>
+    <string name="sort_display_release_year_oldest">发行年份 (最早优先)</string>
+    <string name="sort_display_fewest_songs">歌曲最少</string>
+    <string name="sort_display_most_songs">歌曲最多</string>
+    <string name="sort_display_name_az">名称 (A-Z)</string>
+    <string name="sort_display_name_za">名称 (Z-A)</string>
+    <string name="sort_display_num_songs_most">歌曲数量 (最多)</string>
+    <string name="sort_display_num_songs_fewest">歌曲数量 (最少)</string>
+    <string name="sort_display_date_created">创建时间</string>
+    <string name="sort_display_date_created_oldest">创建时间 (最早优先)</string>
+    <string name="sort_display_date_liked">收藏时间</string>
+    <string name="sort_display_date_liked_oldest">收藏时间 (最早优先)</string>
+    <string name="sort_display_fewest_subfolders">子文件夹最少</string>
+    <string name="sort_display_most_subfolders">子文件夹最多</string>
+
+    <!-- Sort Option Method Labels -->
+    <string name="sort_method_title">标题</string>
+    <string name="sort_method_artist">艺术家</string>
+    <string name="sort_method_album">专辑</string>
+    <string name="sort_method_date_added">添加时间</string>
+    <string name="sort_method_duration">时长</string>
+    <string name="sort_method_release_year">发行年份</string>
+    <string name="sort_method_song_count">歌曲数量</string>
+    <string name="sort_method_name">名称</string>
+    <string name="sort_method_num_songs">歌曲数量</string>
+    <string name="sort_method_date_created">创建时间</string>
+    <string name="sort_method_date_liked">收藏时间</string>
+    <string name="sort_method_subfolder_count">子文件夹数量</string>
+
+    <!-- LibrarySortBottomSheet-->
+    <string name="library_sort_source">来源</string>
+    <string name="library_sort_order">顺序</string>
+    <string name="library_sort_descending">降序</string>
+    <string name="library_sort_ascending">升序</string>
+    <string name="library_sort_original_order">原始顺序</string>
+    <string name="library_sort_tap_ascending">点击切换为升序</string>
+    <string name="library_sort_tap_descending">点击切换为降序</string>
+    <string name="library_sort_keeps_order">此排序保持其原始顺序</string>
+    <string name="library_sort_cd_switch_on">开关已开启</string>
+
+    <!-- ReorderTabsSheet-->
+    <string name="reorder_tabs_sheet_title">重新排序媒体库选项卡</string>
+    <string name="reorder_tabs_reset_dialog_title">重置顺序</string>
+    <string name="reorder_tabs_reset_dialog_body">将选项卡顺序重置为默认？</string>
+    <string name="reorder_tabs_reordering">正在重新排序选项卡…</string>
+    <string name="reorder_tabs_cd_drag_handle">拖动手柄</string>
+
+    <!-- PlayerArtistPickerBottomSheet -->
+    <string name="artist_picker_title">选择一位艺术家</string>
+    <string name="artist_picker_count_single">1 位艺术家</string>
+    <string name="artist_picker_count_multiple">%1$d 位艺术家</string>
+    <string name="artist_picker_primary_label">主要艺术家</string>
+    <string name="artist_picker_shortcut_label">艺术家主页</string>
+
+    <!-- Watch Transfer Dialog + Foreground Service -->
+    <string name="watch_transfer_action_cancel">取消传输</string>
+    <string name="watch_transfer_bytes_progress">%1$s / %2$s</string>
+    <string name="watch_transfer_channel_description">显示手机到手表音乐传输的实时进度</string>
+    <string name="watch_transfer_channel_name">手表传输</string>
+    <string name="watch_transfer_dialog_title">正在发送至手表</string>
+    <string name="watch_transfer_status_cancelled">已取消</string>
+    <string name="watch_transfer_status_cancelled_service">传输已取消</string>
+    <string name="watch_transfer_status_complete_service">传输完成</string>
+    <string name="watch_transfer_status_completed">已完成</string>
+    <string name="watch_transfer_status_failed">失败</string>
+    <string name="watch_transfer_status_failed_service">传输失败</string>
+    <string name="watch_transfer_status_multiple_active">有多个活动中的传输</string>
+    <string name="watch_transfer_bullet_step">%1$s • %2$s</string>
+    <string name="watch_transfer_status_preparing">正在准备</string>
+    <string name="watch_transfer_status_preparing_service">正在准备手表传输</string>
+    <string name="watch_transfer_status_preparing_transfer">正在准备传输…</string>
+    <string name="watch_transfer_status_sending_n_to_watch">正在将 %1$d 首歌曲发送至手表</string>
+    <string name="watch_transfer_status_sending_to_watch">正在发送至手表</string>
+    <string name="watch_transfer_status_starting">正在开始传输…</string>
+    <string name="watch_transfer_status_starting_short">正在开始</string>
+    <string name="watch_transfer_status_transferring">正在传输</string>
+    <string name="watch_transfer_summary_n">%1$d 个传输任务</string>
+
+    <!-- EditSongSheet -->
+    <string name="edit_song_toolbar_title">编辑歌曲</string>
+    <string name="edit_song_cd_show_metadata_info">显示信息</string>
+    <string name="edit_song_dialog_title">正在编辑歌曲元数据</string>
+    <string name="edit_song_dialog_body">编辑歌曲元数据可能会影响其在媒体库中的显示和整理方式。更改是永久性的，且可能无法撤销。</string>
+    <string name="edit_song_dialog_got_it">知道了</string>
+    <string name="edit_song_cd_info_icon">信息</string>
+    <string name="edit_song_cover_art_heading">封面</string>
+    <string name="edit_song_cover_art_hint">选择一张正方形图片并进行微调，让您的封面在整个应用中看起来更棒。</string>
+    <string name="edit_song_action_change_cover">更改封面</string>
+    <string name="edit_song_action_delete_cover">删除封面</string>
+    <string name="edit_song_field_title">标题</string>
+    <string name="edit_song_field_artist">艺术家</string>
+    <string name="edit_song_field_album">专辑</string>
+    <string name="edit_song_field_album_artist">专辑艺术家</string>
+    <string name="edit_song_field_genre">流派</string>
+    <string name="edit_song_field_composer">作曲</string>
+    <string name="edit_song_field_track_number">曲目编号</string>
+    <string name="edit_song_field_disc_number">唱片编号</string>
+    <string name="edit_song_field_replaygain_track">音量标准化-曲目增益 (dB)</string>
+    <string name="edit_song_field_replaygain_album">音量标准化-专辑增益 (dB)</string>
+    <string name="edit_song_replaygain_track_placeholder">-6.50</string>
+    <string name="edit_song_replaygain_album_placeholder">-8.20</string>
+    <string name="edit_song_cd_cover_preview">新封面预览</string>
+    <string name="edit_song_cd_current_cover">当前歌曲封面</string>
+    <string name="edit_song_crop_dialog_title">调整您的封面</string>
+    <string name="edit_song_crop_dialog_hint">使用双指缩放和拖动手势找到完美的构图。</string>
+    <string name="edit_song_action_apply_cover">应用封面</string>
+    <string name="edit_song_unable_to_load_image">无法加载选定的图片</string>
+    <string name="edit_song_cd_search_lyrics_lrclib">在 lrclib.net 搜索歌词</string>
+
+    <!-- EditMultipleSongsSheet -->
+    <string name="batch_edit_toolbar_title">批量编辑 %d 首歌曲</string>
+    <string name="batch_edit_info_message">仅会更新已修改的字段。将字段留空则保持现有值。</string>
+    <string name="batch_edit_mixed_values">（混合值）</string>
+    <string name="batch_edit_optional">（可选 - 留空则跳过）</string>
+    <string name="batch_edit_success">成功更新 %d 首歌曲</string>
+    <string name="batch_edit_partial_success">已更新 %1$d 首（共 %2$d 首）歌曲。某些文件无法编辑。</string>
+    <string name="batch_edit_failed">更新歌曲失败</string>
+    <string name="batch_edit_cover_art_heading">批量更换封面</string>
+    <string name="batch_edit_cover_art_hint">这将替换所有 %d 首选定歌曲的封面</string>
+    <string name="batch_edit_set_cover_art">为所有选定歌曲设置封面</string>
+    <string name="batch_edit_remove_all_art">移除所有封面</string>
+    <string name="batch_edit_multiple_covers">（多个不同的封面）</string>
+
+    <!-- Playlist dismissed message -->
+    <string name="playlist_dismissed_message">已忽略播放列表</string>
+
+    <!-- PlaylistCreationDialogs -->
+    <string name="playlist_creation_create_playlist_title">创建播放列表</string>
+    <string name="playlist_creation_create_playlist_subtitle">选择创建方式。</string>
+    <string name="playlist_creation_mode_manual_title">手动</string>
+    <string name="playlist_creation_mode_manual_subtitle">自己设计封面、图标、形状并挑选歌曲。</string>
+    <string name="playlist_creation_mode_ai_title">使用 AI</string>
+    <string name="playlist_creation_mode_ai_subtitle_enabled">使用高级控制生成精选的播放列表。</string>
+    <string name="playlist_creation_mode_ai_subtitle_disabled">需要在设置中配置 Gemini API 密钥。</string>
+    <string name="playlist_creation_setup_api_key">设置 API 密钥</string>
+
+    <!-- AI playlist lab -->
+    <string name="playlist_creation_ai_lab_title">AI 播放列表实验室</string>
+    <string name="playlist_creation_ai_reset">重置</string>
+    <string name="playlist_creation_ai_generating">正在生成…</string>
+    <string name="playlist_creation_ai_generate">生成</string>
+    <string name="playlist_creation_ai_section_intent">意图</string>
+    <string name="playlist_creation_ai_name_optional">播放列表名称（可选）</string>
+    <string name="playlist_creation_ai_feel_label">这个播放列表应该带来什么感觉？</string>
+    <string name="playlist_creation_ai_feel_placeholder">示例：伴随温暖合成器音乐的日落驾驶</string>
+    <string name="playlist_creation_ai_section_direction">方向</string>
+    <string name="playlist_creation_ai_mood_label">情绪</string>
+    <string name="playlist_creation_ai_activity_label">活动</string>
+    <string name="playlist_creation_ai_era_label">时代</string>
+    <string name="playlist_creation_ai_section_curation">精选引擎</string>
+    <string name="playlist_creation_ai_energy_label">能量</string>
+    <string name="playlist_creation_ai_energy_desc">控制歌曲的强度和节奏。1 = 平静/缓慢，5 = 高能量/快节奏。</string>
+    <string name="playlist_creation_ai_discovery_label">探索度</string>
+    <string name="playlist_creation_ai_discovery_desc">控制所选歌曲的熟悉程度。1 = 你最常听的最爱，5 = 很少播放的冷门曲目。</string>
+    <string name="playlist_creation_ai_min_songs">最少歌曲数</string>
+    <string name="playlist_creation_ai_max_songs">最多歌曲数</string>
+    <string name="playlist_creation_ai_section_filters">过滤</string>
+    <string name="playlist_creation_ai_prioritize_genres">优先考虑的流派（可选）</string>
+    <string name="playlist_creation_ai_prioritize_genres_placeholder">例如：合成器波 (synthwave)、独立流行 (indie pop)</string>
+    <string name="playlist_creation_ai_avoid_genres">避免的流派（可选）</string>
+    <string name="playlist_creation_ai_avoid_genres_placeholder">例如：金属 (metal)、硬核陷阱 (hard trap)</string>
+    <string name="playlist_creation_ai_preferred_language">首选语言（可选）</string>
+    <string name="playlist_creation_ai_preferred_language_placeholder">例如：英语，西班牙语，纯音乐 (instrumental)</string>
+    <string name="playlist_creation_ai_prioritize_favorites">优先考虑已收藏的最爱</string>
+    <string name="playlist_creation_ai_avoid_explicit">避免露骨歌词 (Explicit)</string>
+    <string name="playlist_creation_ai_section_prompt_preview">提示词预览</string>
+    <string name="playlist_creation_ai_prompt_preview_empty">当您添加偏好设置后，最终的提示词将显示在这里。</string>
+    <string name="playlist_creation_ai_hero_title">精准策展</string>
+    <string name="playlist_creation_ai_hero_subtitle">定义情绪、活动、约束和深度。</string>
+    <string name="playlist_creation_ai_hero_library_note">AI 将仅使用您本地媒体库中的歌曲。</string>
+    <string name="playlist_creation_ai_error_add_instruction">至少为 AI 添加一项指令。</string>
+    <string name="playlist_creation_ai_error_song_range">请设置有效的歌曲数量范围。</string>
+    <string name="playlist_creation_ai_level_out_of_five">%1$d/5</string>
+    <string name="playlist_creation_ai_custom_chip">自定义…</string>
+    <string name="playlist_creation_ai_enter_custom_title">输入自定义值</string>
+    <string name="playlist_creation_ai_enter_custom_label">输入您的自定义值</string>
+
+    <!-- AI prompt -->
+    <string name="playlist_creation_ai_era_any">任何时代</string>
+    <string name="playlist_creation_ai_prompt_core_request">核心请求：%1$s。</string>
+    <string name="playlist_creation_ai_prompt_mood">情绪目标：%1$s。</string>
+    <string name="playlist_creation_ai_prompt_activity">活动背景：%1$s。</string>
+    <string name="playlist_creation_ai_prompt_era">时代焦点：%1$s。</string>
+    <string name="playlist_creation_ai_prompt_prioritize_genres">优先考虑的流派：%1$s。</string>
+    <string name="playlist_creation_ai_prompt_avoid_genres">避免的流派：%1$s。</string>
+    <string name="playlist_creation_ai_prompt_preferred_language">首选语言：%1$s。</string>
+    <string name="playlist_creation_ai_prompt_energy">能量等级目标：%1$d/5。</string>
+    <string name="playlist_creation_ai_prompt_discovery">探索度目标：%1$d/5（1 代表熟悉，5 代表冷门曲目）。</string>
+    <string name="playlist_creation_ai_prompt_prioritize_favorites">可能的话，优先选择更接近听众最爱的歌曲。</string>
+    <string name="playlist_creation_ai_prompt_avoid_explicit">只要有替代选择，尽量避免露骨歌词。</string>
+    <string name="playlist_creation_ai_prompt_smooth_transitions">保持平滑的过渡，避免重复聚集同一艺术家。</string>
+    <string-array name="playlist_creation_ai_mood_options">
+        <item>放松</item>
+        <item>活力</item>
+        <item>快乐</item>
+        <item>暗黑</item>
+        <item>浪漫</item>
+        <item>忧郁</item>
+    </string-array>
+    <string-array name="playlist_creation_ai_activity_options">
+        <item>健身</item>
+        <item>专注</item>
+        <item>公路旅行</item>
+        <item>派对</item>
+        <item>学习</item>
+        <item>深夜</item>
+    </string-array>
+    <string-array name="playlist_creation_ai_era_options">
+        <item>@string/playlist_creation_ai_era_any</item>
+        <item>70年代</item>
+        <item>80年代</item>
+        <item>90年代</item>
+        <item>2000年代</item>
+        <item>2010年代</item>
+        <item>2020年代</item>
+    </string-array>
+
+    <!-- PlaylistContainer -->
+    <string name="playlist_container_no_playlist_created">尚未创建播放列表。</string>
+    <string name="playlist_container_new_playlist_hint">点击“新建播放列表”按钮开始。</string>
+    <string name="playlist_container_create_playlist_title">新建播放列表</string>
+    <string name="playlist_container_create_playlist_name_label">播放列表名称</string>
+    <string name="playlist_container_create_playlist_name_placeholder">我的播放列表</string>
+
+    <!-- PlaylistBottomSheet -->
+    <string name="playlist_sheet_add_songs_title">添加 %1$d 首歌曲到…</string>
+    <string name="playlist_sheet_select_playlists">选择播放列表</string>
+    <string name="playlist_sheet_search_playlists_hint">搜索播放列表…</string>
+    <string name="playlist_sheet_song_added_to_playlists">已将歌曲添加到播放列表</string>
+    <string name="playlist_sheet_created_and_songs_added">播放列表已创建并已添加歌曲</string>
+    <string name="playlist_sheet_internal_storage">内部存储</string>
+
+    <!-- SongPickerBottomSheet -->
+    <string name="song_picker_title">添加歌曲</string>
+    <string name="song_picker_cd_confirm_add_songs">添加所选歌曲</string>
+    <string name="song_picker_action_add">添加</string>
+    <string name="song_picker_search_label">搜索或过滤歌曲…</string>
+    <string name="song_picker_filter_favorites">已收藏</string>
+    <string name="song_picker_error_load_failed">加载歌曲失败</string>
+    <string name="song_picker_load_more">加载更多</string>
+
+    <!-- Merge Playlists Dialog -->
+    <string name="merge_playlists_dialog_title">合并播放列表</string>
+    <string name="merge_playlists_dialog_prompt">为合并后的播放列表输入名称：</string>
+    <string name="merge_playlists_dialog_placeholder">合并的播放列表</string>
+    <string name="merge_playlists_dialog_body">这将把 %1$d 个选定的播放列表合并为一个。</string>
+
+    <!-- PlayerViewModel -->
+    <string name="player_view_model_no_valid_songs">未找到可播放的有效歌曲</string>
+    <string name="player_view_model_song_not_found_in_list">在当前列表中未找到歌曲</string>
+    <string name="player_view_model_could_not_locate_song">无法定位歌曲</string>
+    <string name="player_view_model_no_songs_in_library_toast">在媒体库中未找到歌曲</string>
+    <string name="player_view_model_playback_stopped_eot">播放停止：%1$s 已结束（曲目结束）。</string>
+    <string name="player_view_model_default_track_title">曲目</string>
+    <string name="player_view_model_no_songs_to_shuffle">没有可供随机播放的歌曲。</string>
+    <string name="player_view_model_queue_name_selected_albums">选定的专辑</string>
+    <string name="player_view_model_no_playable_songs_in_albums">在选定的专辑中未找到可播放的歌曲</string>
+    <string name="player_view_model_no_playable_songs_in_genres">在选定的流派中未找到可播放的歌曲</string>
+    <string name="player_view_model_only_first_n_albums_queued">仅前 %1$d 张专辑已加入队列</string>
+    <string name="player_view_model_albums_queued_format">已将 %1$d 张专辑加入队列（共 %2$d 首歌曲）</string>
+    <string name="player_view_model_could_not_queue_albums">无法将选定的专辑加入队列</string>
+    <string name="player_view_model_all_songs_already_in_favorites">所有歌曲均已在收藏中</string>
+    <string name="player_view_model_no_songs_were_in_favorites">没有被收藏的歌曲</string>
+    <string name="player_view_model_creating_zip">正在创建 ZIP 文件…</string>
+    <string name="player_view_model_share_zip_failed_format">分享失败：%1$s</string>
+    <plurals name="player_view_model_n_songs_added_to_queue">
+        <item quantity="one">添加了 %d 首歌曲到队列</item>
+        <item quantity="other">添加了 %d 首歌曲到队列</item>
+    </plurals>
+    <plurals name="player_view_model_n_songs_will_play_next">
+        <item quantity="one">%d 首歌曲将作为下一首播放</item>
+        <item quantity="other">%d 首歌曲将作为下一首播放</item>
+    </plurals>
+    <plurals name="player_view_model_n_songs_added_to_favorites">
+        <item quantity="one">添加了 %d 首歌曲到收藏</item>
+        <item quantity="other">添加了 %d 首歌曲到收藏</item>
+    </plurals>
+    <plurals name="player_view_model_n_songs_removed_from_favorites">
+        <item quantity="one">从收藏中移除了 %d 首歌曲</item>
+        <item quantity="other">从收藏中移除了 %d 首歌曲</item>
+    </plurals>
+
+    <!-- PlaylistViewModel -->
+    <string name="playlist_view_model_none_to_share">没有可分享的播放列表</string>
+    <string name="playlist_view_model_share_chooser_title">分享播放列表</string>
+    <string name="playlist_view_model_share_failed">分享失败：%1$s</string>
+    <string name="playlist_view_model_none_to_export">没有可导出的播放列表</string>
+    <string name="playlist_view_model_export_failed">导出失败：%1$s</string>
+    <string name="playlist_view_model_export_folder_display">Music/PixelPlayer Exports</string>
+    <string name="playlist_view_model_ai_gemini_key_required">请在设置中配置您的 Gemini API 密钥。</string>
+    <string name="playlist_view_model_restored_toast">播放列表已恢复</string>
+    <plurals name="playlist_view_model_sharing_message">
+        <item quantity="one">正在分享 %d 个播放列表</item>
+        <item quantity="other">正在分享 %d 个播放列表</item>
+    </plurals>
+    <plurals name="playlist_view_model_exported_message">
+        <item quantity="one">已导出 %1$d 个播放列表到 %2$s</item>
+        <item quantity="other">已导出 %1$d 个播放列表到 %2$s</item>
+    </plurals>
+
+    <!-- AlbumDetailViewModel -->
+    <string name="album_detail_invalid_id">无效的专辑 ID</string>
+    <string name="album_detail_id_not_found">未找到专辑 ID</string>
+    <string name="album_detail_error_loading_album">加载专辑数据出错：%s</string>
+    <string name="album_detail_not_found">未找到专辑</string>
+
+    <!-- ArtistDetailViewModel -->
+    <string name="artist_detail_invalid_id">无效的艺术家 ID</string>
+    <string name="artist_detail_id_not_found">未找到艺术家 ID</string>
+    <string name="artist_error_loading_artist">加载艺术家数据出错：%s</string>
+    <string name="artist_detail_not_found">找不到该艺术家</string>
+
+    <!-- SongRemovalStateHolder -->
+    <string name="song_removal_cannot_delete_currently_playing">无法删除当前正在播放的歌曲</string>
+    <string name="song_removal_batch_delete_files_deleted_skipped_format">删除了 %1$d 个文件（跳过了 %2$d 个 - 正在播放）</string>
+    <string name="song_removal_batch_delete_partial_format">删除了 %1$d 个（共 %2$d 个）文件</string>
+    <string name="song_removal_delete_files_failed">删除文件失败</string>
+    <string name="song_removal_file_deleted">文件已删除</string>
+    <string name="song_removal_delete_file_not_found">无法删除文件或找不到文件</string>
+    <string name="song_removal_deletion_cancelled">删除已取消</string>
+    <string name="song_removal_dialog_delete_song_title">删除歌曲？</string>
+    <string name="song_removal_dialog_delete_song_message">“%1$s” - %2$s\n\n此歌曲将从您的设备中永久删除，且无法恢复。</string>
+    <string name="song_removal_delete_songs_permanent_message">这些歌曲将从您的设备中永久删除，且无法恢复。</string>
+    <plurals name="song_removal_n_files_deleted">
+        <item quantity="one">删除了 %d 个文件</item>
+        <item quantity="other">删除了 %d 个文件</item>
+    </plurals>
+    <plurals name="song_removal_delete_songs_confirmation_title">
+        <item quantity="one">删除 %d 首歌曲？</item>
+        <item quantity="other">删除 %d 首歌曲？</item>
+    </plurals>
+
+    <!-- MetadataEditStateHolder -->
+    <string name="metadata_edit_updated_successfully">元数据更新成功</string>
+    <string name="metadata_edit_updating_n_songs">正在更新 %1$d 首歌曲…</string>
+    <string name="metadata_edit_batch_genre_updated_all">已成功更新 %1$d 首歌曲！</string>
+    <string name="metadata_edit_batch_genre_updated_partial">更新了 %1$d 首歌曲。失败：%2$d 首</string>
+    <string name="metadata_edit_lyrics_saved_successfully">歌词保存成功</string>
+    <string name="metadata_edit_lyrics_save_failed">保存歌词失败</string>
+    <string name="metadata_edit_lyrics_none_to_save">没有可保存的歌词</string>
+    <string name="metadata_edit_permission_denied_edit_files">权限被拒绝 – 无法编辑文件</string>
+    <string name="metadata_edit_permission_denied_save_lyrics">权限被拒绝 – 无法保存歌词</string>
+    <string name="metadata_edit_permission_denied_edit_this_file">权限被拒绝 – 无法编辑此文件</string>
+
+    <!-- AiStateHolder -->
+    <string name="ai_state_error_api_key">请在设置中为选定的 AI 提供商配置有效的 API 密钥。</string>
+    <string name="ai_state_error_generic">AI 错误：%s</string>
+    <string name="ai_state_error_quota">所选 AI 提供商拒绝了请求，原因是账户没有积分或可用配额不足。</string>
+    <string name="ai_state_error_model_unavailable">所选 AI 模型不再可用。PixelPlayer 尝试自动切换到支持的模型。</string>
+    <string name="ai_state_no_songs_found">AI 无法根据您的提示找到任何歌曲。</string>
+    <string name="ai_state_prompt_empty">写下一个 Daily Mix 的灵感</string>
+    <string name="ai_state_daily_mix_updated">已使用 AI 更新 Daily Mix</string>
+    <string name="ai_state_could_not_update">无法更新：%s</string>
+    <string name="ai_state_no_songs_for_mix">AI 无法为此合集找到歌曲</string>
+</resources>

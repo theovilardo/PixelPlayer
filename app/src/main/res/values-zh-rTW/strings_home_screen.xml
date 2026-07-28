@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Top Bar -->
+    <string name="topbar_beta_letter">β</string>
+    <string name="topbar_beta_label">Beta</string>
+    <string name="topbar_cd_cloud_streaming">云端串流</string>
+    <string name="topbar_cd_changelog">更新日志</string>
+    <string name="topbar_cloud_streaming_title">云端串流</string>
+    <string name="topbar_cloud_streaming_subtitle">从您的云端账户串流音乐</string>
+
+    <!-- BetaInfoBottomSheet -->
+    <string name="beta_sheet_version">Beta 0.7.5</string>
+    <string name="beta_sheet_letter">β</string>
+    <string name="beta_sheet_welcome_title">欢迎使用 PixelPlayer 0.7.5-beta</string>
+    <string name="beta_sheet_welcome_body">您正在使用的是可能包含错误、崩溃或实验性功能的测试版本。请报告问题以帮助我们改进。</string>
+    <string name="beta_sheet_expect_title">预期情况</string>
+    <string name="beta_sheet_expect_1">可能会意外出现错误、崩溃或未完成的功能。</string>
+    <string name="beta_sheet_expect_2">某些功能可能会在不另行通知的情况下更改或移除。</string>
+    <string name="beta_sheet_expect_3">测试版可能比正式发布版本更不稳定。</string>
+    <string name="beta_sheet_expect_4">在报告已知问题之前，请务必先检查更新。</string>
+    <string name="beta_sheet_expect_summary">测试版在测试期间可能会更改、损坏或改进的内容。</string>
+    <string name="beta_sheet_github_title">GitHub Issue 快捷入口</string>
+    <string name="beta_sheet_github_body">请先搜索，然后针对错误、崩溃、请求或问题开启一个明确的报告。</string>
+    <string name="beta_sheet_open_issues">浏览现有的 Issue</string>
+    <string name="beta_sheet_report_bug">报告问题或崩溃</string>
+    <string name="beta_sheet_report_body">分享复现步骤、预期结果、实际结果以及您的设备/操作系统详细信息。</string>
+    <string name="beta_sheet_report_title">如何报告</string>
+    <string name="beta_sheet_report_summary">开启新 Issue 前的快速检查清单。</string>
+    <string name="beta_sheet_before_title">开启 Issue 前</string>
+    <string name="beta_sheet_before_1">搜索现有已开启和已关闭的 Issue，以避免重复提交。</string>
+    <string name="beta_sheet_before_2">更新至 PixelPlayer 最新版本并确认问题是否仍然存在。</string>
+    <string name="beta_sheet_before_3">重启应用并确认问题是否仍然存在。</string>
+    <string name="beta_sheet_before_4">尝试复现它并写下确切的步骤。</string>
+    <string name="beta_sheet_issue_type_title">哪种问题类型？</string>
+    <string name="beta_sheet_issue_type_bug">错误报告：某些功能表现异常。</string>
+    <string name="beta_sheet_issue_type_feature">功能请求：添加新功能或改进。</string>
+    <string name="beta_sheet_issue_type_question">提问：如果已启用，请使用 Discussions（讨论），或开启一个带有问题标签的 Issue。</string>
+    <string name="beta_sheet_bug_title">错误报告</string>
+    <string name="beta_sheet_bug_summary_text">当某些功能表现异常或崩溃时，请复制这些字段。</string>
+    <string name="beta_sheet_bug_template_title">错误报告</string>
+    <string name="beta_sheet_bug_summary">简要概述：</string>
+    <string name="beta_sheet_bug_expected">预期行为：</string>
+    <string name="beta_sheet_bug_actual">当前行为：</string>
+    <string name="beta_sheet_bug_steps">播放/复现步骤：1. 2. 3.</string>
+    <string name="beta_sheet_bug_frequency">发生的频率如何？总是 / 有时 / 很少。</string>
+    <string name="beta_sheet_bug_screenshot">截图/视频：如果有。</string>
+    <string name="beta_sheet_bug_logs">日志/堆栈跟踪：如果有。</string>
+    <string name="beta_sheet_env_title">环境</string>
+    <string name="beta_sheet_env_version">PixelPlayer 版本：</string>
+    <string name="beta_sheet_env_source">安装来源：GitHub Release、debug 构建、Nightly 构建等。</string>
+    <string name="beta_sheet_env_android">Android 版本：</string>
+    <string name="beta_sheet_env_device">设备型号：</string>
+    <string name="beta_sheet_env_extra">额外信息：SD 卡使用情况、特殊设置、权限等。</string>
+    <string name="beta_sheet_feature_title">功能请求</string>
+    <string name="beta_sheet_feature_summary">当您希望添加新功能或改进时，请复制这些字段。</string>
+    <string name="beta_sheet_feature_problem">问题描述：您想解决什么问题？</string>
+    <string name="beta_sheet_feature_solution">建议方案：它应该如何工作？</string>
+    <string name="beta_sheet_feature_alternatives">考虑过的替代方案：是否有其他方法？</string>
+    <string name="beta_sheet_feature_scope">影响范围：哪些界面或流程会受影响？</string>
+    <string name="beta_sheet_feature_mockup">样图或参考图片（如果有）。</string>
+    <string name="beta_sheet_quality_title">标题、隐私和范围</string>
+    <string name="beta_sheet_quality_summary">使报告易于分类且安全共享。</string>
+    <string name="beta_sheet_title_examples_title">好的 Issue 标题示例</string>
+    <string name="beta_sheet_title_example_1">均衡器：切换预设选项卡时指示器偏移</string>
+    <string name="beta_sheet_title_example_2">搜索：查询为空时历史记录列表不显示</string>
+    <string name="beta_sheet_title_example_3">功能：添加“最近添加”播放列表排序选项</string>
+    <string name="beta_sheet_avoid_title">请避免</string>
+    <string name="beta_sheet_avoid_1">诸如“它不起作用”之类的通用报告。</string>
+    <string name="beta_sheet_avoid_2">在一个 Issue 中包含多个不相关的问题。</string>
+    <string name="beta_sheet_avoid_3">包含私人数据的未经打码处理的日志或截图。</string>
+    <string name="beta_sheet_privacy_title">隐私声明</string>
+    <string name="beta_sheet_privacy_body">在发布日志、截图或视频之前，请删除个人或私人信息。</string>
+    <string name="beta_sheet_nightly_title">Nightly 构建版本</string>
+    <string name="beta_sheet_nightly_summary">Nightly 版本与正式版有何不同，以及出错时应提供哪些信息。</string>
+    <string name="beta_sheet_nightly_body">Nightly 版本是从最新提交 (commit) 生成的，可能包含未完成的更改、临时错误或回归。它们比正式发布版本更具实验性。</string>
+    <string name="beta_sheet_nightly_access">如果可用，可从仓库的 GitHub Actions 工作流产物 (artifacts) 中获取。</string>
+    <string name="beta_sheet_nightly_report_title">报告 Nightly 问题</string>
+    <string name="beta_sheet_nightly_report_body">在报告 Nightly 版本的问题时，请务必说明该问题发生于 Nightly 版本，而非正式发布版本。请尽可能提供构建日期、工作流运行名称或编号，或者提交 SHA。并请检查最新的正式版本中是否会出现相同问题。</string>
+    <string name="beta05_title">Beta 0.5.0 升级</string>
+    <string name="beta05_clean_install_title">建议全新安装</string>
+    <string name="beta05_clean_install_body">如果您从 Beta 0.5.0 升级，此更新可能需要全新的媒体库数据，而不是旧的缓存状态。</string>
+    <string name="beta05_if_wrong_meta_title">如果元数据或媒体库条目看起来有误</string>
+    <string name="beta05_if_wrong_meta_body">歌曲元数据错误、艺术家或专辑不匹配，或出现类似重复的条目，通常意味着只需全新安装即可解决。</string>
+    <string name="beta05_dont_show">不再显示</string>
+    <string name="beta05_got_it">知道了</string>
+
+    <!-- Crash report dialog -->
+    <string name="crash_report_title">糟糕！出错了</string>
+    <string name="crash_report_subtitle">应用在您上次使用时崩溃了。请分享崩溃报告以帮助我们修复此问题。</string>
+    <string name="crash_report_date_line">日期：%1$s</string>
+    <string name="crash_report_error_label">错误：</string>
+    <string name="crash_report_stack_preview_label">堆栈跟踪（预览）：</string>
+    <string name="crash_report_clipboard_label">崩溃日志</string>
+    <string name="crash_report_toast_log_copied">崩溃日志已复制到剪贴板</string>
+    <string name="crash_report_share_subject">PixelPlayer 崩溃报告</string>
+    <string name="crash_report_share_chooser">分享崩溃报告</string>
+
+    <!-- Home Option -->
+    <string name="home_option_dj_mashup">DJ 混音</string>
+
+    <!-- Your Mix -->
+    <string name="home_your_mix_title">你的\n推荐</string>
+    <string name="home_empty_placeholder_title">暂无数据</string>
+    <string name="home_empty_placeholder_subtitle">当 PixelPlayer 发现歌曲或同步数据源时，您的推荐将显示在此处。</string>
+    <string name="home_empty_placeholder_refresh">刷新</string>
+
+    <!-- DailyMixSection -->
+    <string name="home_daily_mix_title">DAILY MIX</string>
+    <string name="home_daily_mix_subtitle">基于听歌历史</string>
+    <string name="home_daily_mix_action_see_all">查看全部 Daily Mix</string>
+    <string name="home_daily_mix_queue_name">Daily Mix</string>
+
+    <!-- DailyMixScreen -->
+    <string name="daily_mix_title">Daily Mix</string>
+    <plurals name="daily_mix_songs_dot_duration">
+        <item quantity="one">%1$d 首歌曲 • %2$s</item>
+        <item quantity="other">%1$d 首歌曲 • %2$s</item>
+    </plurals>
+    <string name="daily_mix_action_play_it">播放</string>
+    <string name="daily_mix_cd_ai_playlist_generator">AI 播放列表生成器</string>
+
+    <!-- DailyMixMenu -->
+    <string name="daily_mix_how_title">您的 Daily Mix 是如何生成的</string>
+    <string name="daily_mix_how_body">您的 Daily Mix 由您最喜爱和播放次数最多的歌曲组成。我们还会添加您喜欢的艺术家和流派的曲目，让您发现新音乐。</string>
+    <string name="daily_mix_prompt_label">告诉 AI 您今天想听什么</string>
+    <string name="daily_mix_cost_hint">我们使用小样本以保持较低的成本</string>
+    <string name="daily_mix_updating">正在更新…</string>
+    <string name="daily_mix_update">更新 Daily Mix</string>
+
+    <!-- AIPlaylistSheet -->
+    <string name="ai_playlist_headline_perfect">完美精选</string>
+    <string name="ai_playlist_headline_daily_mix">Daily Mix</string>
+    <string name="ai_playlist_subtitle_journey_ready">您的声音之旅已就绪</string>
+    <string name="ai_playlist_subtitle_generator">AI 播放列表生成器</string>
+    <string name="ai_playlist_description">描述您的氛围、心情或活动，让 AI 从您的媒体库中精心挑选完美的播放列表。</string>
+    <string name="ai_playlist_section_size">播放列表大小</string>
+    <string name="ai_playlist_min_songs">最少歌曲数</string>
+    <string name="ai_playlist_max_songs">最多歌曲数</string>
+    <string name="ai_playlist_prompt_placeholder">例如：轻松的夜晚氛围，欢快的健身音乐…</string>
+    <string name="ai_playlist_tap_to_retry">点击重试</string>
+    <string name="ai_playlist_status_default">声音之旅合成完毕！</string>
+    <string name="ai_playlist_ready_to_play">准备播放</string>
+    <string name="ai_playlist_generating">正在生成…</string>
+    <string name="ai_playlist_generate">生成播放列表</string>
+
+    <!-- RecentlyPlayedSection -->
+    <string name="home_recently_played_title">最近播放</string>
+
+    <!-- RecentlyPlayedScreen -->
+    <string name="recently_played_title">最近播放</string>
+    <string name="recently_played_action_play_latest">播放最新</string>
+    <string name="recently_played_empty_title">在 %1$s 内无最近播放记录</string>
+    <string name="recently_played_empty_subtitle">更改时间范围或播放更多歌曲以填充此时间轴。</string>
+    <string name="recently_played_queue_name">最近播放</string>
+    <string name="recently_played_date_today">今天</string>
+    <string name="recently_played_date_yesterday">昨天</string>
+
+    <!-- StatsOverviewCard -->
+    <string name="home_stats_overview_title">听歌统计</string>
+    <string name="home_stats_overview_total_plays">总播放量</string>
+    <string name="home_stats_overview_avg_per_day">日均播放</string>
+    <string name="home_stats_overview_top_track">最爱曲目</string>
+    <string name="home_stats_overview_top_track_line">%1$s • %2$d 次播放</string>
+
+    <!-- StatsScreen -->
+    <string name="stats_title">听歌统计</string>
+    <string name="stats_cd_refresh">刷新听歌统计</string>
+    <string name="stats_range_today">今天</string>
+    <string name="stats_range_week_to_date">本周至今</string>
+    <string name="stats_range_month_to_date">本月至今</string>
+    <string name="stats_range_year_to_date">本年至今</string>
+    <string name="stats_range_all_time">全部时间</string>
+    <string name="stats_hero_listening">听歌时长</string>
+    <string name="stats_hero_plays">播放次数</string>
+    <string name="stats_section_listening_timeline">听歌时间轴</string>
+    <string name="stats_timeline_metric_listening_time">听歌时长</string>
+    <string name="stats_timeline_metric_listening_time_desc">所选时间范围内的总听歌时长。</string>
+    <string name="stats_timeline_metric_play_count">播放次数</string>
+    <string name="stats_timeline_metric_play_count_desc">您在每个时间段内完成的会话次数。</string>
+    <string name="stats_timeline_metric_avg_session">平均会话</string>
+    <string name="stats_timeline_metric_avg_session_desc">每个时间段的平均听歌时长。</string>
+    <string name="stats_timeline_support_day">划分为 4 小时的时间段，揭示您的日常节奏。</string>
+    <string name="stats_timeline_support_week">每日柱状图，方便比较每周习惯。</string>
+    <string name="stats_timeline_support_month">每周柱状图，显示本月趋势。</string>
+    <string name="stats_timeline_support_year">每月柱状图，显示全年的季节性变化。</string>
+    <string name="stats_timeline_support_all">每年柱状图，总结您的完整听歌历史。</string>
+    <string name="stats_empty_no_timeline_title">暂无听歌数据</string>
+    <string name="stats_empty_no_timeline_subtitle">点击播放开始建立您的听歌时间轴</string>
+    <string name="stats_rhythm_daily">每日节奏</string>
+    <string name="stats_rhythm_weekly">每周节奏</string>
+    <string name="stats_rhythm_monthly">每月节奏</string>
+    <string name="stats_rhythm_year">全年概览</string>
+    <string name="stats_rhythm_all_time">历年进展</string>
+    <string name="stats_grouped_4h">按 4 小时分段分组</string>
+    <string name="stats_grouped_dow">按星期几分组</string>
+    <string name="stats_grouped_week_of_month">按月内周次分组</string>
+    <string name="stats_grouped_by_month">按月分组</string>
+    <string name="stats_grouped_by_year">按年份分组</string>
+    <string name="stats_peak_segment">高峰时段</string>
+    <string name="stats_n_plays">%1$d 次播放</string>
+    <string name="stats_em_dash">—</string>
+    <string name="stats_section_top_categories">热门类别</string>
+    <string name="stats_top_categories_subtitle">比较您在各个流派、艺术家、专辑和歌曲中的听歌偏好。</string>
+    <string name="stats_dim_genre">流派</string>
+    <string name="stats_dim_artist">艺术家</string>
+    <string name="stats_dim_album">专辑</string>
+    <string name="stats_dim_song">歌曲</string>
+    <string name="stats_card_listening_by_genre">按流派统计</string>
+    <string name="stats_card_listening_by_artist">按艺术家统计</string>
+    <string name="stats_card_listening_by_album">按专辑统计</string>
+    <string name="stats_card_listening_by_song">按歌曲统计</string>
+    <string name="stats_plays_artists">%1$d 次播放 • %2$d 位艺术家</string>
+    <string name="stats_plays_tracks">%1$d 次播放 • %2$d 首曲目</string>
+    <string name="stats_empty_no_category_title">暂无类别数据</string>
+    <string name="stats_empty_no_category_subtitle">点击播放，您的听歌亮点将在这里浮现</string>
+    <string name="stats_section_listening_habits">听歌习惯</string>
+    <string name="stats_empty_no_habits_title">暂无习惯数据</string>
+    <string name="stats_empty_no_habits_subtitle">当我们更了解您时，就会在这里展示您的听歌习惯。</string>
+    <string name="stats_habit_total_sessions">总会话数</string>
+    <string name="stats_habit_avg_session">平均会话时长</string>
+    <string name="stats_habit_longest_session">最长会话</string>
+    <string name="stats_habit_sessions_per_day">会话数/天</string>
+    <string name="stats_habit_most_active_day">最活跃的一天</string>
+    <string name="stats_habit_no_playback_yet">暂无播放</string>
+    <string name="stats_habit_peak_timeline_slot">时间轴最高峰</string>
+    <string name="stats_section_top_artists">热门艺术家</string>
+    <string name="stats_empty_no_artists_title">暂无热门艺术家</string>
+    <string name="stats_empty_no_artists_subtitle">继续听歌，您最喜爱的艺术家将出现在这里。</string>
+    <string name="stats_avatar_placeholder">\?</string>
+    <string name="stats_ranked_artist">%1$d. %2$s</string>
+    <string name="stats_section_top_albums">热门专辑</string>
+    <string name="stats_empty_no_albums_title">暂无热门专辑</string>
+    <string name="stats_empty_no_albums_subtitle">您经常回顾的专辑将出现在这里。</string>
+    <string name="stats_ranked_album">%1$d. %2$s</string>
+    <string name="stats_track_concentration_title">曲目集中度</string>
+    <string name="stats_track_concentration_subtitle">您的听歌时间在最爱曲目中的分布情况。</string>
+    <string name="stats_empty_no_concentration_title">暂无集中度数据</string>
+    <string name="stats_empty_no_concentration_subtitle">播放更多曲目即可了解您听歌的专一程度。</string>
+    <string name="stats_slice_top_1">Top 1</string>
+    <string name="stats_slice_top_2_3">Top 2-3</string>
+    <string name="stats_slice_others">其他</string>
+    <string name="stats_percent">%1$d%%</string>
+    <string name="stats_listening_concentration_title">听歌集中度</string>
+    <string name="stats_top_three_share_line">排名前 3 的曲目占据了您 %1$d%% 的听歌时间。</string>
+    <string name="stats_avg_plays_per_track">平均播放/曲目</string>
+    <string name="stats_unique_tracks">去重曲目数</string>
+    <string name="stats_top_three_share_label">Top 3 占比</string>
+    <string name="stats_tracks_in_range_title">此范围内的曲目</string>
+    <string name="stats_tracks_in_range_subtitle">选定时间范围内播放次数最多的曲目。</string>
+    <string name="stats_empty_no_tracks_title">暂无热门曲目</string>
+    <string name="stats_empty_no_tracks_subtitle">听您喜欢的歌，它们将会在这里高亮显示。</string>
+    <string name="stats_collapse_tracks">收起曲目</string>
+    <string name="stats_show_all_tracks">显示所有曲目</string>
+
+    <!-- Time and Duration Formatting -->
+    <string name="duration_hours_minutes_long">%1$d 小时 %2$02d 分钟</string>
+    <string name="duration_minutes_long">%1$d 分钟</string>
+    <string name="duration_hours_minutes_medium">%1$d 小时 %2$02d 分</string>
+    <string name="duration_hours_medium">%1$d 小时</string>
+    <string name="duration_minutes_medium">%1$d 分</string>
+    <string name="duration_seconds_medium">%1$d 秒</string>
+    <string name="duration_hours_minutes_short">%1$d小时%2$02d分</string>
+    <string name="duration_hours_short">%1$d小时</string>
+    <string name="duration_minutes_short">%1$d分</string>
+    <string name="duration_seconds_short">%1$d秒</string>
+    <string name="time_ago_never">从未</string>
+    <string name="time_ago_just_now">刚刚</string>
+    <string name="time_ago_day_singular">1 天前</string>
+    <string name="time_ago_days_plural">%1$d 天前</string>
+    <string name="time_ago_hour_singular">1 小时前</string>
+    <string name="time_ago_hours_plural">%1$d 小时前</string>
+    <string name="time_ago_minute_singular">1 分钟前</string>
+    <string name="time_ago_minutes_plural">%1$d 分钟前</string>
+    <string name="song_count_singular">%1$d 首歌曲</string>
+    <string name="song_count_plural">%1$d 首歌曲</string>
+    <string name="stats_week_label">第 %1$d 周</string>
+</resources>

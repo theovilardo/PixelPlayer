@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <!-- Player UI & Playback Controls -->
+    <string name="player_cd_collapse">收起播放器</string>
+    <string name="player_now_playing">正在播放</string>
+    <string name="player_cd_cloud_stream">云端串流</string>
+    <string name="player_cd_cast">投屏</string>
+    <string name="player_cd_bluetooth">蓝牙</string>
+    <string name="player_cd_local_playback">本地播放</string>
+    <string name="player_connecting">正在连接…</string>
+    <string name="player_cd_open_queue">打开队列</string>  
+
+    <!-- CastBottomSheet -->
+    <string name="cast_perm_title">准备连接</string>
+    <string name="cast_perm_body">允许 PixelPlayer 查看您附近的设备和当前 Wi-Fi，以便我们保持您的投屏、蓝牙音频和扬声器同步。</string>
+    <string name="cast_perm_nearby_title">附近设备</string>
+    <string name="cast_perm_nearby_desc">需要此权限来读取和控制您连接的蓝牙音频设备。</string>
+    <string name="cast_perm_location_title">用于 Wi-Fi 的位置信息</string>
+    <string name="cast_perm_location_desc">Android 需要位置信息才能共享您当前所连接的 Wi-Fi 网络 (SSID)，以便我们找到兼容的投屏设备。</string>
+    <string name="cast_allow_access">允许访问</string>
+    <string name="cast_perm_footer">我们仅将这些权限用于设备互连——投屏、控制附近扬声器以及保持音频同步。</string>
+    <string name="cast_title_connect">连接设备</string>
+    <string name="cast_scanning_nearby">正在扫描附近</string>
+    <string name="cast_subtitle_session">投屏会话</string>
+    <string name="cast_connecting">正在连接</string>
+    <string name="cast_connected">已连接</string>
+    <string name="cast_this_phone">本机</string>
+    <string name="cast_bluetooth_audio">蓝牙音频</string>
+    <string name="cast_local_playback">本地播放</string>
+    <string name="cast_playing">正在播放</string>
+    <string name="cast_paused">已暂停</string>
+    <string name="cast_volume_device">设备音量</string>
+    <string name="cast_volume_phone">手机音量</string>
+    <string name="cast_volume_levels">%1$d/%2$d</string>
+    <string name="cast_cd_battery">电量</string>
+    <string name="cast_cd_volume_level">音量</string>
+    <string name="cast_disconnect">断开连接</string>
+    <string name="cast_connectivity">连接性</string>
+    <string name="cast_turn_on_wifi_bt">开启 Wi-Fi 或蓝牙</string>
+    <string name="cast_cd_refresh_connections">刷新连接</string>
+    <string name="cast_wifi">Wi-Fi</string>
+    <string name="cast_wifi_off">关</string>
+    <string name="cast_wifi_on">开</string>
+    <string name="cast_wifi_connected">已连接</string>
+    <string name="cast_bluetooth">蓝牙</string>
+    <string name="cast_bt_off">关</string>
+    <string name="cast_bt_on">开</string>
+    <string name="cast_bt_connected">已连接</string>
+    <string name="cast_nearby_devices">附近设备</string>
+    <string name="cast_cd_refresh_devices">刷新设备</string>
+    <string name="cast_status_connected">已连接</string>
+    <string name="cast_status_connecting">正在连接</string>
+    <string name="cast_status_available_connect">可连接</string>
+    <string name="cast_status_available">可用</string>
+    <string name="cast_connecting_ellipsis">正在连接...</string>
+    <string name="cast_searching">正在搜索设备…</string>
+    <string name="cast_searching_hint">请确保您的电视或扬声器已开启，并连接到同一 Wi-Fi 网络。</string>
+    <string name="cast_tab_controls">控制</string>
+    <string name="cast_tab_devices">设备</string>
+
+    <!-- Casting & Remote Playback -->
+    <string name="cast_server_channel_name">投屏媒体服务器</string>
+    <string name="cast_server_notification_title">正在投屏至设备</string>
+    <string name="cast_server_notification_text">正在向投屏设备提供媒体</string>
+    <string name="cast_server_foreground_error">%1$s: %2$s</string>
+    <string name="cast_seek_unavailable_for_format">投屏时暂不支持对此音频格式进行进度调节，这可能会导致投屏会话崩溃。</string>
+
+    <!-- Sleep Timer -->
+    <string name="sleep_timer_title">睡眠定时器</string>
+    <string name="sleep_timer_zero_minutes_format">定时器</string>
+    <string name="sleep_timer_n_minutes_format">%1$d 分钟</string>
+    <string name="sleep_timer_set_for_minutes_toast">定时器已设为 %1$d 分钟。</string>
+    <string name="sleep_timer_play_count_one_time">1 次</string>
+    <plurals name="sleep_timer_play_count_n_times">
+        <item quantity="one">%d 次</item>
+        <item quantity="other">%d 次</item>
+    </plurals>
+    <string name="sleep_timer_play_count_label">播放次数：%1$s</string>
+    <string name="sleep_timer_end_of_current_track">当前曲目结束时</string>
+    <string name="sleep_timer_eot_toast">播放将在曲目结束时停止。</string>
+    <string name="sleep_timer_cd_switch_on">开启</string>
+    <string name="sleep_timer_custom_time">自定义时间</string>
+    <string name="sleep_timer_cancel_timer">取消定时器</string>
+    <string name="sleep_timer_display_eot">曲目结束</string>
+    <string name="sleep_timer_cancelled_toast">定时器已取消。</string>
+    <string name="sleep_timer_eot_no_song_toast">无法启用“曲目结束时停止”：没有正在播放的歌曲。</string>
+    <string name="sleep_timer_eot_song_changed_toast">“曲目结束”定时器已停用：歌曲已从 %1$s 切换到 %2$s。</string>
+    <string name="sleep_timer_label_previous_track">上一首曲目</string>
+    <string name="sleep_timer_label_current_track">当前曲目</string>
+    <string name="sleep_timer_ui_set_custom_duration">设置自定义时长</string>
+
+    <!-- QueueBottomSheet -->
+    <string name="queue_next_up_label">接下来播放</string>
+    <string name="queue_tracks_empty">队列当前为空。</string>
+    <plurals name="queue_tracks_lined_up">
+        <item quantity="one">1 首曲目在列。</item>
+        <item quantity="other">%d 首曲目在列。</item>
+    </plurals>
+    <string name="queue_source_fallback_label">队列</string>
+    <string name="queue_empty_label">队列为空。</string>
+    <string name="queue_cd_reorder_song">重新排序歌曲</string>
+    <string name="queue_cd_toggle_shuffle_action">切换随机播放</string>
+    <string name="queue_cd_toggle_repeat_action">切换循环播放</string>
+    <string name="queue_cd_sleep_timer_action">睡眠定时器</string>
+    <string name="queue_cd_more_action">更多操作</string>
+    <string name="queue_action_locate_current_song">定位当前歌曲</string>
+    <string name="queue_action_clear_queue">清空队列</string>
+    <string name="queue_dialog_clear_queue_title">清空队列</string>
+    <string name="queue_dialog_clear_queue_message">您确定要清空队列中除当前正在播放之外的所有歌曲吗？</string>
+    <string name="queue_action_save_as_playlist">保存为播放列表</string>
+    <string name="queue_save_playlist_named">%1$s 队列</string>
+    <string name="queue_save_playlist_current">当前队列</string>
+    <string name="queue_cd_dismiss_song">移除歌曲</string>
+    <string name="queue_song_removed">已移除</string>
+    <string name="queue_save_as_playlist_sheet_title">保存为播放列表</string>
+    <string name="queue_save_as_playlist_deselect_all">取消全选</string>
+    <string name="queue_save_as_playlist_name_label">播放列表名称</string>
+    <string name="queue_save_as_playlist_search_placeholder">搜索要包含的歌曲…</string>
+    <string name="queue_save_as_playlist_search_no_match">没有与 \"%1$s\" 匹配的歌曲</string>
+    <plurals name="queue_save_as_playlist_n_songs_selected">
+        <item quantity="one">已选择 %d 首歌曲</item>
+        <item quantity="other">已选择 %d 首歌曲</item>
+    </plurals>
+    <string name="queue_save_as_playlist_format">保存为：%1$s</string>
+    <string name="queue_save_as_playlist_name_placeholder">输入播放列表名称</string>
+    <string name="queue_cd_remove_from_playlist">从播放列表中移除</string>
+    <string name="queue_more_options_for_song">%1$s 的更多选项</string>
+
+    <!-- LyricsSheet -->
+    <string name="lyrics_title">歌词</string>
+    <string name="lyrics_loading">正在加载歌词…</string>
+    <string name="lyrics_mode_synced">逐字同步</string>
+    <string name="lyrics_mode_static">静态</string>
+    <string name="lyrics_options">歌词选项</string>
+    <string name="lyrics_offset_minus_half">−.5</string>
+    <string name="lyrics_offset_minus_point_one">−.1</string>
+    <string name="lyrics_offset_plus_point_one">+.1</string>
+    <string name="lyrics_offset_plus_half">+.5</string>
+    <string name="lyrics_offset_zero">0s</string>
+    <string name="lyrics_offset_seconds_fmt">%1$+.1fs</string>
+    
+    <!-- LyricsRepository -->
+    <string name="lyrics_failed_to_search">搜索歌词失败</string>
+    <string name="lyrics_failed_to_fetch_from_remote">无法从远程获取歌词</string>
+    <string name="lyrics_fetch_timeout">连接超时。请检查您的网络连接。</string>
+    <string name="lyrics_network_error">网络错误。请检查您的网络连接。</string>
+    <string name="lyrics_server_error">服务器错误（代码 %d）。请稍后再试。</string>
+    
+    <!-- LyricsStateHolder -->
+    <string name="lyrics_already_available">歌词已可用，跳过在线获取。</string>
+    <string name="lyrics_embedded_already_available">已找到内嵌歌词，跳过在线获取。</string>
+    <string name="lyrics_local_lrc_already_available">已找到本地 (.lrc) 歌词，跳过在线获取。</string>
+
+    <!-- LyricsMoreBottomSheet -->
+    <string name="lyrics_save_title">保存歌词</string>
+    <string name="lyrics_translate_via_ai">使用 AI 翻译</string>
+    <string name="lyrics_translate_already_translated">此歌词已有翻译</string>
+    <string name="lyrics_translate_already_in_target_language">此歌词已经是该语言</string>
+    <string name="lyrics_translate_api_not_configured">未配置 API</string>
+    <string name="lyrics_translate_success">歌词翻译成功！</string>
+    <string name="lyrics_translate_progress">正在翻译歌词...</string>
+    <string name="lyrics_reset_imported">重置已导入的歌词</string>
+    <string name="lyrics_reset_dialog_title">重置歌词？</string>
+    <string name="lyrics_reset_dialog_message">您确定要重置此歌曲的歌词吗？</string>
+    <string name="lyrics_appearance_section">外观</string>
+    <string name="lyrics_appearance_alignment">对齐方式</string>
+    <string name="lyrics_appearance_align_left">歌词左对齐</string>
+    <string name="lyrics_appearance_align_center">歌词居中</string>
+    <string name="lyrics_appearance_align_right">歌词右对齐</string>
+    <string name="lyrics_controls_section">控制</string>
+    <string name="lyrics_controls_adjust_sync">调整同步</string>
+    <string name="lyrics_controls_hide_sync">隐藏同步控制</string>
+    <string name="lyrics_controls_show_romanization">显示罗马音</string>
+    <string name="lyrics_controls_show_translations">显示翻译</string>
+    <string name="lyrics_controls_disable_immersive_once">禁用沉浸模式（一次）</string>
+    <string name="lyrics_controls_keep_screen_on">保持屏幕常亮</string>
+    
+    <!-- LyricsSheet save dialog -->
+    <string name="lyrics_save_dialog_title">保存歌词</string>
+    <string name="lyrics_save_dialog_message">选择要保存的版本：</string>
+    <string name="lyrics_save_synced">同步版（带时间戳）</string>
+    <string name="lyrics_save_plain">纯文本（仅文本）</string>
+
+    <!-- FetchLyricsDialog -->
+    <string name="lyrics_search_online_prompt">您想在网上搜索歌词吗？</string>
+    <string name="lyrics_fetch_show_options_title">显示歌词选项</string>
+    <string name="lyrics_fetch_show_options_subtitle">始终打开选择器，而不是自动应用第一个匹配项</string>
+    <string name="lyrics_searching">正在搜索歌词…</string>
+    <string name="lyrics_not_found">未找到歌词</string>
+    <string name="lyrics_custom_search_hint">我们无法自动找到歌词。您可以编辑标题或艺术家名称并尝试手动搜索。</string>
+    <string name="lyrics_custom_search_field_title">歌曲标题</string>
+    <string name="lyrics_custom_search_field_artist">艺术家（可选）</string>
+    <string name="lyrics_found_n_matches_format">找到 %d 个匹配项</string>
+    <string name="lyrics_synced_badge">已同步</string>
+    <string name="lyrics_artist_album_line">%1$s • %2$s</string>
+    <string name="lyrics_provided_by">歌词提供者</string>
+    <string name="lyrics_lrclib_uri">https://lrclib.net/</string>
+</resources>

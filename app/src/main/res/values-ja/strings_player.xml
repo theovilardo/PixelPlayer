@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <!-- Player UI & Playback Controls -->
+    <string name="player_cd_collapse">プレイヤーを閉じる</string>
+    <string name="player_now_playing">再生中</string>
+    <string name="player_cd_cloud_stream">クラウドストリーム</string>
+    <string name="player_cd_cast">キャスト</string>
+    <string name="player_cd_bluetooth">Bluetooth</string>
+    <string name="player_cd_local_playback">本体再生</string>
+    <string name="player_connecting">接続中…</string>
+    <string name="player_cd_open_queue">キューを開く</string>
+
+    <!-- CastBottomSheet -->
+    <string name="cast_perm_title">接続の準備</string>
+    <string name="cast_perm_body">キャスト・Bluetooth オーディオ・スピーカーを同期するために、PixelPlayer が近くのデバイスと現在の Wi‑Fi を確認できるよう許可してください。</string>
+    <string name="cast_perm_nearby_title">近くのデバイス</string>
+    <string name="cast_perm_nearby_desc">接続済み Bluetooth オーディオ機器の読み取りと制御に必要です。</string>
+    <string name="cast_perm_location_title">Wi‑Fi 用の位置情報</string>
+    <string name="cast_perm_location_desc">Android では、互換性のあるキャストデバイスを検出するために Wi‑Fi ネットワーク（SSID）の共有に位置情報が必要です。</string>
+    <string name="cast_allow_access">アクセスを許可</string>
+    <string name="cast_perm_footer">これらの権限はデバイスの相互接続（キャスト・近くのスピーカーの制御・オーディオ同期）にのみ使用します。</string>
+    <string name="cast_title_connect">デバイスを接続</string>
+    <string name="cast_scanning_nearby">近くをスキャン中</string>
+    <string name="cast_subtitle_session">キャストセッション</string>
+    <string name="cast_connecting">接続中</string>
+    <string name="cast_connected">接続済み</string>
+    <string name="cast_this_phone">このスマートフォン</string>
+    <string name="cast_bluetooth_audio">Bluetooth オーディオ</string>
+    <string name="cast_local_playback">本体再生</string>
+    <string name="cast_playing">再生中</string>
+    <string name="cast_paused">一時停止中</string>
+    <string name="cast_volume_device">デバイスの音量</string>
+    <string name="cast_volume_phone">スマートフォンの音量</string>
+    <string name="cast_volume_levels">%1$d/%2$d</string>
+    <string name="cast_cd_battery">バッテリー残量</string>
+    <string name="cast_cd_volume_level">音量レベル</string>
+    <string name="cast_disconnect">切断</string>
+    <string name="cast_connectivity">接続性</string>
+    <string name="cast_turn_on_wifi_bt">Wi-Fi または Bluetooth をオンにしてください</string>
+    <string name="cast_cd_refresh_connections">接続を更新</string>
+    <string name="cast_wifi">Wi-Fi</string>
+    <string name="cast_wifi_off">オフ</string>
+    <string name="cast_wifi_on">オン</string>
+    <string name="cast_wifi_connected">接続済み</string>
+    <string name="cast_bluetooth">Bluetooth</string>
+    <string name="cast_bt_off">オフ</string>
+    <string name="cast_bt_on">オン</string>
+    <string name="cast_bt_connected">接続済み</string>
+    <string name="cast_nearby_devices">近くのデバイス</string>
+    <string name="cast_cd_refresh_devices">デバイスを更新</string>
+    <string name="cast_status_connected">接続済み</string>
+    <string name="cast_status_connecting">接続中</string>
+    <string name="cast_status_available_connect">接続可能</string>
+    <string name="cast_status_available">利用可能</string>
+    <string name="cast_connecting_ellipsis">接続中...</string>
+    <string name="cast_searching">デバイスを検索中…</string>
+    <string name="cast_searching_hint">テレビやスピーカーの電源が入っており、同じ Wi‑Fi ネットワークに接続されていることを確認してください。</string>
+    <string name="cast_tab_controls">コントロール</string>
+    <string name="cast_tab_devices">デバイス</string>
+
+    <!-- Casting & Remote Playback -->
+    <string name="cast_server_channel_name">キャストメディアサーバー</string>
+    <string name="cast_server_notification_title">デバイスにキャスト中</string>
+    <string name="cast_server_notification_text">キャストデバイスにメディアを配信中</string>
+    <string name="cast_server_foreground_error">%1$s: %2$s</string>
+    <string name="cast_seek_unavailable_for_format">このオーディオフォーマットはキャスト中にシークするとセッションがクラッシュする可能性があるため、一時的に利用できません。</string>
+
+    <!-- Sleep Timer -->
+    <string name="sleep_timer_title">スリープタイマー</string>
+    <string name="sleep_timer_zero_minutes_format">タイマー</string>
+    <string name="sleep_timer_n_minutes_format">%1$d 分</string>
+    <string name="sleep_timer_set_for_minutes_toast">%1$d 分後にタイマーをセットしました。</string>
+    <string name="sleep_timer_play_count_one_time">1 回</string>
+    <plurals name="sleep_timer_play_count_n_times">
+        <item quantity="other">%d 回</item>
+    </plurals>
+    <string name="sleep_timer_play_count_label">再生回数: %1$s</string>
+    <string name="sleep_timer_end_of_current_track">現在のトラックの終わり</string>
+    <string name="sleep_timer_eot_toast">トラックの終わりで再生を停止します。</string>
+    <string name="sleep_timer_cd_switch_on">スイッチをオン</string>
+    <string name="sleep_timer_custom_time">カスタム時間</string>
+    <string name="sleep_timer_cancel_timer">タイマーをキャンセル</string>
+    <string name="sleep_timer_display_eot">トラックの終わり</string>
+    <string name="sleep_timer_cancelled_toast">タイマーをキャンセルしました。</string>
+    <string name="sleep_timer_eot_no_song_toast">再生中の曲がないため、トラック終了タイマーを有効にできません。</string>
+    <string name="sleep_timer_eot_song_changed_toast">曲が %1$s から %2$s に変わったため、トラック終了タイマーを無効にしました。</string>
+    <string name="sleep_timer_label_previous_track">前のトラック</string>
+    <string name="sleep_timer_label_current_track">現在のトラック</string>
+    <string name="sleep_timer_ui_set_custom_duration">カスタム時間を設定</string>
+
+    <!-- QueueBottomSheet -->
+    <string name="queue_next_up_label">次の曲</string>
+    <string name="queue_tracks_empty">キューはまだ空です。</string>
+    <plurals name="queue_tracks_lined_up">
+        <item quantity="other">%d 曲待機中</item>
+    </plurals>
+    <string name="queue_source_fallback_label">キュー</string>
+    <string name="queue_empty_label">キューは空です。</string>
+    <string name="queue_cd_reorder_song">曲を並び替え</string>
+    <string name="queue_cd_toggle_shuffle_action">シャッフルを切り替え</string>
+    <string name="queue_cd_toggle_repeat_action">リピートを切り替え</string>
+    <string name="queue_cd_sleep_timer_action">スリープタイマー</string>
+    <string name="queue_cd_more_action">その他の操作</string>
+    <string name="queue_action_locate_current_song">現在の曲を探す</string>
+    <string name="queue_action_clear_queue">キューをクリア</string>
+    <string name="queue_dialog_clear_queue_title">キューをクリア</string>
+    <string name="queue_dialog_clear_queue_message">現在再生中の曲以外をすべてキューから削除しますか？</string>
+    <string name="queue_action_save_as_playlist">プレイリストとして保存</string>
+    <string name="queue_save_playlist_named">%1$s のキュー</string>
+    <string name="queue_save_playlist_current">現在のキュー</string>
+    <string name="queue_cd_dismiss_song">曲を削除</string>
+    <string name="queue_song_removed">削除しました</string>
+    <string name="queue_save_as_playlist_sheet_title">プレイリストとして保存</string>
+    <string name="queue_save_as_playlist_deselect_all">すべて選択解除</string>
+    <string name="queue_save_as_playlist_name_label">プレイリスト名</string>
+    <string name="queue_save_as_playlist_search_placeholder">含める曲を検索…</string>
+    <string name="queue_save_as_playlist_search_no_match">「%1$s」に一致する曲はありません</string>
+    <plurals name="queue_save_as_playlist_n_songs_selected">
+        <item quantity="other">%d 曲を選択中</item>
+    </plurals>
+    <string name="queue_save_as_playlist_format">%1$s として保存</string>
+    <string name="queue_save_as_playlist_name_placeholder">プレイリスト名を入力</string>
+    <string name="queue_cd_remove_from_playlist">プレイリストから削除</string>
+    <string name="queue_more_options_for_song">%1$s のその他のオプション</string>
+
+    <!-- LyricsSheet -->
+    <string name="lyrics_title">歌詞</string>
+    <string name="lyrics_loading">歌詞を読み込み中…</string>
+    <string name="lyrics_mode_synced">同期あり</string>
+    <string name="lyrics_mode_static">テキストのみ</string>
+    <string name="lyrics_options">歌詞オプション</string>
+    <string name="lyrics_offset_minus_half">−.5</string>
+    <string name="lyrics_offset_minus_point_one">−.1</string>
+    <string name="lyrics_offset_plus_point_one">+.1</string>
+    <string name="lyrics_offset_plus_half">+.5</string>
+    <string name="lyrics_offset_zero">0s</string>
+    <string name="lyrics_offset_seconds_fmt">%1$+.1f 秒</string>
+
+    <!-- LyricsRepository -->
+    <string name="lyrics_failed_to_search">歌詞の検索に失敗しました</string>
+    <string name="lyrics_failed_to_fetch_from_remote">リモートからの歌詞取得に失敗しました</string>
+    <string name="lyrics_fetch_timeout">接続がタイムアウトしました。インターネット接続を確認してください。</string>
+    <string name="lyrics_network_error">ネットワークエラー。インターネット接続を確認してください。</string>
+    <string name="lyrics_server_error">サーバーエラー（コード %d）。しばらくしてから再試行してください。</string>
+
+    <!-- LyricsStateHolder -->
+    <string name="lyrics_already_available">歌詞はすでに利用可能です。オンライン取得をスキップしました。</string>
+    <string name="lyrics_embedded_already_available">埋め込み歌詞が見つかりました。オンライン取得をスキップしました。</string>
+    <string name="lyrics_local_lrc_already_available">ローカル（.lrc）歌詞が見つかりました。オンライン取得をスキップしました。</string>
+
+    <!-- LyricsMoreBottomSheet -->
+    <string name="lyrics_save_title">歌詞を保存</string>
+    <string name="lyrics_translate_via_ai">AI で翻訳</string>
+    <string name="lyrics_translate_already_translated">この歌詞にはすでに翻訳があります</string>
+    <string name="lyrics_translate_already_in_target_language">この歌詞はすでにこの言語です</string>
+    <string name="lyrics_translate_api_not_configured">API が設定されていません</string>
+    <string name="lyrics_translate_success">歌詞の翻訳が完了しました！</string>
+    <string name="lyrics_translate_progress">歌詞を翻訳中...</string>
+    <string name="lyrics_reset_imported">インポートした歌詞をリセット</string>
+    <string name="lyrics_reset_dialog_title">歌詞をリセットしますか？</string>
+    <string name="lyrics_reset_dialog_message">この曲の歌詞をリセットしてもよろしいですか？</string>
+    <string name="lyrics_appearance_section">表示</string>
+    <string name="lyrics_appearance_alignment">配置</string>
+    <string name="lyrics_appearance_align_left">左揃え</string>
+    <string name="lyrics_appearance_align_center">中央揃え</string>
+    <string name="lyrics_appearance_align_right">右揃え</string>
+    <string name="lyrics_controls_section">コントロール</string>
+    <string name="lyrics_controls_adjust_sync">同期を調整</string>
+    <string name="lyrics_controls_hide_sync">同期コントロールを非表示</string>
+    <string name="lyrics_controls_show_romanization">ローマ字表記を表示</string>
+    <string name="lyrics_controls_show_translations">翻訳を表示</string>
+    <string name="lyrics_controls_disable_immersive_once">没入モードを一時解除</string>
+    <string name="lyrics_controls_keep_screen_on">画面をオンに保つ</string>
+
+    <!-- LyricsSheet save dialog -->
+    <string name="lyrics_save_dialog_title">歌詞を保存</string>
+    <string name="lyrics_save_dialog_message">保存するバージョンを選択してください:</string>
+    <string name="lyrics_save_synced">同期あり（タイムスタンプ付き）</string>
+    <string name="lyrics_save_plain">テキストのみ</string>
+
+    <!-- FetchLyricsDialog -->
+    <string name="lyrics_search_online_prompt">歌詞をオンラインで検索しますか？</string>
+    <string name="lyrics_fetch_show_options_title">歌詞の候補を表示</string>
+    <string name="lyrics_fetch_show_options_subtitle">最初の候補を自動適用せず、常に選択画面を開く</string>
+    <string name="lyrics_searching">歌詞を検索中…</string>
+    <string name="lyrics_not_found">歌詞が見つかりませんでした</string>
+    <string name="lyrics_custom_search_hint">歌詞を自動で見つけられませんでした。タイトルやアーティスト名を編集して手動で検索できます。</string>
+    <string name="lyrics_custom_search_field_title">曲名</string>
+    <string name="lyrics_custom_search_field_artist">アーティスト（任意）</string>
+    <string name="lyrics_found_n_matches_format">%d 件見つかりました</string>
+    <string name="lyrics_synced_badge">同期あり</string>
+    <string name="lyrics_artist_album_line">%1$s • %2$s</string>
+    <string name="lyrics_provided_by">歌詞提供元：</string>
+    <string name="lyrics_lrclib_uri">https://lrclib.net/</string>
+</resources>

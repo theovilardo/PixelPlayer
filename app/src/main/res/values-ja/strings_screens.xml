@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Navigation -->
+    <string name="nav_error_genre_id_missing">エラー: ジャンル ID がありません</string>
+
+    <!-- SetupScreen -->
+    <string name="setup_lets_go">始めましょう！</string>
+    <string name="setup_step_format">ステップ %1$d / %2$d</string>
+    <string name="setup_toast_grant_permission_first">先に必要な権限を許可してください。</string>
+    <string name="setup_toast_grant_all_permissions">必要な権限をすべて許可してください。</string>
+    <string name="setup_welcome_prefix">ようこそ </string>
+    <string name="setup_beta_symbol">β</string>
+    <string name="setup_beta_label">ベータ</string>
+    <string name="setup_intro_body">セットアップを完了しましょう。</string>
+    <string name="setup_permission_media_title">メディアの権限</string>
+    <string name="setup_permission_media_description">音楽ライブラリを構築するために、PixelPlayer がオーディオファイルへアクセスする必要があります。</string>
+    <string name="setup_permission_granted">権限が許可されました</string>
+    <string name="setup_grant_media_permission">メディア権限を許可</string>
+    <string name="setup_permission_notifications_title">通知</string>
+    <string name="setup_permission_notifications_description">ロック画面や通知シェードから音楽を操作するために通知を有効にします。</string>
+    <string name="setup_enable_notifications">通知を有効化</string>
+    <string name="setup_backup_have_title">バックアップはありますか？</string>
+    <string name="setup_backup_have_description">PixelPlayer のバックアップがある場合は今すぐ復元することでこのデバイスのセットアップの大部分をスキップできます。</string>
+    <string name="setup_import_backup">バックアップをインポート</string>
+    <string name="setup_inspecting_backup">バックアップを確認中</string>
+    <string name="setup_checking_backup">バックアップパッケージを確認中…</string>
+    <string name="setup_restoring_backup">バックアップを復元中</string>
+    <string name="setup_skip_for_now">スキップ / あとで</string>
+    <string name="setup_restore_backup_title">バックアップを復元</string>
+    <string name="setup_restore_backup_subtitle">セットアップを完了する前にインポートする内容を確認してください。</string>
+    <string name="setup_modules_selected_format">%2$d モジュール中 %1$d を選択中</string>
+    <string name="setup_backup_created_format">%1$s に作成</string>
+    <string name="setup_backup_from_version">%1$s からのバックアップ</string>
+    <string name="setup_backup_unknown_version">バージョン不明</string>
+    <string name="setup_restore_selected">選択を復元</string>
+    <string name="setup_restoring">復元中</string>
+    <string name="setup_excluded_folders_title">除外フォルダ</string>
+    <string name="setup_excluded_folders_description">デフォルトではすべてのフォルダがスキャンされます。ライブラリ構築時に無視する場所を選択してください。</string>
+    <string name="setup_choose_folders_ignore">無視するフォルダを選択</string>
+    <string name="setup_toast_grant_storage_first">先にストレージの権限を許可してください</string>
+    <string name="setup_theme_title">アプリのテーマ</string>
+    <string name="setup_theme_subtitle">ライブラリの探索を始める前に好みの外観を選んでください。</string>
+    <string name="setup_theme_dark_title">ダーク</string>
+    <string name="setup_theme_dark_description">PixelPlayer のデフォルトの Material 3 ダーク外観。</string>
+    <string name="setup_theme_light_title">ライト</string>
+    <string name="setup_theme_light_description">アプリ全体のより明るい Material 3 外観。</string>
+    <string name="setup_theme_follow_title">システムに合わせる</string>
+    <string name="setup_theme_follow_description">スマートフォンの現在の外観設定に合わせます。</string>
+    <string name="setup_recommended">おすすめ</string>
+    <string name="setup_theme_footer">後から 設定 &gt; 外観 &gt; アプリのテーマ で変更できます。</string>
+    <string name="setup_library_layout_title">ライブラリレイアウト</string>
+    <string name="setup_library_layout_subtitle">ライブラリのナビゲーション方法を選択してください。</string>
+    <string name="setup_preview_songs_label">曲</string>
+    <string name="setup_compact_mode">コンパクトモード</string>
+    <string name="setup_compact_mode_pill_hint">最小化されたピルナビゲーションを使用</string>
+    <string name="setup_compact_mode_tab_hint">標準のタブ行を使用</string>
+    <string name="setup_tab_songs">曲</string>
+    <string name="setup_tab_albums">アルバム</string>
+    <string name="setup_tab_artists">アーティスト</string>
+    <string name="setup_library_layout_footer">後から 設定 &gt; 外観 &gt; ライブラリナビゲーション で変更できます。</string>
+    <string name="setup_app_navigation_title">アプリナビゲーション</string>
+    <string name="setup_app_navigation_subtitle">ボトムナビゲーションバーのスタイルを選択してください。</string>
+    <string name="setup_navbar_default_style">デフォルトスタイル</string>
+    <string name="setup_nav_floating_pill_description">角が丸いフローティングピル</string>
+    <string name="setup_nav_full_width_description">標準のフル幅バー</string>
+    <string name="setup_customize_corner_radius">コーナー半径をカスタマイズ</string>
+    <string name="setup_navbar_footer">後から 設定 &gt; 外観 &gt; ナビバースタイル で変更できます。</string>
+    <string name="setup_permission_alarms_title">アラームとリマインダー</string>
+    <string name="setup_permission_alarms_description">任意ですが、スリープタイマーを使用して PixelPlayer を正確な時刻に停止させたい場合はおすすめです。</string>
+    <string name="setup_grant_permission_generic">権限を許可</string>
+    <string name="setup_battery_optimization_title">バッテリー最適化</string>
+    <string name="setup_battery_optimization_description">一部の Android 端末はバックグラウンドアプリを積極的に終了させます。予期しない再生の中断を防ぐために PixelPlayer のバッテリー最適化を無効にしてください。</string>
+    <string name="setup_disable_battery_optimization">最適化を無効化</string>
+    <string name="setup_all_set_title">準備完了！</string>
+    <string name="setup_all_set_body">音楽を楽しむ準備ができました。</string>
+
+    <!-- SearchScreen -->
+    <string name="search_placeholder">検索…</string>
+    <string name="search_cd_search_icon">検索</string>
+    <string name="search_cd_clear_search_query">検索をクリア</string>
+    <string name="search_recent_searches">最近の検索</string>
+    <string name="search_action_clear_all">すべてクリア</string>
+    <string name="search_cd_search_history_icon">履歴</string>
+    <string name="search_cd_delete_search_history_item">検索履歴アイテムを削除</string>
+    <string name="search_cd_no_results">結果なし</string>
+    <string name="search_no_results_for_query">「%1$s」の検索結果はありません</string>
+    <string name="search_nothing_found">見つかりませんでした</string>
+    <string name="search_try_different_or_filters">別の検索語またはフィルターを試してください。</string>
+    <string name="search_no_results_found">結果が見つかりませんでした。</string>
+    <string name="browse_by_genre">ジャンルで探す</string>
+    <string name="no_genres_available">利用可能なジャンルがありません。</string>
+
+    <!-- ArtistDetailScreen -->
+    <string name="artist_cd_play_title">%1$s を再生</string>
+    <string name="artist_cd_collapse_title">%1$s を折りたたむ</string>
+    <string name="artist_cd_expand_title">%1$s を展開</string>
+    <string name="artist_cd_edit_image">アーティスト画像を編集</string>
+    <string name="artist_action_change_photo">写真を変更</string>
+    <string name="artist_action_reset_to_default">デフォルトに戻す</string>
+    <string name="artist_cd_shuffle_play">アーティストをシャッフル再生</string>
+
+    <!-- AlbumDetailScreen -->
+    <string name="album_disc_number_header">ディスク %d</string>
+    <string name="album_cover_for">%1$s のカバー</string>
+    <string name="album_detail_meta_line">%1$s · %2$s</string>
+
+    <!-- PlaylistDetailScreen -->
+    <string name="playlist_not_found">プレイリストが見つかりません。</string>
+    <string name="playlist_empty_title">このプレイリストは空です。</string>
+    <string name="playlist_empty_add_hint">「曲を追加」をタップして始めましょう。</string>
+    <string name="playlist_empty_folder_label">このフォルダに曲はありません。</string>
+    <string name="playlist_sort_songs_title">曲を並び替え</string>
+    <string name="playlist_more_options_title">その他のオプション</string>
+    <string name="playlist_options_title">プレイリストのオプション</string>
+    <string name="playlist_action_edit_playlist">プレイリストを編集</string>
+    <string name="playlist_action_delete_playlist">プレイリストを削除</string>
+    <string name="playlist_dialog_delete_title">プレイリストを削除しますか？</string>
+    <string name="playlist_dialog_delete_body">このプレイリストを本当に削除しますか？</string>
+    <string name="playlist_action_set_default_transition">デフォルトトランジションを設定</string>
+    <string name="playlist_action_export_playlist">プレイリストをエクスポート</string>
+    <string name="playlist_song_duration_line">%1$s • %2$s</string>
+    <string name="playlist_action_play_it">再生する</string>
+    <string name="playlist_action_add_songs">追加</string>
+    <string name="playlist_cd_add_songs">曲を追加</string>
+    <string name="playlist_action_remove_songs">削除</string>
+    <string name="playlist_cd_remove_songs">曲を削除</string>
+    <string name="playlist_action_reorder_songs">並び替え</string>
+    <string name="playlist_cd_reorder_songs">曲を並び替え</string>
+
+    <!-- EditTransitionScreen -->
+    <string name="transition_title_global">グローバルトランジション</string>
+    <string name="transition_title_playlist_rules">プレイリストルール</string>
+    <string name="transition_intro_global">上書きされない限り、すべての再生ソースにこの設定が適用されます。</string>
+    <string name="transition_intro_playlist">この特定のプレイリストのデフォルト動作を設定します。</string>
+    <string name="transition_active_status">アクティブ状態</string>
+    <string name="transition_status_global_default">グローバルデフォルト</string>
+    <string name="transition_status_playlist_default">プレイリストデフォルト</string>
+    <string name="transition_status_following_global">グローバルに従う</string>
+    <string name="transition_status_custom_override">カスタム上書き</string>
+    <string name="transition_custom_override_title">カスタム上書き</string>
+    <string name="transition_custom_override_body">有効にするとこのプレイリストに特定のルールを設定できます。</string>
+    <string name="transition_snackbar_using_global">グローバルデフォルトを使用</string>
+    <string name="transition_snackbar_saved">変更を保存しました</string>
+    <string name="transition_style_title">トランジションスタイル</string>
+    <string name="transition_style_subtitle">トラックのブレンド方法</string>
+    <string name="transition_mode_none">なし</string>
+    <string name="transition_mode_crossfade">クロスフェード</string>
+    <string name="transition_duration_title">トランジションの長さ</string>
+    <string name="transition_duration_subtitle_format">%1$d 秒のオーバーラップ</string>
+    <string name="transition_reset_cd">トランジションをリセット</string>
+    <string name="transition_visualizer_current">現在の曲</string>
+    <string name="transition_visualizer_next">次の曲</string>
+    <string name="transition_overlap_explanation_format">トラックは %1$d 秒間オーバーラップします</string>
+    <string name="transition_curves_title">音量カーブ</string>
+    <string name="transition_curves_subtitle">オーディオのスロープを微調整</string>
+    <string name="transition_fade_out">フェードアウト</string>
+    <string name="transition_fade_in">フェードイン</string>
+
+    <!-- CreatePlaylistScreen -->
+    <string name="playlist_creation_new_smart">新しいスマートプレイリスト</string>
+    <string name="playlist_creation_new">新しいプレイリスト</string>
+    <string name="playlist_creation_add_songs">曲を追加</string>
+    <string name="playlist_creation_cd_back_or_cancel">戻るまたはキャンセル</string>
+    <string name="playlist_creation_next">次へ</string>
+    <string name="playlist_creation_create">作成</string>
+    <string name="playlist_creation_edit">プレイリストを編集</string>
+    <string name="playlist_creation_auto_collage">自動生成コラージュ</string>
+    <string name="playlist_creation_cd_add_photo">写真を追加</string>
+    <string name="playlist_creation_pick_image">画像を選択</string>
+    <string name="playlist_creation_change">変更</string>
+    <string name="playlist_creation_remove">削除</string>
+    <string name="playlist_creation_name_label">プレイリスト名</string>
+    <string name="playlist_creation_name_placeholder">マイ素敵なミックス</string>
+    <string name="playlist_creation_edit_cover">カバーを編集</string>
+    <string name="playlist_creation_adjust_cover_title">カバーアートを調整</string>
+    <string name="playlist_creation_adjust_cover_hint">ピンチとドラッグで最適なフレーミングを見つけてください</string>
+    <string name="playlist_creation_mode_manual">手動</string>
+    <string name="playlist_creation_mode_smart">スマート</string>
+    <string name="playlist_creation_generate_with_ai">AI で生成</string>
+    <string name="playlist_creation_smart_rule">スマートルール</string>
+    <string name="playlist_creation_tab_default">デフォルト</string>
+    <string name="playlist_creation_tab_image">画像</string>
+    <string name="playlist_creation_tab_icon">アイコン</string>
+    <string name="playlist_creation_bg_color">背景色</string>
+    <string name="playlist_creation_icon_symbol">アイコンシンボル</string>
+    <string name="playlist_creation_shape_style">形状スタイル</string>
+    <string name="playlist_creation_shape_params">形状パラメーター</string>
+    <string name="playlist_creation_corner_radius">コーナー半径</string>
+    <string name="playlist_creation_smoothness">滑らかさ</string>
+    <string name="playlist_creation_sides">辺の数</string>
+    <string name="playlist_creation_curve">カーブ</string>
+    <string name="playlist_creation_rotation">回転</string>
+    <string name="playlist_creation_scale">スケール</string>
+    <string name="playlist_creation_rule_top_played_title">よく再生する曲</string>
+    <string name="playlist_creation_rule_top_played_sub">最も再生されたトラック。</string>
+    <string name="playlist_creation_rule_recently_played_title">最近再生した曲</string>
+    <string name="playlist_creation_rule_recently_played_sub">最近聴いた曲。</string>
+    <string name="playlist_creation_rule_forgotten_title">忘れられたお気に入り</string>
+    <string name="playlist_creation_rule_forgotten_sub">しばらく再生していないお気に入りのトラック。</string>
+    <string name="playlist_creation_rule_new_gems_title">新着の宝石</string>
+    <string name="playlist_creation_rule_new_gems_sub">再生回数が少ない最近追加されたトラック。</string>
+
+    <!-- GenreDetailScreen -->
+    <string name="genre_quick_fill">ジャンルに曲を素早く追加</string>
+    <string name="genre_sort_title">並び替えと再生</string>
+    <string name="genre_sort_action_shuffle">シャッフル</string>
+    <string name="genre_sort_by_title">並び替え基準</string>
+    <string name="genre_sort_artist_option">アーティスト</string>
+    <string name="genre_sort_album_option">アルバム</string>
+    <string name="genre_sort_title_option">タイトル</string>
+    <string name="genre_cd_generic_artist">一般アーティスト</string>
+    <string name="genre_shuffle_label">%1$s シャッフル</string>
+
+    <!-- QuickFillScreen -->
+    <string name="quick_fill_select_songs">曲を選択</string>
+    <string name="quick_fill_choose_genre">ジャンルを選択</string>
+    <string name="quick_fill_search_songs_placeholder">曲を検索</string>
+    <string name="quick_fill_new_genre">新しいジャンル</string>
+    <string name="quick_fill_cd_add_custom_genre">カスタムを追加</string>
+    <string name="quick_fill_add_custom_genre_title">カスタムジャンルを追加</string>
+    <string name="quick_fill_genre_name_placeholder">ジャンル名</string>
+    <string name="quick_fill_select_icon">アイコンを選択</string>
+    <string name="quick_fill_select_genre_label_format">ジャンル: %1$s</string>
+    <string name="quik_fill_select_a_genre_label">ジャンルを選択</string>
+    <string name="quick_fill_action_title">素早く追加</string>
+
+    <!-- MashupScreen -->
+    <string name="mashup_title">DJ スペース</string>
+    <string name="mashup_loading">読み込み中…</string>
+    <string name="mashup_deck_n">デッキ %1$d</string>
+    <string name="mashup_load_song_cd">曲を読み込む</string>
+    <string name="mashup_no_song_loaded">曲が読み込まれていません</string>
+    <string name="mashup_artist_placeholder">…</string>
+    <string name="mashup_stem_separation_unavailable">ステム分離はまだ利用できません。</string>
+    <string name="mashup_volume">音量</string>
+    <string name="mashup_speed">速度</string>
+    <string name="mashup_crossfader">クロスフェーダー</string>
+    <string name="mashup_deck_1">デッキ 1</string>
+    <string name="mashup_deck_2">デッキ 2</string>
+    <string name="mashup_select_song_title">曲を選択</string>
+    <string name="mashup_cd_play_pause">再生/一時停止</string>
+    <string name="mashup_cd_song_cover">曲のカバー</string>
+    <string name="mashup_speed_multiplier">x%1$.2f</string>
+</resources>

@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Navigation -->
+    <string name="nav_error_genre_id_missing">Error: Genre ID missing</string>
+
+    <!-- SetupScreen -->
+    <string name="setup_lets_go">Let\'s Go!</string>
+    <string name="setup_step_format">Step %1$d of %2$d</string>
+    <string name="setup_toast_grant_permission_first">Please grant the required permission first.</string>
+    <string name="setup_toast_grant_all_permissions">Please grant all required permissions.</string>
+    <string name="setup_welcome_prefix">Welcome to </string>
+    <string name="setup_beta_symbol">β</string>
+    <string name="setup_beta_label">Beta</string>
+    <string name="setup_intro_body">Let\'s get everything set up for you.</string>
+    <string name="setup_permission_media_title">Media Permission</string>
+    <string name="setup_permission_media_description">PixelPlayer needs access to your audio files to build your music library.</string>
+    <string name="setup_permission_granted">Permission Granted</string>
+    <string name="setup_grant_media_permission">Grant Media Permission</string>
+    <string name="setup_permission_notifications_title">Notifications</string>
+    <string name="setup_permission_notifications_description">Enable notifications to control your music from the lock screen and notification shade.</string>
+    <string name="setup_enable_notifications">Enable Notifications</string>
+    <string name="setup_backup_have_title">Do you have a backup?</string>
+    <string name="setup_backup_have_description">If you already have a PixelPlayer backup, restore it now and skip most of the remaining setup on this device.</string>
+    <string name="setup_import_backup">Import backup</string>
+    <string name="setup_inspecting_backup">Inspecting backup</string>
+    <string name="setup_checking_backup">Checking backup package…</string>
+    <string name="setup_restoring_backup">Restoring backup</string>
+    <string name="setup_skip_for_now">Skip / Not now</string>
+    <string name="setup_restore_backup_title">Restore Backup</string>
+    <string name="setup_restore_backup_subtitle">Review what you want to import before finishing setup.</string>
+    <string name="setup_modules_selected_format">%1$d of %2$d modules selected</string>
+    <string name="setup_backup_created_format">Created %1$s</string>
+    <string name="setup_backup_from_version">Backup from %1$s</string>
+    <string name="setup_backup_unknown_version">Unknown version</string>
+    <string name="setup_restore_selected">Restore selected</string>
+    <string name="setup_restoring">Restoring</string>
+    <string name="setup_excluded_folders_title">Excluded folders</string>
+    <string name="setup_excluded_folders_description">All folders are scanned by default. Pick any locations you want to ignore when building your library.</string>
+    <string name="setup_choose_folders_ignore">Choose folders to ignore</string>
+    <string name="setup_toast_grant_storage_first">Grant storage permissions first</string>
+    <string name="setup_theme_title">App Theme</string>
+    <string name="setup_theme_subtitle">Pick the look you want before you start exploring your library.</string>
+    <string name="setup_theme_dark_title">Dark</string>
+    <string name="setup_theme_dark_description">The default Material 3 dark look for PixelPlayer.</string>
+    <string name="setup_theme_light_title">Light</string>
+    <string name="setup_theme_light_description">A brighter Material 3 look across the app.</string>
+    <string name="setup_theme_follow_title">Follow system</string>
+    <string name="setup_theme_follow_description">Match your phone\'s current appearance setting.</string>
+    <string name="setup_recommended">Recommended</string>
+    <string name="setup_theme_footer">You can change this later in Settings &gt; Appearance &gt; App Theme.</string>
+    <string name="setup_library_layout_title">Library Layout</string>
+    <string name="setup_library_layout_subtitle">Choose your preferred way to navigate your library.</string>
+    <string name="setup_preview_songs_label">Songs</string>
+    <string name="setup_compact_mode">Compact Mode</string>
+    <string name="setup_compact_mode_pill_hint">Using minimal pill navigation</string>
+    <string name="setup_compact_mode_tab_hint">Using standard tab row</string>
+    <string name="setup_tab_songs">SONGS</string>
+    <string name="setup_tab_albums">ALBUMS</string>
+    <string name="setup_tab_artists">ARTISTS</string>
+    <string name="setup_library_layout_footer">You can change this later in Settings &gt; Appearance &gt; Library Navigation.</string>
+    <string name="setup_app_navigation_title">App Navigation</string>
+    <string name="setup_app_navigation_subtitle">Choose the style of the bottom navigation bar.</string>
+    <string name="setup_navbar_default_style">Default Style</string>
+    <string name="setup_nav_floating_pill_description">Floating pill with rounded corners</string>
+    <string name="setup_nav_full_width_description">Standard full-width bar</string>
+    <string name="setup_customize_corner_radius">Customize Corner Radius</string>
+    <string name="setup_navbar_footer">You can change this later in Settings &gt; Appearance &gt; Navbar Style.</string>
+    <string name="setup_permission_alarms_title">Alarms &amp; Reminders</string>
+    <string name="setup_permission_alarms_description">Optional, but recommended if you use Sleep Timer and want PixelPlayer to stop playback exactly on time.</string>
+    <string name="setup_grant_permission_generic">Grant Permission</string>
+    <string name="setup_battery_optimization_title">Battery Optimization</string>
+    <string name="setup_battery_optimization_description">Some Android devices aggressively kill background apps. Disable battery optimization for PixelPlayer to prevent unexpected playback interruptions.</string>
+    <string name="setup_disable_battery_optimization">Disable Optimization</string>
+    <string name="setup_all_set_title">All Set!</string>
+    <string name="setup_all_set_body">You\'re ready to enjoy your music.</string>
+
+    <!-- SearchScreen -->
+    <string name="search_placeholder">Search…</string>
+    <string name="search_cd_search_icon">Search</string>
+    <string name="search_cd_clear_search_query">Clear search</string>
+    <string name="search_recent_searches">Recent searches</string>
+    <string name="search_action_clear_all">Clear all</string>
+    <string name="search_cd_search_history_icon">History</string>
+    <string name="search_cd_delete_search_history_item">Delete search history item</string>
+    <string name="search_cd_no_results">No results</string>
+    <string name="search_no_results_for_query">No results for \"%1$s\"</string>
+    <string name="search_nothing_found">Nothing found</string>
+    <string name="search_try_different_or_filters">Try a different search term or check your filters.</string>
+    <string name="search_no_results_found">No results found.</string>
+    <string name="browse_by_genre">Browse by genre</string>
+    <string name="no_genres_available">No genres available.</string>
+
+    <!-- ArtistDetailScreen -->
+    <string name="artist_cd_play_title">Play %1$s</string>
+    <string name="artist_cd_collapse_title">Collapse %1$s</string>
+    <string name="artist_cd_expand_title">Expand %1$s</string>
+    <string name="artist_cd_edit_image">Edit artist image</string>
+    <string name="artist_action_change_photo">Change photo</string>
+    <string name="artist_action_reset_to_default">Reset to default</string>
+    <string name="artist_cd_shuffle_play">Shuffle play artist</string>
+
+    <!-- AlbumDetailScreen -->
+    <string name="album_disc_number_header">Disc %d</string>
+    <string name="album_cover_for">Cover of %1$s</string>
+    <string name="album_detail_meta_line">%1$s · %2$s</string>
+
+    <!-- PlaylistDetailScreen -->
+    <string name="playlist_not_found">Playlist not found.</string>
+    <string name="playlist_empty_title">This playlist is empty.</string>
+    <string name="playlist_empty_add_hint">Tap on \'Add Songs\' to begin.</string>
+    <string name="playlist_empty_folder_label">This folder doesn\'t contain songs.</string>
+    <string name="playlist_sort_songs_title">Sort Songs</string>
+    <string name="playlist_more_options_title">More Options</string>
+    <string name="playlist_options_title">Playlist options</string>
+    <string name="playlist_action_edit_playlist">Edit playlist</string>
+    <string name="playlist_action_delete_playlist">Delete playlist</string>
+    <string name="playlist_dialog_delete_title">Delete playlist?</string>
+    <string name="playlist_dialog_delete_body">Are you sure you want to delete this playlist?</string>
+    <string name="playlist_action_set_default_transition">Set default transition</string>
+    <string name="playlist_action_export_playlist">Export Playlist</string>
+    <string name="playlist_song_duration_line">%1$s • %2$s</string>
+    <string name="playlist_action_play_it">Play it</string>
+    <string name="playlist_action_add_songs">Add</string>
+    <string name="playlist_cd_add_songs">Add songs</string>
+    <string name="playlist_action_remove_songs">Remove</string>
+    <string name="playlist_cd_remove_songs">Remove songs</string>
+    <string name="playlist_action_reorder_songs">Reorder</string>
+    <string name="playlist_cd_reorder_songs">Reorder songs</string>
+
+    <!-- EditTransitionScreen -->
+    <string name="transition_title_global">Global transitions</string>
+    <string name="transition_title_playlist_rules">Playlist rules</string>
+    <string name="transition_intro_global">This configuration applies to all playback sources unless overridden.</string>
+    <string name="transition_intro_playlist">Configure default behavior for this specific playlist.</string>
+    <string name="transition_active_status">Active Status</string>
+    <string name="transition_status_global_default">Global Default</string>
+    <string name="transition_status_playlist_default">Playlist Default</string>
+    <string name="transition_status_following_global">Following Global</string>
+    <string name="transition_status_custom_override">Custom Override</string>
+    <string name="transition_custom_override_title">Custom Override</string>
+    <string name="transition_custom_override_body">Enable to set specific rules for this playlist.</string>
+    <string name="transition_snackbar_using_global">Using global defaults</string>
+    <string name="transition_snackbar_saved">Changes saved successfully</string>
+    <string name="transition_style_title">Transition Style</string>
+    <string name="transition_style_subtitle">How tracks blend together</string>
+    <string name="transition_mode_none">None</string>
+    <string name="transition_mode_crossfade">Crossfade</string>
+    <string name="transition_duration_title">Transition Duration</string>
+    <string name="transition_duration_subtitle_format">%1$ds total overlap</string>
+    <string name="transition_reset_cd">Reset Transition</string>
+    <string name="transition_visualizer_current">Current Song</string>
+    <string name="transition_visualizer_next">Next Song</string>
+    <string name="transition_overlap_explanation_format">Tracks will overlap for %1$ds</string>
+    <string name="transition_curves_title">Volume Curves</string>
+    <string name="transition_curves_subtitle">Fine tune the audio slope</string>
+    <string name="transition_fade_out">Fade Out</string>
+    <string name="transition_fade_in">Fade In</string>
+
+    <!-- CreatePlaylistScreen -->
+    <string name="playlist_creation_new_smart">New smart playlist</string>
+    <string name="playlist_creation_new">New playlist</string>
+    <string name="playlist_creation_add_songs">Add Songs</string>
+    <string name="playlist_creation_cd_back_or_cancel">Back or Cancel</string>
+    <string name="playlist_creation_next">Next</string>
+    <string name="playlist_creation_create">Create</string>
+    <string name="playlist_creation_edit">Edit Playlist</string>
+    <string name="playlist_creation_auto_collage">Auto-generated collage</string>
+    <string name="playlist_creation_cd_add_photo">Add Photo</string>
+    <string name="playlist_creation_pick_image">Pick Image</string>
+    <string name="playlist_creation_change">Change</string>
+    <string name="playlist_creation_remove">Remove</string>
+    <string name="playlist_creation_name_label">Playlist Name</string>
+    <string name="playlist_creation_name_placeholder">My awesome mix</string>
+    <string name="playlist_creation_edit_cover">Edit Cover</string>
+    <string name="playlist_creation_adjust_cover_title">Adjust your cover art</string>
+    <string name="playlist_creation_adjust_cover_hint">Use pinch and drag gestures to find the perfect framing</string>
+    <string name="playlist_creation_mode_manual">Manual</string>
+    <string name="playlist_creation_mode_smart">Smart</string>
+    <string name="playlist_creation_generate_with_ai">Generate with AI</string>
+    <string name="playlist_creation_smart_rule">Smart Rule</string>
+    <string name="playlist_creation_tab_default">Default</string>
+    <string name="playlist_creation_tab_image">Image</string>
+    <string name="playlist_creation_tab_icon">Icon</string>
+    <string name="playlist_creation_bg_color">Background Color</string>
+    <string name="playlist_creation_icon_symbol">Icon Symbol</string>
+    <string name="playlist_creation_shape_style">Shape Style</string>
+    <string name="playlist_creation_shape_params">Shape parameters</string>
+    <string name="playlist_creation_corner_radius">Corner Radius</string>
+    <string name="playlist_creation_smoothness">Smoothness</string>
+    <string name="playlist_creation_sides">Sides</string>
+    <string name="playlist_creation_curve">Curve</string>
+    <string name="playlist_creation_rotation">Rotation</string>
+    <string name="playlist_creation_scale">Scale</string>
+    <string name="playlist_creation_rule_top_played_title">Top Played</string>
+    <string name="playlist_creation_rule_top_played_sub">Your most played tracks.</string>
+    <string name="playlist_creation_rule_recently_played_title">Recently Played</string>
+    <string name="playlist_creation_rule_recently_played_sub">Songs you listened to most recently.</string>
+    <string name="playlist_creation_rule_forgotten_title">Forgotten Favorites</string>
+    <string name="playlist_creation_rule_forgotten_sub">Favorite tracks you haven\'t played in a while.</string>
+    <string name="playlist_creation_rule_new_gems_title">New Gems</string>
+    <string name="playlist_creation_rule_new_gems_sub">Recently added tracks with low play counts.</string>
+
+    <!-- GenreDetailScreen -->
+    <string name="genre_quick_fill">Quick Fill Genre</string>
+    <string name="genre_sort_title">Sort &amp; Play</string>
+    <string name="genre_sort_action_shuffle">Shuffle</string>
+    <string name="genre_sort_by_title">Sort By</string>
+    <string name="genre_sort_artist_option">Artist</string>
+    <string name="genre_sort_album_option">Album</string>
+    <string name="genre_sort_title_option">Title</string>
+    <string name="genre_cd_generic_artist">Generic artist</string>
+    <string name="genre_shuffle_label">%1$s Shuffle</string>
+
+    <!-- QuickFillScreen -->
+    <string name="quick_fill_select_songs">Select Songs</string>
+    <string name="quick_fill_choose_genre">Choose Genre</string>
+    <string name="quick_fill_search_songs_placeholder">Search songs</string>
+    <string name="quick_fill_new_genre">New Genre</string>
+    <string name="quick_fill_cd_add_custom_genre">Add Custom</string>
+    <string name="quick_fill_add_custom_genre_title">Add Custom Genre</string>
+    <string name="quick_fill_genre_name_placeholder">Genre Name</string>
+    <string name="quick_fill_select_icon">Select Icon</string>
+    <string name="quick_fill_select_genre_label_format">Genre: %1$s</string>
+    <string name="quik_fill_select_a_genre_label">Select a genre</string>
+    <string name="quick_fill_action_title">Quick Fill</string>
+
+    <!-- MashupScreen -->
+    <string name="mashup_title">DJ Space</string>
+    <string name="mashup_loading">Loading…</string>
+    <string name="mashup_deck_n">Deck %1$d</string>
+    <string name="mashup_load_song_cd">Load song</string>
+    <string name="mashup_no_song_loaded">No song loaded</string>
+    <string name="mashup_artist_placeholder">…</string>
+    <string name="mashup_stem_separation_unavailable">Stem separation is not available yet.</string>
+    <string name="mashup_volume">Volume</string>
+    <string name="mashup_speed">Speed</string>
+    <string name="mashup_crossfader">Crossfader</string>
+    <string name="mashup_deck_1">Deck 1</string>
+    <string name="mashup_deck_2">Deck 2</string>
+    <string name="mashup_select_song_title">Select a song</string>
+    <string name="mashup_cd_play_pause">Play/Pause</string>
+    <string name="mashup_cd_song_cover">Song cover</string>
+    <string name="mashup_speed_multiplier">x%1$.2f</string>
+</resources>

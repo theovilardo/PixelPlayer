@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="glance_widget_description">可根据尺寸自适应的响应式小组件</string>
+    <string name="widget_bar_4x1_desc">紧凑型播放栏</string>
+    <string name="widget_control_4x2_desc">包含随机和循环播放的完整控件</string>
+    <string name="widget_grid_2x2_desc">极简方形播放器</string>
+
+    <string name="widget_tap_to_open">点击打开</string>
+    <string name="widget_album_art">专辑封面</string>
+    <string name="widget_album_art_placeholder">专辑封面占位图</string>
+
+    <string name="widget_tap_to_play">点击播放</string>
+    <string name="widget_preview_song_title">歌曲标题</string>
+    <string name="widget_preview_artist">艺术家</string>
+
+    <string name="widget_wavy_progress_bar_desc">进度条，%1$d%%</string>
+</resources>

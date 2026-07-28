@@ -7,10 +7,14 @@
     <string name="settings_category_appearance_subtitle">Temaer, layout og visuelle stiler</string>
     <string name="settings_category_playback_title">Avspilling</string>
     <string name="settings_category_playback_subtitle">Lydatferd, crossfade og bakgrunnsavspilling</string>
+    <string name="settings_category_lyrics_title">Lyrics</string>
+    <string name="settings_category_lyrics_subtitle">Source priority, immersive lyrics, and import management</string>
     <string name="settings_category_behavior_title">Atferd</string>
     <string name="settings_category_behavior_subtitle">Gester, haptikk og navigasjonsatferd</string>
     <string name="settings_category_ai_title">AI-integrasjon (β)</string>
-    <string name="settings_category_ai_subtitle">AI-leverandører, API-nøkler og modellinnstillinger</string>
+    <string name="settings_category_ai_subtitle">AI providers, API keys, model selection, and activity logs</string>
+    <string name="settings_category_generation_parameters_title">Generation Parameters</string>
+    <string name="settings_category_generation_parameters_subtitle">Temperature, sampling, prompts, and song data configuration</string>
     <string name="settings_category_backup_title">Sikkerhetskopiering og gjenoppretting</string>
     <string name="settings_category_backup_subtitle">Eksporter og gjenopprett dine personlige app-data</string>
     <string name="settings_category_developer_title">Utvikleralternativer</string>
@@ -174,6 +178,9 @@
     <string name="settings_language_korean">Koreansk</string>
     <string name="settings_language_norwegian_bokmal">Norsk bokmål</string>
     <string name="settings_language_turkish">Tyrkisk</string>
+    <string name="settings_language_japanese">Japansk</string>
+    <string name="settings_language_traditional_chinese">Tradisjonell kinesisk</string>
+    <string name="settings_language_vietnamese">Vietnamesisk</string>
     <string name="settings_app_theme_title">App-tema</string>
     <string name="settings_app_theme_subtitle">Bytt mellom lyst, mørkt eller følg systemets utseende.</string>
     <string name="settings_theme_light">Lyst tema</string>

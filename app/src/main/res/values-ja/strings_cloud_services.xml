@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Telegram login -->
+    <string name="telegram_login_title">Telegram ログイン</string>
+    <string name="telegram_edit_number_chip">番号を編集中です。再送すると前のコードが無効になります。</string>
+    <string name="telegram_working">処理中…</string>
+    <string name="telegram_status_initializing">Telegram を初期化中…</string>
+    <string name="telegram_status_logging_out">ログアウト中…</string>
+    <string name="telegram_status_closing">セッションを閉じています…</string>
+    <string name="telegram_status_closed">セッションが閉じました。続けるにはログインを再度開いてください。</string>
+    <string name="telegram_status_preparing">安全な Telegram セッションを準備中…</string>
+    <string name="telegram_status_waiting">Telegram からの応答を待機中…</string>
+    <string name="telegram_connect">Telegram に接続</string>
+    <string name="telegram_connect_subtitle">Telegram に接続してチャンネルやチャットから音楽をストリーミングします。</string>
+    <string name="telegram_phone_number_title">電話番号</string>
+    <string name="telegram_phone_number_subtitle">Telegram の番号を入力してください。後で戻って編集することもできます。</string>
+    <string name="telegram_phone_number_hint">電話番号</string>
+    <string name="telegram_phone_country_placeholder">81</string>
+    <string name="telegram_phone_local_placeholder">09012345678</string>
+    <string name="telegram_send_code">コードを送信</string>
+    <string name="telegram_verification_code_title">確認コード</string>
+    <string name="telegram_verification_code_subtitle">Telegram からのコードを入力してください。番号が間違っている場合は戻って修正してください。</string>
+    <string name="telegram_code_field_label">コード</string>
+    <string name="telegram_code_placeholder">12345</string>
+    <string name="telegram_edit_phone">電話番号を編集</string>
+    <string name="telegram_resend_code">コードを再送</string>
+    <string name="telegram_verify_code">コードを確認</string>
+    <string name="telegram_two_step_password_title">二段階認証パスワード</string>
+    <string name="telegram_two_step_password_subtitle">Telegram のパスワードを入力してください。番号を修正するために戻ることもできます。</string>
+    <string name="telegram_password_label">パスワード</string>
+    <string name="telegram_verify_password">パスワードを確認</string>
+    <string name="telegram_please_wait">しばらくお待ちください…</string>
+
+    <!-- Telegram dashboard -->
+    <string name="telegram_channels_title">Telegram チャンネル</string>
+    <string name="telegram_add_channel_fab">チャンネルを追加</string>
+    <string name="telegram_public_channel_fallback">Telegram パブリックチャンネル</string>
+    <string name="telegram_syncing">同期中</string>
+    <string name="telegram_sync_now">今すぐ同期</string>
+    <string name="telegram_cd_collapse_topics">トピックを折りたたむ</string>
+    <string name="telegram_cd_show_topics">トピックを表示</string>
+    <string name="telegram_cd_channel_options">チャンネルオプション</string>
+    <string name="telegram_topics_heading">トピック</string>
+    <string name="telegram_syncing_channel">チャンネルを同期中</string>
+    <string name="telegram_updating_songs_from_telegram">Telegram から曲を更新中</string>
+    <string name="telegram_fetch_latest_songs">このチャンネルから最新の曲を取得</string>
+    <string name="telegram_remove_channel">チャンネルを削除</string>
+    <string name="telegram_remove_channel_subtitle">同期を停止してキャッシュされた曲を削除</string>
+    <string name="telegram_remove_channel_confirm_title">チャンネルを削除しますか？</string>
+    <string name="telegram_remove_channel_confirm_body">%1$s の同期が停止し、このチャンネルのキャッシュされた曲がすべて削除されます。</string>
+    <string name="telegram_remove_channel_confirm_action">削除</string>
+    <string name="telegram_no_channels_synced">同期済みチャンネルがありません</string>
+    <string name="telegram_no_channels_body">Telegram のパブリックチャンネルを追加して\n音楽ライブラリを同期しましょう</string>
+    <string name="telegram_add_channel_button">チャンネルを追加</string>
+    <string name="telegram_never_synced">未同期</string>
+    <string name="telegram_synced_relative">%1$s に同期</string>
+
+    <!-- Telegram channel search -->
+    <string name="telegram_add_channel_sheet_title">チャンネルを追加</string>
+    <string name="telegram_add_channel_sheet_subtitle">音楽を同期する Telegram パブリックチャンネルを検索</string>
+    <string name="telegram_channel_search_placeholder">\@チャンネル名またはリンク</string>
+    <string name="telegram_searching">検索中…</string>
+    <string name="telegram_search_channel_title">チャンネルを検索</string>
+    <string name="telegram_search_channel_body">パブリックチャンネルのユーザー名またはリンクを入力して\nオーディオファイルを同期してください</string>
+
+    <plurals name="telegram_n_songs">
+        <item quantity="other">%d 曲</item>
+    </plurals>
+    <plurals name="telegram_n_topics">
+        <item quantity="other">%d トピック</item>
+    </plurals>
+
+    <!-- Subsonic/Navidrome dashboard -->
+    <string name="subsonic_dashboard_title">Subsonic</string>
+    <string name="subsonic_dashboard_quick_actions_subtitle">Navidrome、Airsonic などの Subsonic 互換サーバーを管理します。</string>
+
+    <!-- Jellyfin dashboard -->
+    <string name="jellyfin_dashboard_playlists_empty_hint">同期をタップして Jellyfin のプレイリストを取得してください</string>
+    <string name="jellyfin_dashboard_quick_actions_subtitle">Jellyfin サーバーの接続を管理します。</string>
+
+    <!-- Google Drive dashboard -->
+    <string name="gdrive_dashboard_music_folders">音楽フォルダ</string>
+    <string name="gdrive_dashboard_add_folder_hint">+ をタップして Drive フォルダを追加</string>
+    <string name="gdrive_dashboard_no_folders_yet">フォルダがまだ追加されていません</string>
+    <string name="gdrive_dashboard_folders_synced_count">%1$d フォルダが同期済み</string>
+    <string name="gdrive_cd_add_folder">フォルダを追加</string>
+
+    <!-- QQ Music dashboard -->
+    <string name="qqmusic_select_playlist_type_title">プレイリストの種類を選択</string>
+    <string name="qqmusic_choose_playlists_to_sync">同期するプレイリストを選択:</string>
+    <string name="qqmusic_all_playlists">すべてのプレイリスト</string>
+    <string name="qqmusic_created_and_collected">作成 &amp; お気に入り</string>
+    <string name="qqmusic_created_playlists">作成したプレイリスト</string>
+    <string name="qqmusic_collected_playlists">お気に入りのプレイリスト</string>
+
+    <!-- Cloud dashboard generic -->
+    <string name="cloud_dashboard_playlists_synced_count">%1$d プレイリストが同期済み</string>
+    <string name="cloud_dashboard_title_playlists">プレイリスト</string>
+    <string name="cloud_dashboard_action_sync">同期</string>
+    <string name="cloud_dashboard_playlists_empty_title">まだプレイリストが同期されていません</string>
+    <string name="cloud_dashboard_playlists_empty_hint">同期をタップしてプレイリストを取得してください</string>
+    <string name="cloud_dashboard_quick_actions">クイックアクション</string>
+    <string name="cloud_dashboard_action_sync_library">ライブラリを同期</string>
+    <string name="cloud_dashboard_action_disconnect">切断</string>
+    <string name="cloud_dashboard_song_count">%1$d 曲</string>
+
+    <!-- Cloud sync status -->
+    <string name="cloud_sync_status_syncing">同期中</string>
+    <string name="cloud_sync_status_syncing_library">ライブラリを同期中…</string>
+    <string name="cloud_sync_status_fetching_playlists">プレイリストを取得中…</string>
+    <string name="cloud_sync_status_syncing_playlist_format">プレイリストを同期中: %1$s</string>
+    <string name="cloud_sync_status_updating_local">ローカルライブラリを更新中…</string>
+    <string name="cloud_sync_status_sync_complete">同期完了</string>
+    <string name="cloud_sync_status_fetching_albums">アルバムリストを取得中…</string>
+    <string name="cloud_sync_status_fetching_songs_from_format">%1$s から曲を取得中…</string>
+    <string name="cloud_sync_status_saving_songs_format">%1$d 曲をデータベースに保存中…</string>
+    <string name="cloud_sync_status_no_songs_found">ライブラリに曲が見つかりません</string>
+    <string name="cloud_sync_status_library_sync_complete">ライブラリ同期完了</string>
+    <string name="cloud_sync_status_syncing_ellipsis">同期中…</string>
+    <string name="cloud_sync_error_with_message_format">エラー: %1$s</string>
+
+    <!-- Cloud content descriptions -->
+    <string name="cloud_cd_sync">同期</string>
+    <string name="cloud_cd_sync_all">すべて同期</string>
+    <string name="cloud_cd_logout">ログアウト</string>
+    <string name="cloud_cd_sync_all_playlists">すべてのプレイリストを同期</string>
+    <string name="cloud_cd_user_avatar">ユーザーアバター</string>
+
+    <!-- No internet -->
+    <string name="no_internet_dialog_title">インターネット接続がありません</string>
+    <string name="no_internet_dialog_message">このコンテンツにはインターネット接続が必要です。ネットワーク設定を確認して再試行してください。</string>
+    <string name="offline_screen_title">オフラインです</string>
+    <string name="offline_screen_message">このコンテンツにアクセスするにはインターネット接続を確認して再試行してください。</string>
+
+    <!-- Cloud Authentication & Login Shared Strings -->
+    <string name="auth_connect_action">接続</string>
+    <string name="auth_connecting_msg">接続中…</string>
+    <string name="auth_details_subtitle">サーバー URL とアカウントの認証情報を入力してください。</string>
+    <string name="auth_details_title">接続詳細</string>
+    <string name="auth_hide_pwd_action">パスワードを非表示</string>
+    <string name="auth_password_label">パスワード</string>
+    <string name="auth_password_placeholder">パスワードを入力</string>
+    <string name="auth_prefill_http_action">http:// を入力</string>
+    <string name="auth_server_url_label">サーバー URL</string>
+    <string name="auth_show_pwd_action">パスワードを表示</string>
+    <string name="auth_telegram_title">Telegram</string>
+    <string name="auth_username_label">ユーザー名</string>
+    <string name="auth_username_placeholder">admin</string>
+    <string name="auth_welcome_toast">ようこそ、%1$s！</string>
+
+    <!-- Subsonic / Navidrome Auth -->
+    <string name="auth_navidrome_footer_msg">Navidrome、Gonic、Airsonic などの Subsonic 互換サーバーに対応</string>
+    <string name="auth_navidrome_info_msg">Navidrome、Airsonic、Gonic、Ampache などの Subsonic API 互換サーバーをサポートします。</string>
+    <string name="auth_navidrome_password_hint">サーバーが対応している場合はアプリパスワードも使用できます。</string>
+    <string name="auth_navidrome_prefill_https_action">https:// を入力</string>
+    <string name="auth_navidrome_subtitle">セルフホスト型音楽サーバーに接続</string>
+    <string name="auth_navidrome_title">Navidrome</string>
+    <string name="auth_navidrome_url_hint">サーバーの完全な https:// ベースアドレスを使用してください。</string>
+    <string name="auth_navidrome_url_placeholder">https://music.example.com</string>
+    <string name="auth_navidrome_username_hint">Subsonic または Navidrome のアカウント名です。</string>
+    <string name="auth_subsonic_navidrome_title">Subsonic / Navidrome</string>
+    <string name="auth_subsonic_title">Subsonic</string>
+
+    <!-- Jellyfin Auth -->
+    <string name="auth_jellyfin_connect_subtitle">Jellyfin サーバー URL とアカウントの認証情報を入力してください。</string>
+    <string name="auth_jellyfin_footer_msg">音楽ライブラリをストリーミングするために Jellyfin サーバーに接続します</string>
+    <string name="auth_jellyfin_info_msg">Jellyfin サーバーに接続します。ローカルネットワークアクセスには HTTP と HTTPS の両方がサポートされています。</string>
+    <string name="auth_jellyfin_logo_cd">Jellyfin</string>
+    <string name="auth_jellyfin_password_hint">Jellyfin アカウントのパスワード。</string>
+    <string name="auth_jellyfin_subtitle">Jellyfin メディアサーバーに接続</string>
+    <string name="auth_jellyfin_title">Jellyfin</string>
+    <string name="auth_jellyfin_url_hint">ポートを含む Jellyfin サーバーの完全な URL。</string>
+    <string name="auth_jellyfin_url_placeholder">http://192.168.1.100:8096</string>
+    <string name="auth_jellyfin_username_hint">Jellyfin アカウントのユーザー名。</string>
+
+    <!-- Google Drive Auth -->
+    <string name="auth_gdrive_connect_subtitle">Google Drive から直接音楽ファイルをストリーミング</string>
+    <string name="auth_gdrive_connect_title">Google Drive に接続</string>
+    <string name="auth_gdrive_connected_toast">Google Drive に接続しました！</string>
+    <string name="auth_gdrive_create_action">「PixelPlayer Music」を作成</string>
+    <string name="auth_gdrive_create_subtitle">ここに音楽用の新しいフォルダを作成</string>
+    <string name="auth_gdrive_empty_msg">フォルダがありません</string>
+    <string name="auth_gdrive_open_cd">フォルダを開く</string>
+    <string name="auth_gdrive_select_subtitle">音楽ソースとして使用するフォルダを選択または作成</string>
+    <string name="auth_gdrive_select_title">音楽フォルダを選択</string>
+    <string name="auth_gdrive_setup_msg">Google Drive をセットアップ中…</string>
+    <string name="auth_gdrive_signin_action">Google でサインイン</string>
+    <string name="auth_gdrive_title">Google Drive</string>
+    <string name="auth_gdrive_use_action">使用</string>
+
+    <!-- Web Login Shared/Generic -->
+    <string name="auth_cookies_unreadable_error">セッション Cookie を読み取れませんでした。</string>
+    <string name="auth_done_action">完了</string>
+    <string name="auth_exit_action">終了</string>
+    <string name="auth_no_cookies_error">Cookie が見つかりません。先にログインしてください。</string>
+    <string name="auth_page_slow_msg">ページの読み込みに時間がかかっています。更新するか別のネットワークをお試しください。</string>
+    <string name="auth_plus_label">+</string>
+    <string name="auth_saving_msg">保存中…</string>
+    <string name="auth_stay_action">残る</string>
+    <string name="auth_timeout_toast">ページの読み込みがタイムアウトしました。進捗を失わずに再試行できます。</string>
+    <string name="auth_web_back_cd">Web で戻る</string>
+    <string name="auth_web_exit_msg">後で戻れます。閉じると現在のページの状態は破棄されます。</string>
+    <string name="auth_web_forward_cd">Web で進む</string>
+    <string name="auth_web_refresh_cd">更新</string>
+    <string name="auth_web_retry_action">再試行</string>
+    <string name="auth_web_home_cd">ホームを開く</string>
+    <string name="auth_webview_failed_error">WebView の読み込みに失敗しました。</string>
+
+    <!-- NetEase Web Login -->
+    <string name="auth_netease_cookie_error">NetEase の Cookie を読み取れませんでした: %1$s</string>
+    <string name="auth_netease_exit_title">NetEase のログインを終了しますか？</string>
+    <string name="auth_netease_http_error">NetEase の読み込み中に HTTP %1$d エラーが発生しました。</string>
+    <string name="auth_netease_incomplete_error">まだログインが検出されていません。完了を押す前に NetEase のログインを完了してください。</string>
+    <string name="auth_netease_login_title">NetEase Music にログイン</string>
+    <string name="auth_netease_security_msg">セキュリティについて: パスワードは NetEase のウェブページにのみ入力されます。PixelPlayer はライブラリを同期するためにセッション Cookie（MUSIC_U）を保存します。</string>
+    <string name="auth_netease_title">NetEase Music</string>
+
+    <!-- QQ Music Web Login -->
+    <string name="auth_qq_cookie_error">QQ Music の Cookie を読み取れませんでした: %1$s</string>
+    <string name="auth_qq_exit_title">QQ Music のログインを終了しますか？</string>
+    <string name="auth_qq_http_error">QQ Music の読み込み中に HTTP %1$d エラーが発生しました。</string>
+    <string name="auth_qq_incomplete_error">まだログインが検出されていません。完了を押す前に QQ Music のログインを完了してください。</string>
+    <string name="auth_qq_login_title">QQ Music にログイン</string>
+    <string name="auth_qq_security_msg">セキュリティについて: パスワードは QQ Music のウェブページにのみ入力されます。PixelPlayer はライブラリを同期するためにセッション Cookie を保存します。</string>
+    <string name="auth_qq_title">QQ Music</string>
+</resources>

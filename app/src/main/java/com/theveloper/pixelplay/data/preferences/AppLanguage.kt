@@ -12,11 +12,14 @@ enum class AppLanguage(val tag: String, @StringRes val labelRes: Int) {
     FRENCH("fr", R.string.settings_language_french),
     INDONESIAN("in", R.string.settings_language_indonesian),
     ITALIAN("it", R.string.settings_language_italian),
+    JAPANESE("ja", R.string.settings_language_japanese),
     KOREAN("ko", R.string.settings_language_korean),
     NORWEGIAN_BOKMAL("nb", R.string.settings_language_norwegian_bokmal),
     RUSSIAN("ru", R.string.settings_language_russian),
     SIMPLIFIED_CHINESE("zh-CN", R.string.settings_language_chinese),
-    TURKISH("tr", R.string.settings_language_turkish);
+    TRADITIONAL_CHINESE("zh-TW", R.string.settings_language_traditional_chinese),
+    TURKISH("tr", R.string.settings_language_turkish),
+    VIETNAMESE("vi", R.string.settings_language_vietnamese);
 
     companion object {
         val supportedLanguageTags: Set<String> = values().map { it.tag }.toSet()

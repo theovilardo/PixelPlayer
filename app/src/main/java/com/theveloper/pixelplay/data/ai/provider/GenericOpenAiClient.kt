@@ -18,7 +18,12 @@ class GenericOpenAiClient(
     private val apiKey: String,
     private val baseUrl: String,
     private val defaultModelId: String,
-    private val providerName: String = "OpenAI"
+    private val providerName: String = "OpenAI",
+    private val client: OkHttpClient = OkHttpClient.Builder()
+        .connectTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(60, TimeUnit.SECONDS)
+        .writeTimeout(30, TimeUnit.SECONDS)
+        .build()
 ) : AiClient {
     
     @Serializable
@@ -46,12 +51,6 @@ class GenericOpenAiClient(
     
     @Serializable
     private data class ModelsResponse(val data: List<ModelItem>)
-    
-    private val client = OkHttpClient.Builder()
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(60, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS)
-        .build()
     
     private val json = Json { 
         ignoreUnknownKeys = true
@@ -130,11 +129,6 @@ class GenericOpenAiClient(
                 throw AiProviderSupport.wrapThrowable(providerName, e, resolvedModel)
             }
         }
-    }
-    
-    override suspend fun countTokens(model: String, systemPrompt: String, prompt: String): Int {
-        // Estimation for generic providers
-        return (systemPrompt.length + prompt.length) / 4
     }
     
     override suspend fun getAvailableModels(apiKey: String): List<String> {

@@ -9,7 +9,6 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import java.util.concurrent.TimeUnit
 
 /**
  * Gemini provider implementation.
@@ -19,20 +18,12 @@ import java.util.concurrent.TimeUnit
  * SDK. This keeps generation in lockstep with whatever models the API actually serves,
  * so any model the user selects works as long as their key supports it.
  */
-class GeminiAiClient(private val apiKey: String) : AiClient {
+class GeminiAiClient(private val apiKey: String, private val httpClient: OkHttpClient) : AiClient {
 
     companion object {
         private const val DEFAULT_GEMINI_MODEL = "gemini-3.1-flash-lite"
         private const val BASE_URL = "https://generativelanguage.googleapis.com/v1beta"
-
-
     }
-
-    private val httpClient = OkHttpClient.Builder()
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(60, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS)
-        .build()
 
     private val json = Json {
         ignoreUnknownKeys = true
@@ -161,44 +152,6 @@ class GeminiAiClient(private val apiKey: String) : AiClient {
                 }
             } catch (e: Exception) {
                 throw AiProviderSupport.wrapThrowable("Gemini", e, resolvedModel)
-            }
-        }
-    }
-
-    override suspend fun countTokens(model: String, systemPrompt: String, prompt: String): Int {
-        return withContext(Dispatchers.IO) {
-            val resolvedModel = model.ifBlank { DEFAULT_GEMINI_MODEL }
-            try {
-                val requestBody = GenerateRequest(
-                    contents = listOf(Content(role = "user", parts = listOf(Part(prompt)))),
-                    systemInstruction = systemPrompt
-                        .takeIf { it.isNotBlank() }
-                        ?.let { Content(parts = listOf(Part(it))) },
-                    generationConfig = GenerationConfig(temperature = 0.0)
-                )
-                val jsonBody = json.encodeToString(GenerateRequest.serializer(), requestBody)
-                val body = jsonBody.toRequestBody("application/json".toMediaType())
-
-                val request = Request.Builder()
-                    .url("$BASE_URL/models/$resolvedModel:countTokens")
-                    .addHeader("x-goog-api-key", apiKey)
-                    .addHeader("Content-Type", "application/json")
-                    .post(body)
-                    .build()
-
-                httpClient.newCall(request).execute().use { response ->
-                    if (!response.isSuccessful) {
-                        return@withContext (prompt.length / 4) + (systemPrompt.length / 4)
-                    }
-                    val totalTokens = Regex(""""totalTokens"\s*:\s*(\d+)""")
-                        .find(response.body.string())
-                        ?.groupValues
-                        ?.getOrNull(1)
-                        ?.toIntOrNull()
-                    totalTokens ?: ((prompt.length / 4) + (systemPrompt.length / 4))
-                }
-            } catch (e: Exception) {
-                (prompt.length / 4) + (systemPrompt.length / 4)
             }
         }
     }

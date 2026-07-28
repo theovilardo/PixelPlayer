@@ -527,6 +527,15 @@ class LyricsRepositoryImpl @Inject constructor(
                         })
                     }
                 }
+                // Romanized search strategy for non-Latin artists
+                if (MultiLangRomanizer.isScriptThatNeedsRomanization(cleanArtist)) {
+                    val romanArtist = romanizeForMatch(cleanArtist)
+                    if (romanArtist != cleanArtist) {
+                        add(RemoteSearchStrategy("romanized_artist") {
+                            lrcLibApiService.searchLyrics(trackName = cleanTitle, artistName = romanArtist)
+                        })
+                    }
+                }
                 
                 // Smart title cleanup strategy (removes leading digits/spaces and truncates at -, (, ))
                 val smartTitle = cleanTitleSmart(cleanTitle)
@@ -581,14 +590,19 @@ class LyricsRepositoryImpl @Inject constructor(
                         
                         // Save to database
                         try {
-                            lyricsDao.insert(
-                                com.theveloper.pixelplay.data.database.LyricsEntity(
-                                    songId = song.id.toLong(),
-                                    content = rawLyrics,
-                                    isSynced = !bestMatch.syncedLyrics.isNullOrBlank(),
-                                    source = "remote"
+                            val songIdLong = song.id.toLongOrNull()
+                            if (songIdLong == null) {
+                                Log.w(TAG, "Cannot persist lyrics to DB: non-numeric Song.id '${song.id}'")
+                            } else {
+                                lyricsDao.insert(
+                                    com.theveloper.pixelplay.data.database.LyricsEntity(
+                                        songId = songIdLong,
+                                        content = rawLyrics,
+                                        isSynced = !bestMatch.syncedLyrics.isNullOrBlank(),
+                                        source = "remote"
+                                    )
                                 )
-                            )
+                            }
                         } catch (e: NumberFormatException) {
                             Log.w(TAG, "Skipping database save for non-numeric song ID: ${song.id} (possible streaming or external source). Lyrics will be cached in JSON.")
                         }
@@ -1014,8 +1028,8 @@ class LyricsRepositoryImpl @Inject constructor(
                     }
                 }
 
-                val cleanArtist = song.displayArtist.replace(Regex("[^a-zA-Z0-9]"), "_")
-                val cleanTitle = song.title.replace(Regex("[^a-zA-Z0-9]"), "_")
+                val cleanArtist = song.displayArtist.replace(Regex("[^\\p{L}\\p{N}]"), "_")
+                val cleanTitle = song.title.replace(Regex("[^\\p{L}\\p{N}]"), "_")
 
                 for (extension in LyricsImportSecurity.supportedFileExtensions()) {
                     val alternativeLyricsFile = File(directory, "${cleanArtist}_${cleanTitle}.$extension")
@@ -1056,7 +1070,14 @@ class LyricsRepositoryImpl @Inject constructor(
 
             val lyricsData = LyricsData(
                 plainLyrics = lyrics.plain?.joinToString("\n"),
-                syncedLyrics = lyrics.synced?.joinToString("\n") { "[${formatTimestamp(it.time)}]${it.line}" },
+                syncedLyrics = lyrics.synced?.joinToString("\n") { line ->
+                    buildString {
+                        append("[${formatTimestamp(line.time)}]${line.line}")
+                        if (!line.translation.isNullOrBlank()) {
+                            append("\n[${formatTimestamp(line.time)}]${line.translation}")
+                        }
+                    }
+                },
                 wordByWordLyrics = wordByWordLyrics
             )
 
@@ -1247,7 +1268,12 @@ class LyricsRepositoryImpl @Inject constructor(
                 toWordByWordLrc(syncedLyrics)
             } else {
                 syncedLyrics.joinToString("\n") { line ->
-                    "[${formatTimestamp(line.time)}]${line.line}"
+                    buildString {
+                        append("[${formatTimestamp(line.time)}]${line.line}")
+                        if (!line.translation.isNullOrBlank()) {
+                            append("\n[${formatTimestamp(line.time)}]${line.translation}")
+                        }
+                    }
                 }
             }
         }
@@ -1293,14 +1319,19 @@ class LyricsRepositoryImpl @Inject constructor(
                     val rawLyricsToSave = best.rawLyrics
 
                     try {
-                        lyricsDao.insert(
-                             com.theveloper.pixelplay.data.database.LyricsEntity(
-                                 songId = song.id.toLong(),
-                                 content = rawLyricsToSave,
-                                 isSynced = !best.lyrics.synced.isNullOrEmpty(),
-                                 source = "remote"
-                             )
-                        )
+                        val songIdLong = song.id.toLongOrNull()
+                        if (songIdLong == null) {
+                            Log.w(TAG, "Cannot persist lyrics to DB: non-numeric Song.id '${song.id}'")
+                        } else {
+                            lyricsDao.insert(
+                                 com.theveloper.pixelplay.data.database.LyricsEntity(
+                                     songId = songIdLong,
+                                     content = rawLyricsToSave,
+                                     isSynced = !best.lyrics.synced.isNullOrEmpty(),
+                                     source = "remote"
+                                 )
+                            )
+                        }
                     } catch (e: NumberFormatException) {
                         Log.w(TAG, "Skipping DB update for non-numeric ID: ${song.id}")
                     }
@@ -1336,9 +1367,14 @@ class LyricsRepositoryImpl @Inject constructor(
                 }
 
                 try {
+                    val songIdLong = song.id.toLongOrNull()
+                    if (songIdLong == null) {
+                        Log.w(TAG, "Cannot persist lyrics to DB: non-numeric Song.id '${song.id}'")
+                        return@withContext Result.failure(LyricsException("Non-numeric Song.id"))
+                    }
                     lyricsDao.insert(
                         com.theveloper.pixelplay.data.database.LyricsEntity(
-                            songId = song.id.toLong(),
+                            songId = songIdLong,
                             content = rawLyricsToSave,
                             isSynced = !parsedLyrics.synced.isNullOrEmpty(),
                             source = "remote"
@@ -1352,7 +1388,7 @@ class LyricsRepositoryImpl @Inject constructor(
                 saveLocalLyricsJson(song, parsedLyrics)
                 LogUtils.d(this@LyricsRepositoryImpl, "Fetched and cached remote lyrics (exact match) for: ${song.title}")
 
-                Result.success(Pair(parsedLyrics, rawLyricsToSave))
+                return@withContext Result.success(Pair(parsedLyrics, rawLyricsToSave))
             } else {
                 LogUtils.d(this@LyricsRepositoryImpl, "No lyrics found remotely for: ${song.title}")
                 Result.failure(NoLyricsFoundException())
@@ -1388,6 +1424,24 @@ class LyricsRepositoryImpl @Inject constructor(
                     lrcLibApiService.searchLyrics(trackName = cleanTitle, artistName = cleanArtist)
                 })
                 
+                // Romanized search strategy for non-Latin titles
+                if (MultiLangRomanizer.isScriptThatNeedsRomanization(cleanTitle)) {
+                    val romanTitle = romanizeForMatch(cleanTitle)
+                    if (romanTitle != cleanTitle) {
+                        add(RemoteSearchStrategy("romanized_track") {
+                            lrcLibApiService.searchLyrics(trackName = romanTitle, artistName = cleanArtist)
+                        })
+                    }
+                }
+                if (MultiLangRomanizer.isScriptThatNeedsRomanization(cleanArtist)) {
+                    val romanArtist = romanizeForMatch(cleanArtist)
+                    if (romanArtist != cleanArtist) {
+                        add(RemoteSearchStrategy("romanized_artist") {
+                            lrcLibApiService.searchLyrics(trackName = cleanTitle, artistName = romanArtist)
+                        })
+                    }
+                }
+
                 // Smart title cleanup strategy
                 val smartTitle = cleanTitleSmart(cleanTitle)
                 if (smartTitle != cleanTitle && smartTitle.isNotBlank()) {
@@ -1535,7 +1589,9 @@ class LyricsRepositoryImpl @Inject constructor(
         // Also remove JSON cache
         try {
             val file = File(context.filesDir, "lyrics/${songId}.json")
-            if (file.exists()) file.delete()
+            if (file.exists() && !file.delete()) {
+                Log.w(TAG, "Failed to delete JSON cache for songId: $songId")
+            }
         } catch (e: Exception) {
             Log.w(TAG, "Error deleting JSON cache: ${e.message}")
         }
@@ -1613,8 +1669,8 @@ class LyricsRepositoryImpl @Inject constructor(
                                 
                                 // Strategy 2: Artist - Title
                                 if (foundFile == null) {
-                                    val cleanArtist = song.displayArtist.replace(Regex("[^a-zA-Z0-9]"), "_")
-                                    val cleanTitle = song.title.replace(Regex("[^a-zA-Z0-9]"), "_")
+                                    val cleanArtist = song.displayArtist.replace(Regex("[^\\p{L}\\p{N}]"), "_")
+                                    val cleanTitle = song.title.replace(Regex("[^\\p{L}\\p{N}]"), "_")
                                     for (extension in LyricsImportSecurity.supportedFileExtensions()) {
                                         val altMatch = File(directory, "${cleanArtist}_${cleanTitle}.$extension")
                                         if (altMatch.exists() && altMatch.canRead()) {
@@ -1628,14 +1684,19 @@ class LyricsRepositoryImpl @Inject constructor(
                                     val validated = readValidatedLocalLyrics(foundFile)
                                     if (validated != null) {
                                         try {
-                                            lyricsDao.insert(
-                                                 com.theveloper.pixelplay.data.database.LyricsEntity(
-                                                     songId = song.id.toLong(),
-                                                     content = validated.sanitizedContent,
-                                                     isSynced = validated.parsedLyrics.synced?.isNotEmpty() == true,
-                                                     source = "local_file"
-                                                 )
-                                            )
+                                            val songIdLong = song.id.toLongOrNull()
+                                            if (songIdLong == null) {
+                                                Log.w(TAG, "Cannot persist lyrics to DB: non-numeric Song.id '${song.id}'")
+                                            } else {
+                                                lyricsDao.insert(
+                                                     com.theveloper.pixelplay.data.database.LyricsEntity(
+                                                         songId = songIdLong,
+                                                         content = validated.sanitizedContent,
+                                                         isSynced = validated.parsedLyrics.synced?.isNotEmpty() == true,
+                                                         source = "local_file"
+                                                     )
+                                                )
+                                            }
                                             updatedCount.incrementAndGet()
                                             LogUtils.d(this@LyricsRepositoryImpl, "Auto-assigned lyrics from ${foundFile.name}")
                                         } catch (e: Exception) {
@@ -1710,6 +1771,8 @@ class LyricsRepositoryImpl @Inject constructor(
             MultiLangRomanizer.isJapanese(text) -> MultiLangRomanizer.romanizeJapanese(text) ?: text
             MultiLangRomanizer.isChinese(text) -> MultiLangRomanizer.romanizeChinese(text) ?: text
             MultiLangRomanizer.isKorean(text) -> MultiLangRomanizer.romanizeKorean(text)
+            MultiLangRomanizer.isCyrillic(text) -> MultiLangRomanizer.romanizeCyrillic(text) ?: text
+            MultiLangRomanizer.isVietnamese(text) -> MultiLangRomanizer.romanizeVietnamese(text)
             else -> text
         }
     }

@@ -48,6 +48,7 @@ import com.theveloper.pixelplay.data.model.SyncedLine
 import com.theveloper.pixelplay.data.model.SyncedWord
 import kotlinx.coroutines.flow.Flow
 
+import java.text.Normalizer
 import java.util.Locale
 import java.util.regex.Pattern
 import kotlin.math.PI
@@ -119,8 +120,17 @@ object MultiLangRomanizer {
     fun isPunjabi(text: String) = text.any { it in '\u0A00'..'\u0A7F' }
     fun isCyrillic(text: String) = text.any { it in '\u0400'..'\u04FF' }
     fun isChinese(text: String) = text.any { it in '\u4E00'..'\u9FFF' }
+    fun isThai(text: String) = text.any { it in '\u0E00'..'\u0E7F' }
+    fun isArabic(text: String) = text.any { it in '\u0600'..'\u06FF' }
+    fun isGreek(text: String) = text.any { it in '\u0370'..'\u03FF' }
+    fun isHebrew(text: String) = text.any { it in '\u0590'..'\u05FF' }
+    fun isVietnamese(text: String): Boolean {
+        return text.any { it in '\u1EA0'..'\u1EF9' } ||
+                text.any { it in "\u0102\u0103\u0110\u0111\u01A0\u01A1\u01AF\u01B0" }
+    }
 
     fun isScriptThatNeedsRomanization(text: String): Boolean {
+        if (isVietnamese(text) || isThai(text) || isArabic(text) || isGreek(text) || isHebrew(text)) return true
         return text.any { char ->
             val code = char.code
             code in 0x3040..0x309F || // Hiragana
@@ -133,8 +143,8 @@ object MultiLangRomanizer {
         }
     }
 
-    private fun isRussian(text: String) = text.any { RUSSIAN_CYRILLIC_LETTERS.contains(it.toString()) } && text.all { RUSSIAN_CYRILLIC_LETTERS.contains(it.toString()) || !it.toString().matches("[\\u0400-\\u04FF]".toRegex()) }
-    private fun isUkrainian(text: String) = text.any { UKRAINIAN_CYRILLIC_LETTERS.contains(it.toString()) || UKRAINIAN_SPECIFIC_CYRILLIC_LETTERS.contains(it.toString()) } && text.all { UKRAINIAN_CYRILLIC_LETTERS.contains(it.toString()) || UKRAINIAN_SPECIFIC_CYRILLIC_LETTERS.contains(it.toString()) || !it.toString().matches("[\\u0400-\\u04FF]".toRegex()) }
+    internal fun isRussian(text: String) = text.any { RUSSIAN_CYRILLIC_LETTERS.contains(it.toString()) } && text.all { RUSSIAN_CYRILLIC_LETTERS.contains(it.toString()) || !it.toString().matches("[\\u0400-\\u04FF]".toRegex()) }
+    internal fun isUkrainian(text: String) = text.any { UKRAINIAN_CYRILLIC_LETTERS.contains(it.toString()) || UKRAINIAN_SPECIFIC_CYRILLIC_LETTERS.contains(it.toString()) } && text.all { UKRAINIAN_CYRILLIC_LETTERS.contains(it.toString()) || UKRAINIAN_SPECIFIC_CYRILLIC_LETTERS.contains(it.toString()) || !it.toString().matches("[\\u0400-\\u04FF]".toRegex()) }
     private fun isSerbian(text: String) = text.any { SERBIAN_CYRILLIC_LETTERS.contains(it.toString()) || SERBIAN_SPECIFIC_CYRILLIC_LETTERS.contains(it.toString()) } && text.all { SERBIAN_CYRILLIC_LETTERS.contains(it.toString()) || SERBIAN_SPECIFIC_CYRILLIC_LETTERS.contains(it.toString()) || !it.toString().matches("[\\u0400-\\u04FF]".toRegex()) }
     private fun isBulgarian(text: String) = text.any { BULGARIAN_CYRILLIC_LETTERS.contains(it.toString()) } && text.all { BULGARIAN_CYRILLIC_LETTERS.contains(it.toString()) || !it.toString().matches("[\\u0400-\\u04FF]".toRegex()) }
     private fun isBelarusian(text: String) = text.any { BELARUSIAN_CYRILLIC_LETTERS.contains(it.toString()) || BELARUSIAN_SPECIFIC_CYRILLIC_LETTERS.contains(it.toString()) } && text.all { BELARUSIAN_CYRILLIC_LETTERS.contains(it.toString()) || BELARUSIAN_SPECIFIC_CYRILLIC_LETTERS.contains(it.toString()) || !it.toString().matches("[\\u0400-\\u04FF]".toRegex()) }
@@ -545,6 +555,22 @@ object MultiLangRomanizer {
             isMacedonian(text) -> processCyrillicWordByWord(text, MACEDONIAN_ROMAJI_MAP)
             else -> processCyrillicWordByWord(text, emptyMap())
         }
+    }
+
+    fun romanizeVietnamese(text: String): String {
+        if (text.isEmpty()) return text
+        val normalized = Normalizer.normalize(text, Normalizer.Form.NFKD)
+        val sb = StringBuilder(text.length)
+        for (char in normalized) {
+            when {
+                char == '\u0111' -> sb.append('d')
+                char == '\u0110' -> sb.append('D')
+                char in '\u0300'..'\u036F' || char in '\uFE20'..'\uFE2F' -> {}
+                char.code > 0x7E && char in '\u00C0'..'\u024F' -> {}
+                else -> sb.append(char)
+            }
+        }
+        return sb.toString()
     }
 
     private fun processCyrillicWordByWord(text: String, specificMap: Map<String, String>, isRussian: Boolean = false): String {

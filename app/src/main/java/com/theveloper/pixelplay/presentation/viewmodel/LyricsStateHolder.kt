@@ -344,22 +344,16 @@ class LyricsStateHolder @Inject constructor(
     fun translateLyricsViaAi(currentSong: Song, lyricsObj: Lyrics?, cb: LyricsTranslationCallbacks) {
         val songId = currentSong.id.toLongOrNull() ?: return
 
-        if (lyricsObj?.synced != null) {
-            val hasValidTranslation = lyricsObj.synced.any { !it.translation.isNullOrBlank() }
-            if (hasValidTranslation) {
-                _messageEvents.tryEmit(cb.getString(R.string.lyrics_translate_already_translated))
-                return
-            }
-        }
-
         scope?.launch {
             _messageEvents.emit(cb.getString(R.string.lyrics_translate_progress))
 
+            // Always read fresh lyrics from source — never rely on the potentially
+            // stale Lyrics object from UI state which may contain old translations.
             val rawLyrics = withContext(Dispatchers.IO) {
-                currentSong.lyrics?.takeIf { it.isNotBlank() }
-                    ?: readLocalLyricsFile(currentSong)
+                readLocalLyricsFile(currentSong)
                     ?: readEmbeddedLyricsFromFile(currentSong)
                     ?: musicRepository.getStoredLyrics(currentSong)?.second
+                    ?: currentSong.lyrics?.takeIf { it.isNotBlank() }
             }
 
             if (rawLyrics.isNullOrBlank()) {
@@ -428,17 +422,18 @@ class LyricsStateHolder @Inject constructor(
     }
 
     private fun readEmbeddedLyricsFromFile(song: Song): String? {
-        song.lyrics
-            ?.trim()
-            ?.takeIf { it.isNotBlank() }
-            ?.let { return it }
-
-        return runCatching {
+        val fileLyrics = runCatching {
             AudioMetadataReader.read(File(song.path))
                 ?.lyrics
                 ?.trim()
                 ?.takeIf { it.isNotBlank() }
         }.getOrNull()
+
+        if (fileLyrics != null) return fileLyrics
+
+        return song.lyrics
+            ?.trim()
+            ?.takeIf { it.isNotBlank() }
     }
 
     private fun readLocalLyricsFile(song: Song): String? {

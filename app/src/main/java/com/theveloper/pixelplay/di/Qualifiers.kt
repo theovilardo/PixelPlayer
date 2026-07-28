@@ -29,3 +29,10 @@ annotation class BackupGson
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class AppScope
+
+/**
+ * Qualifier for shared AI OkHttpClient instance.
+ */
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class AiOkHttpClient

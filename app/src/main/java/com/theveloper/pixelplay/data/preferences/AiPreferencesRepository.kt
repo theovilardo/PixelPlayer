@@ -152,7 +152,7 @@ class AiPreferencesRepository @Inject constructor(
         dataStore.data.map { preferences -> preferences[Keys.AI_TOP_K] ?: 64 }
 
     val aiMaxTokens: Flow<Int> =
-        dataStore.data.map { preferences -> preferences[Keys.AI_MAX_TOKENS] ?: 4096 }
+        dataStore.data.map { preferences -> preferences[Keys.AI_MAX_TOKENS] ?: 8192 }
 
     val aiPresencePenalty: Flow<Float> =
         dataStore.data.map { preferences -> preferences[Keys.AI_PRESENCE_PENALTY] ?: 0.0f }

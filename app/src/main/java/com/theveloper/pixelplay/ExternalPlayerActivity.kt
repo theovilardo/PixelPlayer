@@ -117,6 +117,7 @@ class ExternalPlayerActivity : ComponentActivity() {
         return intent.data
     }
 
+    @Suppress("WrongConstant")
     private fun persistUriPermissionIfNeeded(intent: Intent, uri: Uri) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             val hasPersistablePermission = intent.flags and Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION != 0

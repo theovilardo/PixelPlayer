@@ -140,8 +140,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape
@@ -150,11 +149,6 @@ import com.theveloper.pixelplay.presentation.components.subcomps.EnhancedSongLis
 import androidx.compose.ui.res.stringResource
 
 private const val MAX_ALBUM_MULTI_SELECTION = 6
-
-private data class SearchUiSlice(
-    val selectedSearchFilter: SearchFilterType = SearchFilterType.ALL,
-    val searchResults: ImmutableList<SearchResultItem> = persistentListOf()
-)
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -181,7 +175,7 @@ fun SearchScreen(
     val multiSelectionState = playerViewModel.multiSelectionStateHolder
     val selectedSongs by multiSelectionState.selectedSongs.collectAsStateWithLifecycle()
     val isSongSelectionMode by multiSelectionState.isSelectionMode.collectAsStateWithLifecycle()
-    val selectedSongIds by multiSelectionState.selectedSongIds.collectAsStateWithLifecycle()
+    val selectedSongIds = remember(selectedSongs) { selectedSongs.map { it.id }.toSet() }
     var showMultiSelectionSheet by remember { mutableStateOf(false) }
 
     // Multi-selection state for albums
@@ -194,7 +188,7 @@ fun SearchScreen(
     val playlistSelectionState = playerViewModel.playlistSelectionStateHolder
     val selectedPlaylists by playlistSelectionState.selectedPlaylists.collectAsStateWithLifecycle()
     val isPlaylistSelectionMode by playlistSelectionState.isSelectionMode.collectAsStateWithLifecycle()
-    val selectedPlaylistIds by playlistSelectionState.selectedPlaylistIds.collectAsStateWithLifecycle()
+    val selectedPlaylistIds = remember(selectedPlaylists) { selectedPlaylists.map { it.id }.toSet() }
     var showPlaylistMultiSelectionSheet by remember { mutableStateOf(false) }
 
     // Multi-selection state for genres
@@ -224,18 +218,17 @@ fun SearchScreen(
             multiSelectionState.toggleSelection(song) 
         }
     }
-    val searchUiState by remember(playerViewModel) {
-        playerViewModel.playerUiState
-            .map { uiState ->
-                SearchUiSlice(
-                    selectedSearchFilter = uiState.selectedSearchFilter,
-                    searchResults = uiState.searchResults
-                )
-            }
-            .distinctUntilChanged()
-    }.collectAsStateWithLifecycle(initialValue = SearchUiSlice())
-    val currentFilter = searchUiState.selectedSearchFilter
-    val genres by playerViewModel.genres.collectAsStateWithLifecycle()
+    val searchResults by playerViewModel.searchResults.collectAsStateWithLifecycle()
+    val currentFilter by playerViewModel.selectedSearchFilter.collectAsStateWithLifecycle()
+
+    // Defer genre loading — only fetch when the genre section is about to be shown
+    var genres by remember { mutableStateOf<ImmutableList<Genre>>(persistentListOf()) }
+    val showGenreBrowse by remember(searchQuery) { derivedStateOf { searchQuery.isBlank() } }
+    LaunchedEffect(showGenreBrowse) {
+        if (showGenreBrowse) {
+            genres = playerViewModel.genres.first()
+        }
+    }
     val stablePlayerState by playerViewModel.stablePlayerState.collectAsStateWithLifecycle()
     val favoriteSongIds by playerViewModel.favoriteSongIds.collectAsStateWithLifecycle()
     val selectedSongForInfo by playerViewModel.selectedSongForInfo.collectAsStateWithLifecycle()
@@ -257,9 +250,10 @@ fun SearchScreen(
 
     // Search debouncing is centralized in SearchStateHolder.
     LaunchedEffect(searchQuery, currentFilter) {
-        playerViewModel.performSearch(searchQuery)
+        if (searchQuery.isNotBlank()) {
+            playerViewModel.performSearch(searchQuery)
+        }
     }
-    val searchResults = searchUiState.searchResults
     val handleSongMoreOptionsClick: (Song) -> Unit = { song ->
         playerViewModel.selectSongForInfo(song)
         showSongInfoBottomSheet = true
@@ -416,7 +410,6 @@ fun SearchScreen(
                 }
             }
 
-            val showGenreBrowse by remember(searchQuery) { derivedStateOf { searchQuery.isBlank() } }
             AnimatedContent(
                 targetState = showGenreBrowse,
                 transitionSpec = {
@@ -587,6 +580,7 @@ fun SearchScreen(
                                         },
                                         currentPlayingSongId = stablePlayerState.currentSong?.id,
                                         isPlaying = stablePlayerState.isPlaying,
+                                        isShuffleEnabled = stablePlayerState.isShuffleEnabled,
                                         onSongMoreOptionsClick = handleSongMoreOptionsClick,
                                         navController = navController,
                                         isSelectionMode = isSongSelectionMode,
@@ -1076,6 +1070,7 @@ fun SearchResultsList(
     onItemSelected: () -> Unit,
     currentPlayingSongId: String?,
     isPlaying: Boolean,
+    isShuffleEnabled: Boolean = false,
     onSongMoreOptionsClick: (Song) -> Unit,
     navController: NavHostController,
     isSelectionMode: Boolean = false,
@@ -1094,7 +1089,6 @@ fun SearchResultsList(
     getPlaylistSelectionIndex: (String) -> Int? = { null }
 ) {
     val localDensity = LocalDensity.current
-    val playerStableState by playerViewModel.stablePlayerState.collectAsStateWithLifecycle()
 
     if (results.isEmpty()) {
         Box(
@@ -1301,7 +1295,7 @@ fun SearchResultsList(
                                                 songs.first(),
                                                 item.playlist.name
                                             )
-                                            if (playerStableState.isShuffleEnabled) playerViewModel.toggleShuffle()
+                                            if (isShuffleEnabled) playerViewModel.toggleShuffle()
                                         } else {
                                             playerViewModel.sendToast("Empty playlist")
                                         }

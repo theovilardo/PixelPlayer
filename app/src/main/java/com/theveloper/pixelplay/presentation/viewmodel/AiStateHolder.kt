@@ -6,10 +6,12 @@ import com.theveloper.pixelplay.R
 import com.theveloper.pixelplay.data.DailyMixManager
 import com.theveloper.pixelplay.data.ai.AiNotificationManager
 import com.theveloper.pixelplay.data.ai.AiPlaylistGenerator
+import com.theveloper.pixelplay.data.ai.AiResponseCleaner
 import com.theveloper.pixelplay.data.ai.AiSystemPromptType
 import com.theveloper.pixelplay.data.ai.provider.AiProviderException
 import com.theveloper.pixelplay.data.preferences.PlaylistPreferencesRepository
 import com.theveloper.pixelplay.data.model.Song
+import com.theveloper.pixelplay.utils.MultiLangRomanizer
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +19,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -286,36 +289,91 @@ class AiStateHolder @Inject constructor(
 
     suspend fun translateLyrics(lyricsText: String): Result<String> {
         return try {
-            val targetLanguage = context.resources.configuration.locales[0].displayLanguage
-            val prompt = """
-<task>Translate song lyrics into $targetLanguage.</task>
+            val targetLanguage = context.resources.configuration.locales[0]
+                .getDisplayLanguage(Locale.US)
+            val sourceLanguage = detectLyricsLanguage(lyricsText)
+            val hasTimestamps = lyricsText.contains(Regex("\\[\\d{1,2}:\\d{2}"))
+            val taskPrefix = if (sourceLanguage != null) {
+                "Translate these $sourceLanguage song lyrics into $targetLanguage."
+            } else {
+                "Translate these song lyrics into $targetLanguage. Detect the source language from the lyrics content."
+            }
+            val formatSection = if (hasTimestamps) {
+                """
+<format>
+For SYNCED lyrics — output TWO lines per original line:
+[original timestamp] original text
+[same timestamp] translated text
+
+Preserve ALL timestamps [mm:ss.xx] exactly — never modify, merge, or drop them.
+</format>
+                """.trimIndent()
+            } else {
+                """
+<format>
+For PLAIN lyrics (no timestamps) — output TWO lines per original line:
+original text
+translated text
+
+Keep the same line order as the original.
+</format>
+                """.trimIndent()
+            }
+            val xmlPrompt = """
+<task>$taskPrefix</task>
 
 <rules>
-- Preserve ALL timestamps [mm:ss.xx] exactly — never modify, merge, or drop them.
-- Output TWO lines per original line: the original, then the translation with the same timestamp.
+- Output TWO lines per original line: the original, then the translation.
 - NEVER add explanations, labels, numbering, section headers, or formatting.
 - NEVER remove, merge, split, or reorder lines.
+- Translate ALL lines completely — do not skip or truncate any part.
 - If lyrics are ALREADY mostly in $targetLanguage, output ONLY: ALREADY_IN_TARGET_LANGUAGE
 </rules>
 
-<format>
-[original timestamp] original text
-[same timestamp] translated text
-</format>
+$formatSection
 
 <lyrics>
 $lyricsText
 </lyrics>
             """.trimIndent()
-            
+
             val response = aiHandler.generateContent(
-                prompt = prompt,
-                type = AiSystemPromptType.GENERAL,
+                prompt = xmlPrompt,
+                type = AiSystemPromptType.LYRICS,
                 temperature = 0.1f
             )
-            Result.success(response)
+            val cleaned = AiResponseCleaner.cleanTextResponse(response)
+            Result.success(cleaned)
         } catch (e: Exception) {
             Result.failure(e)
+        }
+    }
+
+    private val timestampRegex = Regex("\\[\\d{1,2}:\\d{2}(?:[.:]\\d{1,3})?]")
+
+    private fun detectLyricsLanguage(lyricsText: String): String? {
+        val sample = timestampRegex.replace(lyricsText, "").trim().take(200)
+        if (sample.isBlank()) return null
+
+        return when {
+            MultiLangRomanizer.isJapanese(sample) -> "Japanese"
+            MultiLangRomanizer.isKorean(sample) -> "Korean"
+            MultiLangRomanizer.isChinese(sample) -> "Chinese"
+            MultiLangRomanizer.isThai(sample) -> "Thai"
+            MultiLangRomanizer.isArabic(sample) -> "Arabic"
+            MultiLangRomanizer.isGreek(sample) -> "Greek"
+            MultiLangRomanizer.isHebrew(sample) -> "Hebrew"
+            MultiLangRomanizer.isHindi(sample) -> "Hindi"
+            MultiLangRomanizer.isPunjabi(sample) -> "Punjabi"
+            MultiLangRomanizer.isCyrillic(sample) -> {
+                when {
+                    MultiLangRomanizer.isRussian(sample) -> "Russian"
+                    MultiLangRomanizer.isUkrainian(sample) -> "Ukrainian"
+                    else -> null
+                }
+            }
+            MultiLangRomanizer.isVietnamese(sample) -> "Vietnamese"
+            else -> null
         }
     }
 

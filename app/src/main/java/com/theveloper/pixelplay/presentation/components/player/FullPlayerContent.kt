@@ -378,7 +378,6 @@ fun FullPlayerContent(
                 if (showFetchLyricsDialog) {
                     showFetchLyricsDialog = false
                     showLyricsSheet = true
-                    playerViewModel.resetLyricsSearchState()
                 }
             }
             is LyricsSearchUiState.Error -> {

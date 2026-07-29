@@ -176,6 +176,9 @@
     <string name="settings_language_korean">Coreano</string>
     <string name="settings_language_norwegian_bokmal">Norvegese (Bokmål)</string>
     <string name="settings_language_turkish">Turco</string>
+    <string name="settings_language_japanese">Giapponese</string>
+    <string name="settings_language_traditional_chinese">Cinese tradizionale</string>
+    <string name="settings_language_vietnamese">Vietnamita</string>
     <string name="settings_app_theme_title">Tema app</string>
     <string name="settings_app_theme_subtitle">Passa tra chiaro, scuro o segui l\'aspetto di sistema.</string>
     <string name="settings_theme_light">Tema chiaro</string>

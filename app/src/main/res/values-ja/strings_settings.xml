@@ -13,6 +13,8 @@
     <string name="settings_category_behavior_subtitle">ジェスチャー、触覚フィードバック、ナビゲーション動作</string>
     <string name="settings_category_ai_title">AI 連携（β）</string>
     <string name="settings_category_ai_subtitle">AI プロバイダー、API キー、モデル設定</string>
+    <string name="settings_category_generation_parameters_title">生成パラメータ</string>
+    <string name="settings_category_generation_parameters_subtitle">温度、サンプリング、プロンプト、楽曲データ設定</string>
     <string name="settings_category_backup_title">バックアップ &amp; 復元</string>
     <string name="settings_category_backup_subtitle">個人データのエクスポートと復元</string>
     <string name="settings_category_developer_title">開発者オプション</string>
@@ -644,6 +646,15 @@
     <string name="about_maintainer_subtitle">PixelPlayer の開発者。</string>
     <string name="about_spotlight_title">コミュニティスポットライト</string>
     <string name="about_spotlight_subtitle">大きな貢献をしたコラボレーターへの感謝。</string>
+    <string name="about_licenses_title">ライセンスと通知</string>
+    <string name="about_licenses_subtitle">依存関係および以前の貢献への帰属表示。</string>
+    <string name="about_open_source_licenses">オープンソースライセンス</string>
+    <string name="about_open_source_licenses_subtitle">依存ライセンスとサードパーティ通知</string>
+    <string name="open_source_licenses_screen_title">オープンソースライセンス</string>
+    <string name="third_party_notices_action">MIT風通知</string>
+    <string name="third_party_notices_title">サードパーティ通知</string>
+    <string name="third_party_notices_close">閉じる</string>
+    <string name="third_party_notices_load_error">バンドルされたサードパーティ通知を読み込めませんでした。</string>
     <string name="about_contributors_section_title">オープンソースコントリビューター</string>
     <string name="about_contributors_section_subtitle">GitHub からのライブコントリビューターリスト。</string>
     <string name="about_contributions_format">%1$d 回のコントリビューション</string>

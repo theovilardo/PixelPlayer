@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="sharing_playlists_message">
+        <item quantity="other">%d 件のプレイリストを共有中</item>
+    </plurals>
+    <plurals name="exported_playlists_message">
+        <item quantity="other">%1$d 件のプレイリストを %2$s にエクスポートしました</item>
+    </plurals>
+    <plurals name="n_songs_added_to_queue">
+        <item quantity="other">%d 曲をキューに追加しました</item>
+    </plurals>
+    <plurals name="n_songs_will_play_next">
+        <item quantity="other">%d 曲が次に再生されます</item>
+    </plurals>
+    <plurals name="n_songs_added_to_favorites">
+        <item quantity="other">%d 曲をお気に入りに追加しました</item>
+    </plurals>
+    <plurals name="n_songs_removed_from_favorites">
+        <item quantity="other">%d 曲をお気に入りから削除しました</item>
+    </plurals>
+    <plurals name="n_files_deleted">
+        <item quantity="other">%d ファイルを削除しました</item>
+    </plurals>
+    <plurals name="delete_songs_confirmation_title">
+        <item quantity="other">%d ファイルを削除しますか？</item>
+    </plurals>
+    <plurals name="n_tracks_selected">
+        <item quantity="other">%d 曲を選択中</item>
+    </plurals>
+    <plurals name="presentation_batch_b_songs_dot_duration">
+        <item quantity="other">%1$d 曲 • %2$s</item>
+    </plurals>
+    <plurals name="presentation_batch_e_queue_tracks_lined_up">
+        <item quantity="other">%d 曲が予約されました。</item>
+    </plurals>
+    <plurals name="presentation_batch_e_n_songs_selected">
+        <item quantity="other">%d 曲を選択中</item>
+    </plurals>
+    <plurals name="presentation_batch_f_n_songs">
+        <item quantity="other">%d 曲</item>
+    </plurals>
+    <plurals name="presentation_batch_f_n_topics">
+        <item quantity="other">%d 件のトピック</item>
+    </plurals>
+</resources>

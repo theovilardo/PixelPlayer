@@ -637,6 +637,15 @@
     <string name="about_maintainer_subtitle">Человек, стоящий за PixelPlayer.</string>
     <string name="about_spotlight_title">Гордость сообщества</string>
     <string name="about_spotlight_subtitle">Признание участников, внёсших значительный вклад.</string>
+    <string name="about_licenses_title">Лицензии и уведомления</string>
+    <string name="about_licenses_subtitle">Атрибуция для зависимостей и предыдущих вкладов.</string>
+    <string name="about_open_source_licenses">Лицензии открытого ПО</string>
+    <string name="about_open_source_licenses_subtitle">Лицензии зависимостей и уведомления третьих лиц</string>
+    <string name="open_source_licenses_screen_title">Лицензии открытого ПО</string>
+    <string name="third_party_notices_action">Уведомление в стиле MIT</string>
+    <string name="third_party_notices_title">Уведомления третьих лиц</string>
+    <string name="third_party_notices_close">Закрыть</string>
+    <string name="third_party_notices_load_error">Не удалось загрузить встроенное уведомление третьей стороны.</string>
     <string name="about_contributors_section_title">Участники open source</string>
     <string name="about_contributors_section_subtitle">Актуальный список участников с GitHub.</string>
     <string name="about_contributions_format">%1$d вклад.</string>

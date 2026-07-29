@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="sharing_playlists_message">
+        <item quantity="one">Общий доступ к %d плейлисту</item>
+        <item quantity="few">Общий доступ к %d плейлистам</item>
+        <item quantity="many">Общий доступ к %d плейлистам</item>
+        <item quantity="other">Общий доступ к %d плейлистам</item>
+    </plurals>
+    <plurals name="exported_playlists_message">
+        <item quantity="one">Экспортирован %1$d плейлист в %2$s</item>
+        <item quantity="few">Экспортировано %1$d плейлиста в %2$s</item>
+        <item quantity="many">Экспортировано %1$d плейлистов в %2$s</item>
+        <item quantity="other">Экспортировано %1$d плейлистов в %2$s</item>
+    </plurals>
+    <plurals name="n_songs_added_to_queue">
+        <item quantity="one">%d песня добавлена в очередь</item>
+        <item quantity="few">%d песни добавлены в очередь</item>
+        <item quantity="many">%d песен добавлено в очередь</item>
+        <item quantity="other">%d песен добавлено в очередь</item>
+    </plurals>
+    <plurals name="n_songs_will_play_next">
+        <item quantity="one">%d песня будет воспроизведена следующей</item>
+        <item quantity="few">%d песни будут воспроизведены следующими</item>
+        <item quantity="many">%d песен будут воспроизведены следующими</item>
+        <item quantity="other">%d песен будут воспроизведены следующими</item>
+    </plurals>
+    <plurals name="n_songs_added_to_favorites">
+        <item quantity="one">%d песня добавлена в избранное</item>
+        <item quantity="few">%d песни добавлены в избранное</item>
+        <item quantity="many">%d песен добавлено в избранное</item>
+        <item quantity="other">%d песен добавлено в избранное</item>
+    </plurals>
+    <plurals name="n_songs_removed_from_favorites">
+        <item quantity="one">%d песня удалена из избранного</item>
+        <item quantity="few">%d песни удалены из избранного</item>
+        <item quantity="many">%d песен удалено из избранного</item>
+        <item quantity="other">%d песен удалено из избранного</item>
+    </plurals>
+    <plurals name="n_files_deleted">
+        <item quantity="one">%d файл удалён</item>
+        <item quantity="few">%d файла удалено</item>
+        <item quantity="many">%d файлов удалено</item>
+        <item quantity="other">%d файлов удалено</item>
+    </plurals>
+    <plurals name="delete_songs_confirmation_title">
+        <item quantity="one">Удалить %d файл?</item>
+        <item quantity="few">Удалить %d файла?</item>
+        <item quantity="many">Удалить %d файлов?</item>
+        <item quantity="other">Удалить %d файлов?</item>
+    </plurals>
+    <plurals name="n_tracks_selected">
+        <item quantity="one">%d трек выбран</item>
+        <item quantity="few">%d трека выбрано</item>
+        <item quantity="many">%d треков выбрано</item>
+        <item quantity="other">%d треков выбрано</item>
+    </plurals>
+    <plurals name="presentation_batch_b_songs_dot_duration">
+        <item quantity="one">%1$d песня • %2$s</item>
+        <item quantity="few">%1$d песни • %2$s</item>
+        <item quantity="many">%1$d песен • %2$s</item>
+        <item quantity="other">%1$d песен • %2$s</item>
+    </plurals>
+    <plurals name="presentation_batch_e_queue_tracks_lined_up">
+        <item quantity="one">%d трек поставлен в очередь.</item>
+        <item quantity="few">%d трека поставлено в очередь.</item>
+        <item quantity="many">%d треков поставлено в очередь.</item>
+        <item quantity="other">%d треков поставлено в очередь.</item>
+    </plurals>
+    <plurals name="presentation_batch_e_n_songs_selected">
+        <item quantity="one">%d песня выбрана</item>
+        <item quantity="few">%d песни выбрано</item>
+        <item quantity="many">%d песен выбрано</item>
+        <item quantity="other">%d песен выбрано</item>
+    </plurals>
+    <plurals name="presentation_batch_f_n_songs">
+        <item quantity="one">%d песня</item>
+        <item quantity="few">%d песни</item>
+        <item quantity="many">%d песен</item>
+        <item quantity="other">%d песен</item>
+    </plurals>
+    <plurals name="presentation_batch_f_n_topics">
+        <item quantity="one">%d тема</item>
+        <item quantity="few">%d темы</item>
+        <item quantity="many">%d тем</item>
+        <item quantity="other">%d тем</item>
+    </plurals>
+</resources>

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resources>
     <!-- SettingsCategory -->
+    <string name="settings_category_yourmix_title">Your Mix</string>
+    <string name="settings_category_yourmix_subtitle">Tune the size and randomness of your home screen mix</string>
     <string name="settings_category_music_management_title">Music Management</string>
     <string name="settings_category_music_management_subtitle">Manage folders, refresh library, parsing options</string>
     <string name="settings_category_appearance_title">Appearance</string>

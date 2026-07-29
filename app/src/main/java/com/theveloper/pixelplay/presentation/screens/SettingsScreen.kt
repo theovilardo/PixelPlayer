@@ -478,6 +478,7 @@ fun ExpressiveSettingsGroup(content: @Composable () -> Unit) {
 private fun getCategoryColors(category: SettingsCategory, isDark: Boolean): Pair<Color, Color> {
     return if (isDark) {
         when (category) {
+            SettingsCategory.YOUR_MIX -> Color(0xFF4A3B77) to Color(0xFFE2D6FF)
             SettingsCategory.LIBRARY -> Color(0xFF004A77) to Color(0xFFC2E7FF) 
             SettingsCategory.APPEARANCE -> Color(0xFF7D5260) to Color(0xFFFFD8E4) 
             SettingsCategory.PLAYBACK -> Color(0xFF633B48) to Color(0xFFFFD8EC) 
@@ -491,6 +492,7 @@ private fun getCategoryColors(category: SettingsCategory, isDark: Boolean): Pair
         }
     } else {
         when (category) {
+            SettingsCategory.YOUR_MIX -> Color(0xFFE2D6FF) to Color(0xFF2C1B5B)
             SettingsCategory.LIBRARY -> Color(0xFFD7E3FF) to Color(0xFF005AC1)
             SettingsCategory.APPEARANCE -> Color(0xFFFFD8E4) to Color(0xFF631835)
             SettingsCategory.PLAYBACK -> Color(0xFFFFD8EC) to Color(0xFF631B4B)

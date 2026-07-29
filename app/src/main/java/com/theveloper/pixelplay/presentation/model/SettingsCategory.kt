@@ -19,6 +19,12 @@ enum class SettingsCategory(
     val icon: ImageVector? = null,
     val iconRes: Int? = null
 ) {
+    YOUR_MIX(
+        id = "your_mix",
+        titleRes = R.string.settings_category_yourmix_title,
+        subtitleRes = R.string.settings_category_yourmix_subtitle,
+        iconRes = R.drawable.rounded_instant_mix_24
+    ),
     LIBRARY(
         id = "library",
         titleRes = R.string.settings_category_music_management_title,

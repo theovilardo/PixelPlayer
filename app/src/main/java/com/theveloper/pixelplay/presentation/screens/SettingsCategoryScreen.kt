@@ -415,6 +415,52 @@ fun SettingsCategoryScreen(
                     modifier = Modifier.background(Color.Transparent)
                ) {
                     when (category) {
+                        SettingsCategory.YOUR_MIX -> {
+                            SettingsSubsection(title = "Mix size") {
+                                SliderSettingsItem(
+                                    label = "Number of songs",
+                                    value = uiState.yourMixSize.toFloat(),
+                                    valueRange = 20f..300f,
+                                    steps = 27,
+                                    onValueChange = { settingsViewModel.setYourMixSize(it.toInt()) },
+                                    valueText = { value -> "${value.toInt()} songs" }
+                                )
+                            }
+                            SettingsSubsection(title = "Composition") {
+                                SliderSettingsItem(
+                                    label = "Favorites",
+                                    value = uiState.yourMixFavoritePercent.toFloat(),
+                                    valueRange = 0f..100f,
+                                    steps = 19,
+                                    onValueChange = { settingsViewModel.setYourMixFavoritePercent(it.toInt()) },
+                                    valueText = { value -> "${value.toInt()}%" }
+                                )
+                                SliderSettingsItem(
+                                    label = "Core (most played)",
+                                    value = uiState.yourMixCorePercent.toFloat(),
+                                    valueRange = 0f..100f,
+                                    steps = 19,
+                                    onValueChange = { settingsViewModel.setYourMixCorePercent(it.toInt()) },
+                                    valueText = { value -> "${value.toInt()}%" }
+                                )
+                                val discoveryPercent = (100 - uiState.yourMixFavoritePercent - uiState.yourMixCorePercent).coerceAtLeast(0)
+                                Text(
+                                    text = "Discovery (rarely played): $discoveryPercent% — fills whatever's left over",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+                                )
+                            }
+                            SettingsSubsection(title = "Apply changes", addBottomSpace = false) {
+                                ActionSettingsItem(
+                                    title = "Regenerate Your Mix now",
+                                    subtitle = "Rebuild your home screen mix using the settings above",
+                                    icon = { Icon(painterResource(R.drawable.rounded_instant_mix_24), null, tint = MaterialTheme.colorScheme.secondary) },
+                                    primaryActionLabel = "Regenerate",
+                                    onPrimaryAction = { showRegenerateDailyMixDialog = true }
+                                )
+                            }
+                        }
                         SettingsCategory.LIBRARY -> {
                             SettingsSubsection(title = stringResource(R.string.settings_library_structure_section)) {
                                 SettingsItem(

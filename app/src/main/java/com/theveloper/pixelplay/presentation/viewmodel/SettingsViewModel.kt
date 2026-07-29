@@ -60,6 +60,9 @@ data class SettingsUiState(
     val albumArtPaletteStyle: AlbumArtPaletteStyle = AlbumArtPaletteStyle.default,
     val albumArtColorAccuracy: Int = AlbumArtColorAccuracy.DEFAULT,
     val mockGenresEnabled: Boolean = false,
+    val yourMixSize: Int = 60,
+    val yourMixFavoritePercent: Int = 30,
+    val yourMixCorePercent: Int = 45,
     val navBarCornerRadius: Int = 32,
     val navBarStyle: String = NavBarStyle.DEFAULT,
     val navBarCompactMode: Boolean = false,
@@ -576,6 +579,24 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             userPreferencesRepository.collageAutoRotateFlow.collect { autoRotate ->
                 _uiState.update { it.copy(collageAutoRotate = autoRotate) }
+            }
+        }
+
+        viewModelScope.launch {
+            userPreferencesRepository.yourMixSizeFlow.collect { size ->
+                _uiState.update { it.copy(yourMixSize = size) }
+            }
+        }
+
+        viewModelScope.launch {
+            userPreferencesRepository.yourMixFavoritePercentFlow.collect { percent ->
+                _uiState.update { it.copy(yourMixFavoritePercent = percent) }
+            }
+        }
+
+        viewModelScope.launch {
+            userPreferencesRepository.yourMixCorePercentFlow.collect { percent ->
+                _uiState.update { it.copy(yourMixCorePercent = percent) }
             }
         }
 
@@ -1313,6 +1334,18 @@ class SettingsViewModel @Inject constructor(
 
     fun setNavBarCornerRadius(radius: Int) {
         viewModelScope.launch { userPreferencesRepository.setNavBarCornerRadius(radius) }
+    }
+
+    fun setYourMixSize(size: Int) {
+        viewModelScope.launch { userPreferencesRepository.setYourMixSize(size) }
+    }
+
+    fun setYourMixFavoritePercent(percent: Int) {
+        viewModelScope.launch { userPreferencesRepository.setYourMixFavoritePercent(percent) }
+    }
+
+    fun setYourMixCorePercent(percent: Int) {
+        viewModelScope.launch { userPreferencesRepository.setYourMixCorePercent(percent) }
     }
     /**
      * Triggers a test crash to verify the crash handler is working correctly.

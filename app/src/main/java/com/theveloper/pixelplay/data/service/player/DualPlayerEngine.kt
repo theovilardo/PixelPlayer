@@ -1121,7 +1121,7 @@ class DualPlayerEngine @Inject constructor(
             // FLAG_ENABLE_CONSTANT_BITRATE_SEEKING (not _ALWAYS): fallback-only CBR seeking
             // so VBR MP3s with proper Xing/VBRI headers still use their seek table and land
             // on the exact frame instead of jumping ±30 s on a VBR file.
-            .setMp3ExtractorFlags(Mp3Extractor.FLAG_ENABLE_CONSTANT_BITRATE_SEEKING)
+            .setMp3ExtractorFlags(Mp3Extractor.FLAG_ENABLE_CONSTANT_BITRATE_SEEKING or Mp3Extractor.FLAG_DISABLE_ID3_METADATA)
             .setFlacExtractorFlags(FlacExtractor.FLAG_DISABLE_ID3_METADATA)
 
         val loadControl = buildAdaptiveLoadControl()

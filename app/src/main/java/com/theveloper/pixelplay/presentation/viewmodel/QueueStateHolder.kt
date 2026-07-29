@@ -55,7 +55,7 @@ class QueueStateHolder @Inject constructor(
 ) {
 
     companion object {
-        private const val SHUFFLE_SAMPLE_LIMIT = 500
+        private const val SHUFFLE_SAMPLE_LIMIT = 10000
         private const val ALL_SONGS_SHUFFLED_QUEUE = "All Songs (Shuffled)"
         private const val FAVORITES_SHUFFLED_QUEUE = "Liked Songs (Shuffled)"
     }

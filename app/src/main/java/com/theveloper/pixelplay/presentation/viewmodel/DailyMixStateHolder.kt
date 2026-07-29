@@ -80,7 +80,16 @@ class DailyMixStateHolder @Inject constructor(
                 userPreferencesRepository.saveDailyMixSongIds(mix.map { it.id })
 
                 // Generate your mix
-                val yourMix = dailyMixManager.generateYourMix(allSongs, favoriteIds)
+                val yourMixSize = userPreferencesRepository.yourMixSizeFlow.first()
+                val yourMixFavoritePercent = userPreferencesRepository.yourMixFavoritePercentFlow.first()
+                val yourMixCorePercent = userPreferencesRepository.yourMixCorePercentFlow.first()
+                val yourMix = dailyMixManager.generateYourMix(
+                    allSongs,
+                    favoriteIds,
+                    limit = yourMixSize,
+                    favoriteWeightPercent = yourMixFavoritePercent,
+                    coreWeightPercent = yourMixCorePercent
+                )
                 _yourMixSongs.value = yourMix.toImmutableList()
                 userPreferencesRepository.saveYourMixSongIds(yourMix.map { it.id })
             } else {

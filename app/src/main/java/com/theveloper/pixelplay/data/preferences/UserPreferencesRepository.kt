@@ -119,6 +119,9 @@ class UserPreferencesRepository @Inject constructor(
         val LAST_DAILY_MIX_UPDATE = longPreferencesKey("last_daily_mix_update")
         val DAILY_MIX_SONG_IDS = stringPreferencesKey("daily_mix_song_ids")
         val YOUR_MIX_SONG_IDS = stringPreferencesKey("your_mix_song_ids")
+        val YOUR_MIX_SIZE = intPreferencesKey("your_mix_size")
+        val YOUR_MIX_FAVORITE_PERCENT = intPreferencesKey("your_mix_favorite_percent")
+        val YOUR_MIX_CORE_PERCENT = intPreferencesKey("your_mix_core_percent")
         val NAV_BAR_CORNER_RADIUS = intPreferencesKey("nav_bar_corner_radius")
         val NAV_BAR_STYLE = stringPreferencesKey("nav_bar_style")
         val NAV_BAR_COMPACT_MODE = booleanPreferencesKey("nav_bar_compact_mode")
@@ -663,6 +666,27 @@ suspend fun markDirectoryRulesVersionApplied(version: Int) {
         dataStore.edit { preferences ->
             preferences[PreferencesKeys.YOUR_MIX_SONG_IDS] = json.encodeToString(songIds)
         }
+    }
+
+    val yourMixSizeFlow: Flow<Int> =
+        dataStore.data.map { preferences -> preferences[PreferencesKeys.YOUR_MIX_SIZE] ?: 60 }
+
+    suspend fun setYourMixSize(size: Int) {
+        dataStore.edit { preferences -> preferences[PreferencesKeys.YOUR_MIX_SIZE] = size.coerceIn(20, 300) }
+    }
+
+    val yourMixFavoritePercentFlow: Flow<Int> =
+        dataStore.data.map { preferences -> preferences[PreferencesKeys.YOUR_MIX_FAVORITE_PERCENT] ?: 30 }
+
+    suspend fun setYourMixFavoritePercent(percent: Int) {
+        dataStore.edit { preferences -> preferences[PreferencesKeys.YOUR_MIX_FAVORITE_PERCENT] = percent.coerceIn(0, 100) }
+    }
+
+    val yourMixCorePercentFlow: Flow<Int> =
+        dataStore.data.map { preferences -> preferences[PreferencesKeys.YOUR_MIX_CORE_PERCENT] ?: 45 }
+
+    suspend fun setYourMixCorePercent(percent: Int) {
+        dataStore.edit { preferences -> preferences[PreferencesKeys.YOUR_MIX_CORE_PERCENT] = percent.coerceIn(0, 100) }
     }
 
     val isGenreGridViewFlow: Flow<Boolean> =

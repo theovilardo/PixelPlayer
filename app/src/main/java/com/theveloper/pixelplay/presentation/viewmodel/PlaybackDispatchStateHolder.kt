@@ -654,7 +654,7 @@ class PlaybackDispatchStateHolder @Inject constructor(
         val action: () -> Unit = {
             Timber.d("[TileDebug] action() invoked")
             cb.scope.launch {
-                var songs = musicRepository.getRandomSongs(limit = 500)
+                var songs = musicRepository.getRandomSongs(limit = 10000)
                 Timber.d("[TileDebug] Repository returned ${songs.size} random songs immediately")
 
                 if (songs.isEmpty()) {
@@ -664,7 +664,7 @@ class PlaybackDispatchStateHolder @Inject constructor(
                     songs = withTimeoutOrNull(30_000L) {
                         var refreshedSongs = emptyList<Song>()
                         while (refreshedSongs.isEmpty()) {
-                            refreshedSongs = musicRepository.getRandomSongs(limit = 500)
+                            refreshedSongs = musicRepository.getRandomSongs(limit = 10000)
                             if (refreshedSongs.isEmpty()) {
                                 delay(500L)
                             }

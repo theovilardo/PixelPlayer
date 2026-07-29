@@ -15,7 +15,7 @@ enum class AiProvider(
     GLM("Zhipu GLM", requiresApiKey = true, description = "GLM-4 — bilingual (Chinese/English) models by Zhipu AI"),
     OPENAI("OpenAI", requiresApiKey = true, description = "GPT-4o, GPT-4.1, o3, o4-mini — industry-standard models"),
     OPENROUTER("OpenRouter", requiresApiKey = true, description = "Single API for 300+ models across all major providers"),
-    OLLAMA("Ollama", requiresApiKey = true, hasConfigurableUrl = true, description = "Ollama-compatible API endpoint (configurable URL)"),
+    OLLAMA("Ollama", requiresApiKey = false, hasConfigurableUrl = true, description = "Ollama-compatible API endpoint (configurable URL)"),
     CUSTOM("Custom Provider", requiresApiKey = true, hasConfigurableUrl = true, description = "Any OpenAI-compatible API endpoint");
     
     companion object {

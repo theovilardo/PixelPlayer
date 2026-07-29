@@ -83,7 +83,7 @@ class AiClientFactory @Inject constructor(
             )
             AiProvider.OLLAMA -> GenericOpenAiClient(
                 apiKey = apiKey,
-                baseUrl = "https://api.ollama.ai/v1",
+                baseUrl = "http://localhost:11434/v1",
                 defaultModelId = "llama3",
                 providerName = provider.displayName,
                 client = sharedHttpClient

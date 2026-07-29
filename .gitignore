@@ -49,3 +49,4 @@ markdown.xml
 **/.env
 **/.env.*
 !**/.env.example
+message.txt

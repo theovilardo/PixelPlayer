@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Navigation -->
+    <string name="nav_error_genre_id_missing">錯誤：流派 ID 缺失</string>
+
+    <!-- SetupScreen -->
+    <string name="setup_lets_go">開始吧！</string>
+    <string name="setup_step_format">第 %1$d 步，共 %2$d 步</string>
+    <string name="setup_toast_grant_permission_first">請先授予所需權限。</string>
+    <string name="setup_toast_grant_all_permissions">請授予所有所需權限。</string>
+    <string name="setup_welcome_prefix">歡迎使用 </string>
+    <string name="setup_beta_symbol">β</string>
+    <string name="setup_beta_label">Beta</string>
+    <string name="setup_intro_body">讓我們爲您完成所有設置。</string>
+    <string name="setup_permission_media_title">媒體權限</string>
+    <string name="setup_permission_media_description">PixelPlayer 需要訪問您的音頻文件以構建您的音樂庫。</string>
+    <string name="setup_permission_granted">權限已授予</string>
+    <string name="setup_grant_media_permission">授予媒體權限</string>
+    <string name="setup_permission_notifications_title">通知</string>
+    <string name="setup_permission_notifications_description">啓用通知以便在鎖屏和通知欄控制您的音樂。</string>
+    <string name="setup_enable_notifications">啓用通知</string>
+    <string name="setup_backup_have_title">您有備份文件嗎？</string>
+    <string name="setup_backup_have_description">如果您已有 PixelPlayer 備份，現在恢復它可以跳過此設備上的大部分剩餘設置。</string>
+    <string name="setup_import_backup">導入備份</string>
+    <string name="setup_inspecting_backup">正在檢查備份</string>
+    <string name="setup_checking_backup">正在檢查備份包…</string>
+    <string name="setup_restoring_backup">正在恢復備份</string>
+    <string name="setup_skip_for_now">跳過 / 暫不</string>
+    <string name="setup_restore_backup_title">恢復備份</string>
+    <string name="setup_restore_backup_subtitle">在完成設置之前，查看您要導入的內容。</string>
+    <string name="setup_modules_selected_format">已選擇 %1$d 個模塊，共 %2$d 個</string>
+    <string name="setup_backup_created_format">創建於 %1$s</string>
+    <string name="setup_backup_from_version">來自版本 %1$s 的備份</string>
+    <string name="setup_backup_unknown_version">未知版本</string>
+    <string name="setup_restore_selected">恢復所選項</string>
+    <string name="setup_restoring">正在恢復</string>
+    <string name="setup_excluded_folders_title">排除的文件夾</string>
+    <string name="setup_excluded_folders_description">默認掃描所有文件夾。選擇在構建媒體庫時要忽略的任何位置。</string>
+    <string name="setup_choose_folders_ignore">選擇要忽略的文件夾</string>
+    <string name="setup_toast_grant_storage_first">請先授予存儲權限</string>
+    <string name="setup_theme_title">應用主題</string>
+    <string name="setup_theme_subtitle">在開始探索媒體庫之前，選擇您喜歡的外觀。</string>
+    <string name="setup_theme_dark_title">深色</string>
+    <string name="setup_theme_dark_description">PixelPlayer 默認的 Material 3 深色外觀。</string>
+    <string name="setup_theme_light_title">淺色</string>
+    <string name="setup_theme_light_description">整個應用採用更明亮的 Material 3 外觀。</string>
+    <string name="setup_theme_follow_title">跟隨系統</string>
+    <string name="setup_theme_follow_description">匹配您手機當前的外觀設置。</string>
+    <string name="setup_recommended">推薦</string>
+    <string name="setup_theme_footer">您稍後可以在“設置 &gt; 外觀 &gt; 應用主題”中更改此設置。</string>
+    <string name="setup_library_layout_title">媒體庫佈局</string>
+    <string name="setup_library_layout_subtitle">選擇您首選的媒體庫導航方式。</string>
+    <string name="setup_preview_songs_label">歌曲</string>
+    <string name="setup_compact_mode">緊湊模式</string>
+    <string name="setup_compact_mode_pill_hint">使用極簡膠囊導航</string>
+    <string name="setup_compact_mode_tab_hint">使用標準標籤欄</string>
+    <string name="setup_tab_songs">歌曲</string>
+    <string name="setup_tab_albums">專輯</string>
+    <string name="setup_tab_artists">藝術家</string>
+    <string name="setup_library_layout_footer">您稍後可以在“設置 &gt; 外觀 &gt; 媒體庫導航”中更改此設置。</string>
+    <string name="setup_app_navigation_title">應用導航</string>
+    <string name="setup_app_navigation_subtitle">選擇底部導航欄的樣式。</string>
+    <string name="setup_navbar_default_style">默認樣式</string>
+    <string name="setup_nav_floating_pill_description">帶有圓角的懸浮膠囊</string>
+    <string name="setup_nav_full_width_description">標準全寬欄</string>
+    <string name="setup_customize_corner_radius">自定義圓角半徑</string>
+    <string name="setup_navbar_footer">您稍後可以在“設置 &gt; 外觀 &gt; 導航欄樣式”中更改此設置。</string>
+    <string name="setup_permission_alarms_title">鬧鐘和提醒</string>
+    <string name="setup_permission_alarms_description">可選，但如果您使用睡眠定時器並希望 PixelPlayer 準時停止播放，則推薦使用。</string>
+    <string name="setup_grant_permission_generic">授予權限</string>
+    <string name="setup_battery_optimization_title">電池優化</string>
+    <string name="setup_battery_optimization_description">某些 Android 設備會強制結束後臺應用。請爲 PixelPlayer 禁用電池優化，以防止意外的播放中斷。</string>
+    <string name="setup_disable_battery_optimization">禁用優化</string>
+    <string name="setup_all_set_title">一切就緒！</string>
+    <string name="setup_all_set_body">您已準備好享受音樂了。</string>
+
+    <!-- SearchScreen -->
+    <string name="search_placeholder">搜索…</string>
+    <string name="search_cd_search_icon">搜索</string>
+    <string name="search_cd_clear_search_query">清除搜索</string>
+    <string name="search_recent_searches">最近搜索</string>
+    <string name="search_action_clear_all">清除全部</string>
+    <string name="search_cd_search_history_icon">歷史</string>
+    <string name="search_cd_delete_search_history_item">刪除搜索歷史項</string>
+    <string name="search_cd_no_results">無結果</string>
+    <string name="search_no_results_for_query">沒有找到“%1$s”的結果</string>
+    <string name="search_nothing_found">未找到任何內容</string>
+    <string name="search_try_different_or_filters">嘗試不同的搜索詞或檢查您的過濾條件。</string>
+    <string name="search_no_results_found">未找到結果。</string>
+    <string name="browse_by_genre">按流派瀏覽</string>
+    <string name="no_genres_available">無可用流派。</string>
+
+    <!-- ArtistDetailScreen -->
+    <string name="artist_cd_play_title">播放 %1$s</string>
+    <string name="artist_cd_collapse_title">收起 %1$s</string>
+    <string name="artist_cd_expand_title">展開 %1$s</string>
+    <string name="artist_cd_edit_image">編輯藝術家圖片</string>
+    <string name="artist_action_change_photo">更改照片</string>
+    <string name="artist_action_reset_to_default">恢復默認</string>
+    <string name="artist_cd_shuffle_play">隨機播放藝術家</string>
+
+    <!-- AlbumDetailScreen -->
+    <string name="album_disc_number_header">唱片 %d</string>
+    <string name="album_cover_for">%1$s 的封面</string>
+    <string name="album_detail_meta_line">%1$s · %2$s</string>
+
+    <!-- PlaylistDetailScreen -->
+    <string name="playlist_not_found">未找到播放列表。</string>
+    <string name="playlist_empty_title">此播放列表爲空。</string>
+    <string name="playlist_empty_add_hint">點擊“添加歌曲”開始。</string>
+    <string name="playlist_empty_folder_label">此文件夾不包含歌曲。</string>
+    <string name="playlist_sort_songs_title">對歌曲排序</string>
+    <string name="playlist_more_options_title">更多選項</string>
+    <string name="playlist_options_title">播放列表選項</string>
+    <string name="playlist_action_edit_playlist">編輯播放列表</string>
+    <string name="playlist_action_delete_playlist">刪除播放列表</string>
+    <string name="playlist_dialog_delete_title">刪除播放列表？</string>
+    <string name="playlist_dialog_delete_body">您確定要刪除此播放列表嗎？</string>
+    <string name="playlist_action_set_default_transition">設置默認過渡效果</string>
+    <string name="playlist_action_export_playlist">導出播放列表</string>
+    <string name="playlist_song_duration_line">%1$s • %2$s</string>
+    <string name="playlist_action_play_it">播放</string>
+    <string name="playlist_action_add_songs">添加</string>
+    <string name="playlist_cd_add_songs">添加歌曲</string>
+    <string name="playlist_action_remove_songs">移除</string>
+    <string name="playlist_cd_remove_songs">移除歌曲</string>
+    <string name="playlist_action_reorder_songs">重新排序</string>
+    <string name="playlist_cd_reorder_songs">重新排序歌曲</string>
+
+    <!-- EditTransitionScreen -->
+    <string name="transition_title_global">全局過渡效果</string>
+    <string name="transition_title_playlist_rules">播放列表規則</string>
+    <string name="transition_intro_global">除非被覆蓋，否則此配置適用於所有播放源。</string>
+    <string name="transition_intro_playlist">爲此特定播放列表配置默認行爲。</string>
+    <string name="transition_active_status">活動狀態</string>
+    <string name="transition_status_global_default">全局默認</string>
+    <string name="transition_status_playlist_default">播放列表默認</string>
+    <string name="transition_status_following_global">跟隨全局</string>
+    <string name="transition_status_custom_override">自定義覆蓋</string>
+    <string name="transition_custom_override_title">自定義覆蓋</string>
+    <string name="transition_custom_override_body">啓用以設置此播放列表的具體規則。</string>
+    <string name="transition_snackbar_using_global">正在使用全局默認值</string>
+    <string name="transition_snackbar_saved">更改已成功保存</string>
+    <string name="transition_style_title">過渡樣式</string>
+    <string name="transition_style_subtitle">曲目之間如何混合</string>
+    <string name="transition_mode_none">無</string>
+    <string name="transition_mode_crossfade">淡入淡出 (Crossfade)</string>
+    <string name="transition_duration_title">過渡時長</string>
+    <string name="transition_duration_subtitle_format">總重疊時長 %1$d 秒</string>
+    <string name="transition_reset_cd">重置過渡效果</string>
+    <string name="transition_visualizer_current">當前歌曲</string>
+    <string name="transition_visualizer_next">下一首歌曲</string>
+    <string name="transition_overlap_explanation_format">曲目將重疊 %1$d 秒</string>
+    <string name="transition_curves_title">音量曲線</string>
+    <string name="transition_curves_subtitle">微調音頻斜率</string>
+    <string name="transition_fade_out">淡出</string>
+    <string name="transition_fade_in">淡入</string>
+
+    <!-- CreatePlaylistScreen -->
+    <string name="playlist_creation_new_smart">新建智能播放列表</string>
+    <string name="playlist_creation_new">新建播放列表</string>
+    <string name="playlist_creation_add_songs">添加歌曲</string>
+    <string name="playlist_creation_cd_back_or_cancel">返回或取消</string>
+    <string name="playlist_creation_next">下一步</string>
+    <string name="playlist_creation_create">創建</string>
+    <string name="playlist_creation_edit">編輯播放列表</string>
+    <string name="playlist_creation_auto_collage">自動生成拼圖</string>
+    <string name="playlist_creation_cd_add_photo">添加照片</string>
+    <string name="playlist_creation_pick_image">選擇圖片</string>
+    <string name="playlist_creation_change">更改</string>
+    <string name="playlist_creation_remove">移除</string>
+    <string name="playlist_creation_name_label">播放列表名稱</string>
+    <string name="playlist_creation_name_placeholder">我的超讚混音</string>
+    <string name="playlist_creation_edit_cover">編輯封面</string>
+    <string name="playlist_creation_adjust_cover_title">調整您的封面圖片</string>
+    <string name="playlist_creation_adjust_cover_hint">使用雙指縮放和拖動手勢找到完美的構圖</string>
+    <string name="playlist_creation_mode_manual">手動</string>
+    <string name="playlist_creation_mode_smart">智能</string>
+    <string name="playlist_creation_generate_with_ai">使用 AI 生成</string>
+    <string name="playlist_creation_smart_rule">智能規則</string>
+    <string name="playlist_creation_tab_default">默認</string>
+    <string name="playlist_creation_tab_image">圖片</string>
+    <string name="playlist_creation_tab_icon">圖標</string>
+    <string name="playlist_creation_bg_color">背景顏色</string>
+    <string name="playlist_creation_icon_symbol">圖標符號</string>
+    <string name="playlist_creation_shape_style">形狀樣式</string>
+    <string name="playlist_creation_shape_params">形狀參數</string>
+    <string name="playlist_creation_corner_radius">圓角半徑</string>
+    <string name="playlist_creation_smoothness">平滑度</string>
+    <string name="playlist_creation_sides">邊數</string>
+    <string name="playlist_creation_curve">曲線</string>
+    <string name="playlist_creation_rotation">旋轉</string>
+    <string name="playlist_creation_scale">縮放</string>
+    <string name="playlist_creation_rule_top_played_title">播放最多</string>
+    <string name="playlist_creation_rule_top_played_sub">您播放次數最多的曲目。</string>
+    <string name="playlist_creation_rule_recently_played_title">最近播放</string>
+    <string name="playlist_creation_rule_recently_played_sub">您最近聽過的歌曲。</string>
+    <string name="playlist_creation_rule_forgotten_title">被遺忘的最愛</string>
+    <string name="playlist_creation_rule_forgotten_sub">您有一段時間沒聽過的最愛曲目。</string>
+    <string name="playlist_creation_rule_new_gems_title">新發現</string>
+    <string name="playlist_creation_rule_new_gems_sub">最近添加但播放次數較少的曲目。</string>
+
+    <!-- GenreDetailScreen -->
+    <string name="genre_quick_fill">快速填充流派</string>
+    <string name="genre_sort_title">排序與播放</string>
+    <string name="genre_sort_action_shuffle">隨機播放</string>
+    <string name="genre_sort_by_title">排序依據</string>
+    <string name="genre_sort_artist_option">藝術家</string>
+    <string name="genre_sort_album_option">專輯</string>
+    <string name="genre_sort_title_option">標題</string>
+    <string name="genre_cd_generic_artist">通用藝術家</string>
+    <string name="genre_shuffle_label">隨機播放 %1$s</string>
+
+    <!-- QuickFillScreen -->
+    <string name="quick_fill_select_songs">選擇歌曲</string>
+    <string name="quick_fill_choose_genre">選擇流派</string>
+    <string name="quick_fill_search_songs_placeholder">搜索歌曲</string>
+    <string name="quick_fill_new_genre">新建流派</string>
+    <string name="quick_fill_cd_add_custom_genre">添加自定義</string>
+    <string name="quick_fill_add_custom_genre_title">添加自定義流派</string>
+    <string name="quick_fill_genre_name_placeholder">流派名稱</string>
+    <string name="quick_fill_select_icon">選擇圖標</string>
+    <string name="quick_fill_select_genre_label_format">流派：%1$s</string>
+    <string name="quik_fill_select_a_genre_label">選擇一個流派</string>
+    <string name="quick_fill_action_title">快速填充</string>
+
+    <!-- MashupScreen -->
+    <string name="mashup_title">DJ 空間</string>
+    <string name="mashup_loading">正在加載…</string>
+    <string name="mashup_deck_n">打碟機 %1$d</string>
+    <string name="mashup_load_song_cd">加載歌曲</string>
+    <string name="mashup_no_song_loaded">未加載歌曲</string>
+    <string name="mashup_artist_placeholder">…</string>
+    <string name="mashup_stem_separation_unavailable">音軌分離 (Stem separation) 功能暫不可用。</string>
+    <string name="mashup_volume">音量</string>
+    <string name="mashup_speed">速度</string>
+    <string name="mashup_crossfader">交叉推子</string>
+    <string name="mashup_deck_1">打碟機 1</string>
+    <string name="mashup_deck_2">打碟機 2</string>
+    <string name="mashup_select_song_title">選擇一首歌曲</string>
+    <string name="mashup_cd_play_pause">播放/暫停</string>
+    <string name="mashup_cd_song_cover">歌曲封面</string>
+    <string name="mashup_speed_multiplier">x%1$.2f</string>
+</resources>

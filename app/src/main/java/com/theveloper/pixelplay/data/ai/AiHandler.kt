@@ -1,8 +1,11 @@
 package com.theveloper.pixelplay.data.ai
 
 
+import com.theveloper.pixelplay.data.ai.provider.AiClient
 import com.theveloper.pixelplay.data.ai.provider.AiClientFactory
 import com.theveloper.pixelplay.data.ai.provider.AiProvider
+import com.theveloper.pixelplay.data.ai.provider.AiProviderException
+import com.theveloper.pixelplay.data.ai.provider.AiProviderSupport
 import com.theveloper.pixelplay.data.database.AiCacheDao
 import com.theveloper.pixelplay.data.database.AiCacheEntity
 import com.theveloper.pixelplay.data.preferences.AiPreferencesRepository
@@ -12,9 +15,11 @@ import com.theveloper.pixelplay.di.AppScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
 import timber.log.Timber
 import java.security.MessageDigest
+import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -27,9 +32,9 @@ class AiHandler @Inject constructor(
     private val promptEngine: AiSystemPromptEngine,
     @AppScope private val appScope: CoroutineScope
 ) {
-    // Cooldown timer: Provider -> Expiry Timestamp
-    private val providerCooldowns = mutableMapOf<AiProvider, Long>()
-    private val COOLDOWN_DURATION_MS = 1000L * 60 * 5 // 5 minutes
+    // Cooldown timer: Provider -> Expiry Timestamp (thread-safe, auto-cleans expired)
+    private val providerCooldowns = ConcurrentHashMap<AiProvider, Long>()
+    private val COOLDOWN_DURATION_MS = 1000L * 60 * 2 // 2 minutes (was 5)
 
     // Cache TTL: 30 minutes — prevents stale results from being served indefinitely
     private val CACHE_TTL_MS = 1000L * 60 * 30
@@ -97,7 +102,13 @@ class AiHandler @Inject constructor(
         presencePenalty: Float,
         frequencyPenalty: Float,
     ): GenerationResult {
-        val client = clientFactory.createClient(provider, apiKey)
+        val client = if (provider.hasConfigurableUrl) {
+            val configuredUrl = preferencesRepo.getBaseUrl(provider).first()
+            if (configuredUrl.isNotBlank()) clientFactory.createClientWithUrl(provider, apiKey, configuredUrl)
+            else clientFactory.createClient(provider, apiKey)
+        } else {
+            clientFactory.createClient(provider, apiKey)
+        }
         val requestedModel = getModel(provider).ifBlank { client.getDefaultModel() }
 
         suspend fun callWithModel(model: String): String {
@@ -108,8 +119,8 @@ class AiHandler @Inject constructor(
                         topP, topK, maxTokens, presencePenalty, frequencyPenalty,
                     )
                 }
-            } catch (e: kotlinx.coroutines.TimeoutCancellationException) {
-                throw com.theveloper.pixelplay.data.ai.provider.AiProviderSupport.createException(
+            } catch (e: TimeoutCancellationException) {
+                throw AiProviderSupport.createException(
                     providerName = provider.displayName,
                     statusCode = null,
                     transportMessage = "Request timed out after ${REQUEST_TIMEOUT_MS / 1000}s. The model may be overloaded.",
@@ -123,7 +134,7 @@ class AiHandler @Inject constructor(
             val response = callWithModel(requestedModel)
             GenerationResult(response, requestedModel)
         } catch (e: Exception) {
-            val failure = com.theveloper.pixelplay.data.ai.provider.AiProviderSupport.wrapThrowable(
+            val failure = AiProviderSupport.wrapThrowable(
                 provider.displayName, e, requestedModel
             )
 
@@ -140,13 +151,13 @@ class AiHandler @Inject constructor(
         provider: AiProvider,
         apiKey: String,
         requestedModel: String,
-        client: com.theveloper.pixelplay.data.ai.provider.AiClient,
-        failure: com.theveloper.pixelplay.data.ai.provider.AiProviderException
+        client: AiClient,
+        failure: AiProviderException
     ): String? {
         if (!failure.isModelUnavailable()) return null
 
         val availableModels = runCatching { client.getAvailableModels(apiKey) }.getOrDefault(emptyList())
-        val recoveredModel = com.theveloper.pixelplay.data.ai.provider.AiProviderSupport.selectRecoveryModel(
+        val recoveredModel = AiProviderSupport.selectRecoveryModel(
             currentModel = requestedModel,
             defaultModel = client.getDefaultModel(),
             availableModels = availableModels
@@ -163,6 +174,17 @@ class AiHandler @Inject constructor(
         context: String = ""
     ): String {
         val params = getGenerationParams()
+        val effectiveMaxTokens = if (type == AiSystemPromptType.LYRICS) {
+            val estimatedInputChars = prompt.length
+            // Translation doubles output (original + translated per line), plus formatting overhead
+            val estimatedOutputChars = estimatedInputChars * 3
+            val cjkRatio = prompt.count { it.code in 0x4E00..0x9FFF || it.code in 0x3040..0x30FF || it.code in 0xAC00..0xD7AF || it.code in 0x0E00..0x0E7F || it.code in 0x0600..0x06FF || it.code in 0x0370..0x03FF || it.code in 0x0590..0x05FF || it.code in 0x0900..0x097F || it.code in 0x0A00..0x0A7F }.toFloat() / estimatedInputChars.coerceAtLeast(1)
+            val charsPerToken = (4f - cjkRatio * 3f).coerceIn(1f, 4f)
+            val estimatedOutputTokens = (estimatedOutputChars / charsPerToken).toInt().coerceAtLeast(8192)
+            estimatedOutputTokens.coerceAtMost(32768)
+        } else {
+            params.maxTokens
+        }
         val effectiveTemperature = if (params.temperature == 0.7f) {
             if (temperature == 0.7f) {
                 when (type) {
@@ -171,6 +193,7 @@ class AiHandler @Inject constructor(
                     AiSystemPromptType.TAGGING -> 0.4f
                     AiSystemPromptType.PLAYLIST, AiSystemPromptType.DAILY_MIX -> 0.6f
                     AiSystemPromptType.PERSONA -> 0.85f
+                    AiSystemPromptType.LYRICS -> 0.7f
                     AiSystemPromptType.GENERAL -> 0.7f
                 }
             } else temperature
@@ -191,9 +214,12 @@ class AiHandler @Inject constructor(
             }
         }
 
-        val providersToTry = com.theveloper.pixelplay.data.ai.provider.AiProviderSupport.buildProviderChain(userProvider)
-        val failedProviders = mutableListOf<String>()
+        // Clean up expired cooldowns so stale entries never accumulate
         val now = System.currentTimeMillis()
+        providerCooldowns.entries.removeIf { it.value < now }
+
+        val providersToTry = AiProviderSupport.buildProviderChain(userProvider)
+        val failedProviders = mutableListOf<String>()
 
         for (provider in providersToTry) {
             val cooldownExpiry = providerCooldowns[provider] ?: 0L
@@ -204,7 +230,7 @@ class AiHandler @Inject constructor(
 
             try {
                 val apiKey = getApiKey(provider)
-                if (apiKey.isBlank()) {
+                if (apiKey.isBlank() && provider.requiresApiKey) {
                     failedProviders.add("${provider.name}: no API key configured")
                     continue
                 }
@@ -220,7 +246,7 @@ class AiHandler @Inject constructor(
                     temperature = effectiveTemperature,
                     topP = params.topP,
                     topK = params.topK,
-                    maxTokens = params.maxTokens,
+                    maxTokens = effectiveMaxTokens,
                     presencePenalty = params.presencePenalty,
                     frequencyPenalty = params.frequencyPenalty,
                 )
@@ -230,7 +256,7 @@ class AiHandler @Inject constructor(
                     continue
                 }
 
-                val isThinkingModel = finalSystemPrompt.contains("think", true) || provider.name.contains("reasoning", true)
+                val isThinkingModel = result.modelUsed.contains("think", true) || result.modelUsed.contains("reason", true) || provider.name.contains("reasoning", true)
                 val estimatedPromptTokens = (finalSystemPrompt.length + prompt.length) / 4
                 val estimatedOutputTokens = result.response.length / 4
                 val estimatedThoughtTokens = if (isThinkingModel) (estimatedOutputTokens * 1.5).toInt() else 0
@@ -254,10 +280,15 @@ class AiHandler @Inject constructor(
                 }
 
                 cacheDao.insert(AiCacheEntity(promptHash = hash, responseJson = result.response, timestamp = System.currentTimeMillis()))
+
+                // Evict cache entries older than 7 days
+                val sevenDaysAgo = System.currentTimeMillis() - (7 * 24 * 60 * 60 * 1000L)
+                try { cacheDao.clearOldCache(sevenDaysAgo) } catch (_: Exception) {}
+
                 return result.response
             } catch (e: Exception) {
                 // AI Optimization: Robust failover logic—if one provider fails, we log and try the next in the chain
-                val failure = com.theveloper.pixelplay.data.ai.provider.AiProviderSupport.wrapThrowable(provider.displayName, e)
+                val failure = AiProviderSupport.wrapThrowable(provider.displayName, e)
                 Timber.tag("AiHandler").w(e, "Provider ${provider.name} failed: ${failure.message}")
                 failedProviders.add("${provider.name}: ${failure.message ?: "Unknown error"}")
                 // Trigger cooldown only on provider-level outages and account problems.

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="sharing_playlists_message">
+        <item quantity="other">Đang chia sẻ %d danh sách phát</item>
+    </plurals>
+    <plurals name="exported_playlists_message">
+        <item quantity="other">Đã xuất %1$d danh sách phát tới %2$s</item>
+    </plurals>
+    <plurals name="n_songs_added_to_queue">
+        <item quantity="other">Đã thêm %d bài hát vào hàng đợi</item>
+    </plurals>
+    <plurals name="n_songs_will_play_next">
+        <item quantity="other">%d bài hát sẽ phát tiếp theo</item>
+    </plurals>
+    <plurals name="n_songs_added_to_favorites">
+        <item quantity="other">Đã thêm %d bài hát vào yêu thích</item>
+    </plurals>
+    <plurals name="n_songs_removed_from_favorites">
+        <item quantity="other">Đã xóa %d bài hát khỏi yêu thích</item>
+    </plurals>
+    <plurals name="n_files_deleted">
+        <item quantity="other">Đã xóa %d tệp</item>
+    </plurals>
+    <plurals name="delete_songs_confirmation_title">
+        <item quantity="other">Xóa %d tệp?</item>
+    </plurals>
+    <plurals name="n_tracks_selected">
+        <item quantity="other">Đã chọn %d bài hát</item>
+    </plurals>
+    <plurals name="presentation_batch_b_songs_dot_duration">
+        <item quantity="other">%1$d bài hát • %2$s</item>
+    </plurals>
+    <plurals name="presentation_batch_e_queue_tracks_lined_up">
+        <item quantity="other">%d bài hát đã được xếp hàng.</item>
+    </plurals>
+    <plurals name="presentation_batch_e_n_songs_selected">
+        <item quantity="other">Đã chọn %d bài hát</item>
+    </plurals>
+    <plurals name="presentation_batch_f_n_songs">
+        <item quantity="other">%d bài hát</item>
+    </plurals>
+    <plurals name="presentation_batch_f_n_topics">
+        <item quantity="other">%d chủ đề</item>
+    </plurals>
+</resources>

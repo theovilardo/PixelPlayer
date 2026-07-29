@@ -19,11 +19,6 @@ interface AiClient {
     ): String
     
     /**
-     * Estimate or count tokens for a given prompt
-     */
-    suspend fun countTokens(model: String, systemPrompt: String, prompt: String): Int
-    
-    /**
      * Get list of available models for this provider
      */
     suspend fun getAvailableModels(apiKey: String): List<String>

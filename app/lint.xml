@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!-- Translation completeness cannot be enforced without native speakers -->
+    <issue id="MissingTranslation" severity="warning" />
+    <issue id="ExtraTranslation" severity="warning" />
+    <issue id="MissingQuantity" severity="warning" />
+    <issue id="ImpliedQuantity" severity="warning" />
+
+    <!-- Intentional use of Material Design 3 internal color APIs for dynamic theme -->
+    <issue id="RestrictedApi" severity="warning" />
+
+    <!-- Media3 APIs marked @UnstableApi are used intentionally throughout -->
+    <issue id="UnsafeOptInUsageError" severity="warning" />
+
+    <!-- Compose resource access via LocalContext.current is accepted pattern -->
+    <issue id="LocalContextGetResourceValueCall" severity="warning" />
+
+    <!-- Missing default resource -- resolved by adding declarations to base values/ -->
+    <issue id="MissingDefaultResource" severity="error" />
+</lint>

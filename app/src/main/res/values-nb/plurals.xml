@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="sharing_playlists_message">
+        <item quantity="one">Delte %d spilleliste</item>
+        <item quantity="other">Delte %d spillelister</item>
+    </plurals>
+    <plurals name="exported_playlists_message">
+        <item quantity="one">Eksporterte %1$d spilleliste til %2$s</item>
+        <item quantity="other">Eksporterte %1$d spillelister til %2$s</item>
+    </plurals>
+    <plurals name="n_songs_added_to_queue">
+        <item quantity="one">%d sang lagt til i køen</item>
+        <item quantity="other">%d sanger lagt til i køen</item>
+    </plurals>
+    <plurals name="n_songs_will_play_next">
+        <item quantity="one">%d sang skal spilles neste</item>
+        <item quantity="other">%d sanger skal spilles neste</item>
+    </plurals>
+    <plurals name="n_songs_added_to_favorites">
+        <item quantity="one">%d sang lagt til i favoritter</item>
+        <item quantity="other">%d sanger lagt til i favoritter</item>
+    </plurals>
+    <plurals name="n_songs_removed_from_favorites">
+        <item quantity="one">%d sang fjernet fra favoritter</item>
+        <item quantity="other">%d sanger fjernet fra favoritter</item>
+    </plurals>
+    <plurals name="n_files_deleted">
+        <item quantity="one">%d fil slettet</item>
+        <item quantity="other">%d filer slettet</item>
+    </plurals>
+    <plurals name="delete_songs_confirmation_title">
+        <item quantity="one">Slette %d fil?</item>
+        <item quantity="other">Slette %d filer?</item>
+    </plurals>
+    <plurals name="n_tracks_selected">
+        <item quantity="one">%d spor valgt</item>
+        <item quantity="other">%d spor valgt</item>
+    </plurals>
+    <plurals name="presentation_batch_b_songs_dot_duration">
+        <item quantity="one">%1$d sang • %2$s</item>
+        <item quantity="other">%1$d sanger • %2$s</item>
+    </plurals>
+    <plurals name="presentation_batch_e_queue_tracks_lined_up">
+        <item quantity="one">%d spor satt opp.</item>
+        <item quantity="other">%d spor satt opp.</item>
+    </plurals>
+    <plurals name="presentation_batch_e_n_songs_selected">
+        <item quantity="one">%d sang valgt</item>
+        <item quantity="other">%d sanger valgt</item>
+    </plurals>
+    <plurals name="presentation_batch_f_n_songs">
+        <item quantity="one">%d sang</item>
+        <item quantity="other">%d sanger</item>
+    </plurals>
+    <plurals name="presentation_batch_f_n_topics">
+        <item quantity="one">%d emne</item>
+        <item quantity="other">%d emner</item>
+    </plurals>
+</resources>

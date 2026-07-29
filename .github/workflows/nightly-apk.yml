@@ -85,7 +85,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Set up JDK 21
         uses: actions/setup-java@v5
@@ -98,7 +98,7 @@ jobs:
 
       - name: Cache nightly keystore
         id: cache-keystore
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: vz-pixelplay.jks
           key: ${{ runner.os }}-nightly-keystore-vz-pixelplay
@@ -117,7 +117,7 @@ jobs:
           echo "keyPassword=994273" >> keystore.properties
 
       - name: Build Phone nightly release APKs
-        run: gradle :app:assembleRelease -Ppixelplay.enableAbiSplits=true
+        run: gradle :app:assembleRelease -Ppixelplay.enableAbiSplits=true --no-build-cache
 
       - name: Verify Phone nightly split APKs
         run: |

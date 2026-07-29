@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="changelog_title">変更履歴</string>
+    <string name="changelog_view_github">GitHub で見る</string>
+    <string name="changelog_sec_improvements">改善</string>
+    <string name="changelog_sec_fixes">修正</string>
+    <string name="changelog_sec_whats_new">新機能</string>
+    <string name="changelog_sec_added">追加</string>
+</resources>

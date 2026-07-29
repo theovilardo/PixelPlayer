@@ -129,4 +129,22 @@
     <string-array name="changelog_070_added">
         <item>현지화: 스페인어, 프랑스어, 러시아어, 중국어(간체), 인도네시아어, 이탈리아어</item>
     </string-array>
+    <string-array name="changelog_075_whats_new">
+        <item>플레이어 수명 주기 관리와 함께 Google Drive 통합.</item>
+        <item>노래 메타데이터 일괄 편집(태그 및 앨범 아트).</item>
+        <item>맞춤형 Wear OS 환경설정과 함께 AI 가사 번역.</item>
+        <item>지연 진단 도구 및 검색 화면에서 다중 선택.</item>
+        <item>아랍어 및 터키어 지원, 로컬 네트워크 옵션을 위한 지역화된 http URL.</item>
+    </string-array>
+    <string-array name="changelog_075_improvements">
+        <item>획기적인 배터리 절약(오디오 오프로드 및 UI 폴링 게이트).</item>
+        <item>최적화된 대기열 관리(더 빠른 삽입 및 명시적 인덱싱).</item>
+        <item>전환 화면을 위한 Material 3 Expressive 모션 애니메이션.</item>
+        <item>조절된 스캐닝을 통한 리팩토링된 라이브러리 동기화.</item>
+    </string-array>
+    <string-array name="changelog_075_fixes">
+        <item>끊김/건너뜀 재생 지연 및 버퍼링 문제 해결.</item>
+        <item>외부 노래 삭제 동기화 및 메타데이터 일관성 수정.</item>
+        <item>Wear OS 및 휴대폰에서 메모리 문제, 충돌 및 레이아웃 결함 수정.</item>
+    </string-array>
 </resources>

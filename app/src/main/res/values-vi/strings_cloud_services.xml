@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Telegram login -->
+    <string name="telegram_login_title">Đăng nhập Telegram</string>
+    <string name="telegram_edit_number_chip">Bạn đang chỉnh sửa số điện thoại. Gửi lại mã sẽ thay thế mã trước đó.</string>
+    <string name="telegram_working">Đang xử lý…</string>
+    <string name="telegram_status_initializing">Đang khởi tạo Telegram…</string>
+    <string name="telegram_status_logging_out">Đang đăng xuất…</string>
+    <string name="telegram_status_closing">Đang đóng phiên…</string>
+    <string name="telegram_status_closed">Đã đóng phiên. Mở lại đăng nhập để tiếp tục.</string>
+    <string name="telegram_status_preparing">Đang chuẩn bị phiên Telegram bảo mật…</string>
+    <string name="telegram_status_waiting">Đang chờ phản hồi từ Telegram…</string>
+    <string name="telegram_connect">Kết nối Telegram</string>
+    <string name="telegram_connect_subtitle">Kết nối Telegram để phát nhạc từ các kênh và cuộc trò chuyện của bạn.</string>
+    <string name="telegram_phone_number_title">Số điện thoại</string>
+    <string name="telegram_phone_number_subtitle">Nhập số Telegram của bạn. Bạn có thể quay lại chỉnh sửa sau.</string>
+    <string name="telegram_phone_number_hint">Số điện thoại</string>
+    <string name="telegram_phone_country_placeholder">1</string>
+    <string name="telegram_phone_local_placeholder">5551234567</string>
+    <string name="telegram_send_code">Gửi mã</string>
+    <string name="telegram_verification_code_title">Mã xác minh</string>
+    <string name="telegram_verification_code_subtitle">Nhập mã từ Telegram. Nếu số sai, hãy quay lại chỉnh sửa.</string>
+    <string name="telegram_code_field_label">Mã</string>
+    <string name="telegram_code_placeholder">12345</string>
+    <string name="telegram_edit_phone">Chỉnh sửa số điện thoại</string>
+    <string name="telegram_resend_code">Gửi lại mã</string>
+    <string name="telegram_verify_code">Xác minh mã</string>
+    <string name="telegram_two_step_password_title">Mật khẩu hai bước</string>
+    <string name="telegram_two_step_password_subtitle">Nhập mật khẩu Telegram của bạn. Bạn vẫn có thể quay lại để sửa số điện thoại.</string>
+    <string name="telegram_password_label">Mật khẩu</string>
+    <string name="telegram_verify_password">Xác minh mật khẩu</string>
+    <string name="telegram_please_wait">Vui lòng chờ…</string>
+
+    <!-- Telegram dashboard -->
+    <string name="telegram_channels_title">Kênh Telegram</string>
+    <string name="telegram_add_channel_fab">Thêm kênh</string>
+    <string name="telegram_public_channel_fallback">Kênh Telegram công khai</string>
+    <string name="telegram_syncing">Đang đồng bộ</string>
+    <string name="telegram_sync_now">Đồng bộ ngay</string>
+    <string name="telegram_cd_collapse_topics">Thu gọn chủ đề</string>
+    <string name="telegram_cd_show_topics">Hiện chủ đề</string>
+    <string name="telegram_cd_channel_options">Tùy chọn kênh</string>
+    <string name="telegram_topics_heading">Chủ đề</string>
+    <string name="telegram_syncing_channel">Đang đồng bộ kênh</string>
+    <string name="telegram_updating_songs_from_telegram">Đang cập nhật bài hát từ Telegram</string>
+    <string name="telegram_fetch_latest_songs">Lấy bài hát mới nhất từ kênh này</string>
+    <string name="telegram_remove_channel">Xóa kênh</string>
+    <string name="telegram_remove_channel_subtitle">Dừng đồng bộ và xóa bài hát đã lưu</string>
+    <string name="telegram_remove_channel_confirm_title">Xóa kênh?</string>
+    <string name="telegram_remove_channel_confirm_body">%1$s sẽ dừng đồng bộ và tất cả bài hát đã lưu từ kênh này sẽ bị xóa.</string>
+    <string name="telegram_remove_channel_confirm_action">Xóa</string>
+    <string name="telegram_no_channels_synced">Chưa đồng bộ kênh nào</string>
+    <string name="telegram_no_channels_body">Thêm kênh Telegram công khai để đồng bộ\nthư viện nhạc của bạn</string>
+    <string name="telegram_add_channel_button">Thêm kênh</string>
+    <string name="telegram_never_synced">Chưa đồng bộ</string>
+    <string name="telegram_synced_relative">Đã đồng bộ %1$s</string>
+
+    <!-- Telegram channel search -->
+    <string name="telegram_add_channel_sheet_title">Thêm kênh</string>
+    <string name="telegram_add_channel_sheet_subtitle">Tìm kiếm kênh Telegram công khai để đồng bộ nhạc</string>
+    <string name="telegram_channel_search_placeholder">\@channelname hoặc link</string>
+    <string name="telegram_searching">Đang tìm kiếm…</string>
+    <string name="telegram_search_channel_title">Tìm kiếm kênh</string>
+    <string name="telegram_search_channel_body">Nhập tên người dùng hoặc link kênh công khai\nde đồng bộ các tệp âm thanh</string>
+
+    <plurals name="telegram_n_songs">
+        <item quantity="one">%d bài hát</item>
+        <item quantity="other">%d bài hát</item>
+    </plurals>
+    <plurals name="telegram_n_topics">
+        <item quantity="one">%d chủ đề</item>
+        <item quantity="other">%d chủ đề</item>
+    </plurals>
+
+    <!-- Subsonic/Navidrome dashboard -->
+    <string name="subsonic_dashboard_title">Subsonic</string>
+    <string name="subsonic_dashboard_quick_actions_subtitle">Quản lý Navidrome, Airsonic và các server tương thích Subsonic khác.</string>
+
+    <!-- Jellyfin dashboard -->
+    <string name="jellyfin_dashboard_playlists_empty_hint">Nhấn đồng bộ để lấy playlist Jellyfin của bạn</string>
+    <string name="jellyfin_dashboard_quick_actions_subtitle">Quản lý kết nối server Jellyfin của bạn.</string>
+
+    <!-- Google Drive dashboard -->
+    <string name="gdrive_dashboard_music_folders">Thư mục nhạc</string>
+    <string name="gdrive_dashboard_add_folder_hint">Nhấn + để thêm thư mục Drive</string>
+    <string name="gdrive_dashboard_no_folders_yet">Chưa thêm thư mục nào</string>
+    <string name="gdrive_dashboard_folders_synced_count">%1$d thư mục đã đồng bộ</string>
+    <string name="gdrive_cd_add_folder">Thêm thư mục</string>
+
+    <!-- QQ Music dashboard -->
+    <string name="qqmusic_select_playlist_type_title">Chọn loại playlist</string>
+    <string name="qqmusic_choose_playlists_to_sync">Chọn playlist muốn đồng bộ:</string>
+    <string name="qqmusic_all_playlists">Tất cả playlist</string>
+    <string name="qqmusic_created_and_collected">Tạo và thu thập</string>
+    <string name="qqmusic_created_playlists">Playlist đã tạo</string>
+    <string name="qqmusic_collected_playlists">Playlist đã thu thập</string>
+
+    <!-- Cloud dashboard generic -->
+    <string name="cloud_dashboard_playlists_synced_count">%1$d playlist đã đồng bộ</string>
+    <string name="cloud_dashboard_title_playlists">Playlist</string>
+    <string name="cloud_dashboard_action_sync">Đồng bộ</string>
+    <string name="cloud_dashboard_playlists_empty_title">Chưa đồng bộ playlist nào</string>
+    <string name="cloud_dashboard_playlists_empty_hint">Nhấn đồng bộ để lấy playlist của bạn</string>
+    <string name="cloud_dashboard_quick_actions">Thao tác nhanh</string>
+    <string name="cloud_dashboard_action_sync_library">Đồng bộ thư viện</string>
+    <string name="cloud_dashboard_action_disconnect">Ngắt kết nối</string>
+    <string name="cloud_dashboard_song_count">%1$d bài hát</string>
+
+    <!-- Cloud sync status -->
+    <string name="cloud_sync_status_syncing">Đang đồng bộ</string>
+    <string name="cloud_sync_status_syncing_library">Đang đồng bộ thư viện…</string>
+    <string name="cloud_sync_status_fetching_playlists">Đang lấy playlist…</string>
+    <string name="cloud_sync_status_syncing_playlist_format">Đang đồng bộ playlist: %1$s</string>
+    <string name="cloud_sync_status_updating_local">Đang cập nhật thư viện cục bộ…</string>
+    <string name="cloud_sync_status_sync_complete">Đồng bộ hoàn tất</string>
+    <string name="cloud_sync_status_fetching_albums">Đang lấy danh sách album…</string>
+    <string name="cloud_sync_status_fetching_songs_from_format">Đang lấy bài hát từ %1$s…</string>
+    <string name="cloud_sync_status_saving_songs_format">Đang lưu %1$d bài hát vào cơ sở dữ liệu…</string>
+    <string name="cloud_sync_status_no_songs_found">Không tìm thấy bài hát trong thư viện</string>
+    <string name="cloud_sync_status_library_sync_complete">Đồng bộ thư viện hoàn tất</string>
+    <string name="cloud_sync_status_syncing_ellipsis">Đang đồng bộ…</string>
+    <string name="cloud_sync_error_with_message_format">Lỗi: %1$s</string>
+
+    <!-- Cloud content descriptions -->
+    <string name="cloud_cd_sync">Đồng bộ</string>
+    <string name="cloud_cd_sync_all">Đồng bộ tất cả</string>
+    <string name="cloud_cd_logout">Đăng xuất</string>
+    <string name="cloud_cd_sync_all_playlists">Đồng bộ tất cả playlist</string>
+    <string name="cloud_cd_user_avatar">Ảnh đại diện người dùng</string>
+
+    <!-- No internet -->
+    <string name="no_internet_dialog_title">Không có kết nối internet</string>
+    <string name="no_internet_dialog_message">Nội dung này yêu cầu kết nối internet. Vui lòng kiểm tra cài đặt mạng và thử lại.</string>
+    <string name="offline_screen_title">Bạn đang ngoại tuyến</string>
+    <string name="offline_screen_message">Vui lòng kiểm tra kết nối internet và thử lại để truy cập nội dung này.</string>
+
+    <!-- Cloud Authentication & Login Shared Strings -->
+    <string name="auth_connect_action">Kết nối</string>
+    <string name="auth_connecting_msg">Đang kết nối…</string>
+    <string name="auth_details_subtitle">Nhập URL server và thông tin đăng nhập tài khoản.</string>
+    <string name="auth_details_title">Chi tiết kết nối</string>
+    <string name="auth_hide_pwd_action">Ẩn mật khẩu</string>
+    <string name="auth_password_label">Mật khẩu</string>
+    <string name="auth_password_placeholder">Nhập mật khẩu</string>
+    <string name="auth_prefill_http_action">Điền sẵn http://</string>
+    <string name="auth_server_url_label">URL server</string>
+    <string name="auth_show_pwd_action">Hiện mật khẩu</string>
+    <string name="auth_telegram_title">Telegram</string>
+    <string name="auth_username_label">Tên người dùng</string>
+    <string name="auth_username_placeholder">admin</string>
+    <string name="auth_welcome_toast">Chào mừng, %1$s!</string>
+
+    <!-- Subsonic / Navidrome Auth -->
+    <string name="auth_navidrome_footer_msg">Tương thích với Navidrome, Gonic, Airsonic và các server tương thích Subsonic khác</string>
+    <string name="auth_navidrome_info_msg">Hỗ trợ Navidrome, Airsonic, Gonic, Ampache và các server tương thích với API Subsonic.</string>
+    <string name="auth_navidrome_password_hint">Mật khẩu ứng dụng cũng hoạt động nếu server của bạn hỗ trợ.</string>
+    <string name="auth_navidrome_prefill_https_action">Điền sẵn https://</string>
+    <string name="auth_navidrome_subtitle">Kết nối với server nhạc tự host của bạn</string>
+    <string name="auth_navidrome_title">Navidrome</string>
+    <string name="auth_navidrome_url_hint">Sử dụng địa chỉ https:// đầy đủ của server.</string>
+    <string name="auth_navidrome_url_placeholder">https://music.example.com</string>
+    <string name="auth_navidrome_username_hint">Đây là tên tài khoản Subsonic hoặc Navidrome của bạn.</string>
+    <string name="auth_subsonic_navidrome_title">Subsonic / Navidrome</string>
+    <string name="auth_subsonic_title">Subsonic</string>
+
+    <!-- Jellyfin Auth -->
+    <string name="auth_jellyfin_connect_subtitle">Nhập URL server Jellyfin và thông tin đăng nhập tài khoản.</string>
+    <string name="auth_jellyfin_footer_msg">Kết nối với server Jellyfin để phát nhạc từ thư viện của bạn</string>
+    <string name="auth_jellyfin_info_msg">Kết nối với server Jellyfin. Cả HTTP và HTTPS đều được hỗ trợ cho truy cập mạng cục bộ.</string>
+    <string name="auth_jellyfin_logo_cd">Jellyfin</string>
+    <string name="auth_jellyfin_password_hint">Mật khẩu tài khoản Jellyfin của bạn.</string>
+    <string name="auth_jellyfin_subtitle">Kết nối với server đa phương tiện Jellyfin của bạn</string>
+    <string name="auth_jellyfin_title">Jellyfin</string>
+    <string name="auth_jellyfin_url_hint">URL đầy đủ của server Jellyfin, bao gồm cổng.</string>
+    <string name="auth_jellyfin_url_placeholder">http://192.168.1.100:8096</string>
+    <string name="auth_jellyfin_username_hint">Tên người dùng tài khoản Jellyfin của bạn.</string>
+
+    <!-- Google Drive Auth -->
+    <string name="auth_gdrive_connect_subtitle">Phát tệp nhạc trực tiếp từ Google Drive của bạn</string>
+    <string name="auth_gdrive_connect_title">Kết nối Google Drive</string>
+    <string name="auth_gdrive_connected_toast">Đã kết nối Google Drive!</string>
+    <string name="auth_gdrive_create_action">Tạo \"PixelPlayer Music\"</string>
+    <string name="auth_gdrive_create_subtitle">Tạo thư mục mới tại đây cho nhạc của bạn</string>
+    <string name="auth_gdrive_empty_msg">Không có thư mục nào ở đây</string>
+    <string name="auth_gdrive_open_cd">Mở thư mục</string>
+    <string name="auth_gdrive_select_subtitle">Chọn hoặc tạo thư mục để sử dụng làm nguồn nhạc</string>
+    <string name="auth_gdrive_select_title">Chọn thư mục nhạc</string>
+    <string name="auth_gdrive_setup_msg">Đang thiết lập Google Drive…</string>
+    <string name="auth_gdrive_signin_action">Đăng nhập bằng Google</string>
+    <string name="auth_gdrive_title">Google Drive</string>
+    <string name="auth_gdrive_use_action">Sử dụng</string>
+
+    <!-- Web Login Shared/Generic -->
+    <string name="auth_cookies_unreadable_error">Không thể đọc cookie phiên.</string>
+    <string name="auth_done_action">Xong</string>
+    <string name="auth_exit_action">Thoát</string>
+    <string name="auth_no_cookies_error">Không tìm thấy cookie. Hãy đăng nhập trước.</string>
+    <string name="auth_page_slow_msg">Trang tải quá chậm. Hãy thử làm mới hoặc đổi mạng.</string>
+    <string name="auth_plus_label">+</string>
+    <string name="auth_saving_msg">Đang lưu…</string>
+    <string name="auth_stay_action">Ở lại</string>
+    <string name="auth_timeout_toast">Tải trang bị timeout. Bạn có thể thử lại mà không mất tiến trình.</string>
+    <string name="auth_web_back_cd">Quay lại web</string>
+    <string name="auth_web_exit_msg">Bạn có thể quay lại sau. Trạng thái trang hiện tại sẽ bị xóa khi đóng.</string>
+    <string name="auth_web_forward_cd">Tiến lên web</string>
+    <string name="auth_web_refresh_cd">Làm mới</string>
+    <string name="auth_web_retry_action">Thử lại</string>
+    <string name="auth_web_home_cd">Mở trang chủ</string>
+    <string name="auth_webview_failed_error">Tải WebView thất bại.</string>
+
+    <!-- NetEase Web Login -->
+    <string name="auth_netease_cookie_error">Không thể đọc cookie NetEase: %1$s</string>
+    <string name="auth_netease_exit_title">Thoát đăng nhập NetEase?</string>
+    <string name="auth_netease_http_error">HTTP %1$d khi tải NetEase.</string>
+    <string name="auth_netease_incomplete_error">Chưa phát hiện đăng nhập. Hoàn tất đăng nhập NetEase trước khi nhấn Xong.</string>
+    <string name="auth_netease_login_title">Đăng nhập NetEase Music</string>
+    <string name="auth_netease_security_msg">Lưu ý bảo mật: Mật khẩu của bạn chỉ được nhập trên các trang web NetEase. PixelPlayer lưu cookie phiên (MUSIC_U) để đồng bộ thư viện.</string>
+    <string name="auth_netease_title">NetEase Music</string>
+
+    <!-- QQ Music Web Login -->
+    <string name="auth_qq_cookie_error">Không thể đọc cookie QQ Music: %1$s</string>
+    <string name="auth_qq_exit_title">Thoát đăng nhập QQ Music?</string>
+    <string name="auth_qq_http_error">HTTP %1$d khi tải QQ Music.</string>
+    <string name="auth_qq_incomplete_error">Chưa phát hiện đăng nhập. Hoàn tất đăng nhập QQ Music trước khi nhấn Xong.</string>
+    <string name="auth_qq_login_title">Đăng nhập QQ Music</string>
+    <string name="auth_qq_security_msg">Lưu ý bảo mật: Mật khẩu của bạn chỉ được nhập trên các trang web QQ Music. PixelPlayer lưu cookie phiên để đồng bộ thư viện.</string>
+    <string name="auth_qq_title">QQ Music</string>
+</resources>

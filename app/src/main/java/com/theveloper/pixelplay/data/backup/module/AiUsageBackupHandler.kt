@@ -34,7 +34,7 @@ class AiUsageBackupHandler @Inject constructor(
         
         // We additive restore AI logs or clear? Usually for logs we additive restore 
         // but BackupModuleHandler documentation says "Clear existing data and restore".
-        aiUsageDao.clearAll()
+        aiUsageDao.clearUsage()
         if (logs.isNotEmpty()) {
             aiUsageDao.insertAll(logs)
         }

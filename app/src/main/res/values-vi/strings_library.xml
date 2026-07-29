@@ -1,0 +1,566 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <!-- Library Screen -->
+    <string name="library_screen_title">Thư viện</string>
+    <string name="library_tabs_sheet_title">Các tab thư viện</string>
+    <string name="library_tabs_sheet_subtitle">Chuyển trực tiếp đến bất kỳ tab nào hoặc sắp xếp lại chúng.</string>
+    <string name="library_reorder_tabs_label">Sắp xếp lại tab</string>
+
+    <!-- Library Tab Names -->
+    <string name="library_tab_songs">Bài hát</string>
+    <string name="library_tab_albums">Album</string>
+    <string name="library_tab_artists">Nghệ sĩ</string>
+    <string name="library_tab_playlists">Danh sách phát</string>
+    <string name="library_tab_folders">Thư mục</string>
+    <string name="library_tab_liked">Đã thích</string>
+
+    <!-- Library Toasts -->
+    <string name="library_toast_playlist_created">Đã tạo danh sách phát thành công</string>
+    <string name="library_toast_set_ai_provider_api_key_first">Vui lòng đặt API key của nhà cung cấp AI trước</string>
+    <string name="library_toast_set_gemini_api_key_first">Vui lòng đặt Gemini API key trước</string>
+    <string name="library_toast_added_to_queue">Đã thêm vào hàng chờ</string>
+    <string name="library_toast_playing_next">Sẽ phát tiếp theo</string>
+
+    <!-- Library Toolbar & Navigation -->
+    <string name="library_cd_watch_transfer">Chuyển sang đồng hồ</string>
+    <string name="library_cd_open_settings">Cài đặt</string>
+    <string name="library_tab_edit">Chỉnh sửa</string>
+    <string name="library_cd_reorder_tabs">Sắp xếp lại tab</string>
+    <string name="library_cd_expand_tab_menu">Mở rộng menu</string>
+
+    <!-- Library Multi-Selection & Folders -->
+    <string name="library_toast_max_albums_selection">Bạn có thể chọn tối đa %1$d album</string>
+    <string name="library_folder_name_fallback">Thư mục</string>
+    <string name="library_cd_folder">Thư mục</string>
+
+    <!-- Library Sort & View Bottom Sheet -->
+    <string name="library_sort_by_title">Sắp xếp theo</string>
+    <string name="library_sort_section_view">Hiển thị</string>
+    <string name="library_sort_toggle_playlist_view">Chế độ xem danh sách phát</string>
+    <string name="library_view_mode_grid">Lưới</string>
+    <string name="library_view_mode_list">Danh sách</string>
+    <string name="library_storage_internal">Bộ nhớ trong</string>
+    <string name="library_storage_sd_card">Thẻ SD</string>
+    <string name="library_storage_sd_card_unavailable">Thẻ SD hiện không khả dụng.</string>
+    <string name="library_sort_section_cloud">Đám mây</string>
+    <string name="library_sort_toggle_telegram_channels">Kênh Telegram Cloud</string>
+    <string name="library_telegram_topics_display_title">Hiển thị chủ đề</string>
+    <string name="library_telegram_topic_mode_channels">Kênh</string>
+    <string name="library_telegram_topic_mode_topics">Chủ đề</string>
+    <string name="library_telegram_topic_mode_both">Cả hai</string>
+    <string name="library_cloud_sources_heading">Đám mây</string>
+    <string name="library_cloud_only_label">Chỉ đám mây</string>
+
+    <!-- Library AI Metadata Processing -->
+    <string name="library_generating_ai_metadata">Đang tạo metadata bằng AI…</string>
+
+    <!-- Library list errors -->
+    <string name="library_error_loading_songs">Lỗi khi tải bài hát</string>
+    <string name="library_album_detail_error_loading_albums">Lỗi khi tải album</string>
+    <string name="library_artist_error_loading_artists">Lỗi khi tải nghệ sĩ</string>
+    <string name="library_action_retry">Thử lại</string>
+
+    <!-- Library empty (paginated) -->
+    <string name="library_no_songs_in_library_message">Không tìm thấy bài hát nào trong thư viện.</string>
+    <string name="library_no_songs_rescan_hint">Hãy thử quét lại thư viện trong cài đặt nếu bạn có nhạc trên thiết bị.</string>
+    <string name="library_cd_no_songs_in_library">Không tìm thấy bài hát</string>
+
+    <!-- Library action row -->
+    <string name="library_action_new">Mới</string>
+    <string name="library_cd_create_new_playlist">Tạo danh sách phát mới</string>
+    <string name="library_cd_import_m3u_playlist">Nhập danh sách phát M3U</string>
+    <string name="library_cd_locate_current_song">Tìm bài hát hiện tại</string>
+    <string name="library_storage_filter_all_songs">Tất cả bài hát</string>
+    <string name="library_storage_filter_online">ĐÁM MÂY</string>
+    <string name="library_storage_filter_offline">CỤC BỘ</string>
+    <string name="library_cd_sort_options">Tùy chọn sắp xếp</string>
+
+    <!-- Library selection action row -->
+    <string name="library_selection_all">Tất cả</string>
+    <string name="library_selection_deselect">Bỏ chọn</string>
+    <string name="library_selection_more_options">Thêm tùy chọn</string>
+
+    <!-- Library Syncing -->
+    <string name="library_sync_scanning">Đang quét tệp nhạc…</string>
+    <string name="library_sync_processing">Đang xử lý tệp…</string>
+    <string name="library_sync_files_progress">%1$d trên %2$d tệp</string>
+    <string name="library_sync_in_progress">Đang đồng bộ thư viện…</string>
+    <string name="library_sync_complete">Đồng bộ hoàn tất</string>
+    <string name="library_sync_pending">Đang chờ…</string>
+    <string name="library_syncing">Đang đồng bộ thư viện…</string>
+    <string name="library_sync_cache">Đang xóa bộ nhớ đệm ảnh bìa…</string>
+    <string name="library_sync_cloud">Đang đồng bộ nguồn đám mây…</string>
+    <string name="library_sync_lyrics">Đang quét lời bài hát…</string>
+
+    <!-- Library Empty State -->
+    <string name="library_empty_songs_all_title">Chưa có bài hát nào</string>
+    <string name="library_empty_songs_all_subtitle">Thêm nhạc vào thiết bị hoặc đồng bộ nguồn đám mây để bắt đầu nghe.</string>
+    <string name="library_empty_songs_offline_title">Không tìm thấy bài hát cục bộ</string>
+    <string name="library_empty_songs_offline_subtitle">Hãy thử bộ lọc nguồn khác hoặc quét lại thư viện trên thiết bị.</string>
+    <string name="library_empty_songs_online_title">Không tìm thấy bài hát trên đám mây</string>
+    <string name="library_empty_songs_online_subtitle">Đồng bộ bài hát từ Telegram hoặc NetEase, hoặc chuyển sang nguồn cục bộ.</string>
+    <string name="library_empty_albums_all_title">Chưa có album nào</string>
+    <string name="library_empty_albums_all_subtitle">Album sẽ xuất hiện ở đây khi thư viện đã nhóm các bài hát.</string>
+    <string name="library_empty_albums_offline_title">Không tìm thấy album cục bộ</string>
+    <string name="library_empty_albums_offline_subtitle">Cần có bài hát cục bộ để tạo nhóm album cục bộ.</string>
+    <string name="library_empty_albums_online_title">Không tìm thấy album đám mây</string>
+    <string name="library_empty_albums_online_subtitle">Bài hát trên đám mây có dữ liệu album sẽ xuất hiện ở đây sau khi đồng bộ.</string>
+    <string name="library_empty_artists_all_title">Chưa có nghệ sĩ nào</string>
+    <string name="library_empty_artists_all_subtitle">Nghệ sĩ sẽ được hiển thị sau khi bài hát được lập chỉ mục từ bất kỳ nguồn nào.</string>
+    <string name="library_empty_artists_offline_title">Không tìm thấy nghệ sĩ cục bộ</string>
+    <string name="library_empty_artists_offline_subtitle">Hiện chưa có metadata nghệ sĩ cho các bài hát cục bộ.</string>
+    <string name="library_empty_artists_online_title">Không tìm thấy nghệ sĩ đám mây</string>
+    <string name="library_empty_artists_online_subtitle">Mục nghệ sĩ đám mây xuất hiện khi các bài hát từ xa được đồng bộ.</string>
+    <string name="library_empty_liked_all_title">Chưa có bài hát yêu thích nào</string>
+    <string name="library_empty_liked_all_subtitle">Nhấn vào biểu tượng trái tim khi đang phát bài hát để lưu vào đây.</string>
+    <string name="library_empty_liked_offline_title">Không có bài hát cục bộ yêu thích</string>
+    <string name="library_empty_liked_offline_subtitle">Chuyển bộ lọc nguồn hoặc thích bài hát từ thiết bị.</string>
+    <string name="library_empty_liked_online_title">Không có bài hát đám mây yêu thích</string>
+    <string name="library_empty_liked_online_subtitle">Thích bài hát từ Telegram hoặc NetEase để xem chúng trong chế độ này.</string>
+    <string name="library_empty_folders_title">Không tìm thấy thư mục nào</string>
+    <string name="library_empty_folders_subtitle">Các thư mục bộ nhớ trong có nhạc sẽ xuất hiện ở đây.</string>
+    <string name="library_empty_playlists_title">Chưa có danh sách phát nào</string>
+    <string name="library_empty_playlists_subtitle">Tạo danh sách phát đầu tiên để tổ chức thư viện.</string>
+
+    <!-- SongInfoBottomSheet, MultiSelectionBottomSheet, PlaylistMultiSelectionBottomSheet -->
+    <string name="song_info_cd_edit_metadata">Chỉnh sửa metadata bài hát</string>
+    <string name="song_info_action_play">Phát</string>
+    <string name="song_info_cd_play">Phát bài hát</string>
+    <string name="song_info_action_play_all">Phát tất cả</string>
+    <string name="song_info_cd_play_all">Phát tất cả</string>
+    <string name="song_info_cd_add_to_favorites">Thêm vào yêu thích</string>
+    <string name="song_info_cd_add_to_favorites_all">Thêm tất cả vào yêu thích</string>
+    <string name="song_info_cd_remove_from_favorites">Xóa khỏi yêu thích</string>
+    <string name="song_info_cd_remove_from_favorites_all">Xóa tất cả khỏi yêu thích</string>
+    <string name="song_info_share_chooser_title">Chia sẻ tệp bài hát qua</string>
+    <string name="song_info_cd_share_song_file">Chia sẻ tệp bài hát</string>
+    <string name="song_info_cd_share_all_as_zip">Chia sẻ tất cả dưới dạng ZIP</string>
+    <string name="song_info_error_share_song">Không thể chia sẻ bài hát: %1$s</string>
+    <string name="song_info_action_add_to_queue">Thêm vào hàng chờ</string>
+    <string name="song_info_cd_add_to_queue">Thêm vào hàng chờ</string>
+    <string name="song_info_action_queue_next">Tiếp theo</string>
+    <string name="song_info_cd_queue_next">Phát tiếp theo trong hàng chờ</string>
+    <string name="song_info_cd_add_to_playlist">Thêm vào danh sách phát</string>
+    <string name="song_info_action_delete">Xóa</string>
+    <string name="song_info_action_delete_all">Xóa tất cả</string>
+    <string name="song_info_checking_watch">Đang kiểm tra đồng hồ</string>
+    <string name="song_info_transferring_percent">Đang chuyển %1$d%%</string>
+    <string name="song_info_transferring_to_watch">Đang chuyển sang đồng hồ</string>
+    <string name="song_info_transfer_in_progress">Đang trong quá trình chuyển</string>
+    <string name="song_info_send_to_watch">Gửi đến đồng hồ</string>
+    <string name="song_info_watch_unavailable">Đồng hồ không khả dụng</string>
+    <string name="song_info_cd_send_to_watch">Gửi bài hát đến đồng hồ</string>
+    <string name="song_info_cd_watch_unavailable">Đồng hồ không khả dụng</string>
+    <string name="song_info_set_sound_as_short">Đặt làm</string>
+    <string name="song_info_set_sound_as_long">Đặt làm âm thanh</string>
+    <string name="song_info_cd_set_sound_as">Chọn cách sử dụng bài hát này làm âm thanh hệ thống</string>
+    <string name="song_info_tone_picker_title">Sử dụng bài hát này làm</string>
+    <string name="song_info_tone_picker_body">Chọn nơi PixelPlayer sẽ cài đặt âm thanh này.</string>
+    <string name="song_info_tone_ringtone_title">Nhạc chuông điện thoại</string>
+    <string name="song_info_tone_ringtone_subtitle">Cuộc gọi đến</string>
+    <string name="song_info_tone_notification_title">Âm thanh thông báo</string>
+    <string name="song_info_tone_notification_subtitle">Tin nhắn và cảnh báo ứng dụng</string>
+    <string name="song_info_tone_alarm_title">Âm thanh báo thức</string>
+    <string name="song_info_tone_alarm_subtitle">Báo thức đồng hồ</string>
+    <string name="song_info_tone_confirm_title">Xác nhận thay đổi âm thanh</string>
+    <string name="song_info_tone_confirm_body">Đặt \"%1$s\" làm %2$s?</string>
+    <string name="song_info_tone_confirm_action">Đặt âm thanh</string>
+    <string name="song_info_tone_success">Đã đặt \"%1$s\" làm %2$s</string>
+    <string name="song_info_tone_ringtone_label">nhạc chuông</string>
+    <string name="song_info_tone_notification_label">âm thanh thông báo</string>
+    <string name="song_info_tone_alarm_label">âm thanh báo thức</string>
+    <string name="song_info_ringtone_permission_prompt">Bật \"Sửa đổi cài đặt hệ thống\", sau đó quay lại PixelPlayer để hoàn tất tự động.</string>
+    <string name="song_info_ringtone_permission_missing">Chưa bật \"Sửa đổi cài đặt hệ thống\".</string>
+    <string name="song_info_ringtone_success">Đã đặt \"%1$s\" làm nhạc chuông</string>
+    <string name="song_info_ringtone_local_only">Chỉ bài hát cục bộ mới có thể dùng làm nhạc chuông.</string>
+    <string name="song_info_ringtone_missing_file">Không thể chuẩn bị tệp âm thanh này làm nhạc chuông.</string>
+    <string name="song_info_ringtone_failed">Không thể đặt nhạc chuông: %1$s</string>
+    <string name="song_info_tab_options">Tùy chọn</string>
+    <string name="song_info_tab_options_badge">TÙY CHỌN</string>
+    <string name="song_info_tab_info">Thông tin</string>
+    <string name="song_info_tab_info_badge">THÔNG TIN</string>
+    <string name="song_info_duration_label">Thời lượng</string>
+    <string name="song_info_genre_label">Thể loại</string>
+    <string name="song_info_album_label">Album</string>
+    <string name="song_info_artist_label">Nghệ sĩ</string>
+    <string name="song_info_audio_format_label">Thông tin bài hát</string>
+    <string name="song_info_cd_provider">Nhà cung cấp</string>
+    <string name="song_info_cd_file">Tệp</string>
+    <string name="multi_selection_songs_count_upper">%1$d BÀI HÁT</string>
+    <string name="multi_selection_songs_selected">đã chọn</string>
+    <string name="multi_selection_playlists_count_upper">%1$d DANH SÁCH PHÁT</string>
+    <string name="multi_selection_albums_count_upper">%1$d ALBUM</string>
+    <string name="multi_selection_albums_selected">đã chọn</string>
+    <string name="multi_selection_albums_selected_limit">Giới hạn: %1$d album mỗi lần chọn.</string>
+    <string name="multi_selection_albums_queue_hint">Hàng chờ + phát sẽ theo thứ tự bạn chọn.</string>
+    <string name="multi_selection_genres_count_upper">%1$d THỂ LOẠI</string>
+    <string name="multi_selection_genres_selected">đã chọn</string>
+    <string name="multi_selection_genres_queue_hint">Thực hiện thao tác hàng loạt trên tất cả bài hát thuộc các thể loại này.</string>
+
+    <!-- Sort Option Display Names -->
+    <string name="sort_display_default_order">Thứ tự mặc định</string>
+    <string name="sort_display_title_az">Tiêu đề (A-Z)</string>
+    <string name="sort_display_title_za">Tiêu đề (Z-A)</string>
+    <string name="sort_display_artist">Nghệ sĩ</string>
+    <string name="sort_display_artist_za">Nghệ sĩ (Z-A)</string>
+    <string name="sort_display_album">Album</string>
+    <string name="sort_display_album_za">Album (Z-A)</string>
+    <string name="sort_display_date_added">Ngày thêm</string>
+    <string name="sort_display_date_added_oldest">Ngày thêm (Cũ nhất trước)</string>
+    <string name="sort_display_duration">Thời lượng</string>
+    <string name="sort_display_duration_shortest">Thời lượng (Ngắn nhất trước)</string>
+    <string name="sort_display_release_year">Năm phát hành</string>
+    <string name="sort_display_release_year_oldest">Năm phát hành (Cũ nhất trước)</string>
+    <string name="sort_display_fewest_songs">Ít bài hát nhất</string>
+    <string name="sort_display_most_songs">Nhiều bài hát nhất</string>
+    <string name="sort_display_name_az">Tên (A-Z)</string>
+    <string name="sort_display_name_za">Tên (Z-A)</string>
+    <string name="sort_display_num_songs_most">Số lượng bài hát (Nhiều nhất)</string>
+    <string name="sort_display_num_songs_fewest">Số lượng bài hát (Ít nhất)</string>
+    <string name="sort_display_date_created">Ngày tạo</string>
+    <string name="sort_display_date_created_oldest">Ngày tạo (Cũ nhất trước)</string>
+    <string name="sort_display_date_liked">Ngày thích</string>
+    <string name="sort_display_date_liked_oldest">Ngày thích (Cũ nhất trước)</string>
+    <string name="sort_display_fewest_subfolders">Ít thư mục con nhất</string>
+    <string name="sort_display_most_subfolders">Nhiều thư mục con nhất</string>
+
+    <!-- Sort Option Method Labels -->
+    <string name="sort_method_title">Tiêu đề</string>
+    <string name="sort_method_artist">Nghệ sĩ</string>
+    <string name="sort_method_album">Album</string>
+    <string name="sort_method_date_added">Ngày thêm</string>
+    <string name="sort_method_duration">Thời lượng</string>
+    <string name="sort_method_release_year">Năm phát hành</string>
+    <string name="sort_method_song_count">Số lượng bài hát</string>
+    <string name="sort_method_name">Tên</string>
+    <string name="sort_method_num_songs">Số lượng bài hát</string>
+    <string name="sort_method_date_created">Ngày tạo</string>
+    <string name="sort_method_date_liked">Ngày thích</string>
+    <string name="sort_method_subfolder_count">Số lượng thư mục con</string>
+
+    <!-- LibrarySortBottomSheet-->
+    <string name="library_sort_source">Nguồn</string>
+    <string name="library_sort_order">Thứ tự</string>
+    <string name="library_sort_descending">Giảm dần</string>
+    <string name="library_sort_ascending">Tăng dần</string>
+    <string name="library_sort_original_order">Thứ tự gốc</string>
+    <string name="library_sort_tap_ascending">Nhấn để chuyển sang tăng dần</string>
+    <string name="library_sort_tap_descending">Nhấn để chuyển sang giảm dần</string>
+    <string name="library_sort_keeps_order">Sắp xếp này giữ nguyên thứ tự gốc</string>
+    <string name="library_sort_cd_switch_on">Đang bật</string>
+
+    <!-- ReorderTabsSheet-->
+    <string name="reorder_tabs_sheet_title">Sắp xếp lại tab thư viện</string>
+    <string name="reorder_tabs_reset_dialog_title">Đặt lại thứ tự</string>
+    <string name="reorder_tabs_reset_dialog_body">Đặt lại thứ tự tab về mặc định?</string>
+    <string name="reorder_tabs_reordering">Đang sắp xếp lại tab…</string>
+    <string name="reorder_tabs_cd_drag_handle">Thanh kéo</string>
+
+    <!-- PlayerArtistPickerBottomSheet -->
+    <string name="artist_picker_title">Chọn nghệ sĩ</string>
+    <string name="artist_picker_count_single">1 nghệ sĩ</string>
+    <string name="artist_picker_count_multiple">%1$d nghệ sĩ</string>
+    <string name="artist_picker_primary_label">Nghệ sĩ chính</string>
+    <string name="artist_picker_shortcut_label">Trang nghệ sĩ</string>
+
+    <!-- Watch Transfer Dialog + Foreground Service -->
+    <string name="watch_transfer_action_cancel">Hủy chuyển</string>
+    <string name="watch_transfer_bytes_progress">%1$s / %2$s</string>
+    <string name="watch_transfer_channel_description">Hiển thị tiến trình chuyển nhạc từ điện thoại sang đồng hồ</string>
+    <string name="watch_transfer_channel_name">Chuyển sang đồng hồ</string>
+    <string name="watch_transfer_dialog_title">Đang gửi đến đồng hồ</string>
+    <string name="watch_transfer_status_cancelled">Đã hủy</string>
+    <string name="watch_transfer_status_cancelled_service">Đã hủy chuyển</string>
+    <string name="watch_transfer_status_complete_service">Chuyển hoàn tất</string>
+    <string name="watch_transfer_status_completed">Hoàn tất</string>
+    <string name="watch_transfer_status_failed">Thất bại</string>
+    <string name="watch_transfer_status_failed_service">Chuyển thất bại</string>
+    <string name="watch_transfer_status_multiple_active">Nhiều lượt chuyển đang hoạt động</string>
+    <string name="watch_transfer_bullet_step">%1$s • %2$s</string>
+    <string name="watch_transfer_status_preparing">Đang chuẩn bị</string>
+    <string name="watch_transfer_status_preparing_service">Đang chuẩn bị chuyển sang đồng hồ</string>
+    <string name="watch_transfer_status_preparing_transfer">Đang chuẩn bị chuyển…</string>
+    <string name="watch_transfer_status_sending_n_to_watch">Đang gửi %1$d bài hát đến đồng hồ</string>
+    <string name="watch_transfer_status_sending_to_watch">Đang gửi đến đồng hồ</string>
+    <string name="watch_transfer_status_starting">Đang bắt đầu chuyển…</string>
+    <string name="watch_transfer_status_starting_short">Đang bắt đầu</string>
+    <string name="watch_transfer_status_transferring">Đang chuyển</string>
+    <string name="watch_transfer_summary_n">%1$d lượt chuyển</string>
+
+    <!-- EditSongSheet -->
+    <string name="edit_song_toolbar_title">Chỉnh sửa bài hát</string>
+    <string name="edit_song_cd_show_metadata_info">Hiển thị thông tin</string>
+    <string name="edit_song_dialog_title">Đang chỉnh sửa metadata bài hát</string>
+    <string name="edit_song_dialog_body">Việc chỉnh sửa metadata bài hát có thể ảnh hưởng đến cách hiển thị và tổ chức trong thư viện. Các thay đổi là vĩnh viễn và có thể không thể hoàn tác.</string>
+    <string name="edit_song_dialog_got_it">Đã hiểu</string>
+    <string name="edit_song_cd_info_icon">Thông tin</string>
+    <string name="edit_song_cover_art_heading">Ảnh bìa</string>
+    <string name="edit_song_cover_art_hint">Chọn hình ảnh vuông và điều chỉnh để ảnh bìa hiển thị tốt trên toàn ứng dụng.</string>
+    <string name="edit_song_action_change_cover">Đổi ảnh bìa</string>
+    <string name="edit_song_action_delete_cover">Xóa ảnh bìa</string>
+    <string name="edit_song_field_title">Tiêu đề</string>
+    <string name="edit_song_field_artist">Nghệ sĩ</string>
+    <string name="edit_song_field_album">Album</string>
+    <string name="edit_song_field_album_artist">Nghệ sĩ album</string>
+    <string name="edit_song_field_genre">Thể loại</string>
+    <string name="edit_song_field_composer">Nhà soạn nhạc</string>
+    <string name="edit_song_field_track_number">Số thứ tự bài hát</string>
+    <string name="edit_song_field_disc_number">Số thứ tự đĩa</string>
+    <string name="edit_song_field_replaygain_track">ReplayGain bài hát (dB)</string>
+    <string name="edit_song_field_replaygain_album">ReplayGain album (dB)</string>
+    <string name="edit_song_replaygain_track_placeholder">-6.50</string>
+    <string name="edit_song_replaygain_album_placeholder">-8.20</string>
+    <string name="edit_song_cd_cover_preview">Xem trước ảnh bìa mới</string>
+    <string name="edit_song_cd_current_cover">Ảnh bìa bài hát hiện tại</string>
+    <string name="edit_song_crop_dialog_title">Điều chỉnh ảnh bìa</string>
+    <string name="edit_song_crop_dialog_hint">Sử dụng thao tác cuộn và kéo để tìm khung hình hoàn hảo.</string>
+    <string name="edit_song_action_apply_cover">Áp dụng ảnh bìa</string>
+    <string name="edit_song_unable_to_load_image">Không thể tải hình ảnh đã chọn</string>
+    <string name="edit_song_cd_search_lyrics_lrclib">Tìm lời bài hát trên lrclib.net</string>
+
+    <!-- EditMultipleSongsSheet -->
+    <string name="batch_edit_toolbar_title">Chỉnh sửa %d bài hát</string>
+    <string name="batch_edit_info_message">Chỉ các trường đã sửa sẽ được cập nhật. Để trống trường để giữ nguyên giá trị hiện tại.</string>
+    <string name="batch_edit_mixed_values">(Giá trị hỗn hợp)</string>
+    <string name="batch_edit_optional">(Tùy chọn - để trống để bỏ qua)</string>
+    <string name="batch_edit_success">Đã cập nhật %d bài hát thành công</string>
+    <string name="batch_edit_partial_success">Đã cập nhật %1$d trên %2$d bài hát. Một số tệp không thể chỉnh sửa.</string>
+    <string name="batch_edit_failed">Cập nhật bài hát thất bại</string>
+    <string name="batch_edit_cover_art_heading">Ảnh bìa hàng loạt</string>
+    <string name="batch_edit_cover_art_hint">Thao tác này sẽ thay thế ảnh bìa cho tất cả %d bài hát đã chọn</string>
+    <string name="batch_edit_set_cover_art">Đặt ảnh bìa cho tất cả</string>
+    <string name="batch_edit_remove_all_art">Xóa tất cả ảnh bìa</string>
+    <string name="batch_edit_multiple_covers">(Nhiều ảnh bìa khác nhau)</string>
+
+    <!-- Playlist dismissed message -->
+    <string name="playlist_dismissed_message">Đã đóng danh sách phát</string>
+
+    <!-- PlaylistCreationDialogs -->
+    <string name="playlist_creation_create_playlist_title">Tạo danh sách phát</string>
+    <string name="playlist_creation_create_playlist_subtitle">Chọn luồng tạo.</string>
+    <string name="playlist_creation_mode_manual_title">Thủ công</string>
+    <string name="playlist_creation_mode_manual_subtitle">Tự thiết kế hình ảnh, biểu tượng, hình dạng và chọn bài hát.</string>
+    <string name="playlist_creation_mode_ai_title">Với AI</string>
+    <string name="playlist_creation_mode_ai_subtitle_enabled">Tạo danh sách phát được tuyển chọn với các điều khiển nâng cao.</string>
+    <string name="playlist_creation_mode_ai_subtitle_disabled">Cần có Gemini API key đã cấu hình trong cài đặt.</string>
+    <string name="playlist_creation_setup_api_key">Thiết lập API key</string>
+
+    <!-- AI playlist lab -->
+    <string name="playlist_creation_ai_lab_title">Phòng thí nghiệm danh sách phát AI</string>
+    <string name="playlist_creation_ai_reset">Đặt lại</string>
+    <string name="playlist_creation_ai_generating">Đang tạo…</string>
+    <string name="playlist_creation_ai_generate">Tạo</string>
+    <string name="playlist_creation_ai_section_intent">Mục đích</string>
+    <string name="playlist_creation_ai_name_optional">Tên danh sách phát (tùy chọn)</string>
+    <string name="playlist_creation_ai_feel_label">Danh sách phát này nên có cảm giác như thế nào?</string>
+    <string name="playlist_creation_ai_feel_placeholder">Ví dụ: lái xe lúc hoàng hôn với âm thanh synth ấm áp</string>
+    <string name="playlist_creation_ai_section_direction">Hướng đi</string>
+    <string name="playlist_creation_ai_mood_label">Tâm trạng</string>
+    <string name="playlist_creation_ai_activity_label">Hoạt động</string>
+    <string name="playlist_creation_ai_era_label">Thời đại</string>
+    <string name="playlist_creation_ai_section_curation">Công cụ tuyển chọn</string>
+    <string name="playlist_creation_ai_energy_label">Năng lượng</string>
+    <string name="playlist_creation_ai_energy_desc">Điều chỉnh cường độ và tiết tấu của bài hát. 1 = tĩnh lặng/chậm, 5 = năng lượng cao/nhanh.</string>
+    <string name="playlist_creation_ai_discovery_label">Khám phá</string>
+    <string name="playlist_creation_ai_discovery_desc">Điều chỉnh mức độ quen thuộc của các bài hát được chọn. 1 = bài yêu thích phát nhiều nhất, 5 = bài hiếm khi phát.</string>
+    <string name="playlist_creation_ai_min_songs">Tối thiểu bài hát</string>
+    <string name="playlist_creation_ai_max_songs">Tối đa bài hát</string>
+    <string name="playlist_creation_ai_section_filters">Bộ lọc</string>
+    <string name="playlist_creation_ai_prioritize_genres">Ưu tiên thể loại (tùy chọn)</string>
+    <string name="playlist_creation_ai_prioritize_genres_placeholder">ví dụ: synthwave, indie pop</string>
+    <string name="playlist_creation_ai_avoid_genres">Tránh thể loại (tùy chọn)</string>
+    <string name="playlist_creation_ai_avoid_genres_placeholder">ví dụ: metal, hard trap</string>
+    <string name="playlist_creation_ai_preferred_language">Ngôn ngữ ưu tiên (tùy chọn)</string>
+    <string name="playlist_creation_ai_preferred_language_placeholder">ví dụ: English, Spanish, instrumental</string>
+    <string name="playlist_creation_ai_prioritize_favorites">Ưu tiên bài yêu thích</string>
+    <string name="playlist_creation_ai_avoid_explicit">Tránh lời bài hát thô tục</string>
+    <string name="playlist_creation_ai_section_prompt_preview">Xem trước prompt</string>
+    <string name="playlist_creation_ai_prompt_preview_empty">Prompt cuối cùng sẽ xuất hiện ở đây khi bạn thêm tùy chọn.</string>
+    <string name="playlist_creation_ai_hero_title">Tuyển chọn chính xác</string>
+    <string name="playlist_creation_ai_hero_subtitle">Xác định tâm trạng, hoạt động, ràng buộc và độ sâu.</string>
+    <string name="playlist_creation_ai_hero_library_note">AI chỉ sử dụng bài hát từ thư viện cục bộ của bạn.</string>
+    <string name="playlist_creation_ai_error_add_instruction">Thêm ít nhất một hướng dẫn cho AI.</string>
+    <string name="playlist_creation_ai_error_song_range">Đặt khoảng bài hát hợp lệ.</string>
+    <string name="playlist_creation_ai_level_out_of_five">%1$d/5</string>
+    <string name="playlist_creation_ai_custom_chip">Tùy chỉnh…</string>
+    <string name="playlist_creation_ai_enter_custom_title">Nhập giá trị tùy chỉnh</string>
+    <string name="playlist_creation_ai_enter_custom_label">Nhập giá trị tùy chỉnh</string>
+
+    <!-- AI prompt -->
+    <string name="playlist_creation_ai_era_any">Bất kỳ thời đại nào</string>
+    <string name="playlist_creation_ai_prompt_core_request">Yêu cầu cốt lõi: %1$s.</string>
+    <string name="playlist_creation_ai_prompt_mood">Tâm trạng mục tiêu: %1$s.</string>
+    <string name="playlist_creation_ai_prompt_activity">Bối cảnh hoạt động: %1$s.</string>
+    <string name="playlist_creation_ai_prompt_era">Tập trung thời đại: %1$s.</string>
+    <string name="playlist_creation_ai_prompt_prioritize_genres">Ưu tiên thể loại: %1$s.</string>
+    <string name="playlist_creation_ai_prompt_avoid_genres">Tránh thể loại: %1$s.</string>
+    <string name="playlist_creation_ai_prompt_preferred_language">Ngôn ngữ ưu tiên: %1$s.</string>
+    <string name="playlist_creation_ai_prompt_energy">Mục tiêu mức năng lượng: %1$d/5.</string>
+    <string name="playlist_creation_ai_prompt_discovery">Mục tiêu khám phá: %1$d/5 trong đó 1 là quen thuộc và 5 là bài hiếm.</string>
+    <string name="playlist_creation_ai_prompt_prioritize_favorites">Ưu tiên bài hát gần với sở thích của người nghe khi có thể.</string>
+    <string name="playlist_creation_ai_prompt_avoid_explicit">Tránh lời bài hát thô tục mỗi khi có phương án thay thế.</string>
+    <string name="playlist_creation_ai_prompt_smooth_transitions">Giữ chuyển tiếp mượt mà và tránh lặp lại nhóm nghệ sĩ.</string>
+    <string-array name="playlist_creation_ai_mood_options">
+        <item>Điềm tĩnh</item>
+        <item>Tràn đầy năng lượng</item>
+        <item>Vui vẻ</item>
+        <item>Tối tăm</item>
+        <item>Lãng mạn</item>
+        <item>U sầu</item>
+    </string-array>
+    <string-array name="playlist_creation_ai_activity_options">
+        <item>Tập thể dục</item>
+        <item>Tập trung</item>
+        <item>Đi đường dài</item>
+        <item>Party</item>
+        <item>Học tập</item>
+        <item>Đêm khuya</item>
+    </string-array>
+    <string-array name="playlist_creation_ai_era_options">
+        <item>@string/playlist_creation_ai_era_any</item>
+        <item>70s</item>
+        <item>80s</item>
+        <item>90s</item>
+        <item>2000s</item>
+        <item>2010s</item>
+        <item>2020s</item>
+    </string-array>
+
+    <!-- PlaylistContainer -->
+    <string name="playlist_container_no_playlist_created">Chưa tạo danh sách phát nào.</string>
+    <string name="playlist_container_new_playlist_hint">Nhấn nút \'Danh sách phát mới\' để bắt đầu.</string>
+    <string name="playlist_container_create_playlist_title">Danh sách phát mới</string>
+    <string name="playlist_container_create_playlist_name_label">Tên danh sách phát</string>
+    <string name="playlist_container_create_playlist_name_placeholder">Danh sách phát của tôi</string>
+
+    <!-- PlaylistBottomSheet -->
+    <string name="playlist_sheet_add_songs_title">Thêm %1$d bài hát vào…</string>
+    <string name="playlist_sheet_select_playlists">Chọn danh sách phát</string>
+    <string name="playlist_sheet_search_playlists_hint">Tìm danh sách phát…</string>
+    <string name="playlist_sheet_song_added_to_playlists">Đã thêm bài hát vào danh sách phát</string>
+    <string name="playlist_sheet_created_and_songs_added">Đã tạo danh sách phát và thêm bài hát</string>
+    <string name="playlist_sheet_internal_storage">Bộ nhớ trong</string>
+
+    <!-- SongPickerBottomSheet -->
+    <string name="song_picker_title">Thêm bài hát</string>
+    <string name="song_picker_cd_confirm_add_songs">Thêm các bài hát đã chọn</string>
+    <string name="song_picker_action_add">Thêm</string>
+    <string name="song_picker_search_label">Tìm kiếm hoặc lọc bài hát…</string>
+    <string name="song_picker_filter_favorites">Đã thích</string>
+    <string name="song_picker_error_load_failed">Tải bài hát thất bại</string>
+    <string name="song_picker_load_more">Tải thêm</string>
+
+    <!-- Merge Playlists Dialog -->
+    <string name="merge_playlists_dialog_title">Gộp danh sách phát</string>
+    <string name="merge_playlists_dialog_prompt">Nhập tên cho danh sách phát đã gộp:</string>
+    <string name="merge_playlists_dialog_placeholder">Danh sách phát đã gộp</string>
+    <string name="merge_playlists_dialog_body">Thao tác này sẽ gộp %1$d danh sách phát đã chọn thành một.</string>
+
+    <!-- PlayerViewModel -->
+    <string name="player_view_model_no_valid_songs">Không tìm thấy bài hát hợp lệ để phát</string>
+    <string name="player_view_model_song_not_found_in_list">Không tìm thấy bài hát trong danh sách hiện tại</string>
+    <string name="player_view_model_could_not_locate_song">Không thể tìm bài hát</string>
+    <string name="player_view_model_no_songs_in_library_toast">Không tìm thấy bài hát trong thư viện</string>
+    <string name="player_view_model_playback_stopped_eot">Đã dừng phát: %1$s kết thúc (Hết bài).</string>
+    <string name="player_view_model_default_track_title">Bài hát</string>
+    <string name="player_view_model_no_songs_to_shuffle">Không có bài hát để trộn.</string>
+    <string name="player_view_model_queue_name_selected_albums">Album đã chọn</string>
+    <string name="player_view_model_no_playable_songs_in_albums">Không tìm thấy bài hát có thể phát trong album đã chọn</string>
+    <string name="player_view_model_no_playable_songs_in_genres">Không tìm thấy bài hát có thể phát trong thể loại đã chọn</string>
+    <string name="player_view_model_only_first_n_albums_queued">Chỉ %1$d album đầu tiên được thêm vào hàng chờ</string>
+    <string name="player_view_model_albums_queued_format">%1$d album đã thêm vào hàng chờ (%2$d bài hát)</string>
+    <string name="player_view_model_could_not_queue_albums">Không thể thêm album đã chọn vào hàng chờ</string>
+    <string name="player_view_model_all_songs_already_in_favorites">Tất cả bài hát đã có trong yêu thích</string>
+    <string name="player_view_model_no_songs_were_in_favorites">Không có bài hát nào trong yêu thích</string>
+    <string name="player_view_model_creating_zip">Đang tạo tệp ZIP…</string>
+    <string name="player_view_model_share_zip_failed_format">Chia sẻ thất bại: %1$s</string>
+    <plurals name="player_view_model_n_songs_added_to_queue">
+        <item quantity="one">Đã thêm %d bài hát vào hàng chờ</item>
+        <item quantity="other">Đã thêm %d bài hát vào hàng chờ</item>
+    </plurals>
+    <plurals name="player_view_model_n_songs_will_play_next">
+        <item quantity="one">%d bài hát sẽ phát tiếp theo</item>
+        <item quantity="other">%d bài hát sẽ phát tiếp theo</item>
+    </plurals>
+    <plurals name="player_view_model_n_songs_added_to_favorites">
+        <item quantity="one">Đã thêm %d bài hát vào yêu thích</item>
+        <item quantity="other">Đã thêm %d bài hát vào yêu thích</item>
+    </plurals>
+    <plurals name="player_view_model_n_songs_removed_from_favorites">
+        <item quantity="one">Đã xóa %d bài hát khỏi yêu thích</item>
+        <item quantity="other">Đã xóa %d bài hát khỏi yêu thích</item>
+    </plurals>
+
+    <!-- PlaylistViewModel -->
+    <string name="playlist_view_model_none_to_share">Không có danh sách phát để chia sẻ</string>
+    <string name="playlist_view_model_share_chooser_title">Chia sẻ danh sách phát</string>
+    <string name="playlist_view_model_share_failed">Chia sẻ thất bại: %1$s</string>
+    <string name="playlist_view_model_none_to_export">Không có danh sách phát để xuất</string>
+    <string name="playlist_view_model_export_failed">Xuất thất bại: %1$s</string>
+    <string name="playlist_view_model_export_folder_display">Nhạc/Xuất PixelPlayer</string>
+    <string name="playlist_view_model_ai_gemini_key_required">Vui lòng cấu hình Gemini API key trong Cài đặt.</string>
+    <string name="playlist_view_model_restored_toast">Đã khôi phục danh sách phát</string>
+    <plurals name="playlist_view_model_sharing_message">
+        <item quantity="one">Đang chia sẻ %d danh sách phát</item>
+        <item quantity="other">Đang chia sẻ %d danh sách phát</item>
+    </plurals>
+    <plurals name="playlist_view_model_exported_message">
+        <item quantity="one">Đã xuất %1$d danh sách phát tới %2$s</item>
+        <item quantity="other">Đã xuất %1$d danh sách phát tới %2$s</item>
+    </plurals>
+
+    <!-- AlbumDetailViewModel -->
+    <string name="album_detail_invalid_id">ID album không hợp lệ</string>
+    <string name="album_detail_id_not_found">Không tìm thấy ID album</string>
+    <string name="album_detail_error_loading_album">Lỗi khi tải dữ liệu album: %s</string>
+    <string name="album_detail_not_found">Không tìm thấy album</string>
+
+    <!-- ArtistDetailViewModel -->
+    <string name="artist_detail_invalid_id">ID nghệ sĩ không hợp lệ</string>
+    <string name="artist_detail_id_not_found">Không tìm thấy ID nghệ sĩ</string>
+    <string name="artist_error_loading_artist">Lỗi khi tải dữ liệu nghệ sĩ: %s</string>
+    <string name="artist_detail_not_found">Không tìm thấy nghệ sĩ</string>
+
+    <!-- SongRemovalStateHolder -->
+    <string name="song_removal_cannot_delete_currently_playing">Không thể xóa bài hát đang phát</string>
+    <string name="song_removal_batch_delete_files_deleted_skipped_format">Đã xóa %1$d tệp (%2$d bị bỏ qua - đang phát)</string>
+    <string name="song_removal_batch_delete_partial_format">Đã xóa %1$d trong %2$d tệp</string>
+    <string name="song_removal_delete_files_failed">Xóa tệp thất bại</string>
+    <string name="song_removal_file_deleted">Đã xóa tệp</string>
+    <string name="song_removal_delete_file_not_found">Không thể xóa tệp hoặc tệp không tìm thấy</string>
+    <string name="song_removal_deletion_cancelled">Đã hủy xóa</string>
+    <string name="song_removal_dialog_delete_song_title">Xóa bài hát?</string>
+    <string name="song_removal_dialog_delete_song_message">\"%1$s\" của %2$s\n\nBài hát này sẽ bị xóa vĩnh viễn khỏi thiết bị và không thể khôi phục.</string>
+    <string name="song_removal_delete_songs_permanent_message">Các bài hát này sẽ bị xóa vĩnh viễn khỏi thiết bị và không thể khôi phục.</string>
+    <plurals name="song_removal_n_files_deleted">
+        <item quantity="one">Đã xóa %d tệp</item>
+        <item quantity="other">Đã xóa %d tệp</item>
+    </plurals>
+    <plurals name="song_removal_delete_songs_confirmation_title">
+        <item quantity="one">Xóa %d bài hát?</item>
+        <item quantity="other">Xóa %d bài hát?</item>
+    </plurals>
+
+    <!-- MetadataEditStateHolder -->
+    <string name="metadata_edit_updated_successfully">Đã cập nhật metadata thành công</string>
+    <string name="metadata_edit_updating_n_songs">Đang cập nhật %1$d bài hát…</string>
+    <string name="metadata_edit_batch_genre_updated_all">Đã cập nhật %1$d bài hát thành công!</string>
+    <string name="metadata_edit_batch_genre_updated_partial">Đã cập nhật %1$d bài hát. Thất bại: %2$d</string>
+    <string name="metadata_edit_lyrics_saved_successfully">Đã lưu lời bài hát thành công</string>
+    <string name="metadata_edit_lyrics_save_failed">Lưu lời bài hát thất bại</string>
+    <string name="metadata_edit_lyrics_none_to_save">Không có lời bài hát để lưu</string>
+    <string name="metadata_edit_permission_denied_edit_files">Bị từ chối quyền - không thể chỉnh sửa tệp</string>
+    <string name="metadata_edit_permission_denied_save_lyrics">Bị từ chối quyền - không thể lưu lời bài hát</string>
+    <string name="metadata_edit_permission_denied_edit_this_file">Bị từ chối quyền - không thể chỉnh sửa tệp này</string>
+
+    <!-- AiStateHolder -->
+    <string name="ai_state_error_api_key">Vui lòng cấu hình API key hợp lệ cho nhà cung cấp AI đã chọn trong Cài đặt.</string>
+    <string name="ai_state_error_generic">Lỗi AI: %s</string>
+    <string name="ai_state_error_quota">Nhà cung cấp AI đã chọn từ chối yêu cầu vì tài khoản không có credit hoặc quota khả dụng.</string>
+    <string name="ai_state_error_model_unavailable">Mô hình AI đã chọn không còn khả dụng. PixelPlayer đã thử chuyển sang mô hình được hỗ trợ tự động.</string>
+    <string name="ai_state_no_songs_found">AI không tìm thấy bài hát nào cho prompt của bạn.</string>
+    <string name="ai_state_prompt_empty">Viết ý tưởng cho Daily Mix của bạn</string>
+    <string name="ai_state_daily_mix_updated">Đã cập nhật Daily Mix bằng AI</string>
+    <string name="ai_state_could_not_update">Không thể cập nhật: %s</string>
+    <string name="ai_state_no_songs_for_mix">AI không tìm thấy bài hát cho mix này</string>
+</resources>

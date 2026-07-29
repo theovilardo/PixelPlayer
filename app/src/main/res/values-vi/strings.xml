@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PixelPlayer</string>
+    <string name="app_tagline">Trình phát nhạc</string>
+    <string name="app_name_change_title">Đổi tên ứng dụng</string>
+    <string name="app_name_change_message">Chúng tôi đã đổi tên ứng dụng từ PixelPlay thành PixelPlayer do vấn đề liên quan đến nhãn hiệu. Tiếp tục thưởng thức nhạc!</string>
+    <string name="app_name_change_do_not_show_again">Không hiển thị lại</string>
+
+    <!-- Navigation Bar Labels -->
+    <string name="nav_bar_home">Trang chủ</string>
+    <string name="nav_bar_search">Tìm kiếm</string>
+    <string name="nav_bar_library">Thư viện</string>
+
+    <!-- All files access dialog-->
+    <string name="all_files_access_title">Cần cấp quyền đặc biệt</string>
+    <string name="all_files_access_description">Để chỉnh sửa siêu dữ liệu bài hát (tệp .mp3), PixelPlayer cần quyền truy cập đặc biệt vào tất cả tệp. Điều này cho phép chúng tôi chỉnh sửa trực tiếp thẻ bài hát. Vui lòng cấp quyền này ở màn hình tiếp theo để bật tính năng chỉnh sửa siêu dữ liệu.</string>
+    <string name="grant_permission_button">Cấp quyền</string>
+
+    <!-- External Player -->
+    <string name="external_queue_label">Phát nhanh</string>
+    <string name="external_playback_error">Không thể mở tệp âm thanh này.</string>
+    <string name="external_action_open_full_player">Mở trình phát đầy đủ</string>
+
+    <!-- App Shortcuts -->
+    <string name="shortcut_shuffle_short">Phát ngẫu nhiên</string>
+    <string name="shortcut_shuffle_long">Phát ngẫu nhiên tất cả bài hát</string>
+    <string name="tile_shuffle_all">Phát ngẫu nhiên tất cả</string>
+    <string name="tile_last_playlist">Danh sách phát gần nhất</string>
+    <string name="tile_last_playlist_unavailable">Không có danh sách phát nào để mở</string>
+
+    <!-- Playstore Announcement -->
+    <string name="playstore_dialog_action_open">Mở Google Play</string>
+    <string name="playstore_dialog_action_continue_beta">Tiếp tục beta</string>
+    <string name="playstore_dialog_link_pending">Liên kết Google Play sẽ được kích hoạt từ cấu hình GitHub.</string>
+    <string name="playstore_dialog_title">PixelPlayer hiện đã có trên Google Play</string>
+    <string name="playstore_dialog_body">Sử dụng kênh ổn định trên Google Play để cập nhật bản phát hành trong khi chúng tôi giữ các bản beta hoạt động.</string>
+    <string name="playstore_dialog_app_name">PixelPlayer</string>
+    <string name="playstore_dialog_release_announcement">Thông báo phát hành</string>
+    <string name="playstore_dialog_coming_soon">Sắp ra mắt</string>
+
+    <!-- Brick breaker -->
+    <string name="easter_egg_thank_you">Cảm ơn bạn đã sử dụng PixelPlayer!</string>
+    <string name="brick_high">CAO %1$d</string>
+    <string name="brick_cd_close">Đóng</string>
+    <string name="brick_stat_score">ĐIỂM</string>
+    <string name="brick_stat_lvl">CẤP %1$d</string>
+    <string name="brick_stat_lives">MẠNG</string>
+    <string name="brick_level_complete">HOÀN THÀNH CẤP!</string>
+    <string name="brick_game_over">KẾT THÚC TRÒ CHƠI</string>
+    <string name="brick_score_line">Điểm: %1$d</string>
+    <string name="brick_try_again">Thử lại?</string>
+    <string name="brick_next_level">Cấp tiếp theo</string>
+    <string name="brick_restart">Chơi lại</string>
+    <string name="brick_tap_relaunch">NHẤN ĐỂ KHỞI ĐỘNG LẠI</string>
+    <string name="brick_play_random">Phát nhạc ngẫu nhiên</string>
+    <string name="brick_title">Phá Gạch</string>
+    <string name="brick_high_score">ĐIỂM CAO  %1$d</string>
+    <string name="brick_play">Chơi</string>
+    <string name="brick_drag_paddle">Kéo để di chuyển thanh chắn</string>
+
+    <!-- Music Service -->
+    <string name="close_notification_player">Đóng trình phát</string>
+    <string name="service_processing_action">Đang xử lý hành động phát lại…</string>
+    <string name="player_playback_error">Lỗi phát lại: %1$s</string>
+
+    <!-- Common Text & Labels -->
+    <string name="common_back">Quay lại</string>
+    <string name="common_ok">OK</string>
+    <string name="common_cancel">Hủy</string>
+    <string name="common_dismiss">Bỏ qua</string>
+    <string name="common_error">Lỗi</string>
+    <string name="common_search">Tìm kiếm</string>
+    <string name="common_clear_search">Xóa tìm kiếm</string>
+    <string name="common_all">Tất cả</string>
+    <string name="common_confirm">Xác nhận</string>
+    <string name="common_saved">Đã lưu!</string>
+    <string name="common_selected">Đã chọn</string>
+    <string name="common_percentage_text">%1$d%%</string>
+    <string name="common_artist">Nghệ sĩ</string>
+    <string name="common_select_all">Chọn tất cả</string>
+    <string name="common_clear">Xóa</string>
+    <string name="common_error_unknown">Lỗi không xác định</string>
+
+    <!-- Common Actions & Labels -->
+    <string name="common_save">Lưu</string>
+    <string name="common_done">Xong</string>
+    <string name="common_reset">Đặt lại</string>
+    <string name="common_apply">Áp dụng</string>
+    <string name="common_shuffle">Phát ngẫu nhiên</string>
+    <string name="common_copy">Sao chép</string>
+    <string name="common_share">Chia sẻ</string>
+    <string name="common_undo">Hoàn tác</string>
+    <string name="common_import">Nhập</string>
+    <string name="common_delete">Xóa</string>
+    <string name="common_export">Xuất</string>
+    <string name="common_merge">Gộp</string>
+    <string name="common_rename">Đổi tên</string>
+    <string name="common_create">Tạo</string>
+    <string name="common_lyrics">Lời bài hát</string>
+    <string name="common_settings">Cài đặt</string>
+    <string name="common_album_art">Ảnh bìa album</string>
+    <string name="common_playlist">Danh sách phát</string>
+    <string name="common_unknown_track">Bài hát không xác định</string>
+    <string name="common_unknown_artist">Nghệ sĩ không xác định</string>
+    <string name="common_unknown_album">Album không xác định</string>
+    <string name="common_close">Đóng</string>
+    <string name="common_add">Thêm</string>
+    <string name="common_remove">Xóa</string>
+    <string name="common_play">Phát</string>
+    <string name="common_previous_track">Bài trước</string>
+    <string name="common_next_track">Bài tiếp</string>
+    <string name="common_favorite">Yêu thích</string>
+    <string name="common_pause">Tạm dừng</string>
+    <string name="common_repeat">Lặp lại</string>
+    <string name="common_options">Tùy chọn</string>
+    <string name="common_shuffle_play">Phát ngẫu nhiên</string>
+    <string name="common_more_options_for">Thêm tùy chọn cho %1$s</string>
+    <string name="common_expand_menu">Mở rộng menu</string>
+    <string name="common_next">Tiếp theo</string>
+    <string name="common_finish">Hoàn thành</string>
+    <string name="common_reset_defaults">Đặt lại mặc định</string>
+    <string name="common_export_all">Xuất tất cả</string>
+    <string name="common_merge_all">Gộp tất cả</string>
+    <string name="common_share_all">Chia sẻ tất cả</string>
+    <string name="common_play_album">Phát album</string>
+    <string name="common_shuffle_play_album">Phát ngẫu nhiên album</string>
+    <string name="common_album_art_for_title">Ảnh bìa cho %1$s</string>
+</resources>

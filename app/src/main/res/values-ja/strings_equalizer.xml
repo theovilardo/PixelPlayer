@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <!-- Equalizer preset dialogs -->
+    <string name="equalizer_error_name_empty">名前を入力してください</string>
+    <string name="equalizer_action_rename">名前を変更</string>
+
+    <!-- EqualizerScreen -->
+    <string name="equalizer_change_view_mode_cd">表示モードを変更</string>
+    <string name="equalizer_disable_cd">イコライザーを無効化</string>
+    <string name="equalizer_enable_cd">イコライザーを有効化</string>
+    <string name="equalizer_edit_tab_title">編集</string>
+    <string name="equalizer_edit_presets_cd">プリセットを編集</string>
+    <string name="equalizer_custom_preset_cd">カスタムプリセット</string>
+    <string name="equalizer_presets_cd">プリセット</string>
+    <string name="equalizer_action_update">更新</string>
+    <string name="equalizer_bass_boost">バスブースト</string>
+    <string name="equalizer_virtualizer">バーチャライザー</string>
+    <string name="equalizer_loudness">ラウドネス</string>
+    <string name="equalizer_effect_not_supported">非対応</string>
+    <string name="equalizer_effect_not_supported_device">この端末では非対応</string>
+    <string name="equalizer_volume">音量</string>
+    <string name="equalizer_frequency_response">周波数特性</string>
+    <string name="equalizer_unit_hz">Hz</string>
+    <string name="equalizer_band_bass">バス</string>
+    <string name="equalizer_band_low_mids">ローミッド</string>
+    <string name="equalizer_band_high_mids">ハイミッド</string>
+    <string name="equalizer_band_treble">トレブル</string>
+    <string name="equalizer_band_bass_low">バス / ロー</string>
+    <string name="equalizer_band_mid_high">ミッド / ハイ</string>
+    <string name="equalizer_page_n">ページ %1$d</string>
+    <string name="equalizer_reset_duration_cd">時間をリセット</string>
+    <string name="equalizer_action_save_new">新規保存</string>
+
+    <!-- CustomPresetsSheet -->
+    <string name="equalizer_presets_saved_title">保存済みプリセット</string>
+    <string name="equalizer_presets_empty">カスタムプリセットがまだ保存されていません。</string>
+    <string name="equalizer_presets_cd_unpin">ピンを外す</string>
+    <string name="equalizer_presets_cd_pin">ピン留め</string>
+    <string name="equalizer_presets_cd_rename">名前を変更</string>
+    <string name="equalizer_presets_cd_delete">削除</string>
+
+    <!-- SavePresetDialog -->
+    <string name="equalizer_presets_save_custom_title">カスタムプリセットを保存</string>
+    <string name="equalizer_presets_save_custom_body">カスタムイコライザープリセットの名前を入力してください。</string>
+    <string name="equalizer_preset_name_placeholder">プリセット名</string>
+    <string name="equalizer_presets_rename_title">プリセット名を変更</string>
+
+    <!-- ReorderPresetsSheet -->
+    <string name="equalizer_manage_presets_title">プリセットを管理</string>
+    <string name="equalizer_presets_drag_hint">ドラッグして並び替え • 目のアイコンで表示/非表示を切り替え</string>
+    <string name="equalizer_cd_reorder">並び替え</string>
+    <string name="equalizer_reset_presets_title">プリセットをリセット</string>
+    <string name="equalizer_reset_presets_message">デフォルトのプリセット順と表示状態に戻します。続けますか？</string>
+    <string name="equalizer_cd_reset_presets_default">デフォルトに戻す</string>
+    <string name="equalizer_cd_visible">表示</string>
+    <string name="equalizer_cd_hidden">非表示</string>
+</resources>

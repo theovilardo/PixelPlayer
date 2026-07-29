@@ -33,7 +33,4 @@ interface AiUsageDao {
 
     @Query("DELETE FROM ai_usage")
     suspend fun clearUsage()
-
-    @Query("DELETE FROM ai_usage")
-    suspend fun clearAll()
 }

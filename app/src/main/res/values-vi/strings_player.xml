@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <!-- Player UI & Playback Controls -->
+    <string name="player_cd_collapse">Thu nhỏ trình phát</string>
+    <string name="player_now_playing">Đang phát</string>
+    <string name="player_cd_cloud_stream">Phát trực tuyến đám mây</string>
+    <string name="player_cd_cast">Cast</string>
+    <string name="player_cd_bluetooth">Bluetooth</string>
+    <string name="player_cd_local_playback">Phát cục bộ</string>
+    <string name="player_connecting">Đang kết nối…</string>
+    <string name="player_cd_open_queue">Mở hàng đợi</string>    
+
+    <!-- CastBottomSheet -->
+    <string name="cast_perm_title">Sẵn sàng kết nối</string>
+    <string name="cast_perm_body">Cho phép PixelPlayer xem các thiết bị ở gần và Wi‑Fi hiện tại của bạn để chúng tôi có thể giữ cho cast, âm thanh Bluetooth và loa luôn đồng bộ.</string>
+    <string name="cast_perm_nearby_title">Thiết bị ở gần</string>
+    <string name="cast_perm_nearby_desc">Cần thiết để đọc và điều khiển thiết bị âm thanh Bluetooth đã kết nối của bạn.</string>
+    <string name="cast_perm_location_title">Vị trí cho Wi‑Fi</string>
+    <string name="cast_perm_location_desc">Android yêu cầu Vị trí để chia sẻ mạng Wi‑Fi (SSID) mà bạn đang sử dụng để chúng tôi có thể tìm các thiết bị cast tương thích.</string>
+    <string name="cast_allow_access">Cho phép truy cập</string>
+    <string name="cast_perm_footer">Chúng tôi chỉ sử dụng các quyền này cho việc kết nối thiết bị — cast, điều khiển loa ở gần và giữ cho âm thanh đồng bộ.</string>
+    <string name="cast_title_connect">Kết nối thiết bị</string>
+    <string name="cast_scanning_nearby">Đang quét thiết bị ở gần</string>
+    <string name="cast_subtitle_session">Phiên cast</string>
+    <string name="cast_connecting">Đang kết nối</string>
+    <string name="cast_connected">Đã kết nối</string>
+    <string name="cast_this_phone">Điện thoại này</string>
+    <string name="cast_bluetooth_audio">Âm thanh Bluetooth</string>
+    <string name="cast_local_playback">Phát cục bộ</string>
+    <string name="cast_playing">Đang phát</string>
+    <string name="cast_paused">Tạm dừng</string>
+    <string name="cast_volume_device">Âm lượng thiết bị</string>
+    <string name="cast_volume_phone">Âm lượng điện thoại</string>
+    <string name="cast_volume_levels">%1$d/%2$d</string>
+    <string name="cast_cd_battery">Mức pin</string>
+    <string name="cast_cd_volume_level">Mức âm lượng</string>
+    <string name="cast_disconnect">Ngắt kết nối</string>
+    <string name="cast_connectivity">Kết nối</string>
+    <string name="cast_turn_on_wifi_bt">Bật Wi-Fi hoặc Bluetooth</string>
+    <string name="cast_cd_refresh_connections">Làm mới kết nối</string>
+    <string name="cast_wifi">Wi-Fi</string>
+    <string name="cast_wifi_off">Tắt</string>
+    <string name="cast_wifi_on">Bật</string>
+    <string name="cast_wifi_connected">Đã kết nối</string>
+    <string name="cast_bluetooth">Bluetooth</string>
+    <string name="cast_bt_off">Tắt</string>
+    <string name="cast_bt_on">Bật</string>
+    <string name="cast_bt_connected">Đã kết nối</string>
+    <string name="cast_nearby_devices">Thiết bị ở gần</string>
+    <string name="cast_cd_refresh_devices">Làm mới thiết bị</string>
+    <string name="cast_status_connected">Đã kết nối</string>
+    <string name="cast_status_connecting">Đang kết nối</string>
+    <string name="cast_status_available_connect">Sẵn sàng kết nối</string>
+    <string name="cast_status_available">Sẵn có</string>
+    <string name="cast_connecting_ellipsis">Đang kết nối...</string>
+    <string name="cast_searching">Đang tìm thiết bị…</string>
+    <string name="cast_searching_hint">Hãy đảm bảo TV hoặc loa của bạn đang bật và chia sẻ cùng mạng Wi‑Fi.</string>
+    <string name="cast_tab_controls">Điều khiển</string>
+    <string name="cast_tab_devices">Thiết bị</string>
+
+    <!-- Casting & Remote Playback -->
+    <string name="cast_server_channel_name">Máy chủ media Cast</string>
+    <string name="cast_server_notification_title">Đang cast đến thiết bị</string>
+    <string name="cast_server_notification_text">Đang cung cấp media cho thiết bị Cast</string>
+    <string name="cast_server_foreground_error">%1$s: %2$s</string>
+    <string name="cast_seek_unavailable_for_format">Tua tạm thời không khả dụng cho định dạng âm thanh này trên Cast vì nó có thể làm phiên cast bị crash.</string>
+
+    <!-- Sleep Timer -->
+    <string name="sleep_timer_title">Hẹn giờ ngủ</string>
+    <string name="sleep_timer_zero_minutes_format">Hẹn giờ</string>
+    <string name="sleep_timer_n_minutes_format">%1$d phút</string>
+    <string name="sleep_timer_set_for_minutes_toast">Đã đặt hẹn giờ %1$d phút.</string>
+    <string name="sleep_timer_play_count_one_time">1 lần</string>
+    <plurals name="sleep_timer_play_count_n_times">
+        <item quantity="one">%d lần</item>
+        <item quantity="other">%d lần</item>
+    </plurals>
+    <string name="sleep_timer_play_count_label">Số lần phát: %1$s</string>
+    <string name="sleep_timer_end_of_current_track">Kết thúc bài hát hiện tại</string>
+    <string name="sleep_timer_eot_toast">Phát sẽ dừng ở cuối bài hát.</string>
+    <string name="sleep_timer_cd_switch_on">Bật</string>
+    <string name="sleep_timer_custom_time">Thời gian tùy chỉnh</string>
+    <string name="sleep_timer_cancel_timer">Hủy hẹn giờ</string>
+    <string name="sleep_timer_display_eot">Kết thúc bài hát</string>
+    <string name="sleep_timer_cancelled_toast">Đã hủy hẹn giờ.</string>
+    <string name="sleep_timer_eot_no_song_toast">Không thể bật kết thúc bài hát: không có bài hát đang phát.</string>
+    <string name="sleep_timer_eot_song_changed_toast">Hẹn giờ kết thúc bài hát đã tắt: bài hát đã đổi từ %1$s sang %2$s.</string>
+    <string name="sleep_timer_label_previous_track">Bài trước</string>
+    <string name="sleep_timer_label_current_track">Bài hiện tại</string>
+    <string name="sleep_timer_ui_set_custom_duration">Đặt thời lượng tùy chỉnh</string>
+
+    <!-- QueueBottomSheet -->
+    <string name="queue_next_up_label">Tiếp theo</string>
+    <string name="queue_tracks_empty">Hàng đợi hiện đang trống.</string>
+    <plurals name="queue_tracks_lined_up">
+        <item quantity="one">1 bài đã xếp hàng.</item>
+        <item quantity="other">%d bài đã xếp hàng.</item>
+    </plurals>
+    <string name="queue_source_fallback_label">Hàng đợi</string>
+    <string name="queue_empty_label">Hàng đợi trống.</string>
+    <string name="queue_cd_reorder_song">Sắp xếp lại bài hát</string>
+    <string name="queue_cd_toggle_shuffle_action">Bật/tắt xáo trộn</string>
+    <string name="queue_cd_toggle_repeat_action">Bật/tắt lặp lại</string>
+    <string name="queue_cd_sleep_timer_action">Hẹn giờ ngủ</string>
+    <string name="queue_cd_more_action">Thêm thao tác</string>
+    <string name="queue_action_locate_current_song">Định vị bài hát hiện tại</string>
+    <string name="queue_action_clear_queue">Xóa hàng đợi</string>
+    <string name="queue_dialog_clear_queue_title">Xóa hàng đợi</string>
+    <string name="queue_dialog_clear_queue_message">Bạn có chắc muốn xóa tất cả bài hát khỏi hàng đợi ngoại trừ bài hiện tại?</string>
+    <string name="queue_action_save_as_playlist">Lưu thành danh sách phát</string>
+    <string name="queue_save_playlist_named">Hàng đợi %1$s</string>
+    <string name="queue_save_playlist_current">Hàng đợi hiện tại</string>
+    <string name="queue_cd_dismiss_song">Bỏ bài hát</string>
+    <string name="queue_song_removed">đã xóa</string>
+    <string name="queue_save_as_playlist_sheet_title">Lưu thành danh sách phát</string>
+    <string name="queue_save_as_playlist_deselect_all">Bỏ chọn tất cả</string>
+    <string name="queue_save_as_playlist_name_label">Tên danh sách phát</string>
+    <string name="queue_save_as_playlist_search_placeholder">Tìm bài hát để thêm…</string>
+    <string name="queue_save_as_playlist_search_no_match">Không có bài hát nào khớp \"%1$s\"</string>
+    <plurals name="queue_save_as_playlist_n_songs_selected">
+        <item quantity="one">%d bài đã chọn</item>
+        <item quantity="other">%d bài đã chọn</item>
+    </plurals>
+    <string name="queue_save_as_playlist_format">Lưu dưới dạng: %1$s</string>
+    <string name="queue_save_as_playlist_name_placeholder">Nhập tên danh sách phát</string>
+    <string name="queue_cd_remove_from_playlist">Xóa khỏi danh sách phát</string>
+    <string name="queue_more_options_for_song">Thêm tùy chọn cho %1$s</string>
+
+    <!-- LyricsSheet -->
+    <string name="lyrics_title">Lời bài hát</string>
+    <string name="lyrics_loading">Đang tải lời bài hát…</string>
+    <string name="lyrics_mode_synced">Đồng bộ</string>
+    <string name="lyrics_mode_static">Cố định</string>
+    <string name="lyrics_options">Tùy chọn lời bài hát</string>
+    <string name="lyrics_offset_minus_half">−.5</string>
+    <string name="lyrics_offset_minus_point_one">−.1</string>
+    <string name="lyrics_offset_plus_point_one">+.1</string>
+    <string name="lyrics_offset_plus_half">+.5</string>
+    <string name="lyrics_offset_zero">0s</string>
+    <string name="lyrics_offset_seconds_fmt">%1$+.1fs</string>
+    
+    <!-- LyricsRepository -->
+    <string name="lyrics_failed_to_search">Không thể tìm lời bài hát</string>
+    <string name="lyrics_failed_to_fetch_from_remote">Không thể tải lời bài hát từ máy chủ</string>
+    <string name="lyrics_fetch_timeout">Kết nối đã hết thời gian. Vui lòng kiểm tra kết nối internet của bạn.</string>
+    <string name="lyrics_network_error">Lỗi mạng. Vui lòng kiểm tra kết nối internet của bạn.</string>
+    <string name="lyrics_server_error">Lỗi máy chủ (mã %d). Vui lòng thử lại sau.</string>
+    
+    <!-- LyricsStateHolder -->
+    <string name="lyrics_already_available">Lời bài hát đã có sẵn. Bỏ qua tải trực tuyến.</string>
+    <string name="lyrics_embedded_already_available">Lời bài hát nhúng đã có sẵn. Bỏ qua tải trực tuyến.</string>
+    <string name="lyrics_local_lrc_already_available">Lời bài hát cục bộ (.lrc) đã có sẵn. Bỏ qua tải trực tuyến.</string>
+
+    <!-- LyricsMoreBottomSheet -->
+    <string name="lyrics_save_title">Lưu lời bài hát</string>
+    <string name="lyrics_translate_via_ai">Dịch qua AI</string>
+    <string name="lyrics_translate_already_translated">Lời bài hát này đã có bản dịch</string>
+    <string name="lyrics_translate_already_in_target_language">Lời bài hát này đã bằng ngôn ngữ này</string>
+    <string name="lyrics_translate_api_not_configured">API chưa được cấu hình</string>
+    <string name="lyrics_translate_success">Dịch lời bài hát thành công!</string>
+    <string name="lyrics_translate_progress">Đang dịch lời bài hát...</string>
+    <string name="lyrics_reset_imported">Đặt lại lời bài hát đã nhập</string>
+    <string name="lyrics_reset_dialog_title">Đặt lại lời bài hát?</string>
+    <string name="lyrics_reset_dialog_message">Bạn có chắc muốn đặt lại lời bài hát cho bài hát này?</string>
+    <string name="lyrics_appearance_section">Giao diện</string>
+    <string name="lyrics_appearance_alignment">Căn lề</string>
+    <string name="lyrics_appearance_align_left">Căn lời bài hát bên trái</string>
+    <string name="lyrics_appearance_align_center">Căn lời bài hát giữa</string>
+    <string name="lyrics_appearance_align_right">Căn lời bài hát bên phải</string>
+    <string name="lyrics_controls_section">Điều khiển</string>
+    <string name="lyrics_controls_adjust_sync">Điều chỉnh đồng bộ</string>
+    <string name="lyrics_controls_hide_sync">Ẩn điều khiển đồng bộ</string>
+    <string name="lyrics_controls_show_romanization">Hiện phiên âm</string>
+    <string name="lyrics_controls_show_translations">Hiện bản dịch</string>
+    <string name="lyrics_controls_disable_immersive_once">Tắt chế độ toàn màn hình (một lần)</string>
+    <string name="lyrics_controls_keep_screen_on">Giữ màn hình sáng</string>
+    
+    <!-- LyricsSheet save dialog -->
+    <string name="lyrics_save_dialog_title">Lưu lời bài hát</string>
+    <string name="lyrics_save_dialog_message">Chọn phiên bản để lưu:</string>
+    <string name="lyrics_save_synced">Đồng bộ (có đánh dấu thời gian)</string>
+    <string name="lyrics_save_plain">Thô (chỉ văn bản)</string>
+
+    <!-- FetchLyricsDialog -->
+    <string name="lyrics_search_online_prompt">Bạn có muốn tìm lời bài hát trực tuyến không?</string>
+    <string name="lyrics_fetch_show_options_title">Hiện tùy chọn lời bài hát</string>
+    <string name="lyrics_fetch_show_options_subtitle">Luôn mở bộ chọn thay vì tự động áp dụng kết quả phù hợp đầu tiên</string>
+    <string name="lyrics_searching">Đang tìm lời bài hát…</string>
+    <string name="lyrics_not_found">Không tìm thấy lời bài hát</string>
+    <string name="lyrics_custom_search_hint">Chúng tôi không thể tự động tìm lời bài hát. Bạn có thể chỉnh sửa tên bài hát hoặc nghệ sĩ và thử tìm kiếm thủ công.</string>
+    <string name="lyrics_custom_search_field_title">Tên bài hát</string>
+    <string name="lyrics_custom_search_field_artist">Nghệ sĩ (tùy chọn)</string>
+    <string name="lyrics_found_n_matches_format">Tìm thấy %d kết quả phù hợp</string>
+    <string name="lyrics_synced_badge">ĐỒNG BỘ</string>
+    <string name="lyrics_artist_album_line">%1$s • %2$s</string>
+    <string name="lyrics_provided_by">Lời bài hát được cung cấp bởi</string>
+    <string name="lyrics_lrclib_uri">https://lrclib.net/</string>
+</resources>

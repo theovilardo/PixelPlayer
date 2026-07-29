@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Set up JDK 21
         uses: actions/setup-java@v5
@@ -30,7 +30,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v6
 
       - name: Build Phone debug APK
-        run: gradle :app:assembleDebug -Ppixelplay.enableAbiSplits=true
+        run: gradle :app:assembleDebug -Ppixelplay.enableAbiSplits=true --no-build-cache
 
       - name: Verify Phone split APKs
         run: |

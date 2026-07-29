@@ -310,10 +310,6 @@ class MusicRepositoryImpl @Inject constructor(
         return songRepository.getFavoriteSongCountFlow(storageFilter)
     }
 
-    override fun getSongCountFlow(): Flow<Int> {
-        return musicDao.getSongCount().distinctUntilChanged()
-    }
-
     override fun getCloudSongCountFlow(): Flow<Int> {
         return musicDao.getCloudSongCount().distinctUntilChanged()
     }

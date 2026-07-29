@@ -1631,20 +1631,8 @@ interface MusicDao {
     suspend fun deleteOrphanedArtists()
 
     // --- Favorite Operations ---
-    @Query("UPDATE songs SET is_favorite = :isFavorite WHERE id = :songId")
-    suspend fun setFavoriteStatus(songId: Long, isFavorite: Boolean)
-
-    @Query("SELECT is_favorite FROM songs WHERE id = :songId")
-    suspend fun getFavoriteStatus(songId: Long): Boolean?
-
-    // Transaction to toggle favorite status
-    @Transaction
-    suspend fun toggleFavoriteStatus(songId: Long): Boolean {
-        val currentStatus = getFavoriteStatus(songId) ?: false // Default to false if not found (should not happen for existing song)
-        val newStatus = !currentStatus
-        setFavoriteStatus(songId, newStatus)
-        return newStatus
-    }
+    // Note: Favorite status is managed via FavoritesDao. The songs.is_favorite column
+    // is kept in sync by SQL triggers on the favorites table.
 
     @Query("""
         UPDATE songs

@@ -531,6 +531,21 @@ object AppModule {
     }
 
     /**
+     * Shared OkHttpClient for AI provider HTTP calls.
+     * Connection pooling is reused across all AI client instances.
+     */
+    @Provides
+    @Singleton
+    @AiOkHttpClient
+    fun provideAiOkHttpClient(): OkHttpClient {
+        return OkHttpClient.Builder()
+            .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+            .readTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
+            .writeTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+            .build()
+    }
+
+    /**
      * Provee una instancia singleton de Retrofit para la API de LRCLIB.
      */
     @Provides

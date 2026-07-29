@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Telegram login -->
+    <string name="telegram_login_title">登錄 Telegram</string>
+    <string name="telegram_edit_number_chip">您正在修改號碼。再次發送驗證碼將替換上一個。</string>
+    <string name="telegram_working">處理中…</string>
+    <string name="telegram_status_initializing">正在初始化 Telegram…</string>
+    <string name="telegram_status_logging_out">正在登出…</string>
+    <string name="telegram_status_closing">正在關閉會話…</string>
+    <string name="telegram_status_closed">會話已關閉。請重新打開登錄界面以繼續。</string>
+    <string name="telegram_status_preparing">正在準備安全的 Telegram 會話…</string>
+    <string name="telegram_status_waiting">正在等待 Telegram 響應…</string>
+    <string name="telegram_connect">連接 Telegram</string>
+    <string name="telegram_connect_subtitle">連接 Telegram 即可流式播放您頻道和聊天中的音樂。</string>
+    <string name="telegram_phone_number_title">手機號碼</string>
+    <string name="telegram_phone_number_subtitle">請輸入您的 Telegram 手機號碼。您稍後可以返回並進行修改。</string>
+    <string name="telegram_phone_number_hint">手機號碼</string>
+    <string name="telegram_phone_country_placeholder">86</string>
+    <string name="telegram_phone_local_placeholder">13800138000</string>
+    <string name="telegram_send_code">發送驗證碼</string>
+    <string name="telegram_verification_code_title">驗證碼</string>
+    <string name="telegram_verification_code_subtitle">請輸入來自 Telegram 的驗證碼。如果號碼有誤，請返回並修改。</string>
+    <string name="telegram_code_field_label">驗證碼</string>
+    <string name="telegram_code_placeholder">12345</string>
+    <string name="telegram_edit_phone">修改手機號</string>
+    <string name="telegram_resend_code">重新發送驗證碼</string>
+    <string name="telegram_verify_code">驗證驗證碼</string>
+    <string name="telegram_two_step_password_title">兩步驗證密碼</string>
+    <string name="telegram_two_step_password_subtitle">請輸入您的 Telegram 密碼。您仍然可以返回以修改手機號碼。</string>
+    <string name="telegram_password_label">密碼</string>
+    <string name="telegram_verify_password">驗證密碼</string>
+    <string name="telegram_please_wait">請稍候…</string>
+
+    <!-- Telegram dashboard -->
+    <string name="telegram_channels_title">Telegram 頻道</string>
+    <string name="telegram_add_channel_fab">添加頻道</string>
+    <string name="telegram_public_channel_fallback">公開的 Telegram 頻道</string>
+    <string name="telegram_syncing">正在同步</string>
+    <string name="telegram_sync_now">立即同步</string>
+    <string name="telegram_cd_collapse_topics">收起話題</string>
+    <string name="telegram_cd_show_topics">顯示話題</string>
+    <string name="telegram_cd_channel_options">頻道選項</string>
+    <string name="telegram_topics_heading">話題</string>
+    <string name="telegram_syncing_channel">正在同步頻道</string>
+    <string name="telegram_updating_songs_from_telegram">正在從 Telegram 更新歌曲</string>
+    <string name="telegram_fetch_latest_songs">從此頻道獲取最新歌曲</string>
+    <string name="telegram_remove_channel">移除頻道</string>
+    <string name="telegram_remove_channel_subtitle">停止同步並移除已緩存的歌曲</string>
+    <string name="telegram_remove_channel_confirm_title">是否移除頻道？</string>
+    <string name="telegram_remove_channel_confirm_body">%1$s 將停止同步，並且從此頻道緩存的所有歌曲都將被移除。</string>
+    <string name="telegram_remove_channel_confirm_action">移除</string>
+    <string name="telegram_no_channels_synced">未同步任何頻道</string>
+    <string name="telegram_no_channels_body">添加公開的 Telegram 頻道\n以同步您的音樂庫</string>
+    <string name="telegram_add_channel_button">添加頻道</string>
+    <string name="telegram_never_synced">從未同步</string>
+    <string name="telegram_synced_relative">上次同步於 %1$s</string>
+
+    <!-- Telegram channel search -->
+    <string name="telegram_add_channel_sheet_title">添加頻道</string>
+    <string name="telegram_add_channel_sheet_subtitle">搜索一個公開的 Telegram 頻道以同步其音樂</string>
+    <string name="telegram_channel_search_placeholder">\@channelname 或鏈接</string>
+    <string name="telegram_searching">正在搜索…</string>
+    <string name="telegram_search_channel_title">搜索頻道</string>
+    <string name="telegram_search_channel_body">輸入公開頻道的用戶名或鏈接\n以同步其音頻文件</string>
+
+    <plurals name="telegram_n_songs">
+        <item quantity="one">%d 首歌曲</item>
+        <item quantity="other">%d 首歌曲</item>
+    </plurals>
+    <plurals name="telegram_n_topics">
+        <item quantity="one">%d 個話題</item>
+        <item quantity="other">%d 個話題</item>
+    </plurals>
+
+    <!-- Subsonic/Navidrome dashboard -->
+    <string name="subsonic_dashboard_title">Subsonic</string>
+    <string name="subsonic_dashboard_quick_actions_subtitle">管理 Navidrome、Airsonic 以及其他兼容 Subsonic 的服務器。</string>
+
+    <!-- Jellyfin dashboard -->
+    <string name="jellyfin_dashboard_playlists_empty_hint">點擊同步以獲取您的 Jellyfin 播放列表</string>
+    <string name="jellyfin_dashboard_quick_actions_subtitle">管理您的 Jellyfin 服務器連接。</string>
+
+    <!-- Google Drive dashboard -->
+    <string name="gdrive_dashboard_music_folders">音樂文件夾</string>
+    <string name="gdrive_dashboard_add_folder_hint">點擊 + 添加 Drive 文件夾</string>
+    <string name="gdrive_dashboard_no_folders_yet">暫未添加文件夾</string>
+    <string name="gdrive_dashboard_folders_synced_count">已同步 %1$d 個文件夾</string>
+    <string name="gdrive_cd_add_folder">添加文件夾</string>
+
+    <!-- QQ Music dashboard -->
+    <string name="qqmusic_select_playlist_type_title">選擇播放列表類型</string>
+    <string name="qqmusic_choose_playlists_to_sync">選擇要同步的播放列表：</string>
+    <string name="qqmusic_all_playlists">所有播放列表</string>
+    <string name="qqmusic_created_and_collected">自建與收藏</string>
+    <string name="qqmusic_created_playlists">自建播放列表</string>
+    <string name="qqmusic_collected_playlists">收藏播放列表</string>
+
+    <!-- Cloud dashboard generic -->
+    <string name="cloud_dashboard_playlists_synced_count">已同步 %1$d 個播放列表</string>
+    <string name="cloud_dashboard_title_playlists">播放列表</string>
+    <string name="cloud_dashboard_action_sync">同步</string>
+    <string name="cloud_dashboard_playlists_empty_title">暫未同步任何播放列表</string>
+    <string name="cloud_dashboard_playlists_empty_hint">點擊同步以獲取您的播放列表</string>
+    <string name="cloud_dashboard_quick_actions">快捷操作</string>
+    <string name="cloud_dashboard_action_sync_library">同步媒體庫</string>
+    <string name="cloud_dashboard_action_disconnect">斷開連接</string>
+    <string name="cloud_dashboard_song_count">%1$d 首歌曲</string>
+
+    <!-- Cloud sync status -->
+    <string name="cloud_sync_status_syncing">正在同步</string>
+    <string name="cloud_sync_status_syncing_library">正在同步媒體庫…</string>
+    <string name="cloud_sync_status_fetching_playlists">正在獲取播放列表…</string>
+    <string name="cloud_sync_status_syncing_playlist_format">正在同步播放列表：%1$s</string>
+    <string name="cloud_sync_status_updating_local">正在更新本地媒體庫…</string>
+    <string name="cloud_sync_status_sync_complete">同步完成</string>
+    <string name="cloud_sync_status_fetching_albums">正在獲取專輯列表…</string>
+    <string name="cloud_sync_status_fetching_songs_from_format">正在從 %1$s 獲取歌曲…</string>
+    <string name="cloud_sync_status_saving_songs_format">正在將 %1$d 首歌曲保存到數據庫…</string>
+    <string name="cloud_sync_status_no_songs_found">未找到媒體庫歌曲</string>
+    <string name="cloud_sync_status_library_sync_complete">媒體庫同步完成</string>
+    <string name="cloud_sync_status_syncing_ellipsis">正在同步…</string>
+    <string name="cloud_sync_error_with_message_format">錯誤：%1$s</string>
+
+    <!-- Cloud content descriptions -->
+    <string name="cloud_cd_sync">同步</string>
+    <string name="cloud_cd_sync_all">全部同步</string>
+    <string name="cloud_cd_logout">登出</string>
+    <string name="cloud_cd_sync_all_playlists">同步所有播放列表</string>
+    <string name="cloud_cd_user_avatar">用戶頭像</string>
+
+    <!-- No internet -->
+    <string name="no_internet_dialog_title">無網絡連接</string>
+    <string name="no_internet_dialog_message">此內容需要網絡連接。請檢查您的網絡設置並重試。</string>
+    <string name="offline_screen_title">您已離線</string>
+    <string name="offline_screen_message">請檢查您的網絡連接並重試以訪問此內容。</string>
+
+    <!-- Cloud Authentication & Login Shared Strings -->
+    <string name="auth_connect_action">連接</string>
+    <string name="auth_connecting_msg">正在連接…</string>
+    <string name="auth_details_subtitle">輸入您的服務器地址和賬戶憑據。</string>
+    <string name="auth_details_title">連接詳情</string>
+    <string name="auth_hide_pwd_action">隱藏密碼</string>
+    <string name="auth_password_label">密碼</string>
+    <string name="auth_password_placeholder">輸入密碼</string>
+    <string name="auth_prefill_http_action">預填 http://</string>
+    <string name="auth_server_url_label">服務器 URL</string>
+    <string name="auth_show_pwd_action">顯示密碼</string>
+    <string name="auth_telegram_title">Telegram</string>
+    <string name="auth_username_label">用戶名</string>
+    <string name="auth_username_placeholder">admin</string>
+    <string name="auth_welcome_toast">歡迎您，%1$s！</string>
+
+    <!-- Subsonic / Navidrome Auth -->
+    <string name="auth_navidrome_footer_msg">兼容 Navidrome、Gonic、Airsonic 以及其他兼容 Subsonic 的服務器</string>
+    <string name="auth_navidrome_info_msg">支持 Navidrome、Airsonic、Gonic、Ampache 以及其他兼容 Subsonic API 的服務器。</string>
+    <string name="auth_navidrome_password_hint">如果您的服務器支持，應用密碼同樣有效。</string>
+    <string name="auth_navidrome_prefill_https_action">預填 https://</string>
+    <string name="auth_navidrome_subtitle">連接到您的自託管音樂服務器</string>
+    <string name="auth_navidrome_title">Navidrome</string>
+    <string name="auth_navidrome_url_hint">請使用您服務器的完整 https:// 基礎地址。</string>
+    <string name="auth_navidrome_url_placeholder">https://music.example.com</string>
+    <string name="auth_navidrome_username_hint">這是您的 Subsonic 或 Navidrome 賬戶名稱。</string>
+    <string name="auth_subsonic_navidrome_title">Subsonic / Navidrome</string>
+    <string name="auth_subsonic_title">Subsonic</string>
+
+    <!-- Jellyfin Auth -->
+    <string name="auth_jellyfin_connect_subtitle">輸入您的 Jellyfin 服務器 URL 和賬戶憑據。</string>
+    <string name="auth_jellyfin_footer_msg">連接到 Jellyfin 服務器以串流播放您的媒體庫</string>
+    <string name="auth_jellyfin_info_msg">連接到 Jellyfin 服務器。支持使用 HTTP 和 HTTPS 進行本地網絡訪問。</string>
+    <string name="auth_jellyfin_logo_cd">Jellyfin</string>
+    <string name="auth_jellyfin_password_hint">您的 Jellyfin 賬戶密碼。</string>
+    <string name="auth_jellyfin_subtitle">連接到您的 Jellyfin 媒體服務器</string>
+    <string name="auth_jellyfin_title">Jellyfin</string>
+    <string name="auth_jellyfin_url_hint">您的 Jellyfin 服務器完整 URL，包含端口。</string>
+    <string name="auth_jellyfin_url_placeholder">http://192.168.1.100:8096</string>
+    <string name="auth_jellyfin_username_hint">您的 Jellyfin 賬戶用戶名。</string>
+
+    <!-- Google Drive Auth -->
+    <string name="auth_gdrive_connect_subtitle">直接從您的 Google Drive 串流音樂文件</string>
+    <string name="auth_gdrive_connect_title">連接 Google Drive</string>
+    <string name="auth_gdrive_connected_toast">Google Drive 已連接！</string>
+    <string name="auth_gdrive_create_action">創建 \"PixelPlayer Music\"</string>
+    <string name="auth_gdrive_create_subtitle">在這裏爲您的音樂創建一個新文件夾</string>
+    <string name="auth_gdrive_empty_msg">這裏沒有文件夾</string>
+    <string name="auth_gdrive_open_cd">打開文件夾</string>
+    <string name="auth_gdrive_select_subtitle">選擇或創建一個文件夾作爲您的音樂源</string>
+    <string name="auth_gdrive_select_title">選擇一個音樂文件夾</string>
+    <string name="auth_gdrive_setup_msg">正在設置 Google Drive…</string>
+    <string name="auth_gdrive_signin_action">使用 Google 賬號登錄</string>
+    <string name="auth_gdrive_title">Google Drive</string>
+    <string name="auth_gdrive_use_action">使用</string>
+
+    <!-- Web Login Shared/Generic -->
+    <string name="auth_cookies_unreadable_error">無法讀取會話 Cookie。</string>
+    <string name="auth_done_action">完成</string>
+    <string name="auth_exit_action">退出</string>
+    <string name="auth_no_cookies_error">未找到 Cookie。請先登錄。</string>
+    <string name="auth_page_slow_msg">頁面加載時間過長。請刷新或嘗試其他網絡。</string>
+    <string name="auth_plus_label">+</string>
+    <string name="auth_saving_msg">正在保存…</string>
+    <string name="auth_stay_action">停留</string>
+    <string name="auth_timeout_toast">頁面加載超時。您可以重試，進度不會丟失。</string>
+    <string name="auth_web_back_cd">網頁後退</string>
+    <string name="auth_web_exit_msg">您可以稍後返回。關閉時將丟棄當前頁面狀態。</string>
+    <string name="auth_web_forward_cd">網頁前進</string>
+    <string name="auth_web_refresh_cd">刷新</string>
+    <string name="auth_web_retry_action">重試</string>
+    <string name="auth_web_home_cd">打開主頁</string>
+    <string name="auth_webview_failed_error">WebView 加載失敗。</string>
+
+    <!-- NetEase Web Login -->
+    <string name="auth_netease_cookie_error">讀取網易雲音樂 Cookie 失敗：%1$s</string>
+    <string name="auth_netease_exit_title">退出網易雲音樂登錄？</string>
+    <string name="auth_netease_http_error">加載網易雲音樂時出現 HTTP %1$d。</string>
+    <string name="auth_netease_incomplete_error">尚未檢測到登錄。請在點擊完成前完成網易雲音樂的登錄。</string>
+    <string name="auth_netease_login_title">登錄網易雲音樂</string>
+    <string name="auth_netease_security_msg">安全提示：您的密碼僅在網易雲音樂網頁中輸入。PixelPlayer 僅存儲會話 Cookie (MUSIC_U) 以同步您的媒體庫。</string>
+    <string name="auth_netease_title">網易雲音樂</string>
+
+    <!-- QQ Music Web Login -->
+    <string name="auth_qq_cookie_error">讀取 QQ 音樂 Cookie 失敗：%1$s</string>
+    <string name="auth_qq_exit_title">退出 QQ 音樂登錄？</string>
+    <string name="auth_qq_http_error">加載 QQ 音樂時出現 HTTP %1$d。</string>
+    <string name="auth_qq_incomplete_error">尚未檢測到登錄。請在點擊完成前完成 QQ 音樂的登錄。</string>
+    <string name="auth_qq_login_title">登錄 QQ 音樂</string>
+    <string name="auth_qq_security_msg">安全提示：您的密碼僅在 QQ 音樂網頁中輸入。PixelPlayer 僅存儲會話 Cookie 以同步您的媒體庫。</string>
+    <string name="auth_qq_title">QQ 音樂</string>
+</resources>

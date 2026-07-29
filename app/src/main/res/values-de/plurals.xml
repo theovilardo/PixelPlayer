@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="sharing_playlists_message">
+        <item quantity="one">%d Playlist wird geteilt</item>
+        <item quantity="other">%d Playlists werden geteilt</item>
+    </plurals>
+    <plurals name="exported_playlists_message">
+        <item quantity="one">%1$d Playlist nach %2$s exportiert</item>
+        <item quantity="other">%1$d Playlists nach %2$s exportiert</item>
+    </plurals>
+    <plurals name="n_songs_added_to_queue">
+        <item quantity="one">%d Song zur Warteschlange hinzugefügt</item>
+        <item quantity="other">%d Songs zur Warteschlange hinzugefügt</item>
+    </plurals>
+    <plurals name="n_songs_will_play_next">
+        <item quantity="one">%d Song wird als nächstes abgespielt</item>
+        <item quantity="other">%d Songs werden als nächstes abgespielt</item>
+    </plurals>
+    <plurals name="n_songs_added_to_favorites">
+        <item quantity="one">%d Song zu Favoriten hinzugefügt</item>
+        <item quantity="other">%d Songs zu Favoriten hinzugefügt</item>
+    </plurals>
+    <plurals name="n_songs_removed_from_favorites">
+        <item quantity="one">%d Song aus Favoriten entfernt</item>
+        <item quantity="other">%d Songs aus Favoriten entfernt</item>
+    </plurals>
+    <plurals name="n_files_deleted">
+        <item quantity="one">%d Datei gelöscht</item>
+        <item quantity="other">%d Dateien gelöscht</item>
+    </plurals>
+    <plurals name="delete_songs_confirmation_title">
+        <item quantity="one">%d Datei löschen?</item>
+        <item quantity="other">%d Dateien löschen?</item>
+    </plurals>
+    <plurals name="n_tracks_selected">
+        <item quantity="one">%d Titel ausgewählt</item>
+        <item quantity="other">%d Titel ausgewählt</item>
+    </plurals>
+    <plurals name="presentation_batch_b_songs_dot_duration">
+        <item quantity="one">%1$d Song • %2$s</item>
+        <item quantity="other">%1$d Songs • %2$s</item>
+    </plurals>
+    <plurals name="presentation_batch_e_queue_tracks_lined_up">
+        <item quantity="one">%d Titel eingereiht.</item>
+        <item quantity="other">%d Titel eingereiht.</item>
+    </plurals>
+    <plurals name="presentation_batch_e_n_songs_selected">
+        <item quantity="one">%d Song ausgewählt</item>
+        <item quantity="other">%d Songs ausgewählt</item>
+    </plurals>
+    <plurals name="presentation_batch_f_n_songs">
+        <item quantity="one">%d Song</item>
+        <item quantity="other">%d Songs</item>
+    </plurals>
+    <plurals name="presentation_batch_f_n_topics">
+        <item quantity="one">%d Thema</item>
+        <item quantity="other">%d Themen</item>
+    </plurals>
+</resources>

@@ -10,7 +10,9 @@
     <string name="settings_category_behavior_title">行为</string>
     <string name="settings_category_behavior_subtitle">手势、触感反馈和导航行为</string>
     <string name="settings_category_ai_title">AI 集成 (β)</string>
-    <string name="settings_category_ai_subtitle">AI 提供商、API 密钥和模型设置</string>
+    <string name="settings_category_ai_subtitle">AI providers, API keys, model selection, and activity logs</string>
+    <string name="settings_category_generation_parameters_title">Generation Parameters</string>
+    <string name="settings_category_generation_parameters_subtitle">Temperature, sampling, prompts, and song data configuration</string>
     <string name="settings_category_backup_title">备份与恢复</string>
     <string name="settings_category_backup_subtitle">导出和恢复您的个人应用数据</string>
     <string name="settings_category_developer_title">开发者选项</string>
@@ -174,6 +176,9 @@
     <string name="settings_language_korean">韩语</string>
     <string name="settings_language_norwegian_bokmal">挪威语（Bokmål）</string>
     <string name="settings_language_turkish">土耳其语</string>
+    <string name="settings_language_japanese">日语</string>
+    <string name="settings_language_traditional_chinese">繁体中文</string>
+    <string name="settings_language_vietnamese">越南语</string>
     <string name="settings_app_theme_title">应用主题</string>
     <string name="settings_app_theme_subtitle">在浅色、深色之间切换，或跟随系统外观。</string>
     <string name="settings_theme_light">浅色主题</string>

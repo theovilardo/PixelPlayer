@@ -769,10 +769,8 @@ class SongMetadataEditor(
                 Timber.tag(TAG)
                     .w("TAGLIB: Skipping file modification for high-resolution FLAC (${flacResult.sampleRate}Hz, ${flacResult.bitsPerSample}bit)")
                 Timber.tag(TAG)
-                    .w("TAGLIB: High-res FLAC files may not work correctly with TagLib. Will update MediaStore only.")
-                // Return true to indicate we should proceed with MediaStore-only update
-                // The calling code will still update MediaStore and local DB
-                return true
+                    .w("TAGLIB: High-res FLAC files may not work correctly with TagLib. Falling back to JAudioTagger.")
+                return false
             }
             else -> { /* Continue with normal processing */ }
         }
@@ -963,6 +961,17 @@ class SongMetadataEditor(
             }
 
             audioFile.commit()
+            
+            // Verify the write succeeded for FLAC files which can be problematic
+            if (targetFile.extension.equals("flac", ignoreCase = true)) {
+                val verifyFile = AudioFileIO.read(targetFile)
+                val verifyTag = verifyFile?.tag
+                if (verifyTag == null || verifyTag.getFirst(FieldKey.TITLE) != newTitle) {
+                    Timber.tag(TAG).w("JAUDIOTAGGER: FLAC verification failed - tag not persisted, falling back to TagLib")
+                    return false
+                }
+            }
+            
             Timber.tag(TAG).d("JAUDIOTAGGER: SUCCESS - Updated file metadata: $filePath")
             true
         } catch (e: Exception) {

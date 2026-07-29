@@ -10,7 +10,9 @@
     <string name="settings_category_behavior_title">Perilaku</string>
     <string name="settings_category_behavior_subtitle">Gerakan, haptik, dan perilaku navigasi</string>
     <string name="settings_category_ai_title">Integrasi AI (β)</string>
-    <string name="settings_category_ai_subtitle">Penyedia AI, kunci API, dan pengaturan model</string>
+    <string name="settings_category_ai_subtitle">AI providers, API keys, model selection, and activity logs</string>
+    <string name="settings_category_generation_parameters_title">Generation Parameters</string>
+    <string name="settings_category_generation_parameters_subtitle">Temperature, sampling, prompts, and song data configuration</string>
     <string name="settings_category_backup_title">Cadangkan &amp; Pulihkan</string>
     <string name="settings_category_backup_subtitle">Ekspor dan pulihkan data aplikasi pribadi Anda</string>
     <string name="settings_category_developer_title">Opsi Pengembang</string>
@@ -170,6 +172,9 @@
     <string name="settings_language_korean">Korea</string>
     <string name="settings_language_norwegian_bokmal">Norwegia (Bokmål)</string>
     <string name="settings_language_turkish">Turki</string>
+    <string name="settings_language_japanese">Jepang</string>
+    <string name="settings_language_traditional_chinese">Tionghoa Tradisional</string>
+    <string name="settings_language_vietnamese">Vietnam</string>
     <string name="settings_app_theme_title">Tema Aplikasi</string>
     <string name="settings_app_theme_subtitle">Beralih antara terang, gelap, atau ikuti tampilan sistem.</string>
     <string name="settings_theme_light">Tema Terang</string>

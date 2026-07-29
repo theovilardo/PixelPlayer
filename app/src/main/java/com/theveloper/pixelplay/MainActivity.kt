@@ -10,6 +10,7 @@ import android.content.Context
 import android.content.ComponentName
 import android.content.Intent
 import android.os.Build
+import androidx.annotation.RequiresApi
 import android.graphics.RenderEffect as AndroidRenderEffect
 import android.graphics.Shader as AndroidShader
 import androidx.compose.ui.graphics.asComposeRenderEffect
@@ -944,6 +945,7 @@ class MainActivity : ComponentActivity() {
                         val expansionFractionProvider = remember(playerViewModel.playerContentExpansionFraction) {
                             { playerViewModel.playerContentExpansionFraction.value }
                         }
+                        @Suppress("NewApi")
                         val blurEffectCache = remember { BlurEffectCache() }
 
                         Box(
@@ -1153,10 +1155,12 @@ class MainActivity : ComponentActivity() {
  * blur every animation frame. The radius is quantized at the call site, so this
  * only rebuilds ~25 times across the whole expand animation instead of 60+/sec.
  */
+@RequiresApi(Build.VERSION_CODES.S)
 private class BlurEffectCache {
     private var lastRadiusPx: Float = Float.NaN
     private var cached: androidx.compose.ui.graphics.RenderEffect? = null
 
+    @RequiresApi(Build.VERSION_CODES.S)
     fun get(radiusPx: Float): androidx.compose.ui.graphics.RenderEffect? {
         if (radiusPx <= 0f) {
             lastRadiusPx = 0f

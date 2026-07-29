@@ -1,0 +1,558 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <!-- Library Screen -->
+    <string name="library_screen_title">ライブラリ</string>
+    <string name="library_tabs_sheet_title">ライブラリタブ</string>
+    <string name="library_tabs_sheet_subtitle">任意のタブへ直接ジャンプするか、順序を変更できます。</string>
+    <string name="library_reorder_tabs_label">タブを並び替え</string>
+
+    <!-- Library Tab Names -->
+    <string name="library_tab_songs">曲</string>
+    <string name="library_tab_albums">アルバム</string>
+    <string name="library_tab_artists">アーティスト</string>
+    <string name="library_tab_playlists">プレイリスト</string>
+    <string name="library_tab_folders">フォルダ</string>
+    <string name="library_tab_liked">お気に入り</string>
+
+    <!-- Library Toasts -->
+    <string name="library_toast_playlist_created">プレイリストを作成しました</string>
+    <string name="library_toast_set_ai_provider_api_key_first">先に AI プロバイダーの API キーを設定してください</string>
+    <string name="library_toast_set_gemini_api_key_first">先に Gemini API キーを設定してください</string>
+    <string name="library_toast_added_to_queue">キューに追加しました</string>
+    <string name="library_toast_playing_next">次に再生</string>
+
+    <!-- Library Toolbar & Navigation -->
+    <string name="library_cd_watch_transfer">Watch への転送</string>
+    <string name="library_cd_open_settings">設定</string>
+    <string name="library_tab_edit">編集</string>
+    <string name="library_cd_reorder_tabs">タブを並び替え</string>
+    <string name="library_cd_expand_tab_menu">メニューを展開</string>
+
+    <!-- Library Multi-Selection & Folders -->
+    <string name="library_toast_max_albums_selection">選択できるアルバムは最大 %1$d 枚です</string>
+    <string name="library_folder_name_fallback">フォルダ</string>
+    <string name="library_cd_folder">フォルダ</string>
+
+    <!-- Library Sort & View Bottom Sheet -->
+    <string name="library_sort_by_title">並び替え</string>
+    <string name="library_sort_section_view">表示</string>
+    <string name="library_sort_toggle_playlist_view">プレイリスト表示</string>
+    <string name="library_view_mode_grid">グリッド</string>
+    <string name="library_view_mode_list">リスト</string>
+    <string name="library_storage_internal">内部ストレージ</string>
+    <string name="library_storage_sd_card">SD カード</string>
+    <string name="library_storage_sd_card_unavailable">SD カードは現在利用できません。</string>
+    <string name="library_sort_section_cloud">クラウド</string>
+    <string name="library_sort_toggle_telegram_channels">Telegram クラウドチャンネル</string>
+    <string name="library_telegram_topics_display_title">トピック表示</string>
+    <string name="library_telegram_topic_mode_channels">チャンネル</string>
+    <string name="library_telegram_topic_mode_topics">トピック</string>
+    <string name="library_telegram_topic_mode_both">両方</string>
+    <string name="library_cloud_sources_heading">クラウド</string>
+    <string name="library_cloud_only_label">クラウドのみ</string>
+
+    <!-- Library AI Metadata Processing -->
+    <string name="library_generating_ai_metadata">AI でメタデータを生成中…</string>
+
+    <!-- Library list errors -->
+    <string name="library_error_loading_songs">曲の読み込みエラー</string>
+    <string name="library_album_detail_error_loading_albums">アルバムの読み込みエラー</string>
+    <string name="library_artist_error_loading_artists">アーティストの読み込みエラー</string>
+    <string name="library_action_retry">再試行</string>
+
+    <!-- Library empty (paginated) -->
+    <string name="library_no_songs_in_library_message">ライブラリに曲が見つかりませんでした。</string>
+    <string name="library_no_songs_rescan_hint">端末に音楽がある場合は、設定からライブラリを再スキャンしてみてください。</string>
+    <string name="library_cd_no_songs_in_library">曲が見つかりません</string>
+
+    <!-- Library action row -->
+    <string name="library_action_new">新規</string>
+    <string name="library_cd_create_new_playlist">新しいプレイリストを作成</string>
+    <string name="library_cd_import_m3u_playlist">M3U プレイリストをインポート</string>
+    <string name="library_cd_locate_current_song">現在の曲を探す</string>
+    <string name="library_storage_filter_all_songs">すべての曲</string>
+    <string name="library_storage_filter_online">クラウド</string>
+    <string name="library_storage_filter_offline">ローカル</string>
+    <string name="library_cd_sort_options">並び替えオプション</string>
+
+    <!-- Library selection action row -->
+    <string name="library_selection_all">すべて</string>
+    <string name="library_selection_deselect">選択解除</string>
+    <string name="library_selection_more_options">その他のオプション</string>
+
+    <!-- Library Syncing -->
+    <string name="library_sync_scanning">音楽ファイルをスキャン中…</string>
+    <string name="library_sync_processing">ファイルを処理中…</string>
+    <string name="library_sync_files_progress">%2$d 件中 %1$d 件</string>
+    <string name="library_sync_in_progress">ライブラリを同期中…</string>
+    <string name="library_sync_complete">同期完了</string>
+    <string name="library_sync_pending">待機中…</string>
+    <string name="library_syncing">ライブラリを同期中…</string>
+    <string name="library_sync_cache">アルバムアートキャッシュをクリア中…</string>
+    <string name="library_sync_cloud">クラウドソースを同期中…</string>
+    <string name="library_sync_lyrics">歌詞をスキャン中…</string>
+
+    <!-- Library Empty State -->
+    <string name="library_empty_songs_all_title">曲がまだありません</string>
+    <string name="library_empty_songs_all_subtitle">音楽を端末に追加するか、クラウドソースを同期して再生を始めましょう。</string>
+    <string name="library_empty_songs_offline_title">ローカルの曲が見つかりません</string>
+    <string name="library_empty_songs_offline_subtitle">別のソースフィルターを試すか、端末のライブラリを再スキャンしてください。</string>
+    <string name="library_empty_songs_online_title">クラウドの曲が見つかりません</string>
+    <string name="library_empty_songs_online_subtitle">Telegram や NetEase の曲を同期するか、ローカルソースに切り替えてください。</string>
+    <string name="library_empty_albums_all_title">アルバムがありません</string>
+    <string name="library_empty_albums_all_subtitle">ライブラリにトラックがグループ化されるとアルバムが表示されます。</string>
+    <string name="library_empty_albums_offline_title">ローカルアルバムが見つかりません</string>
+    <string name="library_empty_albums_offline_subtitle">ローカルアルバムを作成するにはローカルの曲が必要です。</string>
+    <string name="library_empty_albums_online_title">クラウドアルバムが見つかりません</string>
+    <string name="library_empty_albums_online_subtitle">アルバムデータを持つクラウドの曲は同期後にここに表示されます。</string>
+    <string name="library_empty_artists_all_title">アーティストがいません</string>
+    <string name="library_empty_artists_all_subtitle">いずれかのソースから曲がインデックスされるとアーティストが表示されます。</string>
+    <string name="library_empty_artists_offline_title">ローカルアーティストが見つかりません</string>
+    <string name="library_empty_artists_offline_subtitle">ローカルの曲にアーティストのメタデータがありません。</string>
+    <string name="library_empty_artists_online_title">クラウドアーティストが見つかりません</string>
+    <string name="library_empty_artists_online_subtitle">リモートの曲が同期されるとクラウドアーティストが表示されます。</string>
+    <string name="library_empty_liked_all_title">お気に入りの曲がまだありません</string>
+    <string name="library_empty_liked_all_subtitle">再生中にハートアイコンをタップして曲を保存しましょう。</string>
+    <string name="library_empty_liked_offline_title">お気に入りのローカル曲がありません</string>
+    <string name="library_empty_liked_offline_subtitle">ソースフィルターを切り替えるか、端末の曲をお気に入りに追加してください。</string>
+    <string name="library_empty_liked_online_title">お気に入りのクラウド曲がありません</string>
+    <string name="library_empty_liked_online_subtitle">Telegram や NetEase のトラックをお気に入りに追加するとここに表示されます。</string>
+    <string name="library_empty_folders_title">フォルダが見つかりません</string>
+    <string name="library_empty_folders_subtitle">音楽が入った内部ストレージのフォルダがここに表示されます。</string>
+    <string name="library_empty_playlists_title">プレイリストがまだありません</string>
+    <string name="library_empty_playlists_subtitle">最初のプレイリストを作成してライブラリを整理しましょう。</string>
+
+    <!-- SongInfoBottomSheet, MultiSelectionBottomSheet, PlaylistMultiSelectionBottomSheet -->
+    <string name="song_info_cd_edit_metadata">曲のメタデータを編集</string>
+    <string name="song_info_action_play">再生</string>
+    <string name="song_info_cd_play">曲を再生</string>
+    <string name="song_info_action_play_all">すべて再生</string>
+    <string name="song_info_cd_play_all">すべて再生</string>
+    <string name="song_info_cd_add_to_favorites">お気に入りに追加</string>
+    <string name="song_info_cd_add_to_favorites_all">すべてお気に入りに追加</string>
+    <string name="song_info_cd_remove_from_favorites">お気に入りから削除</string>
+    <string name="song_info_cd_remove_from_favorites_all">すべてお気に入りから削除</string>
+    <string name="song_info_share_chooser_title">曲ファイルを共有するアプリを選択</string>
+    <string name="song_info_cd_share_song_file">曲ファイルを共有</string>
+    <string name="song_info_cd_share_all_as_zip">すべてを ZIP で共有</string>
+    <string name="song_info_error_share_song">曲を共有できませんでした: %1$s</string>
+    <string name="song_info_action_add_to_queue">キューに追加</string>
+    <string name="song_info_cd_add_to_queue">キューに追加</string>
+    <string name="song_info_action_queue_next">次に再生</string>
+    <string name="song_info_cd_queue_next">キューで次に再生</string>
+    <string name="song_info_cd_add_to_playlist">プレイリストに追加</string>
+    <string name="song_info_action_delete">削除</string>
+    <string name="song_info_action_delete_all">すべて削除</string>
+    <string name="song_info_checking_watch">Watch を確認中</string>
+    <string name="song_info_transferring_percent">転送中 %1$d%%</string>
+    <string name="song_info_transferring_to_watch">Watch に転送中</string>
+    <string name="song_info_transfer_in_progress">転送中</string>
+    <string name="song_info_send_to_watch">Watch に送る</string>
+    <string name="song_info_watch_unavailable">Watch が利用できません</string>
+    <string name="song_info_cd_send_to_watch">曲を Watch に送る</string>
+    <string name="song_info_cd_watch_unavailable">Watch が利用できません</string>
+    <string name="song_info_set_sound_as_short">サウンドとして設定</string>
+    <string name="song_info_set_sound_as_long">サウンドとして設定</string>
+    <string name="song_info_cd_set_sound_as">この曲をシステムサウンドとして使う方法を選択</string>
+    <string name="song_info_tone_picker_title">この曲を使う場所</string>
+    <string name="song_info_tone_picker_body">PixelPlayer がこのサウンドをインストールする場所を選択してください。</string>
+    <string name="song_info_tone_ringtone_title">着信音</string>
+    <string name="song_info_tone_ringtone_subtitle">電話の着信</string>
+    <string name="song_info_tone_notification_title">通知音</string>
+    <string name="song_info_tone_notification_subtitle">メッセージとアプリの通知</string>
+    <string name="song_info_tone_alarm_title">アラーム音</string>
+    <string name="song_info_tone_alarm_subtitle">時計のアラーム</string>
+    <string name="song_info_tone_confirm_title">サウンドの変更を確認</string>
+    <string name="song_info_tone_confirm_body">「%1$s」を %2$s に設定しますか？</string>
+    <string name="song_info_tone_confirm_action">サウンドを設定</string>
+    <string name="song_info_tone_success">「%1$s」を %2$s に設定しました</string>
+    <string name="song_info_tone_ringtone_label">着信音</string>
+    <string name="song_info_tone_notification_label">通知音</string>
+    <string name="song_info_tone_alarm_label">アラーム音</string>
+    <string name="song_info_ringtone_permission_prompt">「システム設定の変更」を有効にしてから PixelPlayer に戻ると自動で完了します。</string>
+    <string name="song_info_ringtone_permission_missing">「システム設定の変更」が有効になっていません。</string>
+    <string name="song_info_ringtone_success">「%1$s」を着信音に設定しました</string>
+    <string name="song_info_ringtone_local_only">着信音にはローカルの曲のみ使用できます。</string>
+    <string name="song_info_ringtone_missing_file">この音声ファイルを着信音用に準備できませんでした。</string>
+    <string name="song_info_ringtone_failed">着信音を設定できませんでした: %1$s</string>
+    <string name="song_info_tab_options">オプション</string>
+    <string name="song_info_tab_options_badge">オプション</string>
+    <string name="song_info_tab_info">情報</string>
+    <string name="song_info_tab_info_badge">情報</string>
+    <string name="song_info_duration_label">再生時間</string>
+    <string name="song_info_genre_label">ジャンル</string>
+    <string name="song_info_album_label">アルバム</string>
+    <string name="song_info_artist_label">アーティスト</string>
+    <string name="song_info_audio_format_label">曲の情報</string>
+    <string name="song_info_cd_provider">プロバイダー</string>
+    <string name="song_info_cd_file">ファイル</string>
+    <string name="multi_selection_songs_count_upper">%1$d 曲</string>
+    <string name="multi_selection_songs_selected">選択中</string>
+    <string name="multi_selection_playlists_count_upper">%1$d プレイリスト</string>
+    <string name="multi_selection_albums_count_upper">%1$d アルバム</string>
+    <string name="multi_selection_albums_selected">選択中</string>
+    <string name="multi_selection_albums_selected_limit">上限: %1$d アルバム</string>
+    <string name="multi_selection_albums_queue_hint">キューへの追加と再生は選択順序に従います。</string>
+    <string name="multi_selection_genres_count_upper">%1$d ジャンル</string>
+    <string name="multi_selection_genres_selected">選択中</string>
+    <string name="multi_selection_genres_queue_hint">選択したジャンル内のすべての曲に対して一括操作を実行します。</string>
+
+    <!-- Sort Option Display Names -->
+    <string name="sort_display_default_order">デフォルト順</string>
+    <string name="sort_display_title_az">タイトル（A〜Z）</string>
+    <string name="sort_display_title_za">タイトル（Z〜A）</string>
+    <string name="sort_display_artist">アーティスト</string>
+    <string name="sort_display_artist_za">アーティスト（Z〜A）</string>
+    <string name="sort_display_album">アルバム</string>
+    <string name="sort_display_album_za">アルバム（Z〜A）</string>
+    <string name="sort_display_date_added">追加日</string>
+    <string name="sort_display_date_added_oldest">追加日（古い順）</string>
+    <string name="sort_display_duration">再生時間</string>
+    <string name="sort_display_duration_shortest">再生時間（短い順）</string>
+    <string name="sort_display_release_year">リリース年</string>
+    <string name="sort_display_release_year_oldest">リリース年（古い順）</string>
+    <string name="sort_display_fewest_songs">曲数が少ない順</string>
+    <string name="sort_display_most_songs">曲数が多い順</string>
+    <string name="sort_display_name_az">名前（A〜Z）</string>
+    <string name="sort_display_name_za">名前（Z〜A）</string>
+    <string name="sort_display_num_songs_most">曲数（多い順）</string>
+    <string name="sort_display_num_songs_fewest">曲数（少ない順）</string>
+    <string name="sort_display_date_created">作成日</string>
+    <string name="sort_display_date_created_oldest">作成日（古い順）</string>
+    <string name="sort_display_date_liked">お気に入り追加日</string>
+    <string name="sort_display_date_liked_oldest">お気に入り追加日（古い順）</string>
+    <string name="sort_display_fewest_subfolders">サブフォルダが少ない順</string>
+    <string name="sort_display_most_subfolders">サブフォルダが多い順</string>
+
+    <!-- Sort Option Method Labels -->
+    <string name="sort_method_title">タイトル</string>
+    <string name="sort_method_artist">アーティスト</string>
+    <string name="sort_method_album">アルバム</string>
+    <string name="sort_method_date_added">追加日</string>
+    <string name="sort_method_duration">再生時間</string>
+    <string name="sort_method_release_year">リリース年</string>
+    <string name="sort_method_song_count">曲数</string>
+    <string name="sort_method_name">名前</string>
+    <string name="sort_method_num_songs">曲数</string>
+    <string name="sort_method_date_created">作成日</string>
+    <string name="sort_method_date_liked">お気に入り追加日</string>
+    <string name="sort_method_subfolder_count">サブフォルダ数</string>
+
+    <!-- LibrarySortBottomSheet-->
+    <string name="library_sort_source">ソース</string>
+    <string name="library_sort_order">順序</string>
+    <string name="library_sort_descending">降順</string>
+    <string name="library_sort_ascending">昇順</string>
+    <string name="library_sort_original_order">元の順序</string>
+    <string name="library_sort_tap_ascending">タップして昇順に切り替え</string>
+    <string name="library_sort_tap_descending">タップして降順に切り替え</string>
+    <string name="library_sort_keeps_order">この並び替えは元の順序を維持します</string>
+    <string name="library_sort_cd_switch_on">スイッチがオン</string>
+
+    <!-- ReorderTabsSheet-->
+    <string name="reorder_tabs_sheet_title">ライブラリタブを並び替え</string>
+    <string name="reorder_tabs_reset_dialog_title">順序をリセット</string>
+    <string name="reorder_tabs_reset_dialog_body">タブの順序をデフォルトに戻しますか？</string>
+    <string name="reorder_tabs_reordering">タブを並び替え中…</string>
+    <string name="reorder_tabs_cd_drag_handle">ドラッグハンドル</string>
+
+    <!-- PlayerArtistPickerBottomSheet -->
+    <string name="artist_picker_title">アーティストを選択</string>
+    <string name="artist_picker_count_single">1 アーティスト</string>
+    <string name="artist_picker_count_multiple">%1$d アーティスト</string>
+    <string name="artist_picker_primary_label">メインアーティスト</string>
+    <string name="artist_picker_shortcut_label">アーティストページ</string>
+
+    <!-- Watch Transfer Dialog + Foreground Service -->
+    <string name="watch_transfer_action_cancel">転送をキャンセル</string>
+    <string name="watch_transfer_bytes_progress">%1$s / %2$s</string>
+    <string name="watch_transfer_channel_description">スマートフォンから Watch への音楽転送の進捗をリアルタイムで表示します</string>
+    <string name="watch_transfer_channel_name">Watch への転送</string>
+    <string name="watch_transfer_dialog_title">Watch に送信中</string>
+    <string name="watch_transfer_status_cancelled">キャンセル済み</string>
+    <string name="watch_transfer_status_cancelled_service">転送をキャンセルしました</string>
+    <string name="watch_transfer_status_complete_service">転送が完了しました</string>
+    <string name="watch_transfer_status_completed">完了</string>
+    <string name="watch_transfer_status_failed">失敗</string>
+    <string name="watch_transfer_status_failed_service">転送に失敗しました</string>
+    <string name="watch_transfer_status_multiple_active">複数の転送が進行中</string>
+    <string name="watch_transfer_bullet_step">%1$s • %2$s</string>
+    <string name="watch_transfer_status_preparing">準備中</string>
+    <string name="watch_transfer_status_preparing_service">Watch への転送を準備中</string>
+    <string name="watch_transfer_status_preparing_transfer">転送を準備中…</string>
+    <string name="watch_transfer_status_sending_n_to_watch">Watch に %1$d 曲を送信中</string>
+    <string name="watch_transfer_status_sending_to_watch">Watch に送信中</string>
+    <string name="watch_transfer_status_starting">転送を開始中…</string>
+    <string name="watch_transfer_status_starting_short">開始中</string>
+    <string name="watch_transfer_status_transferring">転送中</string>
+    <string name="watch_transfer_summary_n">%1$d 件の転送</string>
+
+    <!-- EditSongSheet -->
+    <string name="edit_song_toolbar_title">曲を編集</string>
+    <string name="edit_song_cd_show_metadata_info">情報を表示</string>
+    <string name="edit_song_dialog_title">曲のメタデータを編集中</string>
+    <string name="edit_song_dialog_body">曲のメタデータを編集すると、ライブラリでの表示や整理に影響することがあります。変更は永続的で、元に戻せない場合があります。</string>
+    <string name="edit_song_dialog_got_it">了解</string>
+    <string name="edit_song_cd_info_icon">情報</string>
+    <string name="edit_song_cover_art_heading">カバーアート</string>
+    <string name="edit_song_cover_art_hint">正方形の画像を選択して調整し、アプリ全体でカバーアートが美しく表示されるようにしましょう。</string>
+    <string name="edit_song_action_change_cover">カバーアートを変更</string>
+    <string name="edit_song_action_delete_cover">カバーアートを削除</string>
+    <string name="edit_song_field_title">タイトル</string>
+    <string name="edit_song_field_artist">アーティスト</string>
+    <string name="edit_song_field_album">アルバム</string>
+    <string name="edit_song_field_album_artist">アルバムアーティスト</string>
+    <string name="edit_song_field_genre">ジャンル</string>
+    <string name="edit_song_field_composer">作曲者</string>
+    <string name="edit_song_field_track_number">トラック番号</string>
+    <string name="edit_song_field_disc_number">ディスク番号</string>
+    <string name="edit_song_field_replaygain_track">ReplayGain トラック（dB）</string>
+    <string name="edit_song_field_replaygain_album">ReplayGain アルバム（dB）</string>
+    <string name="edit_song_replaygain_track_placeholder">-6.50</string>
+    <string name="edit_song_replaygain_album_placeholder">-8.20</string>
+    <string name="edit_song_cd_cover_preview">新しいカバーアートのプレビュー</string>
+    <string name="edit_song_cd_current_cover">現在の曲のカバーアート</string>
+    <string name="edit_song_crop_dialog_title">カバーアートを調整</string>
+    <string name="edit_song_crop_dialog_hint">ピンチとドラッグで最適なフレーミングを見つけてください。</string>
+    <string name="edit_song_action_apply_cover">カバーアートを適用</string>
+    <string name="edit_song_unable_to_load_image">選択した画像を読み込めませんでした</string>
+    <string name="edit_song_cd_search_lyrics_lrclib">lrclib.net で歌詞を検索</string>
+
+    <!-- EditMultipleSongsSheet -->
+    <string name="batch_edit_toolbar_title">%d 曲を編集</string>
+    <string name="batch_edit_info_message">変更したフィールドのみ更新されます。空白のフィールドは既存の値が保持されます。</string>
+    <string name="batch_edit_mixed_values">（複数の値）</string>
+    <string name="batch_edit_optional">（任意 — スキップする場合は空白のまま）</string>
+    <string name="batch_edit_success">%d 曲を更新しました</string>
+    <string name="batch_edit_partial_success">%2$d 曲中 %1$d 曲を更新しました。一部のファイルは編集できませんでした。</string>
+    <string name="batch_edit_failed">曲の更新に失敗しました</string>
+    <string name="batch_edit_cover_art_heading">カバーアートの一括変更</string>
+    <string name="batch_edit_cover_art_hint">選択した %d 曲すべてのカバーアートが置き換えられます</string>
+    <string name="batch_edit_set_cover_art">すべてにカバーアートを設定</string>
+    <string name="batch_edit_remove_all_art">すべてのカバーアートを削除</string>
+    <string name="batch_edit_multiple_covers">（複数の異なるカバー）</string>
+
+    <!-- Playlist dismissed message -->
+    <string name="playlist_dismissed_message">プレイリストを閉じました</string>
+
+    <!-- PlaylistCreationDialogs -->
+    <string name="playlist_creation_create_playlist_title">プレイリストを作成</string>
+    <string name="playlist_creation_create_playlist_subtitle">作成方法を選択してください。</string>
+    <string name="playlist_creation_mode_manual_title">手動</string>
+    <string name="playlist_creation_mode_manual_subtitle">アートワーク・アイコン・形状をデザインし、曲を自分で選びます。</string>
+    <string name="playlist_creation_mode_ai_title">AI で作成</string>
+    <string name="playlist_creation_mode_ai_subtitle_enabled">高度なコントロールでキュレーションされたプレイリストを生成します。</string>
+    <string name="playlist_creation_mode_ai_subtitle_disabled">設定で Gemini API キーを設定する必要があります。</string>
+    <string name="playlist_creation_setup_api_key">API キーを設定</string>
+
+    <!-- AI playlist lab -->
+    <string name="playlist_creation_ai_lab_title">AI プレイリストラボ</string>
+    <string name="playlist_creation_ai_reset">リセット</string>
+    <string name="playlist_creation_ai_generating">生成中…</string>
+    <string name="playlist_creation_ai_generate">生成</string>
+    <string name="playlist_creation_ai_section_intent">意図</string>
+    <string name="playlist_creation_ai_name_optional">プレイリスト名（任意）</string>
+    <string name="playlist_creation_ai_feel_label">このプレイリストの雰囲気は？</string>
+    <string name="playlist_creation_ai_feel_placeholder">例：夕暮れのドライブにウォームなシンセ</string>
+    <string name="playlist_creation_ai_section_direction">方向性</string>
+    <string name="playlist_creation_ai_mood_label">ムード</string>
+    <string name="playlist_creation_ai_activity_label">アクティビティ</string>
+    <string name="playlist_creation_ai_era_label">年代</string>
+    <string name="playlist_creation_ai_section_curation">キュレーション</string>
+    <string name="playlist_creation_ai_energy_label">エネルギー</string>
+    <string name="playlist_creation_ai_energy_desc">曲の強度とテンポを調整します。1 = 穏やか/スロー、5 = ハイエネルギー/ファスト。</string>
+    <string name="playlist_creation_ai_discovery_label">ディスカバリー</string>
+    <string name="playlist_creation_ai_discovery_desc">選曲の馴染み度を調整します。1 = 最もよく聴くお気に入り、5 = あまり聴いていないレアな曲。</string>
+    <string name="playlist_creation_ai_min_songs">最小曲数</string>
+    <string name="playlist_creation_ai_max_songs">最大曲数</string>
+    <string name="playlist_creation_ai_section_filters">フィルター</string>
+    <string name="playlist_creation_ai_prioritize_genres">優先するジャンル（任意）</string>
+    <string name="playlist_creation_ai_prioritize_genres_placeholder">例：シンセウェーブ、インディーポップ</string>
+    <string name="playlist_creation_ai_avoid_genres">避けるジャンル（任意）</string>
+    <string name="playlist_creation_ai_avoid_genres_placeholder">例：メタル、ハードトラップ</string>
+    <string name="playlist_creation_ai_preferred_language">優先言語（任意）</string>
+    <string name="playlist_creation_ai_preferred_language_placeholder">例：日本語、英語、インストゥルメンタル</string>
+    <string name="playlist_creation_ai_prioritize_favorites">お気に入りを優先</string>
+    <string name="playlist_creation_ai_avoid_explicit">不適切な歌詞を除外</string>
+    <string name="playlist_creation_ai_section_prompt_preview">プロンプトのプレビュー</string>
+    <string name="playlist_creation_ai_prompt_preview_empty">好みを追加すると最終プロンプトがここに表示されます。</string>
+    <string name="playlist_creation_ai_hero_title">精密なキュレーション</string>
+    <string name="playlist_creation_ai_hero_subtitle">ムード・アクティビティ・制約・深さを定義します。</string>
+    <string name="playlist_creation_ai_hero_library_note">AI はローカルライブラリの曲のみを使用します。</string>
+    <string name="playlist_creation_ai_error_add_instruction">AI への指示を少なくとも 1 つ追加してください。</string>
+    <string name="playlist_creation_ai_error_song_range">有効な曲数の範囲を設定してください。</string>
+    <string name="playlist_creation_ai_level_out_of_five">%1$d/5</string>
+    <string name="playlist_creation_ai_custom_chip">カスタム…</string>
+    <string name="playlist_creation_ai_enter_custom_title">カスタム値を入力</string>
+    <string name="playlist_creation_ai_enter_custom_label">カスタム値を入力してください</string>
+
+    <!-- AI prompt -->
+    <string name="playlist_creation_ai_era_any">すべての年代</string>
+    <string name="playlist_creation_ai_prompt_core_request">コアリクエスト: %1$s。</string>
+    <string name="playlist_creation_ai_prompt_mood">ムード目標: %1$s。</string>
+    <string name="playlist_creation_ai_prompt_activity">アクティビティ: %1$s。</string>
+    <string name="playlist_creation_ai_prompt_era">年代: %1$s。</string>
+    <string name="playlist_creation_ai_prompt_prioritize_genres">優先ジャンル: %1$s。</string>
+    <string name="playlist_creation_ai_prompt_avoid_genres">避けるジャンル: %1$s。</string>
+    <string name="playlist_creation_ai_prompt_preferred_language">優先言語: %1$s。</string>
+    <string name="playlist_creation_ai_prompt_energy">エネルギーレベル目標: %1$d/5。</string>
+    <string name="playlist_creation_ai_prompt_discovery">ディスカバリー目標: %1$d/5（1 = 馴染みあり、5 = レアな掘り出し物）。</string>
+    <string name="playlist_creation_ai_prompt_prioritize_favorites">可能な限りお気に入りに近い曲を優先する。</string>
+    <string name="playlist_creation_ai_prompt_avoid_explicit">代替曲がある場合は不適切な歌詞を避ける。</string>
+    <string name="playlist_creation_ai_prompt_smooth_transitions">スムーズなトランジションを維持し、同じアーティストが連続しないようにする。</string>
+    <string-array name="playlist_creation_ai_mood_options">
+        <item>チル</item>
+        <item>エネルギッシュ</item>
+        <item>ハッピー</item>
+        <item>ダーク</item>
+        <item>ロマンティック</item>
+        <item>メランコリック</item>
+    </string-array>
+    <string-array name="playlist_creation_ai_activity_options">
+        <item>ワークアウト</item>
+        <item>集中</item>
+        <item>ロードトリップ</item>
+        <item>パーティー</item>
+        <item>勉強</item>
+        <item>深夜</item>
+    </string-array>
+    <string-array name="playlist_creation_ai_era_options">
+        <item>@string/playlist_creation_ai_era_any</item>
+        <item>70年代</item>
+        <item>80年代</item>
+        <item>90年代</item>
+        <item>2000年代</item>
+        <item>2010年代</item>
+        <item>2020年代</item>
+    </string-array>
+
+    <!-- PlaylistContainer -->
+    <string name="playlist_container_no_playlist_created">プレイリストがまだ作成されていません。</string>
+    <string name="playlist_container_new_playlist_hint">「新しいプレイリスト」ボタンをタップして始めましょう。</string>
+    <string name="playlist_container_create_playlist_title">新しいプレイリスト</string>
+    <string name="playlist_container_create_playlist_name_label">プレイリスト名</string>
+    <string name="playlist_container_create_playlist_name_placeholder">マイプレイリスト</string>
+
+    <!-- PlaylistBottomSheet -->
+    <string name="playlist_sheet_add_songs_title">%1$d 曲を追加先…</string>
+    <string name="playlist_sheet_select_playlists">プレイリストを選択</string>
+    <string name="playlist_sheet_search_playlists_hint">プレイリストを検索…</string>
+    <string name="playlist_sheet_song_added_to_playlists">プレイリストに曲を追加しました</string>
+    <string name="playlist_sheet_created_and_songs_added">プレイリストを作成して曲を追加しました</string>
+    <string name="playlist_sheet_internal_storage">内部ストレージ</string>
+
+    <!-- SongPickerBottomSheet -->
+    <string name="song_picker_title">曲を追加</string>
+    <string name="song_picker_cd_confirm_add_songs">選択した曲を追加</string>
+    <string name="song_picker_action_add">追加</string>
+    <string name="song_picker_search_label">曲を検索またはフィルター…</string>
+    <string name="song_picker_filter_favorites">お気に入り</string>
+    <string name="song_picker_error_load_failed">曲の読み込みに失敗しました</string>
+    <string name="song_picker_load_more">さらに読み込む</string>
+
+    <!-- Merge Playlists Dialog -->
+    <string name="merge_playlists_dialog_title">プレイリストを結合</string>
+    <string name="merge_playlists_dialog_prompt">結合後のプレイリスト名を入力してください:</string>
+    <string name="merge_playlists_dialog_placeholder">結合プレイリスト</string>
+    <string name="merge_playlists_dialog_body">選択した %1$d 件のプレイリストを 1 つに結合します。</string>
+
+    <!-- PlayerViewModel -->
+    <string name="player_view_model_no_valid_songs">再生できる有効な曲が見つかりませんでした</string>
+    <string name="player_view_model_song_not_found_in_list">現在のリストに曲が見つかりません</string>
+    <string name="player_view_model_could_not_locate_song">曲を見つけられませんでした</string>
+    <string name="player_view_model_no_songs_in_library_toast">ライブラリに曲が見つかりません</string>
+    <string name="player_view_model_playback_stopped_eot">%1$s の再生が終了しました（トラック終了）。</string>
+    <string name="player_view_model_default_track_title">トラック</string>
+    <string name="player_view_model_no_songs_to_shuffle">シャッフルする曲がありません。</string>
+    <string name="player_view_model_queue_name_selected_albums">選択したアルバム</string>
+    <string name="player_view_model_no_playable_songs_in_albums">選択したアルバムに再生可能な曲が見つかりませんでした</string>
+    <string name="player_view_model_no_playable_songs_in_genres">選択したジャンルに再生可能な曲が見つかりませんでした</string>
+    <string name="player_view_model_only_first_n_albums_queued">最初の %1$d アルバムのみキューに追加しました</string>
+    <string name="player_view_model_albums_queued_format">%1$d アルバムをキューに追加しました（%2$d 曲）</string>
+    <string name="player_view_model_could_not_queue_albums">選択したアルバムをキューに追加できませんでした</string>
+    <string name="player_view_model_all_songs_already_in_favorites">すべての曲がすでにお気に入りにあります</string>
+    <string name="player_view_model_no_songs_were_in_favorites">お気に入りに曲がありませんでした</string>
+    <string name="player_view_model_creating_zip">ZIP ファイルを作成中…</string>
+    <string name="player_view_model_share_zip_failed_format">共有に失敗しました: %1$s</string>
+    <plurals name="player_view_model_n_songs_added_to_queue">
+        <item quantity="other">%d 曲をキューに追加しました</item>
+    </plurals>
+    <plurals name="player_view_model_n_songs_will_play_next">
+        <item quantity="other">%d 曲が次に再生されます</item>
+    </plurals>
+    <plurals name="player_view_model_n_songs_added_to_favorites">
+        <item quantity="other">%d 曲をお気に入りに追加しました</item>
+    </plurals>
+    <plurals name="player_view_model_n_songs_removed_from_favorites">
+        <item quantity="other">%d 曲をお気に入りから削除しました</item>
+    </plurals>
+
+    <!-- PlaylistViewModel -->
+    <string name="playlist_view_model_none_to_share">共有するプレイリストがありません</string>
+    <string name="playlist_view_model_share_chooser_title">プレイリストを共有</string>
+    <string name="playlist_view_model_share_failed">共有に失敗しました: %1$s</string>
+    <string name="playlist_view_model_none_to_export">エクスポートするプレイリストがありません</string>
+    <string name="playlist_view_model_export_failed">エクスポートに失敗しました: %1$s</string>
+    <string name="playlist_view_model_export_folder_display">Music/PixelPlayer Exports</string>
+    <string name="playlist_view_model_ai_gemini_key_required">設定で Gemini API キーを設定してください。</string>
+    <string name="playlist_view_model_restored_toast">プレイリストを復元しました</string>
+    <plurals name="playlist_view_model_sharing_message">
+        <item quantity="other">%d 件のプレイリストを共有中</item>
+    </plurals>
+    <plurals name="playlist_view_model_exported_message">
+        <item quantity="other">%2$s に %1$d 件のプレイリストをエクスポートしました</item>
+    </plurals>
+
+    <!-- AlbumDetailViewModel -->
+    <string name="album_detail_invalid_id">無効なアルバム ID</string>
+    <string name="album_detail_id_not_found">アルバム ID が見つかりません</string>
+    <string name="album_detail_error_loading_album">アルバムデータの読み込みエラー: %s</string>
+    <string name="album_detail_not_found">アルバムが見つかりません</string>
+
+    <!-- ArtistDetailViewModel -->
+    <string name="artist_detail_invalid_id">無効なアーティスト ID</string>
+    <string name="artist_detail_id_not_found">アーティスト ID が見つかりません</string>
+    <string name="artist_error_loading_artist">アーティストデータの読み込みエラー: %s</string>
+    <string name="artist_detail_not_found">アーティストが見つかりませんでした</string>
+
+    <!-- SongRemovalStateHolder -->
+    <string name="song_removal_cannot_delete_currently_playing">再生中の曲は削除できません</string>
+    <string name="song_removal_batch_delete_files_deleted_skipped_format">%1$d 件のファイルを削除しました（%2$d 件スキップ — 再生中）</string>
+    <string name="song_removal_batch_delete_partial_format">%2$d 件中 %1$d 件のファイルを削除しました</string>
+    <string name="song_removal_delete_files_failed">ファイルの削除に失敗しました</string>
+    <string name="song_removal_file_deleted">ファイルを削除しました</string>
+    <string name="song_removal_delete_file_not_found">ファイルを削除できないか、見つかりません</string>
+    <string name="song_removal_deletion_cancelled">削除をキャンセルしました</string>
+    <string name="song_removal_dialog_delete_song_title">曲を削除しますか？</string>
+    <string name="song_removal_dialog_delete_song_message">%2$s の「%1$s」\n\nこの曲は端末から完全に削除され、元に戻せません。</string>
+    <string name="song_removal_delete_songs_permanent_message">これらの曲は端末から完全に削除され、元に戻せません。</string>
+    <plurals name="song_removal_n_files_deleted">
+        <item quantity="other">%d 件のファイルを削除しました</item>
+    </plurals>
+    <plurals name="song_removal_delete_songs_confirmation_title">
+        <item quantity="other">%d 曲を削除しますか？</item>
+    </plurals>
+
+    <!-- MetadataEditStateHolder -->
+    <string name="metadata_edit_updated_successfully">メタデータを更新しました</string>
+    <string name="metadata_edit_updating_n_songs">%1$d 曲を更新中…</string>
+    <string name="metadata_edit_batch_genre_updated_all">%1$d 曲を正常に更新しました！</string>
+    <string name="metadata_edit_batch_genre_updated_partial">%1$d 曲を更新しました。失敗: %2$d 曲</string>
+    <string name="metadata_edit_lyrics_saved_successfully">歌詞を保存しました</string>
+    <string name="metadata_edit_lyrics_save_failed">歌詞の保存に失敗しました</string>
+    <string name="metadata_edit_lyrics_none_to_save">保存できる歌詞がありません</string>
+    <string name="metadata_edit_permission_denied_edit_files">権限が拒否されました — ファイルを編集できません</string>
+    <string name="metadata_edit_permission_denied_save_lyrics">権限が拒否されました — 歌詞を保存できません</string>
+    <string name="metadata_edit_permission_denied_edit_this_file">権限が拒否されました — このファイルを編集できません</string>
+
+    <!-- AiStateHolder -->
+    <string name="ai_state_error_api_key">設定で選択した AI プロバイダーの有効な API キーを設定してください。</string>
+    <string name="ai_state_error_generic">AI エラー: %s</string>
+    <string name="ai_state_error_quota">選択した AI プロバイダーはアカウントのクレジットまたはクォータが不足しているためリクエストを拒否しました。</string>
+    <string name="ai_state_error_model_unavailable">選択した AI モデルは利用できなくなりました。PixelPlayer がサポート対象のモデルへ自動的に切り替えを試みました。</string>
+    <string name="ai_state_no_songs_found">AI がプロンプトに合う曲を見つけられませんでした。</string>
+    <string name="ai_state_prompt_empty">デイリーミックスのアイデアを書いてください</string>
+    <string name="ai_state_daily_mix_updated">AI でデイリーミックスを更新しました</string>
+    <string name="ai_state_could_not_update">更新できませんでした: %s</string>
+    <string name="ai_state_no_songs_for_mix">AI がこのミックスに合う曲を見つけられませんでした</string>
+</resources>

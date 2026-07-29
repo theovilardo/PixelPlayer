@@ -513,8 +513,11 @@ fun LyricsSheet(
         immersiveMode = false
     }
 
-    LaunchedEffect(currentSong, lyrics, isLoadingLyrics) {
-        if (currentSong != null && lyrics == null && !isLoadingLyrics) {
+    LaunchedEffect(currentSong, lyrics, isLoadingLyrics, lyricsSearchUiState) {
+        if (lyricsSearchUiState is LyricsSearchUiState.Success) {
+            // Search completed successfully — close the dialog
+            showFetchLyricsDialog = false
+        } else if (currentSong != null && lyrics == null && !isLoadingLyrics) {
             // Only show dialog if reset was not just triggered
             if (!wasResetTriggered) {
                 showFetchLyricsDialog = true

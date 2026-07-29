@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <!-- Equalizer preset dialogs -->
+    <string name="equalizer_error_name_empty">名稱不能爲空</string>
+    <string name="equalizer_action_rename">重命名</string>
+
+    <!-- EqualizerScreen -->
+    <string name="equalizer_change_view_mode_cd">更改視圖模式</string>
+    <string name="equalizer_disable_cd">禁用均衡器</string>
+    <string name="equalizer_enable_cd">啓用均衡器</string>
+    <string name="equalizer_edit_tab_title">編輯</string>
+    <string name="equalizer_edit_presets_cd">編輯預設</string>
+    <string name="equalizer_custom_preset_cd">自定義預設</string>
+    <string name="equalizer_presets_cd">預設</string>
+    <string name="equalizer_action_update">更新</string>
+    <string name="equalizer_bass_boost">低音增強</string>
+    <string name="equalizer_virtualizer">虛擬音效</string>
+    <string name="equalizer_loudness">響度</string>
+    <string name="equalizer_effect_not_supported">不支持</string>
+    <string name="equalizer_effect_not_supported_device">此設備不支持</string>
+    <string name="equalizer_volume">音量</string>
+    <string name="equalizer_frequency_response">頻率響應</string>
+    <string name="equalizer_unit_hz">Hz</string>
+    <string name="equalizer_band_bass">低音</string>
+    <string name="equalizer_band_low_mids">中低音</string>
+    <string name="equalizer_band_high_mids">中高音</string>
+    <string name="equalizer_band_treble">高音</string>
+    <string name="equalizer_band_bass_low">低音 / 低頻</string>
+    <string name="equalizer_band_mid_high">中音 / 高頻</string>
+    <string name="equalizer_page_n">第 %1$d 頁</string>
+    <string name="equalizer_reset_duration_cd">重置持續時間</string>
+    <string name="equalizer_action_save_new">保存爲新預設</string>
+
+    <!-- CustomPresetsSheet -->
+    <string name="equalizer_presets_saved_title">已保存的預設</string>
+    <string name="equalizer_presets_empty">暫未保存自定義預設。</string>
+    <string name="equalizer_presets_cd_unpin">取消固定</string>
+    <string name="equalizer_presets_cd_pin">固定</string>
+    <string name="equalizer_presets_cd_rename">重命名</string>
+    <string name="equalizer_presets_cd_delete">刪除</string>
+
+    <!-- SavePresetDialog -->
+    <string name="equalizer_presets_save_custom_title">保存自定義預設</string>
+    <string name="equalizer_presets_save_custom_body">爲您的自定義均衡器預設輸入一個名稱。</string>
+    <string name="equalizer_preset_name_placeholder">預設名稱</string>
+    <string name="equalizer_presets_rename_title">重命名預設</string>
+
+    <!-- ReorderPresetsSheet -->
+    <string name="equalizer_manage_presets_title">管理預設</string>
+    <string name="equalizer_presets_drag_hint">拖動以重新排序 • 點擊眼睛圖標顯示或隱藏</string>
+    <string name="equalizer_cd_reorder">重新排序</string>
+    <string name="equalizer_reset_presets_title">重置預設</string>
+    <string name="equalizer_reset_presets_message">這將恢復默認的預設順序和可見性。是否繼續？</string>
+    <string name="equalizer_cd_reset_presets_default">恢復默認</string>
+    <string name="equalizer_cd_visible">可見</string>
+    <string name="equalizer_cd_hidden">隱藏</string>
+</resources>

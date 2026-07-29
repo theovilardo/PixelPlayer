@@ -480,9 +480,11 @@ private fun getCategoryColors(category: SettingsCategory, isDark: Boolean): Pair
         when (category) {
             SettingsCategory.LIBRARY -> Color(0xFF004A77) to Color(0xFFC2E7FF) 
             SettingsCategory.APPEARANCE -> Color(0xFF7D5260) to Color(0xFFFFD8E4) 
+            SettingsCategory.LYRICS -> Color(0xFF4A1A6E) to Color(0xFFE8D0FF)
             SettingsCategory.PLAYBACK -> Color(0xFF633B48) to Color(0xFFFFD8EC) 
             SettingsCategory.BEHAVIOR -> Color(0xFF3E4C63) to Color(0xFFD7E3FF)
             SettingsCategory.AI_INTEGRATION -> Color(0xFF004F58) to Color(0xFF88FAFF) 
+            SettingsCategory.GENERATION_PARAMETERS -> Color(0xFF4A256B) to Color(0xFFE8B0FF)
             SettingsCategory.BACKUP_RESTORE -> Color(0xFF3B4869) to Color(0xFFD9E2FF)
             SettingsCategory.DEVELOPER -> Color(0xFF324F34) to Color(0xFFCBEFD0) 
             SettingsCategory.EQUALIZER -> Color(0xFF6E4E13) to Color(0xFFFFDEAC) 
@@ -493,9 +495,11 @@ private fun getCategoryColors(category: SettingsCategory, isDark: Boolean): Pair
         when (category) {
             SettingsCategory.LIBRARY -> Color(0xFFD7E3FF) to Color(0xFF005AC1)
             SettingsCategory.APPEARANCE -> Color(0xFFFFD8E4) to Color(0xFF631835)
+            SettingsCategory.LYRICS -> Color(0xFFF0E0FF) to Color(0xFF4A1A6E)
             SettingsCategory.PLAYBACK -> Color(0xFFFFD8EC) to Color(0xFF631B4B)
             SettingsCategory.BEHAVIOR -> Color(0xFFD7E3FF) to Color(0xFF253347)
             SettingsCategory.AI_INTEGRATION -> Color(0xFFCCE8EA) to Color(0xFF004F58)
+            SettingsCategory.GENERATION_PARAMETERS -> Color(0xFFE8B0FF) to Color(0xFF3B1A53)
             SettingsCategory.BACKUP_RESTORE -> Color(0xFFD9E2FF) to Color(0xFF27304E)
             SettingsCategory.DEVELOPER -> Color(0xFFCBEFD0) to Color(0xFF042106)
             SettingsCategory.EQUALIZER -> Color(0xFFFFDEAC) to Color(0xFF281900)

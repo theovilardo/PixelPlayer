@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="changelog_title">Nhật ký thay đổi</string>
+    <string name="changelog_view_github">Xem trên GitHub</string>
+    <string name="changelog_sec_improvements">Cải tiến</string>
+    <string name="changelog_sec_fixes">Sửa lỗi</string>
+    <string name="changelog_sec_whats_new">Có gì mới</string>
+    <string name="changelog_sec_added">Đã thêm</string>
+    <string-array name="changelog_020_added">
+        <item>Hỗ trợ Chromecast để truyền âm thanh từ thiết bị.</item>
+        <item>Nhật ký thay đổi trong ứng dụng để cập nhật tính năng mới nhất.</item>
+        <item>Hỗ trợ tệp .LRC, cả nhúng và bên ngoài.</item>
+        <item>Hỗ trợ lời bài hát ngoại tuyến.</item>
+        <item>Lời bài hát đồng bộ (đồng bộ với bài hát).</item>
+        <item>Màn hình mới để xem hàng đợi đầy đủ.</item>
+        <item>Sắp xếp lại và xóa bài hát khỏi hàng đợi.</item>
+        <item>Cử chỉ mini-player (vuốt xuống để đóng).</item>
+        <item>Thêm nhiều hoạt ảnh material hơn.</item>
+        <item>Cài đặt mới để tùy chỉnh giao diện.</item>
+        <item>Cài đặt mới để xóa cache.</item>
+    </string-array>
+    <string-array name="changelog_020_improvements">
+        <item>Thiết kế lại hoàn toàn giao diện người dùng.</item>
+        <item>Thiết kế lại hoàn toàn trình phát.</item>
+        <item>Cải tiến hiệu suất trong thư viện.</item>
+        <item>Cải thiện tốc độ khởi động ứng dụng.</item>
+        <item>AI giờ cung cấp kết quả tốt hơn.</item>
+    </string-array>
+    <string-array name="changelog_020_fixes">
+        <item>Sửa các lỗi trong trình chỉnh sửa tag.</item>
+        <item>Sửa lỗi thông báo phát không bị xóa.</item>
+        <item>Sửa nhiều lỗi gây crash ứng dụng.</item>
+    </string-array>
+    <string-array name="changelog_030_whats_new">
+        <item>Giới thiệu trung tâm thống kê nghe phong phú hơn với phân tích sâu hơn về các phiên.</item>
+        <item>Phát hành trình phát nhanh nổi để mở và xem trước tệp cục bộ ngay lập tức.</item>
+        <item>Thêm tab thư mục với trình điều hướng kiểu cây và chế độ xem sẵn sàng cho playlist.</item>
+    </string-array>
+    <string-array name="changelog_030_improvements">
+        <item>Hoàn thiện giao diện Material 3 tổng thể để có trải nghiệm sạch sẽ và nhất quán hơn.</item>
+        <item>Chỉnh sửa metadata giờ hỗ trợ thay đổi ảnh bìa.</item>
+        <item>Làm mượt hoạt ảnh và chuyển tiếp trên toàn ứng dụng để điều hướng mượt mà hơn.</item>
+        <item>Cải thiện bố cục màn hình nghệ sĩ với chi tiết phong phú hơn.</item>
+        <item>Nâng cấp tạo DailyMix và YourMix với lựa chọn thông minh và đa dạng hơn.</item>
+        <item>Tăng cường tạo playlist AI.</item>
+        <item>Cải thiện relevance và trình bày tìm kiếm để khám phá nhanh hơn.</item>
+        <item>Mở rộng hỗ trợ cho nhiều định dạng tệp âm thanh hơn.</item>
+    </string-array>
+    <string-array name="changelog_030_fixes">
+        <item>Giải quyết các vấn đề metadata để chi tiết bài hát luôn chính xác.</item>
+        <item>Khôi phục shortcut thông báo để chúng đáng tin cậy quay lại phát.</item>
+    </string-array>
+    <string-array name="changelog_040_improvements">
+        <item>Thiết kế lại điều hướng chính</item>
+        <item>Trình khám phá tệp mới để chọn thư mục nguồn</item>
+        <item>Chức năng kết nối và truyền mới</item>
+        <item>Tiếp nối liền mạch giữa các thiết bị từ xa</item>
+        <item>Chuyển tiếp không khoảng cách giữa các bài hát</item>
+        <item>Điều khiển crossfade</item>
+        <item>Tính năng Chuyển tiếp tùy chỉnh mới (chỉ cho playlist)</item>
+        <item>Tiếp tục phát sau khi đóng ứng dụng</item>
+        <item>Tối ưu hóa giao diện</item>
+        <item>Cải thiện tính năng thống kê</item>
+        <item>Thiết kế lại điều khiển hàng đợi với nhiều tính năng hơn</item>
+        <item>Cải thiện hỗ trợ các loại tệp khác nhau để phát và chỉnh sửa metadata</item>
+        <item>Cải thiện bộ điều khiển quyền</item>
+        <item>Sửa lỗi nhỏ</item>
+    </string-array>
+    <string-array name="changelog_050_improvements">
+        <item>Cập nhật giao diện Material 3 Expressive</item>
+        <item>Equalizer 10 dải &amp; Hiệu ứng</item>
+        <item>Luồng đồng bộ thư viện mới</item>
+        <item>Tích hợp AI (Gemini Models)</item>
+        <item>Nhập/Xuất playlist M3U</item>
+        <item>Tích hợp ảnh nghệ sĩ Deezer</item>
+        <item>Ảnh bìa playlist tùy chỉnh</item>
+        <item>Thiết kế lại kiến trúc cài đặt</item>
+        <item>Hoạt ảnh Hàng đợi &amp; Trình phát</item>
+        <item>Baseline Profiles &amp; Hiệu suất</item>
+        <item>Hệ thống lời bài hát tốt hơn với bù đồng bộ</item>
+    </string-array>
+    <string-array name="changelog_050_fixes">
+        <item>Cải thiện ổn định truyền</item>
+        <item>Ổn định_sheet trình phát</item>
+        <item>Sửa lỗi chung &amp; Dọn dẹp</item>
+    </string-array>
+    <string-array name="changelog_060_whats_new">
+        <item>Hỗ trợ Android Auto hiện có sẵn để phát trong xe.</item>
+        <item>Hỗ trợ Wear OS đã hoạt động, bao gồm điều khiển phát tốt hơn từ đồng hồ.</item>
+        <item>Tích hợp đám mây mở rộng với cải tiến Telegram, NetEase, QQ Music và Google Drive.</item>
+        <item>Phát gần đây và khôi phục hàng đợi liên tục giúp phiên nghe của bạn sẵn sàng.</item>
+        <item>Sao lưu &amp; Khôi phục v3 và công cụ quản lý tài khoản đã được bao gồm.</item>
+        <item>Lời bài hát thông minh hơn với tìm kiếm thủ công và cải thiện lưu trữ.</item>
+    </string-array>
+    <string-array name="changelog_060_improvements">
+        <item>Đợt cải thiện hiệu suất lớn trên khởi động, thư viện, hàng đợi và tương tác trình phát.</item>
+        <item>Trình phát, Truyền, Lời bài hát, Nghệ sĩ và Thể loại được thiết kế lại để sử dụng mượt mà hơn.</item>
+        <item>Điều hướng và luồng tìm kiếm đáng tin cậy hơn, với xử lý tuyến đường an toàn hơn.</item>
+        <item>Cải thiện khả năng tương thích phát âm thanh cho nhiều thiết bị và định dạng hơn.</item>
+        <item>Mở rộng quy trình đa chọn cho bài hát, album và playlist.</item>
+    </string-array>
+    <string-array name="changelog_060_fixes">
+        <item>Hành vi hàng đợi và phát ngẫu nhiên giờ ổn định và dự đoán được hơn.</item>
+        <item>Giải quyết nhiều trường hợp phát nền và truyền ngoại lệ.</item>
+        <item>Sửa lỗi Hẹn giờ ngủ, điều hướng tab Tệp và lỗi crash artist album.</item>
+        <item>Cải thiện tải widget và ổn định dịch vụ để giảm quá nhiệt/vấn đề bộ nhớ.</item>
+        <item>Sửa lỗi chung và hoàn thiện giao diện trên toàn ứng dụng.</item>
+    </string-array>
+    <string-array name="changelog_070_whats_new">
+        <item>Wear OS: Chuyển nhạc, phát cục bộ, đồng bộ hàng đợi và điều khiển từ xa từ đồng hồ.</item>
+        <item>AI: Tích hợp Groq AI và OpenRouter (thử nghiệm) với tối ưu hóa token.</item>
+        <item>Đám mây: Thêm hỗ trợ Jellyfin.</item>
+        <item>Lời bài hát: Dịch đồng bộ với nút chuyển đổi riêng, hỗ trợ định dạng Kugou LRC, tùy chỉnh căn chỉnh văn bản và cải thiện tải từ xa.</item>
+        <item>Giao diện/Trải nghiệm: Chế độ thanh điều_navigation thu gọn, theme động từ bảng màu ảnh bìa, marquee cho tiêu đề dài và tùy chọn sắp xếp mới.</item>
+        <item>Telegram: Hỗ trợ chủ đề gốc và chế độ hiển thị nâng cao.</item>
+    </string-array>
+    <string-array name="changelog_070_improvements">
+        <item>Động cơ âm thanh: Đại tu hoàn toàn với hỗ trợ nhiều định dạng hơn (MIDI, ALAC, M4A) và tối ưu hóa bộ giải mã.</item>
+        <item>Hiệu quả: Giảm tiêu hao năng lượng mạnh, sửa lỗi quá nhiệt và tối ưu hóa tác vụ nền (SyncWorker).</item>
+        <item>Cơ sở dữ liệu: Tối ưu hóa query lớn và thiết kế lại cache ảnh bìa để ngăn mất dữ liệu.</item>
+        <item>Khởi động: Cải thiện thời gian tải qua tối ưu hóa Baseline Profile.</item>
+    </string-array>
+    <string-array name="changelog_070_fixes">
+        <item>Phát: Sửa lỗi giật cục bộ trong Opus/MP3, lỗi ReplayGain khi crossfade và lỗi khởi động trên bộ giải mã Samsung.</item>
+        <item>Ổn định: Loại bỏ crash khi khởi động, điều hướng nghệ sĩ và trên thiết bị Android 12+.</item>
+        <item>Giao diện: Sửa lỗi nhấp nháy ảnh bìa, tràn văn bản trong chữ viết phi Latin và hành vi thanh điều hướng/miniplayer.</item>
+        <item>Bảo mật: Tăng cường xử lý thông tin đăng nhập, quyền lưu trữ và giao tiếp media server.</item>
+    </string-array>
+    <string-array name="changelog_070_added">
+        <item>Địa phương hóa: Tiếng Tây Ban Nha, Tiếng Pháp, Tiếng Nga, Tiếng Trung giản thể, Tiếng Indonesia, Tiếng Ý</item>
+    </string-array>
+    <string-array name="changelog_075_whats_new">
+        <item>Tích hợp Google Drive với quản lý vòng đời trình phát.</item>
+        <item>Chỉnh sửa hàng loạt metadata bài hát (tag và ảnh bìa).</item>
+        <item>Dịch lời bài hát AI với tùy chỉnh Wear OS.</item>
+        <item>Công cụ chẩn đoán lag và đa chọn trên màn hình Tìm kiếm.</item>
+        <item>Hỗ trợ tiếng Ả Rập &amp; Thổ Nhĩ Kỳ, với tùy chọn mạng cục bộ http URL được địa phương hóa.</item>
+    </string-array>
+    <string-array name="changelog_075_improvements">
+        <item>Tiết kiệm pin mạnh (tải âm thanh ngoại vi và kiểm soát polling giao diện).</item>
+        <item>Tối ưu hóa quản lý hàng đợi (chèn nhanh hơn và đánh chỉ mục rõ ràng).</item>
+        <item>Hoạt ảnh chuyển động Material 3 Expressive cho màn hình chuyển tiếp.</item>
+        <item>Thiết kế lại đồng bộ thư viện qua quét được kiểm soát.</item>
+    </string-array>
+    <string-array name="changelog_075_fixes">
+        <item>Giải quyết các vấn đề lag giật/bỏ qua phát và buffering.</item>
+        <item>Sửa đồng bộ xóa bài hát bên ngoài và nhất quán metadata.</item>
+        <item>Sửa vấn đề bộ nhớ, crash và lỗi bố cục trên Wear OS và điện thoại.</item>
+    </string-array>
+</resources>

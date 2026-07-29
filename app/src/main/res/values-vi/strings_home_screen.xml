@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Top Bar -->
+    <string name="topbar_beta_letter">β</string>
+    <string name="topbar_beta_label">Beta</string>
+    <string name="topbar_cd_cloud_streaming">Phát trực tuyến đám mây</string>
+    <string name="topbar_cd_changelog">Nhật ký thay đổi</string>
+    <string name="topbar_cloud_streaming_title">Phát trực tuyến đám mây</string>
+    <string name="topbar_cloud_streaming_subtitle">Phát nhạc từ tài khoản đám mây của bạn</string>
+
+    <!-- BetaInfoBottomSheet -->
+    <string name="beta_sheet_version">Beta 0.7.5</string>
+    <string name="beta_sheet_letter">β</string>
+    <string name="beta_sheet_welcome_title">Chào mừng đến với PixelPlayer 0.7.5-beta</string>
+    <string name="beta_sheet_welcome_body">Bạn đang sử dụng bản beta có thể chứa lỗi, sự cố hoặc các tính năng thử nghiệm. Hãy giúp chúng tôi cải thiện bằng cách báo cáo vấn đề.</string>
+    <string name="beta_sheet_expect_title">Những gì cần mong đợi</string>
+    <string name="beta_sheet_expect_1">Lỗi, sự cố hoặc các tính năng chưa hoàn thiện có thể xảy ra bất ngờ.</string>
+    <string name="beta_sheet_expect_2">Một số tính năng có thể thay đổi hoặc bị xóa mà không thông báo.</string>
+    <string name="beta_sheet_expect_3">Các bản beta có thể không ổn định hơn bản phát hành chính thức.</string>
+    <string name="beta_sheet_expect_4">Luôn kiểm tra bản cập nhật trước khi báo cáo vấn đề đã biết.</string>
+    <string name="beta_sheet_expect_summary">Những gì bản beta có thể thay đổi, gây lỗi hoặc cải thiện trong quá trình thử nghiệm.</string>
+    <string name="beta_sheet_github_title">Shortcut vấn đề GitHub</string>
+    <string name="beta_sheet_github_body">Tìm kiếm trước, sau đó mở báo cáo tập trung cho lỗi, sự cố, yêu cầu hoặc câu hỏi.</string>
+    <string name="beta_sheet_open_issues">Mở các vấn đề hiện có</string>
+    <string name="beta_sheet_report_bug">Báo cáo vấn đề hoặc sự cố</string>
+    <string name="beta_sheet_report_body">Chia sẻ các bước tái tạo, kết quả mong đợi, kết quả thực tế và thông tin thiết bị/hệ điều hành của bạn.</string>
+    <string name="beta_sheet_report_title">Cách báo cáo</string>
+    <string name="beta_sheet_report_summary">Danh sách kiểm tra nhanh trước khi mở vấn đề mới.</string>
+    <string name="beta_sheet_before_title">Trước khi mở vấn đề</string>
+    <string name="beta_sheet_before_1">Tìm kiếm các vấn đề đã mở và đã đóng để tránh trùng lặp.</string>
+    <string name="beta_sheet_before_2">Cập nhật lên phiên bản PixelPlayer mới nhất và xác nhận vấn đề vẫn xảy ra.</string>
+    <string name="beta_sheet_before_3">Khởi động lại ứng dụng và xác nhận vấn đề vẫn tồn tại.</string>
+    <string name="beta_sheet_before_4">Thử tái tạo vấn đề và ghi lại các bước chính xác.</string>
+    <string name="beta_sheet_issue_type_title">Loại vấn đề nào?</string>
+    <string name="beta_sheet_issue_type_bug">Báo cáo lỗi: Một thứ gì đó hoạt động không chính xác.</string>
+    <string name="beta_sheet_issue_type_feature">Yêu cầu tính năng: Thêm tính năng mới hoặc cải tiến.</string>
+    <string name="beta_sheet_issue_type_question">Câu hỏi: Sử dụng Thảo luận nếu được bật, hoặc mở vấn đề với nhãn câu hỏi.</string>
+    <string name="beta_sheet_bug_title">Báo cáo lỗi</string>
+    <string name="beta_sheet_bug_summary_text">Sao chép các trường này khi có thứ gì đó hoạt động sai hoặc bị crash.</string>
+    <string name="beta_sheet_bug_template_title">Báo cáo lỗi</string>
+    <string name="beta_sheet_bug_summary">Tóm tắt ngắn:</string>
+    <string name="beta_sheet_bug_expected">Hành vi mong đợi:</string>
+    <string name="beta_sheet_bug_actual">Hành vi hiện tại:</string>
+    <string name="beta_sheet_bug_steps">Các bước tái tạo: 1. 2. 3.</string>
+    <string name="beta_sheet_bug_frequency">Tần suất xảy ra? Luôn luôn / Đôi khi / Hiếm khi.</string>
+    <string name="beta_sheet_bug_screenshot">Ảnh chụp màn hình / video: nếu có.</string>
+    <string name="beta_sheet_bug_logs">Nhật ký / stack trace: nếu có.</string>
+    <string name="beta_sheet_env_title">Môi trường</string>
+    <string name="beta_sheet_env_version">Phiên bản PixelPlayer:</string>
+    <string name="beta_sheet_env_source">Nguồn cài đặt: GitHub Release, bản debug, bản nightly, v.v.</string>
+    <string name="beta_sheet_env_android">Phiên bản Android:</string>
+    <string name="beta_sheet_env_device">Mẫu thiết bị:</string>
+    <string name="beta_sheet_env_extra">Thông tin bổ sung: Sử dụng thẻ SD, cài đặt đặc biệt, quyền hạn, v.v.</string>
+    <string name="beta_sheet_feature_title">Yêu cầu tính năng</string>
+    <string name="beta_sheet_feature_summary">Sao chép các trường này khi bạn muốn có tính năng mới hoặc cải tiến.</string>
+    <string name="beta_sheet_feature_problem">Mô tả vấn đề: Bạn đang cố gắng giải quyết vấn đề gì?</string>
+    <string name="beta_sheet_feature_solution">Giải pháp đề xuất: Nó nên hoạt động như thế nào?</string>
+    <string name="beta_sheet_feature_alternatives">Các giải pháp thay thế đã xem xét: Có cách tiếp cận nào khác không?</string>
+    <string name="beta_sheet_feature_scope">Phạm vi: Màn hình hoặc luồng nào bị ảnh hưởng?</string>
+    <string name="beta_sheet_feature_mockup">Bản thiết kế hoặc hình ảnh tham khảo nếu có.</string>
+    <string name="beta_sheet_quality_title">Tiêu đề, quyền riêng tư và phạm vi</string>
+    <string name="beta_sheet_quality_summary">Làm cho báo cáo dễ phân loại và an toàn để chia sẻ.</string>
+    <string name="beta_sheet_title_examples_title">Tiêu đề vấn đề tốt</string>
+    <string name="beta_sheet_title_example_1">Equalizer: Chỉ báo dịch chuyển khi chuyển tab preset</string>
+    <string name="beta_sheet_title_example_2">Tìm kiếm: Danh sách lịch sử không hiển thị cho truy vấn trống</string>
+    <string name="beta_sheet_title_example_3">Tính năng: Thêm tùy chọn sắp xếp playlist \"Mới thêm\"</string>
+    <string name="beta_sheet_avoid_title">Vui lòng tránh</string>
+    <string name="beta_sheet_avoid_1">Các báo cáo chung chung như \"Nó không hoạt động\".</string>
+    <string name="beta_sheet_avoid_2">Nhiều vấn đề không liên quan trong một vấn đề.</string>
+    <string name="beta_sheet_avoid_3">Nhật ký hoặc ảnh chụp màn hình chưa chỉnh sửa với dữ liệu riêng tư.</string>
+    <string name="beta_sheet_privacy_title">Lưu ý quyền riêng tư</string>
+    <string name="beta_sheet_privacy_body">Trước khi đăng nhật ký, ảnh chụp màn hình hoặc video, hãy xóa thông tin cá nhân hoặc riêng tư.</string>
+    <string name="beta_sheet_nightly_title">Các bản nightly</string>
+    <string name="beta_sheet_nightly_summary">Các bản nightly khác với bản phát hành như thế nào, và cần bao gồm gì khi chúng gặp sự cố.</string>
+    <string name="beta_sheet_nightly_body">Các bản nightly được tạo từ commit mới nhất và có thể chứa các thay đổi chưa hoàn thành, lỗi tạm thời hoặc sự suy giảm. Chúng mang tính thử nghiệm hơn các bản phát hành chính thức.</string>
+    <string name="beta_sheet_nightly_access">Truy cập chúng từ các artifact của quy trình GitHub Actions trong kho lưu trữ nếu có.</string>
+    <string name="beta_sheet_nightly_report_title">Báo cáo vấn đề nightly</string>
+    <string name="beta_sheet_nightly_report_body">Khi báo cáo vấn đề từ bản nightly, luôn đề cập rằng nó xảy ra trên bản nightly, không phải trên bản phát hành chính thức. Bao gồm ngày build, tên hoặc số quy trình chạy, hoặc commit SHA nếu có thể. Cũng kiểm tra xem vấn đề tương tự có xảy ra trên bản phát hành chính thức mới nhất không.</string>
+    <string name="beta05_title">Nâng cấp Beta 0.5.0</string>
+    <string name="beta05_clean_install_title">Khuyến nghị cài đặt sạch</string>
+    <string name="beta05_clean_install_body">Nếu bạn đến từ beta 0.5.0, bản cập nhật này có thể cần dữ liệu thư viện mới thay vì trạng thái cache cũ.</string>
+    <string name="beta05_if_wrong_meta_title">Nếu metadata hoặc mục thư viện hiển thị sai</string>
+    <string name="beta05_if_wrong_meta_body">Metadata bài hát sai, nghệ sĩ hoặc album không khớp, hoặc các mục bị trùng lặp thường có nghĩa là cài đặt sạch là giải pháp.</string>
+    <string name="beta05_dont_show">Không hiển thị lại</string>
+    <string name="beta05_got_it">Đã hiểu</string>
+
+    <!-- Crash report dialog -->
+    <string name="crash_report_title">Ối! Có gì đó không ổn</string>
+    <string name="crash_report_subtitle">Ứng dụng đã bị crash trong phiên làm việc cuối. Hãy giúp chúng tôi sửa lỗi này bằng cách chia sẻ báo cáo sự cố.</string>
+    <string name="crash_report_date_line">Ngày: %1$s</string>
+    <string name="crash_report_error_label">Lỗi:</string>
+    <string name="crash_report_stack_preview_label">Stack trace (xem trước):</string>
+    <string name="crash_report_clipboard_label">Nhật ký sự cố</string>
+    <string name="crash_report_toast_log_copied">Nhật ký sự cố đã được sao chép vào clipboard</string>
+    <string name="crash_report_share_subject">Báo cáo sự cố PixelPlayer</string>
+    <string name="crash_report_share_chooser">Chia sẻ báo cáo sự cố</string>
+
+    <!-- Home Option -->
+    <string name="home_option_dj_mashup">DJ Mashup</string>
+
+    <!-- Your Mix -->
+    <string name="home_your_mix_title">Phối\ncủa bạn</string>
+    <string name="home_empty_placeholder_title">Chưa có dữ liệu hiển thị</string>
+    <string name="home_empty_placeholder_subtitle">Phối của bạn sẽ xuất hiện ở đây khi PixelPlayer tìm thấy bài hát hoặc đồng bộ nguồn.</string>
+    <string name="home_empty_placeholder_refresh">Làm mới</string>
+
+    <!-- DailyMixSection -->
+    <string name="home_daily_mix_title">PHỐI HÀNG NGÀY</string>
+    <string name="home_daily_mix_subtitle">Dựa trên lịch sử</string>
+    <string name="home_daily_mix_action_see_all">Xem tất cả Phối hàng ngày</string>
+    <string name="home_daily_mix_queue_name">Phối hàng ngày</string>
+
+    <!-- DailyMixScreen -->
+    <string name="daily_mix_title">Phối hàng ngày</string>
+    <plurals name="daily_mix_songs_dot_duration">
+        <item quantity="one">%1$d bài hát • %2$s</item>
+        <item quantity="other">%1$d bài hát • %2$s</item>
+    </plurals>
+    <string name="daily_mix_action_play_it">Phát ngay</string>
+    <string name="daily_mix_cd_ai_playlist_generator">Trình tạo playlist AI</string>
+
+    <!-- DailyMixMenu -->
+    <string name="daily_mix_how_title">Phối hàng ngày được tạo như thế nào</string>
+    <string name="daily_mix_how_body">Phối hàng ngày được tạo từ các bài hát yêu thích và được phát nhiều nhất của bạn. Chúng tôi cũng thêm các bản nhạc từ nghệ sĩ và thể loại bạn thích để bạn có thể khám phá nhạc mới.</string>
+    <string name="daily_mix_prompt_label">Hãy cho AI biết bạn muốn nghe gì hôm nay</string>
+    <string name="daily_mix_cost_hint">Chúng tôi sử dụng mẫu nhỏ để giữ chi phí thấp</string>
+    <string name="daily_mix_updating">Đang cập nhật…</string>
+    <string name="daily_mix_update">Cập nhật Phối hàng ngày</string>
+
+    <!-- AIPlaylistSheet -->
+    <string name="ai_playlist_headline_perfect">Được tuyển chọn hoàn hảo</string>
+    <string name="ai_playlist_headline_daily_mix">Phối hàng ngày</string>
+    <string name="ai_playlist_subtitle_journey_ready">Hành trình âm nhạc của bạn đã sẵn sàng</string>
+    <string name="ai_playlist_subtitle_generator">Trình tạo playlist AI</string>
+    <string name="ai_playlist_description">Mô tả tâm trạng, cảm xúc hoặc hoạt động và để AI tuyển chọn playlist hoàn hảo từ thư viện của bạn.</string>
+    <string name="ai_playlist_section_size">Kích thước playlist</string>
+    <string name="ai_playlist_min_songs">Tối thiểu bài hát</string>
+    <string name="ai_playlist_max_songs">Tối đa bài hát</string>
+    <string name="ai_playlist_prompt_placeholder">ví dụ: Tâm trạng buổi tối thư giãn, năng lượng tập luyện sôi động…</string>
+    <string name="ai_playlist_tap_to_retry">Nhấn để thử lại</string>
+    <string name="ai_playlist_status_default">Hành trình âm nhạc đã được tổng hợp!</string>
+    <string name="ai_playlist_ready_to_play">Sẵn sàng phát</string>
+    <string name="ai_playlist_generating">Đang tạo…</string>
+    <string name="ai_playlist_generate">Tạo playlist</string>
+
+    <!-- RecentlyPlayedSection -->
+    <string name="home_recently_played_title">Phát gần đây</string>
+
+    <!-- RecentlyPlayedScreen -->
+    <string name="recently_played_title">Phát gần đây</string>
+    <string name="recently_played_action_play_latest">Phát mới nhất</string>
+    <string name="recently_played_empty_title">Không có phát nào gần đây trong %1$s</string>
+    <string name="recently_played_empty_subtitle">Thay đổi phạm vi hoặc phát thêm bài hát để điền vào dòng thời gian này.</string>
+    <string name="recently_played_queue_name">Phát gần đây</string>
+    <string name="recently_played_date_today">Hôm nay</string>
+    <string name="recently_played_date_yesterday">Hôm qua</string>
+
+    <!-- StatsOverviewCard -->
+    <string name="home_stats_overview_title">Thống kê nghe</string>
+    <string name="home_stats_overview_total_plays">Tổng số lần phát</string>
+    <string name="home_stats_overview_avg_per_day">Trung bình/ngày</string>
+    <string name="home_stats_overview_top_track">Bài hát hàng đầu</string>
+    <string name="home_stats_overview_top_track_line">%1$s • %2$d lần phát</string>
+
+    <!-- StatsScreen -->
+    <string name="stats_title">Thống kê nghe</string>
+    <string name="stats_cd_refresh">Làm mới thống kê nghe</string>
+    <string name="stats_range_today">Hôm nay</string>
+    <string name="stats_range_week_to_date">Tuần đến nay</string>
+    <string name="stats_range_month_to_date">Tháng đến nay</string>
+    <string name="stats_range_year_to_date">Năm đến nay</string>
+    <string name="stats_range_all_time">Tất cả thời gian</string>
+    <string name="stats_hero_listening">Nghe</string>
+    <string name="stats_hero_plays">Lần phát</string>
+    <string name="stats_section_listening_timeline">Dòng thời gian nghe</string>
+    <string name="stats_timeline_metric_listening_time">Thời gian nghe</string>
+    <string name="stats_timeline_metric_listening_time_desc">Tổng thời gian nghe được ghi lại trong phạm vi đã chọn.</string>
+    <string name="stats_timeline_metric_play_count">Số lần phát</string>
+    <string name="stats_timeline_metric_play_count_desc">Bạn hoàn thành bao nhiêu phiên mỗi phân khúc.</string>
+    <string name="stats_timeline_metric_avg_session">Phiên trung bình</string>
+    <string name="stats_timeline_metric_avg_session_desc">Thời lượng nghe trung bình cho mỗi phân khúc.</string>
+    <string name="stats_timeline_support_day">Chia thành các khoảng 4 giờ để làm nổi bật nhịp điệu hàng ngày của bạn.</string>
+    <string name="stats_timeline_support_week">Các thanh hàng ngày giúp so sánh thói quen từ tuần này sang tuần khác dễ dàng hơn.</string>
+    <string name="stats_timeline_support_month">Các thanh hàng tuần cho thấy xu hướng của tháng.</string>
+    <string name="stats_timeline_support_year">Các thanh hàng tháng cho thấy tính thời vụ trong suốt năm.</string>
+    <string name="stats_timeline_support_all">Các thanh hàng năm tóm tắt toàn bộ lịch sử của bạn.</string>
+    <string name="stats_empty_no_timeline_title">Chưa có dữ liệu nghe</string>
+    <string name="stats_empty_no_timeline_subtitle">Nhấn phát để bắt đầu xây dựng dòng thời gian nghe của bạn</string>
+    <string name="stats_rhythm_daily">Nhịp điệu hàng ngày</string>
+    <string name="stats_rhythm_weekly">Nhịp điệu hàng tuần</string>
+    <string name="stats_rhythm_monthly">Nhịp điệu hàng tháng</string>
+    <string name="stats_rhythm_year">Năm trong cái nhìn</string>
+    <string name="stats_rhythm_all_time">Tiến triển qua thời gian</string>
+    <string name="stats_grouped_4h">Nhóm theo phân khúc 4 giờ</string>
+    <string name="stats_grouped_dow">Nhóm theo ngày trong tuần</string>
+    <string name="stats_grouped_week_of_month">Nhóm theo tuần trong tháng</string>
+    <string name="stats_grouped_by_month">Nhóm theo tháng</string>
+    <string name="stats_grouped_by_year">Nhóm theo năm</string>
+    <string name="stats_peak_segment">Phân khúc đỉnh</string>
+    <string name="stats_n_plays">%1$d lần phát</string>
+    <string name="stats_em_dash">—</string>
+    <string name="stats_section_top_categories">Danh mục hàng đầu</string>
+    <string name="stats_top_categories_subtitle">So sánh cách bạn nghe qua thể loại, nghệ sĩ, album và bài hát.</string>
+    <string name="stats_dim_genre">Thể loại</string>
+    <string name="stats_dim_artist">Nghệ sĩ</string>
+    <string name="stats_dim_album">Album</string>
+    <string name="stats_dim_song">Bài hát</string>
+    <string name="stats_card_listening_by_genre">Nghe theo thể loại</string>
+    <string name="stats_card_listening_by_artist">Nghe theo nghệ sĩ</string>
+    <string name="stats_card_listening_by_album">Nghe theo album</string>
+    <string name="stats_card_listening_by_song">Nghe theo bài hát</string>
+    <string name="stats_plays_artists">%1$d lần phát • %2$d nghệ sĩ</string>
+    <string name="stats_plays_tracks">%1$d lần phát • %2$d bản nhạc</string>
+    <string name="stats_empty_no_category_title">Chưa có dữ liệu danh mục</string>
+    <string name="stats_empty_no_category_subtitle">Nhấn phát để hiển thị điểm nổi bật về việc nghe của bạn</string>
+    <string name="stats_section_listening_habits">Thói quen nghe</string>
+    <string name="stats_empty_no_habits_title">Chưa có thói quen</string>
+    <string name="stats_empty_no_habits_subtitle">Chúng tôi sẽ hiển thị thói quen nghe của bạn khi hiểu bạn rõ hơn.</string>
+    <string name="stats_habit_total_sessions">Tổng số phiên</string>
+    <string name="stats_habit_avg_session">Phiên trung bình</string>
+    <string name="stats_habit_longest_session">Phiên dài nhất</string>
+    <string name="stats_habit_sessions_per_day">Phiên/ngày</string>
+    <string name="stats_habit_most_active_day">Ngày hoạt động nhiều nhất</string>
+    <string name="stats_habit_no_playback_yet">Chưa phát</string>
+    <string name="stats_habit_peak_timeline_slot">Khoảng thời gian đỉnh</string>
+    <string name="stats_section_top_artists">Nghệ sĩ hàng đầu</string>
+    <string name="stats_empty_no_artists_title">Không có nghệ sĩ hàng đầu</string>
+    <string name="stats_empty_no_artists_subtitle">Tiếp tục nghe và nghệ sĩ yêu thích của bạn sẽ xuất hiện ở đây.</string>
+    <string name="stats_avatar_placeholder">\?</string>
+    <string name="stats_ranked_artist">%1$d. %2$s</string>
+    <string name="stats_section_top_albums">Album hàng đầu</string>
+    <string name="stats_empty_no_albums_title">Không có album hàng đầu</string>
+    <string name="stats_empty_no_albums_subtitle">Các album bạn thường xuyên nghe lại sẽ xuất hiện ở đây.</string>
+    <string name="stats_ranked_album">%1$d. %2$s</string>
+    <string name="stats_track_concentration_title">Mật độ bản nhạc</string>
+    <string name="stats_track_concentration_subtitle">Thời gian nghe của bạn được phân bổ như thế nào qua các bản nhạc hàng đầu.</string>
+    <string name="stats_empty_no_concentration_title">Chưa có dữ liệu mật độ</string>
+    <string name="stats_empty_no_concentration_subtitle">Phát thêm bản nhạc để xem mức độ tập trung khi nghe của bạn.</string>
+    <string name="stats_slice_top_1">Top 1</string>
+    <string name="stats_slice_top_2_3">Top 2-3</string>
+    <string name="stats_slice_others">Khác</string>
+    <string name="stats_percent">%1$d%%</string>
+    <string name="stats_listening_concentration_title">Mật độ nghe</string>
+    <string name="stats_top_three_share_line">Top 3 bản nhạc chiếm %1$d%% thời gian nghe của bạn.</string>
+    <string name="stats_avg_plays_per_track">Lần phát/bản nhạc trung bình</string>
+    <string name="stats_unique_tracks">Bản nhạc duy nhất</string>
+    <string name="stats_top_three_share_label">Tỷ lệ Top 3</string>
+    <string name="stats_tracks_in_range_title">Bản nhạc trong phạm vi này</string>
+    <string name="stats_tracks_in_range_subtitle">Bản nhạc được phát nhiều nhất cho phạm vi thời gian đã chọn.</string>
+    <string name="stats_empty_no_tracks_title">Không có bản nhạc hàng đầu</string>
+    <string name="stats_empty_no_tracks_subtitle">Nghe các bản yêu thích của bạn để xem chúng được hiển thị ở đây.</string>
+    <string name="stats_collapse_tracks">Thu gọn bản nhạc</string>
+    <string name="stats_show_all_tracks">Hiện tất cả bản nhạc</string>
+
+    <!-- Time and Duration Formatting -->
+    <string name="duration_hours_minutes_long">%1$d h %2$02d phút</string>
+    <string name="duration_minutes_long">%1$d phút</string>
+    <string name="duration_hours_minutes_medium">%1$d h %2$02d p</string>
+    <string name="duration_hours_medium">%1$d h</string>
+    <string name="duration_minutes_medium">%1$d p</string>
+    <string name="duration_seconds_medium">%1$d giây</string>
+    <string name="duration_hours_minutes_short">%1$dh %2$02dm</string>
+    <string name="duration_hours_short">%1$dh</string>
+    <string name="duration_minutes_short">%1$dm</string>
+    <string name="duration_seconds_short">%1$ds</string>
+    <string name="time_ago_never">Không bao giờ</string>
+    <string name="time_ago_just_now">Vừa xong</string>
+    <string name="time_ago_day_singular">1 ngày trước</string>
+    <string name="time_ago_days_plural">%1$d ngày trước</string>
+    <string name="time_ago_hour_singular">1 giờ trước</string>
+    <string name="time_ago_hours_plural">%1$d giờ trước</string>
+    <string name="time_ago_minute_singular">1 phút trước</string>
+    <string name="time_ago_minutes_plural">%1$d phút trước</string>
+    <string name="song_count_singular">%1$d bài hát</string>
+    <string name="song_count_plural">%1$d bài hát</string>
+    <string name="stats_week_label">Tuần %1$d</string>
+</resources>

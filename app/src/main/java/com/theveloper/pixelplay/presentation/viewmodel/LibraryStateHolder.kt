@@ -257,23 +257,21 @@ class LibraryStateHolder @Inject constructor(
         songsJob = scope?.launch {
             _isLoadingLibrary.value = true
             musicRepository.getAudioFiles().conflate().collect { songs ->
-                // Process heavy list conversions on Default dispatcher to avoid blocking UI
                 val immutableSongs = withContext(Dispatchers.Default) { songs.toImmutableList() }
                 val songsMap = withContext(Dispatchers.Default) { songs.associateBy { it.id } }
 
                 _allSongs.value = immutableSongs
                 _allSongsById.value = songsMap
 
-                // When the repository emits a new list (triggered by directory changes),
-                // we update our state and re-apply current sorting.
-                // Apply sort to the new data
                 sortSongs(_currentSongSortOption.value, persist = false)
                 _isLoadingLibrary.value = false
             }
         }
 
+        // Albums, artists, and folders load sequentially after songs to avoid
+        // I/O contention on slower storage (eMMC on Redmi vs UFS on Samsung).
         albumsJob = scope?.launch {
-            _isLoadingCategories.value = true
+            songsJob?.join()
             @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
             kotlinx.coroutines.flow.combine(
                 effectiveStorageFilter,
@@ -287,12 +285,11 @@ class LibraryStateHolder @Inject constructor(
                     sortAlbumsList(albums, _currentAlbumSortOption.value).toImmutableList()
                 }
                 _albums.value = sortedAlbums
-                _isLoadingCategories.value = false
             }
         }
 
         artistsJob = scope?.launch {
-            _isLoadingCategories.value = true
+            albumsJob?.join()
             @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
             effectiveStorageFilter.flatMapLatest { filter ->
                 musicRepository.getArtists(filter)
@@ -301,11 +298,11 @@ class LibraryStateHolder @Inject constructor(
                     sortArtistsList(artists, _currentArtistSortOption.value).toImmutableList()
                 }
                 _artists.value = sortedArtists
-                _isLoadingCategories.value = false
             }
         }
 
         foldersJob = scope?.launch {
+            artistsJob?.join()
             @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
             effectiveStorageFilter.flatMapLatest { filter ->
                 musicRepository.getMusicFolders(effectiveFoldersStorageFilter(filter))
@@ -315,6 +312,16 @@ class LibraryStateHolder @Inject constructor(
                 }
                 _musicFolders.value = sortedFolders
             }
+        }
+
+        // Single loading state: true when songs start, false when all sequential
+        // jobs (albums + artists) finish. This avoids flapping true→false→true
+        // as each sequential coroutine completes.
+        scope?.launch {
+            songsJob?.join()
+            _isLoadingCategories.value = true
+            foldersJob?.join()
+            _isLoadingCategories.value = false
         }
     }
 

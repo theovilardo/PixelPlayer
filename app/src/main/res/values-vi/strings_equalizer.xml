@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <!-- Equalizer preset dialogs -->
+    <string name="equalizer_error_name_empty">Tên không được để trống</string>
+    <string name="equalizer_action_rename">Đổi tên</string>
+
+    <!-- EqualizerScreen -->
+    <string name="equalizer_change_view_mode_cd">Đổi chế độ xem</string>
+    <string name="equalizer_disable_cd">Tắt equalizer</string>
+    <string name="equalizer_enable_cd">Bật equalizer</string>
+    <string name="equalizer_edit_tab_title">Chỉnh sửa</string>
+    <string name="equalizer_edit_presets_cd">Chỉnh sửa preset</string>
+    <string name="equalizer_custom_preset_cd">Preset tùy chỉnh</string>
+    <string name="equalizer_presets_cd">Preset</string>
+    <string name="equalizer_action_update">Cập nhật</string>
+    <string name="equalizer_bass_boost">Tăng cường bass</string>
+    <string name="equalizer_virtualizer">Virtualizer</string>
+    <string name="equalizer_loudness">Độ to</string>
+    <string name="equalizer_effect_not_supported">Không hỗ trợ</string>
+    <string name="equalizer_effect_not_supported_device">Không hỗ trợ trên thiết bị này</string>
+    <string name="equalizer_volume">Âm lượng</string>
+    <string name="equalizer_frequency_response">Phản hồi tần số</string>
+    <string name="equalizer_unit_hz">Hz</string>
+    <string name="equalizer_band_bass">Bass</string>
+    <string name="equalizer_band_low_mids">Trung thấp</string>
+    <string name="equalizer_band_high_mids">Trung cao</string>
+    <string name="equalizer_band_treble">Treble</string>
+    <string name="equalizer_band_bass_low">Bass / Thấp</string>
+    <string name="equalizer_band_mid_high">Trung / Cao</string>
+    <string name="equalizer_page_n">Trang %1$d</string>
+    <string name="equalizer_reset_duration_cd">Đặt lại thời lượng</string>
+    <string name="equalizer_action_save_new">Lưu mới</string>
+
+    <!-- CustomPresetsSheet -->
+    <string name="equalizer_presets_saved_title">Preset đã lưu</string>
+    <string name="equalizer_presets_empty">Chưa lưu preset tùy chỉnh nào.</string>
+    <string name="equalizer_presets_cd_unpin">Bỏ ghim</string>
+    <string name="equalizer_presets_cd_pin">Ghim</string>
+    <string name="equalizer_presets_cd_rename">Đổi tên</string>
+    <string name="equalizer_presets_cd_delete">Xóa</string>
+
+    <!-- SavePresetDialog -->
+    <string name="equalizer_presets_save_custom_title">Lưu preset tùy chỉnh</string>
+    <string name="equalizer_presets_save_custom_body">Nhập tên cho preset equalizer tùy chỉnh của bạn.</string>
+    <string name="equalizer_preset_name_placeholder">Tên preset</string>
+    <string name="equalizer_presets_rename_title">Đổi tên preset</string>
+
+    <!-- ReorderPresetsSheet -->
+    <string name="equalizer_manage_presets_title">Quản lý preset</string>
+    <string name="equalizer_presets_drag_hint">Kéo để sắp xếp lại • Nhấn mắt để hiện hoặc ẩn</string>
+    <string name="equalizer_cd_reorder">Sắp xếp lại</string>
+    <string name="equalizer_reset_presets_title">Đặt lại preset</string>
+    <string name="equalizer_reset_presets_message">Thao tác này sẽ khôi phục thứ tự và hiển thị preset mặc định. Tiếp tục?</string>
+    <string name="equalizer_cd_reset_presets_default">Đặt lại mặc định</string>
+    <string name="equalizer_cd_visible">Hiển thị</string>
+    <string name="equalizer_cd_hidden">Ẩn</string>
+</resources>

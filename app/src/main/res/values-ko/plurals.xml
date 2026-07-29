@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="sharing_playlists_message">
+        <item quantity="other">%d개의 재생목록을 공유하고 있습니다</item>
+    </plurals>
+    <plurals name="exported_playlists_message">
+        <item quantity="other">%1$d개의 재생목록을 %2$s로 내보냈습니다</item>
+    </plurals>
+    <plurals name="n_songs_added_to_queue">
+        <item quantity="other">%d곡이 재생목록에 추가되었습니다</item>
+    </plurals>
+    <plurals name="n_songs_will_play_next">
+        <item quantity="other">%d곡이 다음에 재생됩니다</item>
+    </plurals>
+    <plurals name="n_songs_added_to_favorites">
+        <item quantity="other">%d곡이 즐겨찾기에 추가되었습니다</item>
+    </plurals>
+    <plurals name="n_songs_removed_from_favorites">
+        <item quantity="other">%d곡이 즐겨찾기에서 제거되었습니다</item>
+    </plurals>
+    <plurals name="n_files_deleted">
+        <item quantity="other">%d개의 파일이 삭제되었습니다</item>
+    </plurals>
+    <plurals name="delete_songs_confirmation_title">
+        <item quantity="other">%d개의 파일을 삭제하시겠습니까?</item>
+    </plurals>
+    <plurals name="n_tracks_selected">
+        <item quantity="other">%d곡이 선택되었습니다</item>
+    </plurals>
+    <plurals name="presentation_batch_b_songs_dot_duration">
+        <item quantity="other">%1$d곡 • %2$s</item>
+    </plurals>
+    <plurals name="presentation_batch_e_queue_tracks_lined_up">
+        <item quantity="other">%d곡이 대기열에 추가되었습니다.</item>
+    </plurals>
+    <plurals name="presentation_batch_e_n_songs_selected">
+        <item quantity="other">%d곡이 선택되었습니다</item>
+    </plurals>
+    <plurals name="presentation_batch_f_n_songs">
+        <item quantity="other">%d곡</item>
+    </plurals>
+    <plurals name="presentation_batch_f_n_topics">
+        <item quantity="other">%d개의 주제</item>
+    </plurals>
+</resources>

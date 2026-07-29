@@ -637,6 +637,15 @@
     <string name="about_maintainer_subtitle">Personen bak PixelPlayer.</string>
     <string name="about_spotlight_title">Samfunns-spotlight</string>
     <string name="about_spotlight_subtitle">Anerkjennelse for samarbeidspartnere med stor innvirkning.</string>
+    <string name="about_licenses_title">Lisenser og varsler</string>
+    <string name="about_licenses_subtitle">Tilskrivning for avhengigheter og tidligere bidrag.</string>
+    <string name="about_open_source_licenses">Åpen kildekode-lisenser</string>
+    <string name="about_open_source_licenses_subtitle">Avhengighetslisenser og tredjepartsvarsler</string>
+    <string name="open_source_licenses_screen_title">Åpen kildekode-lisenser</string>
+    <string name="third_party_notices_action">MIT-lignende varsel</string>
+    <string name="third_party_notices_title">Tredjepartsvarsler</string>
+    <string name="third_party_notices_close">Lukk</string>
+    <string name="third_party_notices_load_error">Den bun­dlede tredjeparts­vars­let kunne ikke lastes.</string>
     <string name="about_contributors_section_title">Bidragsytere til åpen kildekode</string>
     <string name="about_contributors_section_subtitle">Live bidragsyterliste fra GitHub.</string>
     <string name="about_contributions_format">%1$d bidrag.</string>

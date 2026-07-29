@@ -172,6 +172,9 @@
     <string name="settings_language_korean">Korea</string>
     <string name="settings_language_norwegian_bokmal">Norwegia (Bokmål)</string>
     <string name="settings_language_turkish">Turki</string>
+    <string name="settings_language_japanese">Jepang</string>
+    <string name="settings_language_traditional_chinese">Tionghoa Tradisional</string>
+    <string name="settings_language_vietnamese">Vietnam</string>
     <string name="settings_app_theme_title">Tema Aplikasi</string>
     <string name="settings_app_theme_subtitle">Beralih antara terang, gelap, atau ikuti tampilan sistem.</string>
     <string name="settings_theme_light">Tema Terang</string>

@@ -637,6 +637,15 @@
     <string name="about_maintainer_subtitle">Die Person hinter PixelPlayer.</string>
     <string name="about_spotlight_title">Community-Spotlight</string>
     <string name="about_spotlight_subtitle">Anerkennung für Mitwirkende mit besonders großem Einfluss.</string>
+    <string name="about_licenses_title">Lizenzen und Hinweise</string>
+    <string name="about_licenses_subtitle">Zuschreibung für Abhängigkeiten und frühere Beiträge.</string>
+    <string name="about_open_source_licenses">Open-Source-Lizenzen</string>
+    <string name="about_open_source_licenses_subtitle">Abhängigkeitslizenzen und Drittanbieter-Hinweise</string>
+    <string name="open_source_licenses_screen_title">Open-Source-Lizenzen</string>
+    <string name="third_party_notices_action">MIT-ähnlicher Hinweis</string>
+    <string name="third_party_notices_title">Drittanbieter-Hinweise</string>
+    <string name="third_party_notices_close">Schließen</string>
+    <string name="third_party_notices_load_error">Der gebündelte Drittanbieter-Hinweis konnte nicht geladen werden.</string>
     <string name="about_contributors_section_title">Open-Source-Mitwirkende</string>
     <string name="about_contributors_section_subtitle">Aktuelle Mitwirkenden-Liste von GitHub.</string>
     <string name="about_contributions_format">%1$d Beiträge</string>

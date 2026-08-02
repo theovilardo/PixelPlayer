@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PixelPlayer</string>
+    <string name="not_playing">Не грає</string>
+    <string name="open_on_phone">На телефоні</string>
+    <string name="connecting">Підключення…</string>
+    <string name="no_phone_connected">Немає підключення</string>
+</resources>

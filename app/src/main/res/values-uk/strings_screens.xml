@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Navigation -->
+    <string name="nav_error_genre_id_missing">Помилка: відсутній ID жанру</string>
+
+    <!-- SetupScreen -->
+    <string name="setup_lets_go">Поїхали!</string>
+    <string name="setup_step_format">Крок %1$d з %2$d</string>
+    <string name="setup_toast_grant_permission_first">Спочатку надайте дозвіл.</string>
+    <string name="setup_toast_grant_all_permissions">Надайте всі необхідні дозволи.</string>
+    <string name="setup_welcome_prefix">Ласкаво просимо до </string>
+    <string name="setup_beta_symbol">β</string>
+    <string name="setup_beta_label">Бета</string>
+    <string name="setup_intro_body">Налаштуємо все для вас.</string>
+    <string name="setup_permission_media_title">Доступ до медіа</string>
+    <string name="setup_permission_media_description">Потрібен доступ до аудіофайлів для створення бібліотеки.</string>
+    <string name="setup_permission_granted">Дозвіл надано</string>
+    <string name="setup_grant_media_permission">Надати доступ</string>
+    <string name="setup_permission_notifications_title">Сповіщення</string>
+    <string name="setup_permission_notifications_description">Увімкніть сповіщення для керування музикою з екрана блокування.</string>
+    <string name="setup_enable_notifications">Увімкнути сповіщення</string>
+    <string name="setup_backup_have_title">Є резервна копія?</string>
+    <string name="setup_backup_have_description">Якщо маєте бекап PixelPlayer, відновіть його зараз і пропустіть решту налаштувань.</string>
+    <string name="setup_import_backup">Імпортувати бекап</string>
+    <string name="setup_inspecting_backup">Аналіз бекапу</string>
+    <string name="setup_checking_backup">Перевірка бекапу…</string>
+    <string name="setup_restoring_backup">Відновлення…</string>
+    <string name="setup_skip_for_now">Пропустити</string>
+    <string name="setup_restore_backup_title">Відновлення</string>
+    <string name="setup_restore_backup_subtitle">Оберіть, що імпортувати перед завершенням.</string>
+    <string name="setup_modules_selected_format">%1$d з %2$d модулів</string>
+    <string name="setup_backup_created_format">Створено %1$s</string>
+    <string name="setup_backup_from_version">Бекап з %1$s</string>
+    <string name="setup_backup_unknown_version">Невідома версія</string>
+    <string name="setup_restore_selected">Відновити вибране</string>
+    <string name="setup_restoring">Відновлення…</string>
+    <string name="setup_excluded_folders_title">Виключені папки</string>
+    <string name="setup_excluded_folders_description">За замовчуванням сканується все. Оберіть папки, які ігнорувати.</string>
+    <string name="setup_choose_folders_ignore">Обрати папки для ігнорування</string>
+    <string name="setup_toast_grant_storage_first">Спочатку надайте доступ до пам'яті</string>
+    <string name="setup_theme_title">Тема</string>
+    <string name="setup_theme_subtitle">Оберіть вигляд перед початком.</string>
+    <string name="setup_theme_dark_title">Темна</string>
+    <string name="setup_theme_dark_description">Стандартна темна тема Material 3.</string>
+    <string name="setup_theme_light_title">Світла</string>
+    <string name="setup_theme_light_description">Світла тема Material 3.</string>
+    <string name="setup_theme_follow_title">Як у системі</string>
+    <string name="setup_theme_follow_description">Відповідно до налаштувань телефону.</string>
+    <string name="setup_recommended">Рекомендовано</string>
+    <string name="setup_theme_footer">Можна змінити пізніше в Налаштування &gt; Вигляд &gt; Тема.</string>
+    <string name="setup_library_layout_title">Вигляд бібліотеки</string>
+    <string name="setup_library_layout_subtitle">Оберіть спосіб навігації.</string>
+    <string name="setup_preview_songs_label">Треки</string>
+    <string name="setup_compact_mode">Компактний</string>
+    <string name="setup_compact_mode_pill_hint">Мінімальна піл-навігація</string>
+    <string name="setup_compact_mode_tab_hint">Стандартний ряд вкладок</string>
+    <string name="setup_tab_songs">ТРЕКИ</string>
+    <string name="setup_tab_albums">АЛЬБОМИ</string>
+    <string name="setup_tab_artists">ВИКОНАВЦІ</string>
+    <string name="setup_library_layout_footer">Можна змінити пізніше в Налаштування &gt; Вигляд &gt; Навігація.</string>
+    <string name="setup_app_navigation_title">Навігація</string>
+    <string name="setup_app_navigation_subtitle">Стиль нижньої панелі.</string>
+    <string name="setup_navbar_default_style">Стандартний</string>
+    <string name="setup_nav_floating_pill_description">Плаваюча пілка з округлими кутами</string>
+    <string name="setup_nav_full_width_description">Стандартна повноширока панель</string>
+    <string name="setup_customize_corner_radius">Радіус кутів</string>
+    <string name="setup_navbar_footer">Можна змінити пізніше в Налаштування &gt; Вигляд &gt; Стиль панелі.</string>
+    <string name="setup_permission_alarms_title">Будильники та нагадування</string>
+    <string name="setup_permission_alarms_description">Рекомендовано для точної роботи таймера сну.</string>
+    <string name="setup_grant_permission_generic">Надати дозвіл</string>
+    <string name="setup_battery_optimization_title">Оптимізація батареї</string>
+    <string name="setup_battery_optimization_description">Деякі пристрої агресивно закривають фонові додатки. Вимкніть оптимізацію для стабільного відтворення.</string>
+    <string name="setup_disable_battery_optimization">Вимкнути оптимізацію</string>
+    <string name="setup_all_set_title">Готово!</string>
+    <string name="setup_all_set_body">Насолоджуйтесь музикою.</string>
+
+    <!-- SearchScreen -->
+    <string name="search_placeholder">Пошук…</string>
+    <string name="search_cd_search_icon">Пошук</string>
+    <string name="search_cd_clear_search_query">Очистити</string>
+    <string name="search_recent_searches">Недавні</string>
+    <string name="search_action_clear_all">Очистити все</string>
+    <string name="search_cd_search_history_icon">Історія</string>
+    <string name="search_cd_delete_search_history_item">Видалити з історії</string>
+    <string name="search_cd_no_results">Немає результатів</string>
+    <string name="search_no_results_for_query">Немає результатів для «%1$s»</string>
+    <string name="search_nothing_found">Нічого не знайдено</string>
+    <string name="search_try_different_or_filters">Спробуйте інший запит або перевірте фільтри.</string>
+    <string name="search_no_results_found">Результатів немає.</string>
+    <string name="browse_by_genre">За жанром</string>
+    <string name="no_genres_available">Жанрів немає.</string>
+
+    <!-- ArtistDetailScreen -->
+    <string name="artist_cd_play_title">Грати %1$s</string>
+    <string name="artist_cd_collapse_title">Згорнути %1$s</string>
+    <string name="artist_cd_expand_title">Розгорнути %1$s</string>
+    <string name="artist_cd_edit_image">Змінити фото</string>
+    <string name="artist_action_change_photo">Змінити фото</string>
+    <string name="artist_action_reset_to_default">Скинути</string>
+    <string name="artist_cd_shuffle_play">Перемішати</string>
+
+    <!-- AlbumDetailScreen -->
+    <string name="album_disc_number_header">Диск %d</string>
+    <string name="album_cover_for">Обкладинка %1$s</string>
+    <string name="album_detail_meta_line">%1$s · %2$s</string>
+
+    <!-- PlaylistDetailScreen -->
+    <string name="playlist_not_found">Плейлист не знайдено.</string>
+    <string name="playlist_empty_title">Плейлист порожній.</string>
+    <string name="playlist_empty_add_hint">Торкніться «Додати треки», щоб почати.</string>
+    <string name="playlist_empty_folder_label">У цій папці немає треків.</string>
+    <string name="playlist_sort_songs_title">Сортування</string>
+    <string name="playlist_more_options_title">Більше опцій</string>
+    <string name="playlist_options_title">Опції плейлиста</string>
+    <string name="playlist_action_edit_playlist">Редагувати</string>
+    <string name="playlist_action_delete_playlist">Видалити</string>
+    <string name="playlist_dialog_delete_title">Видалити плейлист?</string>
+    <string name="playlist_dialog_delete_body">Видалити цей плейлист?</string>
+    <string name="playlist_action_set_default_transition">Перехід за замовчуванням</string>
+    <string name="playlist_action_export_playlist">Експорт</string>
+    <string name="playlist_song_duration_line">%1$s • %2$s</string>
+    <string name="playlist_action_play_it">Грати</string>
+    <string name="playlist_action_add_songs">Додати</string>
+    <string name="playlist_cd_add_songs">Додати треки</string>
+    <string name="playlist_action_remove_songs">Прибрати</string>
+    <string name="playlist_cd_remove_songs">Прибрати треки</string>
+    <string name="playlist_action_reorder_songs">Змінити порядок</string>
+    <string name="playlist_cd_reorder_songs">Змінити порядок треків</string>
+
+    <!-- EditTransitionScreen -->
+    <string name="transition_title_global">Глобальні переходи</string>
+    <string name="transition_title_playlist_rules">Правила плейлиста</string>
+    <string name="transition_intro_global">Застосовується до всіх джерел, якщо не перевизначено.</string>
+    <string name="transition_intro_playlist">Налаштуйте поведінку для цього плейлиста.</string>
+    <string name="transition_active_status">Статус</string>
+    <string name="transition_status_global_default">Глобально</string>
+    <string name="transition_status_playlist_default">За замовчуванням</string>
+    <string name="transition_status_following_global">Як глобально</string>
+    <string name="transition_status_custom_override">Своє</string>
+    <string name="transition_custom_override_title">Своє налаштування</string>
+    <string name="transition_custom_override_body">Увімкніть для особливих правил цього плейлиста.</string>
+    <string name="transition_snackbar_using_global">Використовуються глобальні налаштування</string>
+    <string name="transition_snackbar_saved">Збережено</string>
+    <string name="transition_style_title">Стиль переходу</string>
+    <string name="transition_style_subtitle">Як треки змішуються</string>
+    <string name="transition_mode_none">Немає</string>
+    <string name="transition_mode_crossfade">Згасання</string>
+    <string name="transition_duration_title">Тривалість</string>
+    <string name="transition_duration_subtitle_format">%1$dс суміщення</string>
+    <string name="transition_reset_cd">Скинути</string>
+    <string name="transition_visualizer_current">Поточний</string>
+    <string name="transition_visualizer_next">Наступний</string>
+    <string name="transition_overlap_explanation_format">Треки суміщатимуться %1$dс</string>
+    <string name="transition_curves_title">Криві гучності</string>
+    <string name="transition_curves_subtitle">Тонке налаштування звуку</string>
+    <string name="transition_fade_out">Згасання</string>
+    <string name="transition_fade_in">Наростання</string>
+
+    <!-- CreatePlaylistScreen -->
+    <string name="playlist_creation_new_smart">Новий розумний</string>
+    <string name="playlist_creation_new">Новий плейлист</string>
+    <string name="playlist_creation_add_songs">Додати треки</string>
+    <string name="playlist_creation_cd_back_or_cancel">Назад або скасувати</string>
+    <string name="playlist_creation_next">Далі</string>
+    <string name="playlist_creation_create">Створити</string>
+    <string name="playlist_creation_edit">Редагувати</string>
+    <string name="playlist_creation_auto_collage">Автоколаж</string>
+    <string name="playlist_creation_cd_add_photo">Додати фото</string>
+    <string name="playlist_creation_pick_image">Обрати зображення</string>
+    <string name="playlist_creation_change">Змінити</string>
+    <string name="playlist_creation_remove">Прибрати</string>
+    <string name="playlist_creation_name_label">Назва</string>
+    <string name="playlist_creation_name_placeholder">Мій мікс</string>
+    <string name="playlist_creation_edit_cover">Змінити обкладинку</string>
+    <string name="playlist_creation_adjust_cover_title">Налаштуйте обкладинку</string>
+    <string name="playlist_creation_adjust_cover_hint">Використовуйте жести масштабування та перетягування.</string>
+    <string name="playlist_creation_mode_manual">Вручну</string>
+    <string name="playlist_creation_mode_smart">Розумний</string>
+    <string name="playlist_creation_generate_with_ai">Згенерувати з AI</string>
+    <string name="playlist_creation_smart_rule">Розумне правило</string>
+    <string name="playlist_creation_tab_default">Стандартно</string>
+    <string name="playlist_creation_tab_image">Зображення</string>
+    <string name="playlist_creation_tab_icon">Іконка</string>
+    <string name="playlist_creation_bg_color">Колір фону</string>
+    <string name="playlist_creation_icon_symbol">Символ</string>
+    <string name="playlist_creation_shape_style">Форма</string>
+    <string name="playlist_creation_shape_params">Параметри форми</string>
+    <string name="playlist_creation_corner_radius">Радіус кутів</string>
+    <string name="playlist_creation_smoothness">Гладкість</string>
+    <string name="playlist_creation_sides">Сторони</string>
+    <string name="playlist_creation_curve">Крива</string>
+    <string name="playlist_creation_rotation">Обертання</string>
+    <string name="playlist_creation_scale">Масштаб</string>
+    <string name="playlist_creation_rule_top_played_title">Топ прослуховувань</string>
+    <string name="playlist_creation_rule_top_played_sub">Найчастіше прослуховувані треки.</string>
+    <string name="playlist_creation_rule_recently_played_title">Недавні</string>
+    <string name="playlist_creation_rule_recently_played_sub">Треки, які ви слухали нещодавно.</string>
+    <string name="playlist_creation_rule_forgotten_title">Забуті улюблені</string>
+    <string name="playlist_creation_rule_forgotten_sub">Улюблені треки, які давно не грали.</string>
+    <string name="playlist_creation_rule_new_gems_title">Нові перлини</string>
+    <string name="playlist_creation_rule_new_gems_sub">Нещодавно додані треки з малою кількістю прослуховувань.</string>
+
+    <!-- GenreDetailScreen -->
+    <string name="genre_quick_fill">Швидке заповнення</string>
+    <string name="genre_sort_title">Сортування та відтворення</string>
+    <string name="genre_sort_action_shuffle">Перемішати</string>
+    <string name="genre_sort_by_title">Сортувати за</string>
+    <string name="genre_sort_artist_option">Виконавець</string>
+    <string name="genre_sort_album_option">Альбом</string>
+    <string name="genre_sort_title_option">Назва</string>
+    <string name="genre_cd_generic_artist">Універсальний виконавець</string>
+    <string name="genre_shuffle_label">%1$s — перемішати</string>
+
+    <!-- QuickFillScreen -->
+    <string name="quick_fill_select_songs">Обрати треки</string>
+    <string name="quick_fill_choose_genre">Обрати жанр</string>
+    <string name="quick_fill_search_songs_placeholder">Пошук треків</string>
+    <string name="quick_fill_new_genre">Новий жанр</string>
+    <string name="quick_fill_cd_add_custom_genre">Додати свій</string>
+    <string name="quick_fill_add_custom_genre_title">Новий жанр</string>
+    <string name="quick_fill_genre_name_placeholder">Назва жанру</string>
+    <string name="quick_fill_select_icon">Обрати іконку</string>
+    <string name="quick_fill_select_genre_label_format">Жанр: %1$s</string>
+    <string name="quik_fill_select_a_genre_label">Оберіть жанр</string>
+    <string name="quick_fill_action_title">Швидке заповнення</string>
+
+    <!-- MashupScreen -->
+    <string name="mashup_title">DJ-простір</string>
+    <string name="mashup_loading">Завантаження…</string>
+    <string name="mashup_deck_n">Дека %1$d</string>
+    <string name="mashup_load_song_cd">Завантажити трек</string>
+    <string name="mashup_no_song_loaded">Трек не завантажено</string>
+    <string name="mashup_artist_placeholder">…</string>
+    <string name="mashup_stem_separation_unavailable">Розділення стемів поки недоступне.</string>
+    <string name="mashup_volume">Гучність</string>
+    <string name="mashup_speed">Швидкість</string>
+    <string name="mashup_crossfader">Кросфейдер</string>
+    <string name="mashup_deck_1">Дека 1</string>
+    <string name="mashup_deck_2">Дека 2</string>
+    <string name="mashup_select_song_title">Обрати трек</string>
+    <string name="mashup_cd_play_pause">Грати/Пауза</string>
+    <string name="mashup_cd_song_cover">Обкладинка</string>
+    <string name="mashup_speed_multiplier">x%1$.2f</string>
+</resources>

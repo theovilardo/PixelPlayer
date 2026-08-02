@@ -98,7 +98,7 @@
     <string name="multi_artist_info_body">
         PixelPlayer розділяє теги виконавців за символами (/ , ; &amp;) та словами (feat., ft., vs., x). Слова шукаються без урахування регістру.
         «Витягувати з назви» визначає патерни на кшталт (feat. Artist) у назвах.
-        Зворотній слеш (\) екранує символи-роздільники.
+        Зворотній слеш (\\) екранує символи-роздільники.
     </string>
     <string name="multi_artist_examples_title">Приклади</string>
     <string name="multi_artist_example_arrow">→</string>
@@ -111,7 +111,7 @@
     <string name="multi_artist_ex_3_out">Marshmello, Bastille</string>
     <string name="multi_artist_ex_4_in">«Song (ft. B)» — A</string>
     <string name="multi_artist_ex_4_out">A, B</string>
-    <string name="multi_artist_ex_5_in">«AC\DC»</string>
+    <string name="multi_artist_ex_5_in">«AC\\DC»</string>
     <string name="multi_artist_ex_5_out">AC/DC (екрановано)</string>
 
     <!-- Character Delimiters -->
@@ -287,7 +287,7 @@
     <string name="settings_hifi_mode_title">Hi-Fi</string>
     <string name="settings_hifi_mode_supported_subtitle">32-біт float. Вимкніть, якщо заїкається.</string>
     <string name="settings_hifi_mode_unsupported_subtitle">Не підтримується (PCM_FLOAT недоступний).</string>
-    <string name="settings_persistent_shuffle_title">Запам'ятати перемішування</string>
+    <string name="settings_persistent_shuffle_title">Запам\'ятати перемішування</string>
     <string name="settings_persistent_shuffle_subtitle">Зберігати стан shuffle після закриття.</string>
     <string name="settings_show_queue_history_title">Історія черги</string>
     <string name="settings_show_queue_history_subtitle">Показувати вже зіграні треки в черзі.</string>
@@ -335,7 +335,7 @@
     <string name="settings_preset_professional_curator_name">Професійний куратор</string>
     <string name="settings_preset_professional_curator_prompt">Ви — «Vibe-Engine», світовий музичний куратор. Створюйте бездоганні сети з плавними переходами, гармонійною сумісністю та балансом між улюбленим і новим.</string>
     <string name="settings_preset_creative_maverick_name">Креативний маверик</string>
-    <string name="settings_preset_creative_maverick_prompt">Ви — авангардний музичний дослідник. Руйнуйте жанрові межі, знаходячи неочевидні зв'язки. Пріоритет — рідкісні треки та експериментальні текстури.</string>
+    <string name="settings_preset_creative_maverick_prompt">Ви — авангардний музичний дослідник. Руйнуйте жанрові межі, знаходячи неочевидні зв\'язки. Пріоритет — рідкісні треки та експериментальні текстури.</string>
     <string name="settings_preset_strict_librarian_name">Суворий бібліотекар</string>
     <string name="settings_preset_strict_librarian_prompt">Ви — хірургічно точний архітектор бази даних. Логіка базується на абсолютній точності метаданих та суворій відповідності категоріям.</string>
     <string name="settings_preset_atmospheric_guide_name">Атмосферний гід</string>
@@ -375,7 +375,7 @@
     <string name="settings_restore_modules_selected">%1$d з %2$d модулів</string>
     <string name="settings_import_recent_backups_section">Недавні бекапи</string>
     <string name="settings_import_no_recent_title">Немає недавніх</string>
-    <string name="settings_import_no_recent_subtitle">Тут з'являться раніше імпортовані бекапи.</string>
+    <string name="settings_import_no_recent_subtitle">Тут з\'являться раніше імпортовані бекапи.</string>
     <string name="settings_import_backup_entries">%1$d записів · Замінить поточні дані</string>
     <string name="settings_action_export_pxpl">Експортувати .pxpl</string>
     <string name="settings_action_restore_selected">Відновити вибране</string>
@@ -501,7 +501,7 @@
     <string name="settings_exp_drag_release_subtitle">Перемикати лише після відпускання жесту.</string>
     <string name="settings_exp_expand_threshold_title">Поріг розгортання</string>
     <string name="settings_exp_expand_threshold_subtitle">Наскільки розгорнути аркуш перед показом.</string>
-    <string name="settings_exp_content_appears_at">Вміст з'являється на %1$d%%</string>
+    <string name="settings_exp_content_appears_at">Вміст з\'являється на %1$d%%</string>
     <string name="settings_exp_apply_on_close_title">Також при закритті</string>
     <string name="settings_exp_apply_on_close_subtitle">Використовувати поріг закриття для повернення плейсхолдерів.</string>
     <string name="settings_exp_close_threshold_title">Поріг закриття</string>
@@ -524,7 +524,7 @@
     <string name="settings_devcaps_metric_formats">Формати</string>
     <string name="settings_devcaps_metric_hw_decoders">HW-декодери</string>
     <string name="settings_devcaps_metric_local_music">Локальні треки</string>
-    <string name="settings_devcaps_storage_title">Пам'ять</string>
+    <string name="settings_devcaps_storage_title">Пам\'ять</string>
     <string name="settings_devcaps_storage_music_size">Музика</string>
     <string name="settings_devcaps_storage_music_count">%1$d локальних треків</string>
     <string name="settings_devcaps_storage_available">Вільно</string>
@@ -545,7 +545,7 @@
     <string name="settings_devcaps_hifi_pcm_float_supporting">32-біт float вихід</string>
     <string name="settings_devcaps_low_latency_title">Низька затримка</string>
     <string name="settings_devcaps_pro_audio_supporting">Pro Audio</string>
-    <string name="settings_devcaps_memory_title">Пам'ять</string>
+    <string name="settings_devcaps_memory_title">Пам\'ять</string>
     <string name="settings_devcaps_memory_available_of">вільно з %1$s</string>
     <string name="settings_devcaps_offload_title">Offload-формати</string>
     <string name="settings_devcaps_offload_empty">Жоден формат не підтримує апаратний offload.</string>
@@ -625,11 +625,11 @@
     <string name="about_signal_open_source">Open source</string>
     <string name="about_signal_community_first">Спільнота</string>
     <string name="about_signal_material3">Material 3</string>
-    <string name="about_no_contributors">Зараз немає контриб'юторів. Спробуйте пізніше.</string>
+    <string name="about_no_contributors">Зараз немає контриб\'юторів. Спробуйте пізніше.</string>
     <string name="about_maintainer_title">Розробник</string>
     <string name="about_maintainer_subtitle">Людина за PixelPlayer.</string>
     <string name="about_spotlight_title">Спільнота</string>
-    <string name="about_spotlight_subtitle">Визнання ключовим контриб'юторам.</string>
+    <string name="about_spotlight_subtitle">Визнання ключовим контриб\'юторам.</string>
     <string name="about_licenses_title">Ліцензії</string>
     <string name="about_licenses_subtitle">Атрибуція залежностей та ранніх внесків.</string>
     <string name="about_open_source_licenses">Open source ліцензії</string>
@@ -639,7 +639,7 @@
     <string name="third_party_notices_title">Сторонні нотиси</string>
     <string name="third_party_notices_close">Закрити</string>
     <string name="third_party_notices_load_error">Не вдалося завантажити сторонній нотис.</string>
-    <string name="about_contributors_section_title">Контриб'ютори</string>
+    <string name="about_contributors_section_title">Контриб\'ютори</string>
     <string name="about_contributors_section_subtitle">Актуальний список з GitHub.</string>
     <string name="about_contributions_format">%1$d внесків</string>
     <string name="about_github_label">GitHub</string>

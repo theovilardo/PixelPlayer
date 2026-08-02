@@ -39,7 +39,7 @@
     <string name="library_sort_toggle_playlist_view">Вигляд плейлиста</string>
     <string name="library_view_mode_grid">Сітка</string>
     <string name="library_view_mode_list">Список</string>
-    <string name="library_storage_internal">Пам'ять</string>
+    <string name="library_storage_internal">Пам\'ять</string>
     <string name="library_storage_sd_card">SD-карта</string>
     <string name="library_storage_sd_card_unavailable">SD-карта недоступна.</string>
     <string name="library_sort_section_cloud">Хмара</string>
@@ -100,17 +100,17 @@
     <string name="library_empty_songs_online_title">Хмарних треків немає</string>
     <string name="library_empty_songs_online_subtitle">Синхронізуйте Telegram/NetEase або перейдіть до локальних.</string>
     <string name="library_empty_albums_all_title">Альбомів немає</string>
-    <string name="library_empty_albums_all_subtitle">Альбоми з'являться після групування треків.</string>
+    <string name="library_empty_albums_all_subtitle">Альбоми з\'являться після групування треків.</string>
     <string name="library_empty_albums_offline_title">Локальних альбомів немає</string>
     <string name="library_empty_albums_offline_subtitle">Потрібні локальні треки для створення альбомів.</string>
     <string name="library_empty_albums_online_title">Хмарних альбомів немає</string>
-    <string name="library_empty_albums_online_subtitle">Хмарні альбоми з'являться після синхронізації.</string>
+    <string name="library_empty_albums_online_subtitle">Хмарні альбоми з\'являться після синхронізації.</string>
     <string name="library_empty_artists_all_title">Виконавців немає</string>
-    <string name="library_empty_artists_all_subtitle">Виконавці з'являться після індексації треків.</string>
+    <string name="library_empty_artists_all_subtitle">Виконавці з\'являться після індексації треків.</string>
     <string name="library_empty_artists_offline_title">Локальних виконавців немає</string>
     <string name="library_empty_artists_offline_subtitle">Немає метаданих виконавців для локальних треків.</string>
     <string name="library_empty_artists_online_title">Хмарних виконавців немає</string>
-    <string name="library_empty_artists_online_subtitle">Хмарні виконавці з'являться після синхронізації.</string>
+    <string name="library_empty_artists_online_subtitle">Хмарні виконавці з\'являться після синхронізації.</string>
     <string name="library_empty_liked_all_title">Уподобаних треків немає</string>
     <string name="library_empty_liked_all_subtitle">Торкніться серця під час відтворення, щоб зберегти.</string>
     <string name="library_empty_liked_offline_title">Локальних уподобаних немає</string>
@@ -118,7 +118,7 @@
     <string name="library_empty_liked_online_title">Хмарних уподобаних немає</string>
     <string name="library_empty_liked_online_subtitle">Уподобайте треки з Telegram/NetEase.</string>
     <string name="library_empty_folders_title">Папок не знайдено</string>
-    <string name="library_empty_folders_subtitle">Тут з'являться папки з музикою з пам'яті.</string>
+    <string name="library_empty_folders_subtitle">Тут з\'являться папки з музикою з пам\'яті.</string>
     <string name="library_empty_playlists_title">Плейлистів ще немає</string>
     <string name="library_empty_playlists_subtitle">Створіть перший плейлист.</string>
 
@@ -322,7 +322,7 @@
     <string name="batch_edit_toolbar_title">Редагувати %d треків</string>
     <string name="batch_edit_info_message">Оновляться лише змінені поля. Залиште порожнім, щоб зберегти поточне.</string>
     <string name="batch_edit_mixed_values">(Різні значення)</string>
-    <string name="batch_edit_optional">(Необов'язково)</string>
+    <string name="batch_edit_optional">(Необов\'язково)</string>
     <string name="batch_edit_success">Оновлено %d треків</string>
     <string name="batch_edit_partial_success">Оновлено %1$d з %2$d. Деякі файли недоступні.</string>
     <string name="batch_edit_failed">Помилка оновлення</string>
@@ -351,7 +351,7 @@
     <string name="playlist_creation_ai_generating">Генерація…</string>
     <string name="playlist_creation_ai_generate">Згенерувати</string>
     <string name="playlist_creation_ai_section_intent">Задум</string>
-    <string name="playlist_creation_ai_name_optional">Назва (необов'язково)</string>
+    <string name="playlist_creation_ai_name_optional">Назва (необов\'язково)</string>
     <string name="playlist_creation_ai_feel_label">Який настрій?</string>
     <string name="playlist_creation_ai_feel_placeholder">Напр.: захід сонця з теплими синтами</string>
     <string name="playlist_creation_ai_section_direction">Напрям</string>
@@ -366,16 +366,16 @@
     <string name="playlist_creation_ai_min_songs">Мін. треків</string>
     <string name="playlist_creation_ai_max_songs">Макс. треків</string>
     <string name="playlist_creation_ai_section_filters">Фільтри</string>
-    <string name="playlist_creation_ai_prioritize_genres">Пріоритетні жанри (необов'язково)</string>
+    <string name="playlist_creation_ai_prioritize_genres">Пріоритетні жанри (необов\'язково)</string>
     <string name="playlist_creation_ai_prioritize_genres_placeholder">напр. synthwave, indie pop</string>
-    <string name="playlist_creation_ai_avoid_genres">Уникати жанрів (необов'язково)</string>
+    <string name="playlist_creation_ai_avoid_genres">Уникати жанрів (необов\'язково)</string>
     <string name="playlist_creation_ai_avoid_genres_placeholder">напр. metal, hard trap</string>
-    <string name="playlist_creation_ai_preferred_language">Мова (необов'язково)</string>
+    <string name="playlist_creation_ai_preferred_language">Мова (необов\'язково)</string>
     <string name="playlist_creation_ai_preferred_language_placeholder">напр. English, Spanish, instrumental</string>
     <string name="playlist_creation_ai_prioritize_favorites">Пріоритет уподобаних</string>
     <string name="playlist_creation_ai_avoid_explicit">Без нецензурної лексики</string>
     <string name="playlist_creation_ai_section_prompt_preview">Попередній перегляд</string>
-    <string name="playlist_creation_ai_prompt_preview_empty">Тут з'явиться підсумок запиту.</string>
+    <string name="playlist_creation_ai_prompt_preview_empty">Тут з\'явиться підсумок запиту.</string>
     <string name="playlist_creation_ai_hero_title">Точний підбір</string>
     <string name="playlist_creation_ai_hero_subtitle">Задайте настрій, активність та обмеження.</string>
     <string name="playlist_creation_ai_hero_library_note">AI використовує лише треки з вашої бібліотеки.</string>
@@ -439,7 +439,7 @@
     <string name="playlist_sheet_search_playlists_hint">Пошук плейлистів…</string>
     <string name="playlist_sheet_song_added_to_playlists">Треки додано</string>
     <string name="playlist_sheet_created_and_songs_added">Плейлист створено та треки додано</string>
-    <string name="playlist_sheet_internal_storage">Пам'ять пристрою</string>
+    <string name="playlist_sheet_internal_storage">Пам\'ять пристрою</string>
 
     <!-- SongPickerBottomSheet -->
     <string name="song_picker_title">Додати треки</string>
@@ -451,10 +451,10 @@
     <string name="song_picker_load_more">Завантажити ще</string>
 
     <!-- Merge Playlists Dialog -->
-    <string name="merge_playlists_dialog_title">Об'єднати</string>
-    <string name="merge_playlists_dialog_prompt">Назва об'єднаного плейлиста:</string>
-    <string name="merge_playlists_dialog_placeholder">Об'єднаний плейлист</string>
-    <string name="merge_playlists_dialog_body">Об'єднати %1$d плейлистів в один.</string>
+    <string name="merge_playlists_dialog_title">Об\'єднати</string>
+    <string name="merge_playlists_dialog_prompt">Назва об\'єднаного плейлиста:</string>
+    <string name="merge_playlists_dialog_placeholder">Об\'єднаний плейлист</string>
+    <string name="merge_playlists_dialog_body">Об\'єднати %1$d плейлистів в один.</string>
 
     <!-- PlayerViewModel -->
     <string name="player_view_model_no_valid_songs">Немає треків для відтворення</string>

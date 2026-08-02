@@ -93,7 +93,7 @@
     <string name="common_import">Імпортувати</string>
     <string name="common_delete">Видалити</string>
     <string name="common_export">Експортувати</string>
-    <string name="common_merge">Об'єднати</string>
+    <string name="common_merge">Об\'єднати</string>
     <string name="common_rename">Перейменувати</string>
     <string name="common_create">Створити</string>
     <string name="common_lyrics">Текст</string>
@@ -120,7 +120,7 @@
     <string name="common_finish">Завершити</string>
     <string name="common_reset_defaults">Скинути</string>
     <string name="common_export_all">Експортувати все</string>
-    <string name="common_merge_all">Об'єднати все</string>
+    <string name="common_merge_all">Об\'єднати все</string>
     <string name="common_share_all">Надіслати все</string>
     <string name="common_play_album">Грати альбом</string>
     <string name="common_shuffle_play_album">Перемішати альбом</string>

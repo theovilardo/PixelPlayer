@@ -189,7 +189,7 @@
     <string name="lyrics_not_found">Текст не знайдено</string>
     <string name="lyrics_custom_search_hint">Автопошук не дав результатів. Відредагуйте назву чи виконавця та спробуйте ще.</string>
     <string name="lyrics_custom_search_field_title">Назва треку</string>
-    <string name="lyrics_custom_search_field_artist">Виконавець (необов'язково)</string>
+    <string name="lyrics_custom_search_field_artist">Виконавець (необов\'язково)</string>
     <string name="lyrics_found_n_matches_format">Знайдено %d варіант(ів)</string>
     <string name="lyrics_synced_badge">СИНХР</string>
     <string name="lyrics_artist_album_line">%1$s • %2$s</string>

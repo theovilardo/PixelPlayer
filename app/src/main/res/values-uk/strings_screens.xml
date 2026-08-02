@@ -37,7 +37,7 @@
     <string name="setup_excluded_folders_title">Виключені папки</string>
     <string name="setup_excluded_folders_description">За замовчуванням сканується все. Оберіть папки, які ігнорувати.</string>
     <string name="setup_choose_folders_ignore">Обрати папки для ігнорування</string>
-    <string name="setup_toast_grant_storage_first">Спочатку надайте доступ до пам'яті</string>
+    <string name="setup_toast_grant_storage_first">Спочатку надайте доступ до пам\'яті</string>
     <string name="setup_theme_title">Тема</string>
     <string name="setup_theme_subtitle">Оберіть вигляд перед початком.</string>
     <string name="setup_theme_dark_title">Темна</string>

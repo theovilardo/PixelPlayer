@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <!-- Player UI & Playback Controls -->
+    <string name="player_cd_collapse">Згорнути плеєр</string>
+    <string name="player_now_playing">Зараз грає</string>
+    <string name="player_cd_cloud_stream">Хмарний стрім</string>
+    <string name="player_cd_cast">Трансляція</string>
+    <string name="player_cd_bluetooth">Bluetooth</string>
+    <string name="player_cd_local_playback">Локальне відтворення</string>
+    <string name="player_connecting">Підключення…</string>
+    <string name="player_cd_open_queue">Відкрити чергу</string>    
+
+    <!-- CastBottomSheet -->
+    <string name="cast_perm_title">Підготовка до підключення</string>
+    <string name="cast_perm_body">Дозвольте доступ до пристроїв поруч та Wi‑Fi для синхронізації трансляцій, Bluetooth та динаміків.</string>
+    <string name="cast_perm_nearby_title">Пристрої поруч</string>
+    <string name="cast_perm_nearby_desc">Потрібно для керування Bluetooth-аудіо.</string>
+    <string name="cast_perm_location_title">Геолокація для Wi‑Fi</string>
+    <string name="cast_perm_location_desc">Android потребує геолокацію для визначення мережі Wi‑Fi (SSID) та пошуку пристроїв.</string>
+    <string name="cast_allow_access">Дозволити</string>
+    <string name="cast_perm_footer">Ці дозволи використовуються лише для підключення пристроїв та синхронізації аудіо.</string>
+    <string name="cast_title_connect">Підключити</string>
+    <string name="cast_scanning_nearby">Пошук…</string>
+    <string name="cast_subtitle_session">Сеанс трансляції</string>
+    <string name="cast_connecting">Підключення</string>
+    <string name="cast_connected">Підключено</string>
+    <string name="cast_this_phone">Цей телефон</string>
+    <string name="cast_bluetooth_audio">Bluetooth-аудіо</string>
+    <string name="cast_local_playback">Локально</string>
+    <string name="cast_playing">Грає</string>
+    <string name="cast_paused">Пауза</string>
+    <string name="cast_volume_device">Гучність пристрою</string>
+    <string name="cast_volume_phone">Гучність телефону</string>
+    <string name="cast_volume_levels">%1$d/%2$d</string>
+    <string name="cast_cd_battery">Заряд</string>
+    <string name="cast_cd_volume_level">Рівень гучності</string>
+    <string name="cast_disconnect">Відключити</string>
+    <string name="cast_connectivity">Підключення</string>
+    <string name="cast_turn_on_wifi_bt">Увімкніть Wi‑Fi або Bluetooth</string>
+    <string name="cast_cd_refresh_connections">Оновити</string>
+    <string name="cast_wifi">Wi‑Fi</string>
+    <string name="cast_wifi_off">Вимк.</string>
+    <string name="cast_wifi_on">Увімк.</string>
+    <string name="cast_wifi_connected">Підключено</string>
+    <string name="cast_bluetooth">Bluetooth</string>
+    <string name="cast_bt_off">Вимк.</string>
+    <string name="cast_bt_on">Увімк.</string>
+    <string name="cast_bt_connected">Підключено</string>
+    <string name="cast_nearby_devices">Пристрої поруч</string>
+    <string name="cast_cd_refresh_devices">Оновити</string>
+    <string name="cast_status_connected">Підключено</string>
+    <string name="cast_status_connecting">Підключення</string>
+    <string name="cast_status_available_connect">Доступно</string>
+    <string name="cast_status_available">Доступно</string>
+    <string name="cast_connecting_ellipsis">Підключення...</string>
+    <string name="cast_searching">Пошук пристроїв…</string>
+    <string name="cast_searching_hint">Переконайтесь, що ТВ чи колонка увімкнені та в одній мережі Wi‑Fi.</string>
+    <string name="cast_tab_controls">Керування</string>
+    <string name="cast_tab_devices">Пристрої</string>
+
+    <!-- Casting & Remote Playback -->
+    <string name="cast_server_channel_name">Трансляція медіа</string>
+    <string name="cast_server_notification_title">Трансляція на пристрій</string>
+    <string name="cast_server_notification_text">Передача медіа на пристрій</string>
+    <string name="cast_server_foreground_error">%1$s: %2$s</string>
+    <string name="cast_seek_unavailable_for_format">Перемотування тимчасово недоступне для цього формату — може призвести до збою.</string>
+
+    <!-- Sleep Timer -->
+    <string name="sleep_timer_title">Таймер сну</string>
+    <string name="sleep_timer_zero_minutes_format">Таймер</string>
+    <string name="sleep_timer_n_minutes_format">%1$d хв</string>
+    <string name="sleep_timer_set_for_minutes_toast">Таймер на %1$d хв.</string>
+    <string name="sleep_timer_play_count_one_time">1 раз</string>
+    <plurals name="sleep_timer_play_count_n_times">
+        <item quantity="one">%d раз</item>
+        <item quantity="other">%d разів</item>
+    </plurals>
+    <string name="sleep_timer_play_count_label">Повторів: %1$s</string>
+    <string name="sleep_timer_end_of_current_track">Кінець треку</string>
+    <string name="sleep_timer_eot_toast">Відтворення зупиниться в кінці треку.</string>
+    <string name="sleep_timer_cd_switch_on">Увімкнути</string>
+    <string name="sleep_timer_custom_time">Свій час</string>
+    <string name="sleep_timer_cancel_timer">Скасувати</string>
+    <string name="sleep_timer_display_eot">Кінець треку</string>
+    <string name="sleep_timer_cancelled_toast">Таймер скасовано.</string>
+    <string name="sleep_timer_eot_no_song_toast">Немає активного треку для таймера.</string>
+    <string name="sleep_timer_eot_song_changed_toast">Таймер вимкнено: трек змінився з %1$s на %2$s.</string>
+    <string name="sleep_timer_label_previous_track">Попередній</string>
+    <string name="sleep_timer_label_current_track">Поточний</string>
+    <string name="sleep_timer_ui_set_custom_duration">Встановити час</string>
+
+    <!-- QueueBottomSheet -->
+    <string name="queue_next_up_label">Далі</string>
+    <string name="queue_tracks_empty">Черга порожня.</string>
+    <plurals name="queue_tracks_lined_up">
+        <item quantity="one">1 трек у черзі.</item>
+        <item quantity="other">%d треків у черзі.</item>
+    </plurals>
+    <string name="queue_source_fallback_label">Черга</string>
+    <string name="queue_empty_label">Черга порожня.</string>
+    <string name="queue_cd_reorder_song">Змінити порядок</string>
+    <string name="queue_cd_toggle_shuffle_action">Перемішати</string>
+    <string name="queue_cd_toggle_repeat_action">Повтор</string>
+    <string name="queue_cd_sleep_timer_action">Таймер сну</string>
+    <string name="queue_cd_more_action">Більше</string>
+    <string name="queue_action_locate_current_song">Знайти поточний трек</string>
+    <string name="queue_action_clear_queue">Очистити чергу</string>
+    <string name="queue_dialog_clear_queue_title">Очистити чергу?</string>
+    <string name="queue_dialog_clear_queue_message">Очистити всі треки з черги, крім поточного?</string>
+    <string name="queue_action_save_as_playlist">Зберегти як плейлист</string>
+    <string name="queue_save_playlist_named">Черга %1$s</string>
+    <string name="queue_save_playlist_current">Поточна черга</string>
+    <string name="queue_cd_dismiss_song">Прибрати</string>
+    <string name="queue_song_removed">прибрано</string>
+    <string name="queue_save_as_playlist_sheet_title">Зберегти як плейлист</string>
+    <string name="queue_save_as_playlist_deselect_all">Зняти все</string>
+    <string name="queue_save_as_playlist_name_label">Назва</string>
+    <string name="queue_save_as_playlist_search_placeholder">Пошук треків…</string>
+    <string name="queue_save_as_playlist_search_no_match">Немає результатів для «%1$s»</string>
+    <plurals name="queue_save_as_playlist_n_songs_selected">
+        <item quantity="one">%d трек вибрано</item>
+        <item quantity="other">%d треків вибрано</item>
+    </plurals>
+    <string name="queue_save_as_playlist_format">Зберегти як: %1$s</string>
+    <string name="queue_save_as_playlist_name_placeholder">Назва плейлиста</string>
+    <string name="queue_cd_remove_from_playlist">Видалити з плейлиста</string>
+    <string name="queue_more_options_for_song">Опції: %1$s</string>
+
+    <!-- LyricsSheet -->
+    <string name="lyrics_title">Текст пісні</string>
+    <string name="lyrics_loading">Завантаження…</string>
+    <string name="lyrics_mode_synced">Синхронізований</string>
+    <string name="lyrics_mode_static">Звичайний</string>
+    <string name="lyrics_options">Опції тексту</string>
+    <string name="lyrics_offset_minus_half">−.5</string>
+    <string name="lyrics_offset_minus_point_one">−.1</string>
+    <string name="lyrics_offset_plus_point_one">+.1</string>
+    <string name="lyrics_offset_plus_half">+.5</string>
+    <string name="lyrics_offset_zero">0с</string>
+    <string name="lyrics_offset_seconds_fmt">%1$+.1fс</string>
+
+    <!-- LyricsRepository -->
+    <string name="lyrics_failed_to_search">Помилка пошуку тексту</string>
+    <string name="lyrics_failed_to_fetch_from_remote">Помилка завантаження тексту</string>
+    <string name="lyrics_fetch_timeout">Час очікування вичерпано. Перевірте інтернет.</string>
+    <string name="lyrics_network_error">Помилка мережі. Перевірте інтернет.</string>
+    <string name="lyrics_server_error">Помилка сервера (код %d). Спробуйте пізніше.</string>
+
+    <!-- LyricsStateHolder -->
+    <string name="lyrics_already_available">Текст вже є. Онлайн-пошук пропущено.</string>
+    <string name="lyrics_embedded_already_available">Вбудований текст знайдено. Онлайн-пошук пропущено.</string>
+    <string name="lyrics_local_lrc_already_available">Локальний .lrc знайдено. Онлайн-пошук пропущено.</string>
+
+    <!-- LyricsMoreBottomSheet -->
+    <string name="lyrics_save_title">Зберегти текст</string>
+    <string name="lyrics_translate_via_ai">Перекласти через AI</string>
+    <string name="lyrics_translate_already_translated">Цей текст уже має переклад</string>
+    <string name="lyrics_translate_already_in_target_language">Текст уже цією мовою</string>
+    <string name="lyrics_translate_api_not_configured">API не налаштовано</string>
+    <string name="lyrics_translate_success">Переклад готовий!</string>
+    <string name="lyrics_translate_progress">Переклад…</string>
+    <string name="lyrics_reset_imported">Скинути імпортований текст</string>
+    <string name="lyrics_reset_dialog_title">Скинути текст?</string>
+    <string name="lyrics_reset_dialog_message">Скинути текст для цього треку?</string>
+    <string name="lyrics_appearance_section">Вигляд</string>
+    <string name="lyrics_appearance_alignment">Вирівнювання</string>
+    <string name="lyrics_appearance_align_left">Зліва</string>
+    <string name="lyrics_appearance_align_center">По центру</string>
+    <string name="lyrics_appearance_align_right">Справа</string>
+    <string name="lyrics_controls_section">Керування</string>
+    <string name="lyrics_controls_adjust_sync">Налаштувати синхронізацію</string>
+    <string name="lyrics_controls_hide_sync">Приховати синхронізацію</string>
+    <string name="lyrics_controls_show_romanization">Романізація</string>
+    <string name="lyrics_controls_show_translations">Переклади</string>
+    <string name="lyrics_controls_disable_immersive_once">Вимкнути immersive (разово)</string>
+    <string name="lyrics_controls_keep_screen_on">Екран увімкнено</string>
+
+    <!-- LyricsSheet save dialog -->
+    <string name="lyrics_save_dialog_title">Зберегти текст</string>
+    <string name="lyrics_save_dialog_message">Виберіть версію:</string>
+    <string name="lyrics_save_synced">Синхронізований (з часом)</string>
+    <string name="lyrics_save_plain">Звичайний (лише текст)</string>
+
+    <!-- FetchLyricsDialog -->
+    <string name="lyrics_search_online_prompt">Шукати текст онлайн?</string>
+    <string name="lyrics_fetch_show_options_title">Показувати опції</string>
+    <string name="lyrics_fetch_show_options_subtitle">Завжди відкривати вибір замість авто-застосування першого результату</string>
+    <string name="lyrics_searching">Пошук тексту…</string>
+    <string name="lyrics_not_found">Текст не знайдено</string>
+    <string name="lyrics_custom_search_hint">Автопошук не дав результатів. Відредагуйте назву чи виконавця та спробуйте ще.</string>
+    <string name="lyrics_custom_search_field_title">Назва треку</string>
+    <string name="lyrics_custom_search_field_artist">Виконавець (необов'язково)</string>
+    <string name="lyrics_found_n_matches_format">Знайдено %d варіант(ів)</string>
+    <string name="lyrics_synced_badge">СИНХР</string>
+    <string name="lyrics_artist_album_line">%1$s • %2$s</string>
+    <string name="lyrics_provided_by">Текст надано</string>
+    <string name="lyrics_lrclib_uri">https://lrclib.net/</string>
+</resources>

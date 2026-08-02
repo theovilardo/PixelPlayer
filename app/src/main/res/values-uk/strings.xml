@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PixelPlayer</string>
+    <string name="app_tagline">Музичний плеєр</string>
+    <string name="app_name_change_title">Зміна назви</string>
+    <string name="app_name_change_message">Ми змінили назву з PixelPlay на PixelPlayer через питання торгової марки. Грайте далі!</string>
+    <string name="app_name_change_do_not_show_again">Більше не показувати</string>
+
+    <!-- Navigation Bar Labels -->
+    <string name="nav_bar_home">Головна</string>
+    <string name="nav_bar_search">Пошук</string>
+    <string name="nav_bar_library">Бібліотека</string>
+
+    <!-- All files access dialog-->
+    <string name="all_files_access_title">Потрібен особливий дозвіл</string>
+    <string name="all_files_access_description">Для редагування метаданих (.mp3) PixelPlayer потребує доступу до всіх файлів. Це дозволяє змінювати теги треків напряму. Надайте цей дозвіл на наступному екрані.</string>
+    <string name="grant_permission_button">Надати дозвіл</string>
+
+    <!-- External Player -->
+    <string name="external_queue_label">Швидке відтворення</string>
+    <string name="external_playback_error">Не вдалося відкрити файл.</string>
+    <string name="external_action_open_full_player">Відкрити повний плеєр</string>
+
+    <!-- App Shortcuts -->
+    <string name="shortcut_shuffle_short">Перемішати</string>
+    <string name="shortcut_shuffle_long">Перемішати всі треки</string>
+    <string name="tile_shuffle_all">Перемішати все</string>
+    <string name="tile_last_playlist">Останній плейлист</string>
+    <string name="tile_last_playlist_unavailable">Немає доступного плейлиста</string>
+
+    <!-- Playstore Announcement -->
+    <string name="playstore_dialog_action_open">Відкрити Play Store</string>
+    <string name="playstore_dialog_action_continue_beta">Продовжити бета</string>
+    <string name="playstore_dialog_link_pending">Посилання на Play Store буде ввімкнено з конфігурації GitHub.</string>
+    <string name="playstore_dialog_title">PixelPlayer тепер у Google Play</string>
+    <string name="playstore_dialog_body">Використовуйте стабільний канал у Google Play для релізних оновлень, поки ми підтримуємо бета-збірки.</string>
+    <string name="playstore_dialog_app_name">PixelPlayer</string>
+    <string name="playstore_dialog_release_announcement">Оголошення про реліз</string>
+    <string name="playstore_dialog_coming_soon">Скоро</string>
+
+    <!-- Brick breaker -->
+    <string name="easter_egg_thank_you">Дякуємо за використання PixelPlayer!</string>
+    <string name="brick_high">РЕКОРД %1$d</string>
+    <string name="brick_cd_close">Закрити</string>
+    <string name="brick_stat_score">РАХУНОК</string>
+    <string name="brick_stat_lvl">РІВ %1$d</string>
+    <string name="brick_stat_lives">ЖИТТЯ</string>
+    <string name="brick_level_complete">РІВЕНЬ ПРОЙДЕНО!</string>
+    <string name="brick_game_over">ГРУ ЗАКІНЧЕНО</string>
+    <string name="brick_score_line">Рахунок: %1$d</string>
+    <string name="brick_try_again">Спробувати знову?</string>
+    <string name="brick_next_level">Наступний рівень</string>
+    <string name="brick_restart">Перезапустити</string>
+    <string name="brick_tap_relaunch">ТОРКНІТЬСЯ ДЛЯ ПЕРЕЗАПУСКУ</string>
+    <string name="brick_play_random">Грати випадкове</string>
+    <string name="brick_title">Brick Breaker</string>
+    <string name="brick_high_score">РЕКОРД  %1$d</string>
+    <string name="brick_play">Грати</string>
+    <string name="brick_drag_paddle">Перетягніть для руху платформи</string>
+
+    <!-- Music Service -->
+    <string name="close_notification_player">Закрити плеєр</string>
+    <string name="service_processing_action">Обробка дії…</string>
+    <string name="player_playback_error">Помилка: %1$s</string>
+
+    <!-- Common Text & Labels -->
+    <string name="common_back">Назад</string>
+    <string name="common_ok">OK</string>
+    <string name="common_cancel">Скасувати</string>
+    <string name="common_dismiss">Закрити</string>
+    <string name="common_error">Помилка</string>
+    <string name="common_search">Пошук</string>
+    <string name="common_clear_search">Очистити</string>
+    <string name="common_all">Усі</string>
+    <string name="common_confirm">Підтвердити</string>
+    <string name="common_saved">Збережено!</string>
+    <string name="common_selected">Вибрано</string>
+    <string name="common_percentage_text">%1$d%%</string>
+    <string name="common_artist">Виконавець</string>
+    <string name="common_select_all">Обрати все</string>
+    <string name="common_clear">Очистити</string>
+    <string name="common_error_unknown">Невідома помилка</string>
+
+    <!-- Common Actions & Labels -->
+    <string name="common_save">Зберегти</string>
+    <string name="common_done">Готово</string>
+    <string name="common_reset">Скинути</string>
+    <string name="common_apply">Застосувати</string>
+    <string name="common_shuffle">Перемішати</string>
+    <string name="common_copy">Копіювати</string>
+    <string name="common_share">Надіслати</string>
+    <string name="common_undo">Скасувати</string>
+    <string name="common_import">Імпортувати</string>
+    <string name="common_delete">Видалити</string>
+    <string name="common_export">Експортувати</string>
+    <string name="common_merge">Об'єднати</string>
+    <string name="common_rename">Перейменувати</string>
+    <string name="common_create">Створити</string>
+    <string name="common_lyrics">Текст</string>
+    <string name="common_settings">Налаштування</string>
+    <string name="common_album_art">Обкладинка</string>
+    <string name="common_playlist">Плейлист</string>
+    <string name="common_unknown_track">Невідомий трек</string>
+    <string name="common_unknown_artist">Невідомий виконавець</string>
+    <string name="common_unknown_album">Невідомий альбом</string>
+    <string name="common_close">Закрити</string>
+    <string name="common_add">Додати</string>
+    <string name="common_remove">Прибрати</string>
+    <string name="common_play">Грати</string>
+    <string name="common_previous_track">Попередній</string>
+    <string name="common_next_track">Наступний</string>
+    <string name="common_favorite">Уподобане</string>
+    <string name="common_pause">Пауза</string>
+    <string name="common_repeat">Повтор</string>
+    <string name="common_options">Опції</string>
+    <string name="common_shuffle_play">Перемішати та грати</string>
+    <string name="common_more_options_for">Опції: %1$s</string>
+    <string name="common_expand_menu">Розгорнути меню</string>
+    <string name="common_next">Далі</string>
+    <string name="common_finish">Завершити</string>
+    <string name="common_reset_defaults">Скинути</string>
+    <string name="common_export_all">Експортувати все</string>
+    <string name="common_merge_all">Об'єднати все</string>
+    <string name="common_share_all">Надіслати все</string>
+    <string name="common_play_album">Грати альбом</string>
+    <string name="common_shuffle_play_album">Перемішати альбом</string>
+    <string name="common_album_art_for_title">Обкладинка %1$s</string>
+</resources>

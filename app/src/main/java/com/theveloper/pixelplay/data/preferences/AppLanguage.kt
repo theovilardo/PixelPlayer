@@ -10,7 +10,7 @@ enum class AppLanguage(val tag: String, @StringRes val labelRes: Int) {
     GERMAN("de", R.string.settings_language_german),
     SPANISH("es", R.string.settings_language_spanish),
     FRENCH("fr", R.string.settings_language_french),
-    UKRAINIAN("uk", R.string.settings_language_krainian),
+    UKRAINIAN("uk", R.string.settings_language_ukrainian),
     ITALIAN("it", R.string.settings_language_italian),
     KOREAN("ko", R.string.settings_language_korean),
     NORWEGIAN_BOKMAL("nb", R.string.settings_language_norwegian_bokmal),

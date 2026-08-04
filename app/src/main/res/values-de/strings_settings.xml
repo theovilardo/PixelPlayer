@@ -164,6 +164,7 @@
     <string name="settings_app_language_subtitle">Sprache der App-Oberfläche festlegen.</string>
     <string name="settings_language_system">Systemstandard</string>
     <string name="settings_language_english">English</string>
+    <string name="settings_language_ukrainian">українська</string>
     <string name="settings_language_spanish">Español</string>
     <string name="settings_language_german">Deutsch</string>
     <string name="settings_language_french">Français</string>

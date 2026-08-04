@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="glance_widget_description">Адаптивний віджет під розмір</string>
+    <string name="widget_bar_4x1_desc">Компактна панель плеєра</string>
+    <string name="widget_control_4x2_desc">Повне керування з shuffle та repeat</string>
+    <string name="widget_grid_2x2_desc">Мінімалістичний квадратний плеєр</string>
+
+    <string name="widget_tap_to_open">Торкніться, щоб відкрити</string>
+    <string name="widget_album_art">Обкладинка</string>
+    <string name="widget_album_art_placeholder">Заглушка обкладинки</string>
+
+    <string name="widget_tap_to_play">Торкніться, щоб грати</string>
+    <string name="widget_preview_song_title">Назва треку</string>
+    <string name="widget_preview_artist">Виконавець</string>
+
+    <string name="widget_wavy_progress_bar_desc">Прогрес, %1$d відсотків</string>
+</resources>

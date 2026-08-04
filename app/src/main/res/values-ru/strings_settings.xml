@@ -164,6 +164,7 @@
     <string name="settings_app_language_subtitle">Выберите язык интерфейса приложения.</string>
     <string name="settings_language_system">Системный по умолчанию</string>
     <string name="settings_language_english">Английский</string>
+    <string name="settings_language_ukrainian">Украинский</string>
     <string name="settings_language_spanish">Испанский</string>
     <string name="settings_language_german">Немецкий</string>
     <string name="settings_language_french">Французский</string>

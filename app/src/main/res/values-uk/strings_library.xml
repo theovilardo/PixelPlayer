@@ -1,0 +1,566 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <!-- Library Screen -->
+    <string name="library_screen_title">Бібліотека</string>
+    <string name="library_tabs_sheet_title">Вкладки</string>
+    <string name="library_tabs_sheet_subtitle">Перейти до вкладки або змінити порядок.</string>
+    <string name="library_reorder_tabs_label">Змінити порядок</string>
+
+    <!-- Library Tab Names -->
+    <string name="library_tab_songs">Треки</string>
+    <string name="library_tab_albums">Альбоми</string>
+    <string name="library_tab_artists">Виконавці</string>
+    <string name="library_tab_playlists">Плейлисти</string>
+    <string name="library_tab_folders">Папки</string>
+    <string name="library_tab_liked">Уподобані</string>
+
+    <!-- Library Toasts -->
+    <string name="library_toast_playlist_created">Плейлист створено</string>
+    <string name="library_toast_set_ai_provider_api_key_first">Спочатку вкажіть ключ AI</string>
+    <string name="library_toast_set_gemini_api_key_first">Спочатку вкажіть ключ Gemini</string>
+    <string name="library_toast_added_to_queue">Додано в чергу</string>
+    <string name="library_toast_playing_next">Грає далі</string>
+
+    <!-- Library Toolbar & Navigation -->
+    <string name="library_cd_watch_transfer">Передача на годинник</string>
+    <string name="library_cd_open_settings">Налаштування</string>
+    <string name="library_tab_edit">Редагувати</string>
+    <string name="library_cd_reorder_tabs">Змінити порядок вкладок</string>
+    <string name="library_cd_expand_tab_menu">Розгорнути меню</string>
+
+    <!-- Library Multi-Selection & Folders -->
+    <string name="library_toast_max_albums_selection">Макс. %1$d альбомів</string>
+    <string name="library_folder_name_fallback">Папка</string>
+    <string name="library_cd_folder">Папка</string>
+
+    <!-- Library Sort & View Bottom Sheet -->
+    <string name="library_sort_by_title">Сортування</string>
+    <string name="library_sort_section_view">Вигляд</string>
+    <string name="library_sort_toggle_playlist_view">Вигляд плейлиста</string>
+    <string name="library_view_mode_grid">Сітка</string>
+    <string name="library_view_mode_list">Список</string>
+    <string name="library_storage_internal">Пам\'ять</string>
+    <string name="library_storage_sd_card">SD-карта</string>
+    <string name="library_storage_sd_card_unavailable">SD-карта недоступна.</string>
+    <string name="library_sort_section_cloud">Хмара</string>
+    <string name="library_sort_toggle_telegram_channels">Канали Telegram</string>
+    <string name="library_telegram_topics_display_title">Теми</string>
+    <string name="library_telegram_topic_mode_channels">Канали</string>
+    <string name="library_telegram_topic_mode_topics">Теми</string>
+    <string name="library_telegram_topic_mode_both">Обидва</string>
+    <string name="library_cloud_sources_heading">Хмара</string>
+    <string name="library_cloud_only_label">Лише хмара</string>
+
+    <!-- Library AI Metadata Processing -->
+    <string name="library_generating_ai_metadata">AI генерує метадані…</string>
+
+    <!-- Library list errors -->
+    <string name="library_error_loading_songs">Помилка завантаження треків</string>
+    <string name="library_album_detail_error_loading_albums">Помилка завантаження альбомів</string>
+    <string name="library_artist_error_loading_artists">Помилка завантаження виконавців</string>
+    <string name="library_action_retry">Повторити</string>
+
+    <!-- Library empty (paginated) -->
+    <string name="library_no_songs_in_library_message">Треків не знайдено.</string>
+    <string name="library_no_songs_rescan_hint">Скануйте бібліотеку в налаштуваннях, якщо є музика на пристрої.</string>
+    <string name="library_cd_no_songs_in_library">Треків немає</string>
+
+    <!-- Library action row -->
+    <string name="library_action_new">Новий</string>
+    <string name="library_cd_create_new_playlist">Створити плейлист</string>
+    <string name="library_cd_import_m3u_playlist">Імпорт M3U</string>
+    <string name="library_cd_locate_current_song">Знайти поточний трек</string>
+    <string name="library_storage_filter_all_songs">Усі треки</string>
+    <string name="library_storage_filter_online">ХМАРА</string>
+    <string name="library_storage_filter_offline">ЛОКАЛЬНІ</string>
+    <string name="library_cd_sort_options">Параметри сортування</string>
+
+    <!-- Library selection action row -->
+    <string name="library_selection_all">Усі</string>
+    <string name="library_selection_deselect">Зняти</string>
+    <string name="library_selection_more_options">Більше</string>
+
+    <!-- Library Syncing -->
+    <string name="library_sync_scanning">Сканування…</string>
+    <string name="library_sync_processing">Обробка…</string>
+    <string name="library_sync_files_progress">%1$d з %2$d</string>
+    <string name="library_sync_in_progress">Синхронізація…</string>
+    <string name="library_sync_complete">Готово</string>
+    <string name="library_sync_pending">Очікування…</string>
+    <string name="library_syncing">Синхронізація…</string>
+    <string name="library_sync_cache">Очищення кешу…</string>
+    <string name="library_sync_cloud">Синхронізація хмари…</string>
+    <string name="library_sync_lyrics">Сканування текстів…</string>
+
+    <!-- Library Empty State -->
+    <string name="library_empty_songs_all_title">Треків ще немає</string>
+    <string name="library_empty_songs_all_subtitle">Додайте музику або синхронізуйте хмару.</string>
+    <string name="library_empty_songs_offline_title">Локальних треків немає</string>
+    <string name="library_empty_songs_offline_subtitle">Спробуйте інший фільтр або скануйте бібліотеку.</string>
+    <string name="library_empty_songs_online_title">Хмарних треків немає</string>
+    <string name="library_empty_songs_online_subtitle">Синхронізуйте Telegram/NetEase або перейдіть до локальних.</string>
+    <string name="library_empty_albums_all_title">Альбомів немає</string>
+    <string name="library_empty_albums_all_subtitle">Альбоми з\'являться після групування треків.</string>
+    <string name="library_empty_albums_offline_title">Локальних альбомів немає</string>
+    <string name="library_empty_albums_offline_subtitle">Потрібні локальні треки для створення альбомів.</string>
+    <string name="library_empty_albums_online_title">Хмарних альбомів немає</string>
+    <string name="library_empty_albums_online_subtitle">Хмарні альбоми з\'являться після синхронізації.</string>
+    <string name="library_empty_artists_all_title">Виконавців немає</string>
+    <string name="library_empty_artists_all_subtitle">Виконавці з\'являться після індексації треків.</string>
+    <string name="library_empty_artists_offline_title">Локальних виконавців немає</string>
+    <string name="library_empty_artists_offline_subtitle">Немає метаданих виконавців для локальних треків.</string>
+    <string name="library_empty_artists_online_title">Хмарних виконавців немає</string>
+    <string name="library_empty_artists_online_subtitle">Хмарні виконавці з\'являться після синхронізації.</string>
+    <string name="library_empty_liked_all_title">Уподобаних треків немає</string>
+    <string name="library_empty_liked_all_subtitle">Торкніться серця під час відтворення, щоб зберегти.</string>
+    <string name="library_empty_liked_offline_title">Локальних уподобаних немає</string>
+    <string name="library_empty_liked_offline_subtitle">Змініть фільтр або уподобайте локальні треки.</string>
+    <string name="library_empty_liked_online_title">Хмарних уподобаних немає</string>
+    <string name="library_empty_liked_online_subtitle">Уподобайте треки з Telegram/NetEase.</string>
+    <string name="library_empty_folders_title">Папок не знайдено</string>
+    <string name="library_empty_folders_subtitle">Тут з\'являться папки з музикою з пам\'яті.</string>
+    <string name="library_empty_playlists_title">Плейлистів ще немає</string>
+    <string name="library_empty_playlists_subtitle">Створіть перший плейлист.</string>
+
+    <!-- SongInfoBottomSheet, MultiSelectionBottomSheet, PlaylistMultiSelectionBottomSheet -->
+    <string name="song_info_cd_edit_metadata">Редагувати метадані</string>
+    <string name="song_info_action_play">Грати</string>
+    <string name="song_info_cd_play">Відтворити</string>
+    <string name="song_info_action_play_all">Грати все</string>
+    <string name="song_info_cd_play_all">Відтворити все</string>
+    <string name="song_info_cd_add_to_favorites">Додати в уподобані</string>
+    <string name="song_info_cd_add_to_favorites_all">Додати все в уподобані</string>
+    <string name="song_info_cd_remove_from_favorites">Прибрати з уподобаних</string>
+    <string name="song_info_cd_remove_from_favorites_all">Прибрати все з уподобаних</string>
+    <string name="song_info_share_chooser_title">Надіслати файл через</string>
+    <string name="song_info_cd_share_song_file">Надіслати файл</string>
+    <string name="song_info_cd_share_all_as_zip">Надіслати все як ZIP</string>
+    <string name="song_info_error_share_song">Помилка: %1$s</string>
+    <string name="song_info_action_add_to_queue">В чергу</string>
+    <string name="song_info_cd_add_to_queue">Додати в чергу</string>
+    <string name="song_info_action_queue_next">Далі</string>
+    <string name="song_info_cd_queue_next">Грати далі</string>
+    <string name="song_info_cd_add_to_playlist">Додати в плейлист</string>
+    <string name="song_info_action_delete">Видалити</string>
+    <string name="song_info_action_delete_all">Видалити все</string>
+    <string name="song_info_checking_watch">Перевірка годинника</string>
+    <string name="song_info_transferring_percent">Передача %1$d%%</string>
+    <string name="song_info_transferring_to_watch">Передача на годинник</string>
+    <string name="song_info_transfer_in_progress">Передача…</string>
+    <string name="song_info_send_to_watch">На годинник</string>
+    <string name="song_info_watch_unavailable">Годинник недоступний</string>
+    <string name="song_info_cd_send_to_watch">Надіслати на годинник</string>
+    <string name="song_info_cd_watch_unavailable">Годинник недоступний</string>
+    <string name="song_info_set_sound_as_short">Встановити</string>
+    <string name="song_info_set_sound_as_long">Як звук</string>
+    <string name="song_info_cd_set_sound_as">Виберіть тип системного звуку</string>
+    <string name="song_info_tone_picker_title">Використати як</string>
+    <string name="song_info_tone_picker_body">Виберіть, куди встановити цей звук.</string>
+    <string name="song_info_tone_ringtone_title">Рінгтон</string>
+    <string name="song_info_tone_ringtone_subtitle">Вхідні дзвінки</string>
+    <string name="song_info_tone_notification_title">Сповіщення</string>
+    <string name="song_info_tone_notification_subtitle">Повідомлення та сповіщення</string>
+    <string name="song_info_tone_alarm_title">Будильник</string>
+    <string name="song_info_tone_alarm_subtitle">Будильники</string>
+    <string name="song_info_tone_confirm_title">Підтвердити</string>
+    <string name="song_info_tone_confirm_body">Встановити «%1$s» як %2$s?</string>
+    <string name="song_info_tone_confirm_action">Встановити</string>
+    <string name="song_info_tone_success">«%1$s» встановлено як %2$s</string>
+    <string name="song_info_tone_ringtone_label">рінгтон</string>
+    <string name="song_info_tone_notification_label">звук сповіщень</string>
+    <string name="song_info_tone_alarm_label">звук будильника</string>
+    <string name="song_info_ringtone_permission_prompt">Увімкніть «Змінювати системні налаштування», потім поверніться.</string>
+    <string name="song_info_ringtone_permission_missing">Дозвіл не надано.</string>
+    <string name="song_info_ringtone_success">«%1$s» встановлено як рінгтон</string>
+    <string name="song_info_ringtone_local_only">Лише локальні треки можна використовувати як рінгтони.</string>
+    <string name="song_info_ringtone_missing_file">Не вдалося підготувати файл.</string>
+    <string name="song_info_ringtone_failed">Помилка: %1$s</string>
+    <string name="song_info_tab_options">Опції</string>
+    <string name="song_info_tab_options_badge">ОПЦІЇ</string>
+    <string name="song_info_tab_info">Інфо</string>
+    <string name="song_info_tab_info_badge">ІНФО</string>
+    <string name="song_info_duration_label">Тривалість</string>
+    <string name="song_info_genre_label">Жанр</string>
+    <string name="song_info_album_label">Альбом</string>
+    <string name="song_info_artist_label">Виконавець</string>
+    <string name="song_info_audio_format_label">Інфо про трек</string>
+    <string name="song_info_cd_provider">Джерело</string>
+    <string name="song_info_cd_file">Файл</string>
+    <string name="multi_selection_songs_count_upper">%1$d ТРЕКІВ</string>
+    <string name="multi_selection_songs_selected">вибрано</string>
+    <string name="multi_selection_playlists_count_upper">%1$d ПЛЕЙЛИСТІВ</string>
+    <string name="multi_selection_albums_count_upper">%1$d АЛЬБОМІВ</string>
+    <string name="multi_selection_albums_selected">вибрано</string>
+    <string name="multi_selection_albums_selected_limit">Ліміт: %1$d альбомів.</string>
+    <string name="multi_selection_albums_queue_hint">Черга дотримується порядку вибору.</string>
+    <string name="multi_selection_genres_count_upper">%1$d ЖАНРІВ</string>
+    <string name="multi_selection_genres_selected">вибрано</string>
+    <string name="multi_selection_genres_queue_hint">Масові операції для треків цих жанрів.</string>
+
+    <!-- Sort Option Display Names -->
+    <string name="sort_display_default_order">За замовчуванням</string>
+    <string name="sort_display_title_az">Назва (А-Я)</string>
+    <string name="sort_display_title_za">Назва (Я-А)</string>
+    <string name="sort_display_artist">Виконавець</string>
+    <string name="sort_display_artist_za">Виконавець (Я-А)</string>
+    <string name="sort_display_album">Альбом</string>
+    <string name="sort_display_album_za">Альбом (Я-А)</string>
+    <string name="sort_display_date_added">Дата додавання</string>
+    <string name="sort_display_date_added_oldest">Дата (спочатку старі)</string>
+    <string name="sort_display_duration">Тривалість</string>
+    <string name="sort_display_duration_shortest">Тривалість (спочатку короткі)</string>
+    <string name="sort_display_release_year">Рік</string>
+    <string name="sort_display_release_year_oldest">Рік (спочатку старі)</string>
+    <string name="sort_display_fewest_songs">Найменше треків</string>
+    <string name="sort_display_most_songs">Найбільше треків</string>
+    <string name="sort_display_name_az">Назва (А-Я)</string>
+    <string name="sort_display_name_za">Назва (Я-А)</string>
+    <string name="sort_display_num_songs_most">Треків (більше)</string>
+    <string name="sort_display_num_songs_fewest">Треків (менше)</string>
+    <string name="sort_display_date_created">Дата створення</string>
+    <string name="sort_display_date_created_oldest">Дата створення (старі)</string>
+    <string name="sort_display_date_liked">Дата вподобання</string>
+    <string name="sort_display_date_liked_oldest">Дата вподобання (старі)</string>
+    <string name="sort_display_fewest_subfolders">Найменше папок</string>
+    <string name="sort_display_most_subfolders">Найбільше папок</string>
+
+    <!-- Sort Option Method Labels -->
+    <string name="sort_method_title">Назва</string>
+    <string name="sort_method_artist">Виконавець</string>
+    <string name="sort_method_album">Альбом</string>
+    <string name="sort_method_date_added">Дата додавання</string>
+    <string name="sort_method_duration">Тривалість</string>
+    <string name="sort_method_release_year">Рік</string>
+    <string name="sort_method_song_count">Кількість треків</string>
+    <string name="sort_method_name">Назва</string>
+    <string name="sort_method_num_songs">Кількість треків</string>
+    <string name="sort_method_date_created">Дата створення</string>
+    <string name="sort_method_date_liked">Дата вподобання</string>
+    <string name="sort_method_subfolder_count">Кількість папок</string>
+
+    <!-- LibrarySortBottomSheet-->
+    <string name="library_sort_source">Джерело</string>
+    <string name="library_sort_order">Порядок</string>
+    <string name="library_sort_descending">Спадання</string>
+    <string name="library_sort_ascending">Зростання</string>
+    <string name="library_sort_original_order">Оригінальний</string>
+    <string name="library_sort_tap_ascending">Торкніться для зростання</string>
+    <string name="library_sort_tap_descending">Торкніться для спадання</string>
+    <string name="library_sort_keeps_order">Оригінальний порядок</string>
+    <string name="library_sort_cd_switch_on">Увімкнено</string>
+
+    <!-- ReorderTabsSheet-->
+    <string name="reorder_tabs_sheet_title">Порядок вкладок</string>
+    <string name="reorder_tabs_reset_dialog_title">Скинути</string>
+    <string name="reorder_tabs_reset_dialog_body">Скинути порядок вкладок до стандартного?</string>
+    <string name="reorder_tabs_reordering">Зміна порядку…</string>
+    <string name="reorder_tabs_cd_drag_handle">Перетягнути</string>
+
+    <!-- PlayerArtistPickerBottomSheet -->
+    <string name="artist_picker_title">Вибір виконавця</string>
+    <string name="artist_picker_count_single">1 виконавець</string>
+    <string name="artist_picker_count_multiple">%1$d виконавців</string>
+    <string name="artist_picker_primary_label">Основний</string>
+    <string name="artist_picker_shortcut_label">Сторінка виконавця</string>
+
+    <!-- Watch Transfer Dialog + Foreground Service -->
+    <string name="watch_transfer_action_cancel">Скасувати</string>
+    <string name="watch_transfer_bytes_progress">%1$s / %2$s</string>
+    <string name="watch_transfer_channel_description">Прогрес передачі музики на годинник</string>
+    <string name="watch_transfer_channel_name">Передачі на годинник</string>
+    <string name="watch_transfer_dialog_title">Надсилання на годинник</string>
+    <string name="watch_transfer_status_cancelled">Скасовано</string>
+    <string name="watch_transfer_status_cancelled_service">Передачу скасовано</string>
+    <string name="watch_transfer_status_complete_service">Передачу завершено</string>
+    <string name="watch_transfer_status_completed">Завершено</string>
+    <string name="watch_transfer_status_failed">Помилка</string>
+    <string name="watch_transfer_status_failed_service">Помилка передачі</string>
+    <string name="watch_transfer_status_multiple_active">Кілька передач</string>
+    <string name="watch_transfer_bullet_step">%1$s • %2$s</string>
+    <string name="watch_transfer_status_preparing">Підготовка</string>
+    <string name="watch_transfer_status_preparing_service">Підготовка передачі</string>
+    <string name="watch_transfer_status_preparing_transfer">Підготовка…</string>
+    <string name="watch_transfer_status_sending_n_to_watch">Надсилання %1$d треків</string>
+    <string name="watch_transfer_status_sending_to_watch">Надсилання на годинник</string>
+    <string name="watch_transfer_status_starting">Початок…</string>
+    <string name="watch_transfer_status_starting_short">Початок</string>
+    <string name="watch_transfer_status_transferring">Передача</string>
+    <string name="watch_transfer_summary_n">%1$d передач</string>
+
+    <!-- EditSongSheet -->
+    <string name="edit_song_toolbar_title">Редагувати</string>
+    <string name="edit_song_cd_show_metadata_info">Інформація</string>
+    <string name="edit_song_dialog_title">Редагування метаданих</string>
+    <string name="edit_song_dialog_body">Зміни вплинуть на відображення та організацію. Вони постійні.</string>
+    <string name="edit_song_dialog_got_it">Зрозуміло</string>
+    <string name="edit_song_cd_info_icon">Інформація</string>
+    <string name="edit_song_cover_art_heading">Обкладинка</string>
+    <string name="edit_song_cover_art_hint">Виберіть квадратне зображення та налаштуйте його.</string>
+    <string name="edit_song_action_change_cover">Змінити обкладинку</string>
+    <string name="edit_song_action_delete_cover">Видалити обкладинку</string>
+    <string name="edit_song_field_title">Назва</string>
+    <string name="edit_song_field_artist">Виконавець</string>
+    <string name="edit_song_field_album">Альбом</string>
+    <string name="edit_song_field_album_artist">Виконавець альбому</string>
+    <string name="edit_song_field_genre">Жанр</string>
+    <string name="edit_song_field_composer">Композитор</string>
+    <string name="edit_song_field_track_number">Номер треку</string>
+    <string name="edit_song_field_disc_number">Номер диска</string>
+    <string name="edit_song_field_replaygain_track">ReplayGain трек (дБ)</string>
+    <string name="edit_song_field_replaygain_album">ReplayGain альбом (дБ)</string>
+    <string name="edit_song_replaygain_track_placeholder">-6.50</string>
+    <string name="edit_song_replaygain_album_placeholder">-8.20</string>
+    <string name="edit_song_cd_cover_preview">Попередній перегляд обкладинки</string>
+    <string name="edit_song_cd_current_cover">Поточна обкладинка</string>
+    <string name="edit_song_crop_dialog_title">Налаштуйте обкладинку</string>
+    <string name="edit_song_crop_dialog_hint">Використовуйте жести масштабування та перетягування.</string>
+    <string name="edit_song_action_apply_cover">Застосувати</string>
+    <string name="edit_song_unable_to_load_image">Не вдалося завантажити зображення</string>
+    <string name="edit_song_cd_search_lyrics_lrclib">Шукати тексти на lrclib.net</string>
+
+    <!-- EditMultipleSongsSheet -->
+    <string name="batch_edit_toolbar_title">Редагувати %d треків</string>
+    <string name="batch_edit_info_message">Оновляться лише змінені поля. Залиште порожнім, щоб зберегти поточне.</string>
+    <string name="batch_edit_mixed_values">(Різні значення)</string>
+    <string name="batch_edit_optional">(Необов\'язково)</string>
+    <string name="batch_edit_success">Оновлено %d треків</string>
+    <string name="batch_edit_partial_success">Оновлено %1$d з %2$d. Деякі файли недоступні.</string>
+    <string name="batch_edit_failed">Помилка оновлення</string>
+    <string name="batch_edit_cover_art_heading">Обкладинка для всіх</string>
+    <string name="batch_edit_cover_art_hint">Замінить обкладинку для %d вибраних треків</string>
+    <string name="batch_edit_set_cover_art">Встановити обкладинку</string>
+    <string name="batch_edit_remove_all_art">Видалити всі обкладинки</string>
+    <string name="batch_edit_multiple_covers">(Кілька обкладинок)</string>
+
+    <!-- Playlist dismissed message -->
+    <string name="playlist_dismissed_message">Плейлист закрито</string>
+
+    <!-- PlaylistCreationDialogs -->
+    <string name="playlist_creation_create_playlist_title">Створити плейлист</string>
+    <string name="playlist_creation_create_playlist_subtitle">Виберіть спосіб.</string>
+    <string name="playlist_creation_mode_manual_title">Вручну</string>
+    <string name="playlist_creation_mode_manual_subtitle">Оформіть самі: обкладинка, іконка, форма та треки.</string>
+    <string name="playlist_creation_mode_ai_title">З AI</string>
+    <string name="playlist_creation_mode_ai_subtitle_enabled">Згенеруйте плейлист з детальним контролем.</string>
+    <string name="playlist_creation_mode_ai_subtitle_disabled">Потрібен ключ Gemini у налаштуваннях.</string>
+    <string name="playlist_creation_setup_api_key">Налаштувати ключ</string>
+
+    <!-- AI playlist lab -->
+    <string name="playlist_creation_ai_lab_title">AI-лабораторія</string>
+    <string name="playlist_creation_ai_reset">Скинути</string>
+    <string name="playlist_creation_ai_generating">Генерація…</string>
+    <string name="playlist_creation_ai_generate">Згенерувати</string>
+    <string name="playlist_creation_ai_section_intent">Задум</string>
+    <string name="playlist_creation_ai_name_optional">Назва (необов\'язково)</string>
+    <string name="playlist_creation_ai_feel_label">Який настрій?</string>
+    <string name="playlist_creation_ai_feel_placeholder">Напр.: захід сонця з теплими синтами</string>
+    <string name="playlist_creation_ai_section_direction">Напрям</string>
+    <string name="playlist_creation_ai_mood_label">Настрій</string>
+    <string name="playlist_creation_ai_activity_label">Активність</string>
+    <string name="playlist_creation_ai_era_label">Епоха</string>
+    <string name="playlist_creation_ai_section_curation">Підбір</string>
+    <string name="playlist_creation_ai_energy_label">Енергія</string>
+    <string name="playlist_creation_ai_energy_desc">Інтенсивність і темп. 1 = спокійно, 5 = енергійно.</string>
+    <string name="playlist_creation_ai_discovery_label">Новизна</string>
+    <string name="playlist_creation_ai_discovery_desc">Знайомі чи нові треки. 1 = улюблене, 5 = рідкісне.</string>
+    <string name="playlist_creation_ai_min_songs">Мін. треків</string>
+    <string name="playlist_creation_ai_max_songs">Макс. треків</string>
+    <string name="playlist_creation_ai_section_filters">Фільтри</string>
+    <string name="playlist_creation_ai_prioritize_genres">Пріоритетні жанри (необов\'язково)</string>
+    <string name="playlist_creation_ai_prioritize_genres_placeholder">напр. synthwave, indie pop</string>
+    <string name="playlist_creation_ai_avoid_genres">Уникати жанрів (необов\'язково)</string>
+    <string name="playlist_creation_ai_avoid_genres_placeholder">напр. metal, hard trap</string>
+    <string name="playlist_creation_ai_preferred_language">Мова (необов\'язково)</string>
+    <string name="playlist_creation_ai_preferred_language_placeholder">напр. English, Spanish, instrumental</string>
+    <string name="playlist_creation_ai_prioritize_favorites">Пріоритет уподобаних</string>
+    <string name="playlist_creation_ai_avoid_explicit">Без нецензурної лексики</string>
+    <string name="playlist_creation_ai_section_prompt_preview">Попередній перегляд</string>
+    <string name="playlist_creation_ai_prompt_preview_empty">Тут з\'явиться підсумок запиту.</string>
+    <string name="playlist_creation_ai_hero_title">Точний підбір</string>
+    <string name="playlist_creation_ai_hero_subtitle">Задайте настрій, активність та обмеження.</string>
+    <string name="playlist_creation_ai_hero_library_note">AI використовує лише треки з вашої бібліотеки.</string>
+    <string name="playlist_creation_ai_error_add_instruction">Додайте хоча б одну вказівку.</string>
+    <string name="playlist_creation_ai_error_song_range">Вкажіть діапазон треків.</string>
+    <string name="playlist_creation_ai_level_out_of_five">%1$d/5</string>
+    <string name="playlist_creation_ai_custom_chip">Своє…</string>
+    <string name="playlist_creation_ai_enter_custom_title">Своє значення</string>
+    <string name="playlist_creation_ai_enter_custom_label">Введіть своє значення</string>
+
+    <!-- AI prompt -->
+    <string name="playlist_creation_ai_era_any">Будь-яка</string>
+    <string name="playlist_creation_ai_prompt_core_request">Запит: %1$s.</string>
+    <string name="playlist_creation_ai_prompt_mood">Настрій: %1$s.</string>
+    <string name="playlist_creation_ai_prompt_activity">Активність: %1$s.</string>
+    <string name="playlist_creation_ai_prompt_era">Епоха: %1$s.</string>
+    <string name="playlist_creation_ai_prompt_prioritize_genres">Пріоритет: %1$s.</string>
+    <string name="playlist_creation_ai_prompt_avoid_genres">Уникати: %1$s.</string>
+    <string name="playlist_creation_ai_prompt_preferred_language">Мова: %1$s.</string>
+    <string name="playlist_creation_ai_prompt_energy">Енергія: %1$d/5.</string>
+    <string name="playlist_creation_ai_prompt_discovery">Новизна: %1$d/5 (1 = знайоме, 5 = рідкісне).</string>
+    <string name="playlist_creation_ai_prompt_prioritize_favorites">Пріоритет уподобаних.</string>
+    <string name="playlist_creation_ai_prompt_avoid_explicit">Без нецензурної лексики.</string>
+    <string name="playlist_creation_ai_prompt_smooth_transitions">Плавні переходи, без повторів виконавців.</string>
+    <string-array name="playlist_creation_ai_mood_options">
+        <item>Спокійний</item>
+        <item>Енергійний</item>
+        <item>Веселий</item>
+        <item>Темний</item>
+        <item>Романтичний</item>
+        <item>Меланхолійний</item>
+    </string-array>
+    <string-array name="playlist_creation_ai_activity_options">
+        <item>Тренування</item>
+        <item>Фокус</item>
+        <item>Подорож</item>
+        <item>Вечірка</item>
+        <item>Навчання</item>
+        <item>Пізня ніч</item>
+    </string-array>
+    <string-array name="playlist_creation_ai_era_options">
+        <item>@string/playlist_creation_ai_era_any</item>
+        <item>70-ті</item>
+        <item>80-ті</item>
+        <item>90-ті</item>
+        <item>2000-ні</item>
+        <item>2010-ні</item>
+        <item>2020-ні</item>
+    </string-array>
+
+    <!-- PlaylistContainer -->
+    <string name="playlist_container_no_playlist_created">Плейлистів ще немає.</string>
+    <string name="playlist_container_new_playlist_hint">Торкніться «Новий плейлист», щоб почати.</string>
+    <string name="playlist_container_create_playlist_title">Новий плейлист</string>
+    <string name="playlist_container_create_playlist_name_label">Назва</string>
+    <string name="playlist_container_create_playlist_name_placeholder">Мій плейлист</string>
+
+    <!-- PlaylistBottomSheet -->
+    <string name="playlist_sheet_add_songs_title">Додати %1$d треків до…</string>
+    <string name="playlist_sheet_select_playlists">Виберіть плейлисти</string>
+    <string name="playlist_sheet_search_playlists_hint">Пошук плейлистів…</string>
+    <string name="playlist_sheet_song_added_to_playlists">Треки додано</string>
+    <string name="playlist_sheet_created_and_songs_added">Плейлист створено та треки додано</string>
+    <string name="playlist_sheet_internal_storage">Пам\'ять пристрою</string>
+
+    <!-- SongPickerBottomSheet -->
+    <string name="song_picker_title">Додати треки</string>
+    <string name="song_picker_cd_confirm_add_songs">Додати вибрані</string>
+    <string name="song_picker_action_add">Додати</string>
+    <string name="song_picker_search_label">Пошук треків…</string>
+    <string name="song_picker_filter_favorites">Уподобані</string>
+    <string name="song_picker_error_load_failed">Помилка завантаження</string>
+    <string name="song_picker_load_more">Завантажити ще</string>
+
+    <!-- Merge Playlists Dialog -->
+    <string name="merge_playlists_dialog_title">Об\'єднати</string>
+    <string name="merge_playlists_dialog_prompt">Назва об\'єднаного плейлиста:</string>
+    <string name="merge_playlists_dialog_placeholder">Об\'єднаний плейлист</string>
+    <string name="merge_playlists_dialog_body">Об\'єднати %1$d плейлистів в один.</string>
+
+    <!-- PlayerViewModel -->
+    <string name="player_view_model_no_valid_songs">Немає треків для відтворення</string>
+    <string name="player_view_model_song_not_found_in_list">Трек не знайдено</string>
+    <string name="player_view_model_could_not_locate_song">Не вдалося знайти трек</string>
+    <string name="player_view_model_no_songs_in_library_toast">Бібліотека порожня</string>
+    <string name="player_view_model_playback_stopped_eot">Відтворення зупинено: %1$s завершено.</string>
+    <string name="player_view_model_default_track_title">Трек</string>
+    <string name="player_view_model_no_songs_to_shuffle">Немає треків для перемішування.</string>
+    <string name="player_view_model_queue_name_selected_albums">Вибрані альбоми</string>
+    <string name="player_view_model_no_playable_songs_in_albums">У вибраних альбомах немає треків</string>
+    <string name="player_view_model_no_playable_songs_in_genres">У вибраних жанрах немає треків</string>
+    <string name="player_view_model_only_first_n_albums_queued">В черзі лише перші %1$d альбомів</string>
+    <string name="player_view_model_albums_queued_format">%1$d альбомів (%2$d треків)</string>
+    <string name="player_view_model_could_not_queue_albums">Не вдалося додати альбоми</string>
+    <string name="player_view_model_all_songs_already_in_favorites">Усі треки вже в уподобаних</string>
+    <string name="player_view_model_no_songs_were_in_favorites">Жоден трек не в уподобаних</string>
+    <string name="player_view_model_creating_zip">Створення ZIP…</string>
+    <string name="player_view_model_share_zip_failed_format">Помилка: %1$s</string>
+    <plurals name="player_view_model_n_songs_added_to_queue">
+        <item quantity="one">%d трек додано в чергу</item>
+        <item quantity="other">%d треків додано в чергу</item>
+    </plurals>
+    <plurals name="player_view_model_n_songs_will_play_next">
+        <item quantity="one">%d трек буде далі</item>
+        <item quantity="other">%d треків буде далі</item>
+    </plurals>
+    <plurals name="player_view_model_n_songs_added_to_favorites">
+        <item quantity="one">%d трек додано в уподобані</item>
+        <item quantity="other">%d треків додано в уподобані</item>
+    </plurals>
+    <plurals name="player_view_model_n_songs_removed_from_favorites">
+        <item quantity="one">%d трек прибрано з уподобаних</item>
+        <item quantity="other">%d треків прибрано з уподобаних</item>
+    </plurals>
+
+    <!-- PlaylistViewModel -->
+    <string name="playlist_view_model_none_to_share">Немає чим ділитися</string>
+    <string name="playlist_view_model_share_chooser_title">Надіслати плейлисти</string>
+    <string name="playlist_view_model_share_failed">Помилка: %1$s</string>
+    <string name="playlist_view_model_none_to_export">Немає чого експортувати</string>
+    <string name="playlist_view_model_export_failed">Помилка: %1$s</string>
+    <string name="playlist_view_model_export_folder_display">Music/PixelPlayer Exports</string>
+    <string name="playlist_view_model_ai_gemini_key_required">Вкажіть ключ Gemini у налаштуваннях.</string>
+    <string name="playlist_view_model_restored_toast">Плейлист відновлено</string>
+    <plurals name="playlist_view_model_sharing_message">
+        <item quantity="one">Надсилання %d плейлиста</item>
+        <item quantity="other">Надсилання %d плейлистів</item>
+    </plurals>
+    <plurals name="playlist_view_model_exported_message">
+        <item quantity="one">Експортовано %1$d плейлист до %2$s</item>
+        <item quantity="other">Експортовано %1$d плейлистів до %2$s</item>
+    </plurals>
+
+    <!-- AlbumDetailViewModel -->
+    <string name="album_detail_invalid_id">Невірний ID альбому</string>
+    <string name="album_detail_id_not_found">Альбом не знайдено</string>
+    <string name="album_detail_error_loading_album">Помилка: %s</string>
+    <string name="album_detail_not_found">Альбом не знайдено</string>
+
+    <!-- ArtistDetailViewModel -->
+    <string name="artist_detail_invalid_id">Невірний ID виконавця</string>
+    <string name="artist_detail_id_not_found">Виконавця не знайдено</string>
+    <string name="artist_error_loading_artist">Помилка: %s</string>
+    <string name="artist_detail_not_found">Виконавця не знайдено</string>
+
+    <!-- SongRemovalStateHolder -->
+    <string name="song_removal_cannot_delete_currently_playing">Неможливо видалити поточний трек</string>
+    <string name="song_removal_batch_delete_files_deleted_skipped_format">%1$d видалено (%2$d пропущено — грає)</string>
+    <string name="song_removal_batch_delete_partial_format">%1$d з %2$d видалено</string>
+    <string name="song_removal_delete_files_failed">Помилка видалення</string>
+    <string name="song_removal_file_deleted">Файл видалено</string>
+    <string name="song_removal_delete_file_not_found">Файл не знайдено</string>
+    <string name="song_removal_deletion_cancelled">Видалення скасовано</string>
+    <string name="song_removal_dialog_delete_song_title">Видалити трек?</string>
+    <string name="song_removal_dialog_delete_song_message">«%1$s» — %2$s\n\nТрек буде видалено назавжди.</string>
+    <string name="song_removal_delete_songs_permanent_message">Треки будуть видалено назавжди.</string>
+    <plurals name="song_removal_n_files_deleted">
+        <item quantity="one">%d файл видалено</item>
+        <item quantity="other">%d файлів видалено</item>
+    </plurals>
+    <plurals name="song_removal_delete_songs_confirmation_title">
+        <item quantity="one">Видалити %d трек?</item>
+        <item quantity="other">Видалити %d треків?</item>
+    </plurals>
+
+    <!-- MetadataEditStateHolder -->
+    <string name="metadata_edit_updated_successfully">Оновлено</string>
+    <string name="metadata_edit_updating_n_songs">Оновлення %1$d треків…</string>
+    <string name="metadata_edit_batch_genre_updated_all">Оновлено %1$d треків!</string>
+    <string name="metadata_edit_batch_genre_updated_partial">Оновлено %1$d. Помилок: %2$d</string>
+    <string name="metadata_edit_lyrics_saved_successfully">Текст збережено</string>
+    <string name="metadata_edit_lyrics_save_failed">Помилка збереження</string>
+    <string name="metadata_edit_lyrics_none_to_save">Немає тексту для збереження</string>
+    <string name="metadata_edit_permission_denied_edit_files">Немає дозволу на редагування</string>
+    <string name="metadata_edit_permission_denied_save_lyrics">Немає дозволу на збереження</string>
+    <string name="metadata_edit_permission_denied_edit_this_file">Немає дозволу на цей файл</string>
+
+    <!-- AiStateHolder -->
+    <string name="ai_state_error_api_key">Вкажіть дійсний ключ AI у налаштуваннях.</string>
+    <string name="ai_state_error_generic">Помилка AI: %s</string>
+    <string name="ai_state_error_quota">AI відхилив запит: закінчились кредити.</string>
+    <string name="ai_state_error_model_unavailable">Модель недоступна. Спроба автоперемикання.</string>
+    <string name="ai_state_no_songs_found">AI не знайшов треків.</string>
+    <string name="ai_state_prompt_empty">Опишіть ідею для Daily Mix</string>
+    <string name="ai_state_daily_mix_updated">Daily Mix оновлено</string>
+    <string name="ai_state_could_not_update">Помилка: %s</string>
+    <string name="ai_state_no_songs_for_mix">AI не знайшов треків для міксу</string>
+</resources>

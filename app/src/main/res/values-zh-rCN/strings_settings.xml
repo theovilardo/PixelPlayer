@@ -164,6 +164,7 @@
     <string name="settings_app_language_subtitle">选择应用界面的语言。</string>
     <string name="settings_language_system">跟随系统</string>
     <string name="settings_language_english">英语</string>
+    <string name="settings_language_ukrainian">乌克兰语</string>
     <string name="settings_language_spanish">西班牙语</string>
     <string name="settings_language_german">德语</string>
     <string name="settings_language_french">法语</string>

@@ -164,6 +164,7 @@
     <string name="settings_app_language_subtitle">Velg språket som skal brukes i appen.</string>
     <string name="settings_language_system">Systemstandard</string>
     <string name="settings_language_english">Engelsk</string>
+    <string name="settings_language_ukrainian">українська</string>
     <string name="settings_language_spanish">Spansk</string>
     <string name="settings_language_german">Tysk</string>
     <string name="settings_language_french">Fransk</string>

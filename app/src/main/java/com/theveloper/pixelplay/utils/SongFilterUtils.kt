@@ -11,3 +11,11 @@ fun Song.matchesTitleOrArtist(query: String): Boolean {
     if (query.isBlank()) return true
     return title.contains(query, ignoreCase = true) || artist.contains(query, ignoreCase = true)
 }
+
+/**
+ * Filters this list to songs matching [query] by title or artist, preserving order.
+ * A blank query returns this list unchanged (same reference), so callers relying on
+ * identity for `remember`/diffing keys don't do unnecessary work.
+ */
+fun List<Song>.filterByQuery(query: String): List<Song> =
+    if (query.isBlank()) this else filter { it.matchesTitleOrArtist(query) }

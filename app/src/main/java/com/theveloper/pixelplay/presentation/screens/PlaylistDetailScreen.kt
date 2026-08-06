@@ -143,7 +143,7 @@ import com.theveloper.pixelplay.presentation.components.LibrarySortBottomSheet
 import com.theveloper.pixelplay.presentation.components.SearchFilterTextField
 import com.theveloper.pixelplay.data.model.SortOption
 import com.theveloper.pixelplay.data.model.PlaylistShapeType
-import com.theveloper.pixelplay.utils.matchesTitleOrArtist
+import com.theveloper.pixelplay.utils.filterByQuery
 import kotlinx.coroutines.launch
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -237,11 +237,7 @@ fun PlaylistDetailScreen(
     var showPlaylistBottomSheet by remember { mutableStateOf(false) }
     var localReorderableSongs by remember(songsInPlaylist) { mutableStateOf(songsInPlaylist) }
     val displayedSongs = remember(localReorderableSongs, searchQuery) {
-        if (searchQuery.isBlank()) {
-            localReorderableSongs
-        } else {
-            localReorderableSongs.filter { it.matchesTitleOrArtist(searchQuery) }
-        }
+        localReorderableSongs.filterByQuery(searchQuery)
     }
 
     val listState = rememberLazyListState()

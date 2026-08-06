@@ -1,7 +1,9 @@
 package com.theveloper.pixelplay.utils
 
 import com.theveloper.pixelplay.data.model.Song
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -44,12 +46,72 @@ class SongFilterUtilsTest {
         assertFalse(song.matchesTitleOrArtist("opera"))
     }
 
+    @Test
+    fun filterByQuery_blankQuery_returnsOriginalListUnfiltered() {
+        val songs = listOf(
+            buildSong(id = "song-1", title = "Bohemian Rhapsody", artist = "Queen"),
+            buildSong(id = "song-2", title = "Yesterday", artist = "The Beatles")
+        )
+
+        val result = songs.filterByQuery("")
+
+        assertSame(songs, result)
+    }
+
+    @Test
+    fun filterByQuery_returnsOnlyMatchingSongsPreservingOrder() {
+        val songs = listOf(
+            buildSong(id = "song-1", title = "Bohemian Rhapsody", artist = "Queen"),
+            buildSong(id = "song-2", title = "Yesterday", artist = "The Beatles"),
+            buildSong(id = "song-3", title = "Under Pressure", artist = "Queen"),
+            buildSong(id = "song-4", title = "Imagine", artist = "John Lennon")
+        )
+
+        val result = songs.filterByQuery("queen")
+
+        assertEquals(listOf(songs[0], songs[2]), result)
+    }
+
+    @Test
+    fun filterByQuery_noMatches_returnsEmptyList() {
+        val songs = listOf(
+            buildSong(id = "song-1", title = "Bohemian Rhapsody", artist = "Queen"),
+            buildSong(id = "song-2", title = "Yesterday", artist = "The Beatles")
+        )
+
+        val result = songs.filterByQuery("metallica")
+
+        assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun filterByQuery_emptyInputList_returnsEmptyList() {
+        val result = emptyList<Song>().filterByQuery("queen")
+
+        assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun filterByQuery_matchesAcrossTitleAndArtistMixed() {
+        val songs = listOf(
+            buildSong(id = "song-1", title = "Bohemian Rhapsody", artist = "Queen"),
+            buildSong(id = "song-2", title = "Yesterday", artist = "The Beatles")
+        )
+
+        val result = songs.filterByQuery("rhapsody")
+        val resultByArtist = songs.filterByQuery("beatles")
+
+        assertEquals(listOf(songs[0]), result)
+        assertEquals(listOf(songs[1]), resultByArtist)
+    }
+
     private fun buildSong(
         title: String,
         artist: String,
-        album: String = "Album"
+        album: String = "Album",
+        id: String = "song-1"
     ): Song = Song(
-        id = "song-1",
+        id = id,
         title = title,
         artist = artist,
         artistId = 1L,

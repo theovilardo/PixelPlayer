@@ -204,4 +204,31 @@ class MusicDaoTest {
         val titles = results.map { it.title }.sorted()
         assertEquals(listOf("Cool Song", "Coolest Song Ever"), titles)
     }
+
+    /**
+     * Regression test for a real bug found on-device: FTS4 MATCH queries built with the
+     * literal "AND" keyword only behave as a boolean operator on SQLite builds compiled
+     * with SQLITE_ENABLE_FTS3_PARENTHESIS. Without it "AND" is parsed as an ordinary
+     * search term, so a two-word query would only match rows that literally contained
+     * the word "and" - silently breaking multi-word search. This runs against the real
+     * on-device/emulator SQLite engine (unlike a plain string-building unit test), which
+     * is what actually caught the bug.
+     */
+    @Test
+    @Throws(Exception::class)
+    fun searchSongs_multiWordQuery_matchesSongWithoutLiteralAndKeyword() = runTest {
+        // Insert the referenced artist/album first: songs has a foreign key to both.
+        musicDao.insertArtists(listOf(createArtistEntity(101L, "Some Artist")))
+        musicDao.insertAlbums(listOf(createAlbumEntity(201L, "Album X")))
+        val songs = listOf(
+            createSongEntity(1L, "Qué ganas de comerte", "Some Artist", "Album X", "/p1/s1.mp3"),
+            createSongEntity(2L, "Completely unrelated title", "Other Artist", "Album Y", "/p2/s2.mp3")
+        )
+        musicDao.insertSongs(songs)
+
+        val results = musicDao.searchSongs("que ganas", emptyList(), false).first()
+
+        assertEquals(1, results.size)
+        assertEquals("Qué ganas de comerte", results[0].title)
+    }
 }

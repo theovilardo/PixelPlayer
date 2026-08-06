@@ -6,9 +6,24 @@ import java.nio.charset.Charset
 import java.text.Normalizer
 
 private val WINDOWS_1252: Charset = Charset.forName("windows-1252")
+private val COMBINING_DIACRITICAL_MARKS = Regex("\\p{Mn}+")
 
 fun Color.toHexString(): String {
     return String.format("#%08X", this.toArgb())
+}
+
+/**
+ * Strips diacritics (accents, tildes, etc.) so accent-insensitive matching can be done
+ * with a plain [String.contains]. Decomposes to NFD (splitting each accented character
+ * into its base letter + combining mark, e.g. "é" -> "e" + U+0301) then drops every
+ * combining mark (Unicode category Mn). Case is untouched — combine with `ignoreCase`
+ * at the call site if needed.
+ *
+ * Example: "Qué ganas".foldDiacritics() == "Que ganas"
+ */
+fun String.foldDiacritics(): String {
+    val decomposed = Normalizer.normalize(this, Normalizer.Form.NFD)
+    return COMBINING_DIACRITICAL_MARKS.replace(decomposed, "")
 }
 
 /**

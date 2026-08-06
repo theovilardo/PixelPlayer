@@ -47,6 +47,27 @@ class SongFilterUtilsTest {
     }
 
     @Test
+    fun matchesTitleOrArtist_matchesAccentedTitleWithUnaccentedQuery() {
+        val song = buildSong(title = "Qué ganas de bailar", artist = "Some Artist")
+
+        assertTrue(song.matchesTitleOrArtist("que gan"))
+    }
+
+    @Test
+    fun matchesTitleOrArtist_matchesUnaccentedTitleWithAccentedQuery() {
+        val song = buildSong(title = "Cancion sin nombre", artist = "Some Artist")
+
+        assertTrue(song.matchesTitleOrArtist("canción"))
+    }
+
+    @Test
+    fun matchesTitleOrArtist_matchesAccentedArtist() {
+        val song = buildSong(title = "Some Title", artist = "Café Tacvba")
+
+        assertTrue(song.matchesTitleOrArtist("cafe tacvba"))
+    }
+
+    @Test
     fun filterByQuery_blankQuery_returnsOriginalListUnfiltered() {
         val songs = listOf(
             buildSong(id = "song-1", title = "Bohemian Rhapsody", artist = "Queen"),

@@ -370,7 +370,9 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.truth)
-    androidTestImplementation(libs.mockk)
+    // Android-specific artifact: plain io.mockk:mockk can't mock classes on ART
+    // (needs a JVM instrumentation agent that isn't available on-device).
+    androidTestImplementation(libs.mockk.android)
     androidTestImplementation(libs.worktesting)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)

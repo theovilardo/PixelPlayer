@@ -14,32 +14,40 @@ import kotlinx.coroutines.flow.combine
 
 private val SONG_SEARCH_QUERY_TOKEN_REGEX = Regex("""[\p{L}\p{N}]+""")
 private const val EMPTY_SONG_SEARCH_MATCH_QUERY = "pixelplayemptyquery*"
+private const val MAX_SONG_SEARCH_QUERY_TOKENS = 6
 
-private fun buildSongTitleSearchMatchQuery(query: String): String {
-    val tokens = SONG_SEARCH_QUERY_TOKEN_REGEX
+private fun tokenizeSongSearchQuery(query: String): List<String> =
+    SONG_SEARCH_QUERY_TOKEN_REGEX
         .findAll(query)
         .map { it.value.trim() }
         .filter { it.isNotEmpty() }
-        .take(6)
+        .take(MAX_SONG_SEARCH_QUERY_TOKENS)
         .toList()
 
+/**
+ * Builds an FTS4 MATCH expression requiring every token to match as a prefix
+ * within [column] (or anywhere, if [column] is null).
+ *
+ * Tokens are joined with a plain space, i.e. FTS's *implicit* AND, rather than
+ * the literal "AND" keyword: that keyword requires SQLite to be compiled with
+ * SQLITE_ENABLE_FTS3_PARENTHESIS, which not every Android build has. Without
+ * it, "AND" is parsed as an ordinary search term instead of a boolean
+ * operator, so a query like "que* AND ganas*" would only match rows that
+ * literally contain the word "and" - silently breaking every multi-word
+ * search on devices without that extension.
+ */
+private fun buildFtsMatchQuery(tokens: List<String>, column: String? = null): String {
     if (tokens.isEmpty()) return EMPTY_SONG_SEARCH_MATCH_QUERY
-
-    return tokens.joinToString(separator = " AND ") { "title:${it}*" }
+    return tokens.joinToString(separator = " ") { token ->
+        if (column != null) "$column:$token*" else "$token*"
+    }
 }
 
-private fun buildSongSearchMatchQuery(query: String): String {
-    val tokens = SONG_SEARCH_QUERY_TOKEN_REGEX
-        .findAll(query)
-        .map { it.value.trim() }
-        .filter { it.isNotEmpty() }
-        .take(6)
-        .toList()
+internal fun buildSongTitleSearchMatchQuery(query: String): String =
+    buildFtsMatchQuery(tokenizeSongSearchQuery(query), column = "title")
 
-    if (tokens.isEmpty()) return EMPTY_SONG_SEARCH_MATCH_QUERY
-
-    return tokens.joinToString(separator = " AND ") { "${it}*" }
-}
+internal fun buildSongSearchMatchQuery(query: String): String =
+    buildFtsMatchQuery(tokenizeSongSearchQuery(query))
 
 private const val SONG_DETAIL_PROJECTION = """
     songs.id AS id,

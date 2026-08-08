@@ -110,9 +110,9 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         val telegramApiId = localProperties.getProperty("TELEGRAM_API_ID")?.ifEmpty { null }
-            ?: "2040"
+            ?: error("TELEGRAM_API_ID not found in local.properties. Add TELEGRAM_API_ID=<your_id> to local.properties.")
         val telegramApiHash = localProperties.getProperty("TELEGRAM_API_HASH")?.ifEmpty { null }
-            ?: "b18441a1ff607e10a989891a5462e627"
+            ?: error("TELEGRAM_API_HASH not found in local.properties. Add TELEGRAM_API_HASH=<your_hash> to local.properties.")
         buildConfigField("int", "TELEGRAM_API_ID", telegramApiId)
         buildConfigField("String", "TELEGRAM_API_HASH", "\"$telegramApiHash\"")
     }

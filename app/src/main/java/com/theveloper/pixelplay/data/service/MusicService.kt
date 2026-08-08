@@ -79,6 +79,9 @@ import com.theveloper.pixelplay.data.service.auto.AutoMediaBrowseTree
 import com.theveloper.pixelplay.data.service.wear.buildWearThemePalette
 import com.theveloper.pixelplay.data.service.wear.WearStatePublisher
 import com.theveloper.pixelplay.data.service.playback.PlaybackSnapshotManager
+import com.theveloper.pixelplay.data.service.playback.HeadsetReconnectMonitor
+import com.theveloper.pixelplay.data.service.playback.NavidromePlaybackReporter
+import com.theveloper.pixelplay.data.service.playback.SleepTimerController
 import com.theveloper.pixelplay.data.service.widget.WidgetArtworkResolver
 import com.theveloper.pixelplay.presentation.viewmodel.ColorSchemePair
 import com.theveloper.pixelplay.shared.WearIntents
@@ -156,7 +159,6 @@ class MusicService : MediaLibraryService() {
     private val alarmManager by lazy {
         getSystemService(Context.ALARM_SERVICE) as AlarmManager
     }
-    private var endOfTrackTimerSongId: String? = null
     // Cast remote-session synchronization, extracted to a standalone coordinator.
     // Lazily built so the Hilt-injected listeningStatsTracker is ready before first use.
     private val castSyncCoordinator by lazy {
@@ -195,12 +197,34 @@ class MusicService : MediaLibraryService() {
             it.setShuffleStateProvider { isManualShuffleEnabled }
         }
     }
+    private val sleepTimerController by lazy {
+        SleepTimerController(
+            context = this,
+            alarmManager = alarmManager,
+            actionSleepTimerExpired = ACTION_SLEEP_TIMER_EXPIRED,
+            currentPlayer = { mediaSession?.player },
+            currentMediaId = { mediaSession?.player?.currentMediaItem?.mediaId },
+        )
+    }
+    private val headsetReconnectMonitor by lazy {
+        HeadsetReconnectMonitor(
+            audioManager = audioManager,
+            engine = engine,
+            isResumeEnabled = { resumeOnHeadsetReconnectEnabled },
+            currentPlayer = { engine.masterPlayer },
+        )
+    }
+    private val navidromeReporter by lazy {
+        NavidromePlaybackReporter(
+            navidromeRepository = navidromeRepository,
+            engine = engine,
+            serviceScope = serviceScope,
+            appScope = appScope,
+        )
+    }
     private val audioManager by lazy {
         getSystemService(Context.AUDIO_SERVICE) as AudioManager
     }
-    private var headsetReconnectCallback: AudioDeviceCallback? = null
-    private var shouldResumeAfterHeadsetReconnect = false
-    private var lastNoisyPauseRealtimeMs = 0L
     private var resumeOnHeadsetReconnectEnabled = false
     private var pauseOnVolumeZeroEnabled = false
     private var temporaryForegroundStartedInOnCreate = false
@@ -915,82 +939,17 @@ class MusicService : MediaLibraryService() {
         return hasWearHints
     }
 
-    private fun createSleepTimerPendingIntent(): PendingIntent {
-        val intent = Intent(this, SleepTimerReceiver::class.java).apply {
-            action = ACTION_SLEEP_TIMER_EXPIRED
-            setPackage(packageName)
-        }
-        return PendingIntent.getBroadcast(
-            this,
-            0,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-        )
-    }
+    private fun createSleepTimerPendingIntent() = sleepTimerController.createSleepTimerPendingIntent()
 
-    private fun cancelDurationSleepTimerInternal() {
-        alarmManager.cancel(createSleepTimerPendingIntent())
-    }
+    private fun cancelDurationSleepTimerInternal() = sleepTimerController.cancelDurationSleepTimerInternal()
 
-    private fun setDurationSleepTimer(minutes: Int) {
-        if (minutes <= 0) {
-            cancelSleepTimers()
-            return
-        }
-        endOfTrackTimerSongId = null
-        val triggerAtMillis = System.currentTimeMillis() + (minutes * 60_000L)
-        val pendingIntent = createSleepTimerPendingIntent()
+    private fun setDurationSleepTimer(minutes: Int) = sleepTimerController.setDurationSleepTimer(minutes)
 
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                if (alarmManager.canScheduleExactAlarms()) {
-                    alarmManager.setExactAndAllowWhileIdle(
-                        AlarmManager.RTC_WAKEUP,
-                        triggerAtMillis,
-                        pendingIntent,
-                    )
-                } else {
-                    alarmManager.setAndAllowWhileIdle(
-                        AlarmManager.RTC_WAKEUP,
-                        triggerAtMillis,
-                        pendingIntent,
-                    )
-                }
-            } else
-                alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    triggerAtMillis,
-                    pendingIntent,
-                )
-            Timber.tag(TAG).d("Sleep timer set from Wear for %d minutes", minutes)
-        } catch (e: SecurityException) {
-            Timber.tag(TAG).w(e, "Exact alarm denied; using inexact sleep timer")
-            alarmManager.set(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent)
-        }
-    }
+    private fun setEndOfTrackSleepTimer(enabled: Boolean) = sleepTimerController.setEndOfTrackSleepTimer(enabled)
 
-    private fun setEndOfTrackSleepTimer(enabled: Boolean) {
-        if (!enabled) {
-            endOfTrackTimerSongId = null
-            Timber.tag(TAG).d("End-of-track timer disabled from Wear")
-            return
-        }
-        cancelDurationSleepTimerInternal()
-        val currentSongId = mediaSession?.player?.currentMediaItem?.mediaId
-        if (currentSongId.isNullOrBlank()) {
-            endOfTrackTimerSongId = null
-            Timber.tag(TAG).d("End-of-track timer ignored: no active song")
-            return
-        }
-        endOfTrackTimerSongId = currentSongId
-        Timber.tag(TAG).d("End-of-track timer set from Wear for mediaId=%s", currentSongId)
-    }
+    private fun cancelSleepTimers() = sleepTimerController.cancelSleepTimers()
 
-    private fun cancelSleepTimers() {
-        cancelDurationSleepTimerInternal()
-        endOfTrackTimerSongId = null
-        Timber.tag(TAG).d("Sleep timers cancelled from Wear")
-    }
+    private val endOfTrackTimerSongId: String? get() = sleepTimerController.endOfTrackTimerSongId
 
     private fun startTemporaryForegroundForCommand() {
         val notification = NotificationCompat.Builder(
@@ -1149,64 +1108,16 @@ class MusicService : MediaLibraryService() {
         return startCommandResult
     }
 
-    private fun getNavidromeId(mediaItem: MediaItem?): String? {
-        if (mediaItem == null) return null
-        return mediaItem.mediaMetadata.extras?.getString(MediaItemBuilder.EXTERNAL_EXTRA_NAVIDROME_ID)
-            ?: mediaItem.mediaId.let { if (it.startsWith("navidrome_")) it.substringAfter("navidrome_") else null }
-            ?: mediaItem.mediaMetadata.extras?.getString(MediaItemBuilder.EXTERNAL_EXTRA_CONTENT_URI)?.let {
-                if (it.startsWith("navidrome://")) it.substringAfter("navidrome://") else null
-            }
-    }
+    private fun getNavidromeId(mediaItem: MediaItem?) = navidromeReporter.getNavidromeId(mediaItem)
 
-    private fun isNavidromeMediaItem(mediaItem: MediaItem?): Boolean {
-        return getNavidromeId(mediaItem) != null
-    }
+    private fun isNavidromeMediaItem(mediaItem: MediaItem?) = navidromeReporter.isNavidromeMediaItem(mediaItem)
 
-    private fun reportNavidromePlayback(state: String, mediaItem: MediaItem? = engine.masterPlayer.currentMediaItem) {
-        val player = engine.masterPlayer
-        // Ensure we capture player state on main thread to avoid IllegalStateException
-        val targetItem = mediaItem ?: return
-        val navidromeId = getNavidromeId(targetItem) ?: return
+    private fun reportNavidromePlayback(state: String, mediaItem: MediaItem? = engine.masterPlayer.currentMediaItem) =
+        navidromeReporter.reportPlayback(state, mediaItem)
 
-        // If reporting for current item, use player position.
-        // If reporting "stopped" for a transition, use the item's duration as final position.
-        val positionMs = if (targetItem === player.currentMediaItem) {
-            player.currentPosition
-        } else {
-            targetItem.mediaMetadata.extras?.getLong(MediaItemBuilder.EXTERNAL_EXTRA_DURATION) ?: 0L
-        }
-        val playbackRate = player.playbackParameters.speed
+    private fun startNavidromePlaybackReporting() = navidromeReporter.startReporting()
 
-        // Use appScope for the network call so it survives if serviceScope is cancelled
-        appScope.launch(Dispatchers.IO) {
-            navidromeRepository.reportPlayback(
-                navidromeId = navidromeId,
-                positionMs = positionMs,
-                state = state,
-                playbackRate = playbackRate
-            )
-        }
-    }
-
-    private var navidromePlaybackReportJob: Job? = null
-
-    private fun startNavidromePlaybackReporting() {
-        navidromePlaybackReportJob?.cancel()
-        navidromePlaybackReportJob = serviceScope.launch {
-            while (true) {
-                delay(30_000) // Report every 30 seconds
-                val player = engine.masterPlayer
-                if (player.isPlaying && isNavidromeMediaItem(player.currentMediaItem)) {
-                    reportNavidromePlayback("playing")
-                }
-            }
-        }
-    }
-
-    private fun stopNavidromePlaybackReporting() {
-        navidromePlaybackReportJob?.cancel()
-        navidromePlaybackReportJob = null
-    }
+    private fun stopNavidromePlaybackReporting() = navidromeReporter.stopReporting()
 
     private val playerListener = object : Player.Listener {
         override fun onVolumeChanged(volume: Float) {
@@ -1256,9 +1167,7 @@ class MusicService : MediaLibraryService() {
                 playWhenReady -> clearHeadsetReconnectResume()
                 !resumeOnHeadsetReconnectEnabled -> clearHeadsetReconnectResume()
                 reason == Player.PLAY_WHEN_READY_CHANGE_REASON_AUDIO_BECOMING_NOISY -> {
-                    shouldResumeAfterHeadsetReconnect = true
-                    lastNoisyPauseRealtimeMs = SystemClock.elapsedRealtime()
-                    Timber.tag(TAG).d("Marked playback for headset reconnect resume")
+                    headsetReconnectMonitor.markNoisyPause()
                 }
                 else -> clearHeadsetReconnectResume()
             }
@@ -1284,7 +1193,7 @@ class MusicService : MediaLibraryService() {
                     }
                 }
 
-                endOfTrackTimerSongId = null
+                cancelSleepTimers()
                 reportNavidromePlayback("stopped")
                 stopNavidromePlaybackReporting()
             } else {
@@ -1356,7 +1265,7 @@ class MusicService : MediaLibraryService() {
                 stopNavidromePlaybackReporting()
             }
 
-            val eotTargetSongId = endOfTrackTimerSongId
+            val eotTargetSongId = sleepTimerController.endOfTrackTimerSongId
             if (!eotTargetSongId.isNullOrBlank()) {
                 if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO) {
                     val previousSongId = engine.masterPlayer.run {
@@ -1367,13 +1276,13 @@ class MusicService : MediaLibraryService() {
                         }
                     }
                     if (previousSongId == eotTargetSongId) {
-                        endOfTrackTimerSongId = null
+                        cancelSleepTimers()
                         engine.masterPlayer.seekTo(0L)
                         engine.masterPlayer.pause()
                         Timber.tag(TAG).d("Paused playback at end of track from Wear timer")
                     }
                 } else if (mediaItem?.mediaId != eotTargetSongId) {
-                    endOfTrackTimerSongId = null
+                    cancelSleepTimers()
                     Timber.tag(TAG).d("Cleared end-of-track timer after manual track change")
                 }
             }
@@ -1505,25 +1414,11 @@ class MusicService : MediaLibraryService() {
         }
     }
 
-    private fun registerHeadsetReconnectMonitor() {
-        val callback = object : AudioDeviceCallback() {
-            override fun onAudioDevicesAdded(addedDevices: Array<out AudioDeviceInfo>) {
-                if (!addedDevices.any(::isReconnectableHeadsetOutput)) return
-                maybeResumeAfterHeadsetReconnect()
-            }
-        }
+    private fun registerHeadsetReconnectMonitor() = headsetReconnectMonitor.register()
 
-        audioManager.registerAudioDeviceCallback(callback, null)
-        headsetReconnectCallback = callback
-    }
+    private fun unregisterHeadsetReconnectMonitor() = headsetReconnectMonitor.unregister()
 
-    private fun unregisterHeadsetReconnectMonitor() {
-        headsetReconnectCallback?.let { callback ->
-            runCatching { audioManager.unregisterAudioDeviceCallback(callback) }
-        }
-        headsetReconnectCallback = null
-        clearHeadsetReconnectResume()
-    }
+    private fun clearHeadsetReconnectResume() = headsetReconnectMonitor.clearResume()
 
     private fun registerSystemVolumeObserver() {
         contentResolver.registerContentObserver(
@@ -1535,58 +1430,6 @@ class MusicService : MediaLibraryService() {
 
     private fun unregisterSystemVolumeObserver() {
         runCatching { contentResolver.unregisterContentObserver(systemVolumeObserver) }
-    }
-
-    private fun maybeResumeAfterHeadsetReconnect() {
-        if (!resumeOnHeadsetReconnectEnabled || !shouldResumeAfterHeadsetReconnect) return
-
-        val elapsedSinceNoisyPause = SystemClock.elapsedRealtime() - lastNoisyPauseRealtimeMs
-        if (elapsedSinceNoisyPause > HEADSET_RECONNECT_RESUME_WINDOW_MS) {
-            clearHeadsetReconnectResume()
-            return
-        }
-
-        if (!hasReconnectableHeadsetOutput()) {
-            return
-        }
-
-        val player = engine.masterPlayer
-        if (
-            player.currentMediaItem == null ||
-            player.playWhenReady ||
-            player.playbackState == Player.STATE_IDLE ||
-            player.playbackState == Player.STATE_ENDED
-        ) {
-            clearHeadsetReconnectResume()
-            return
-        }
-
-        Timber.tag(TAG).d("Resuming playback after headset reconnect")
-        clearHeadsetReconnectResume()
-        player.play()
-    }
-
-    private fun hasReconnectableHeadsetOutput(): Boolean {
-        return audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
-            .any(::isReconnectableHeadsetOutput)
-    }
-
-    private fun isReconnectableHeadsetOutput(device: AudioDeviceInfo): Boolean {
-        return when (device.type) {
-            AudioDeviceInfo.TYPE_WIRED_HEADSET,
-            AudioDeviceInfo.TYPE_WIRED_HEADPHONES,
-            AudioDeviceInfo.TYPE_USB_HEADSET,
-            AudioDeviceInfo.TYPE_BLUETOOTH_A2DP,
-            AudioDeviceInfo.TYPE_BLUETOOTH_SCO,
-            AudioDeviceInfo.TYPE_BLE_HEADSET,
-            AudioDeviceInfo.TYPE_BLE_SPEAKER -> true
-            else -> false
-        }
-    }
-
-    private fun clearHeadsetReconnectResume() {
-        shouldResumeAfterHeadsetReconnect = false
-        lastNoisyPauseRealtimeMs = 0L
     }
 
     private fun schedulePlaybackSnapshotPersist(immediate: Boolean = false) {
@@ -2087,7 +1930,7 @@ class MusicService : MediaLibraryService() {
 
         clearHeadsetReconnectResume()
         cancelDurationSleepTimerInternal()
-        endOfTrackTimerSongId = null
+        cancelSleepTimers()
 
         if (preservePlaybackSnapshot) {
             snapshotManager.persistOnUnload()

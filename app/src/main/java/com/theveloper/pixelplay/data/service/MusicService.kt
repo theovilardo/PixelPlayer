@@ -82,6 +82,7 @@ import com.theveloper.pixelplay.data.service.playback.PlaybackSnapshotManager
 import com.theveloper.pixelplay.data.service.playback.HeadsetReconnectMonitor
 import com.theveloper.pixelplay.data.service.playback.NavidromePlaybackReporter
 import com.theveloper.pixelplay.data.service.playback.SleepTimerController
+import com.theveloper.pixelplay.data.service.playback.CountedPlayController
 import com.theveloper.pixelplay.data.service.widget.WidgetArtworkResolver
 import com.theveloper.pixelplay.presentation.viewmodel.ColorSchemePair
 import com.theveloper.pixelplay.shared.WearIntents
@@ -150,12 +151,6 @@ class MusicService : MediaLibraryService() {
     private var persistentShuffleEnabled = false
     // Holds the previous main-thread UncaughtExceptionHandler so we can restore it in onDestroy.
     private var previousMainThreadExceptionHandler: Thread.UncaughtExceptionHandler? = null
-    // --- Counted Play State ---
-    private var countedPlayActive = false
-    private var countedPlayTarget = 0
-    private var countedPlayCount = 0
-    private var countedOriginalId: String? = null
-    private var countedPlayListener: Player.Listener? = null
     private val alarmManager by lazy {
         getSystemService(Context.ALARM_SERVICE) as AlarmManager
     }
@@ -221,6 +216,9 @@ class MusicService : MediaLibraryService() {
             serviceScope = serviceScope,
             appScope = appScope,
         )
+    }
+    private val countedPlayController by lazy {
+        CountedPlayController(engine = engine)
     }
     private val audioManager by lazy {
         getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -2226,80 +2224,9 @@ class MusicService : MediaLibraryService() {
     // ------------------------
     // Counted Play Controls
     // ------------------------
-    fun startCountedPlay(count: Int) {
-        val player = engine.masterPlayer
-        val currentItem = player.currentMediaItem ?: return
+    fun startCountedPlay(count: Int) = countedPlayController.start(count)
 
-        stopCountedPlay()  // reset previous
-
-        countedPlayTarget = count
-        countedPlayCount = 1
-        countedOriginalId = currentItem.mediaId
-        countedPlayActive = true
-
-        // Force repeat-one
-        player.repeatMode = Player.REPEAT_MODE_ONE
-
-        val listener = object : Player.Listener {
-
-            override fun onPositionDiscontinuity(
-                oldPosition: Player.PositionInfo,
-                newPosition: Player.PositionInfo,
-                reason: Int
-            ) {
-                if (!countedPlayActive) return
-
-                if (reason == Player.DISCONTINUITY_REASON_AUTO_TRANSITION) {
-                    countedPlayCount++
-
-                    if (countedPlayCount > countedPlayTarget) {
-                        player.pause()
-                        stopCountedPlay()
-                        return
-                    }
-                }
-            }
-
-            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-                if (!countedPlayActive) return
-
-                // If user manually changes the song -> cancel
-                if (mediaItem?.mediaId != countedOriginalId) {
-                    stopCountedPlay()
-                }
-            }
-
-            override fun onRepeatModeChanged(repeatMode: Int) {
-                // User explicitly changed repeat mode while counted play is active:
-                // cancel counted play and accept the new mode instead of fighting back.
-                if (countedPlayActive && repeatMode != Player.REPEAT_MODE_ONE) {
-                    stopCountedPlay(restoreRepeatMode = false)
-                }
-            }
-        }
-
-        countedPlayListener = listener
-        player.addListener(listener)
-    }
-
-    fun stopCountedPlay(restoreRepeatMode: Boolean = true) {
-        if (!countedPlayActive) return
-
-        countedPlayActive = false
-        countedPlayTarget = 0
-        countedPlayCount = 0
-        countedOriginalId = null
-
-        countedPlayListener?.let {
-            engine.masterPlayer.removeListener(it)
-        }
-        countedPlayListener = null
-
-        // Restore normal repeat mode (OFF) only when not triggered by a user repeat-mode change
-        if (restoreRepeatMode) {
-            engine.masterPlayer.repeatMode = Player.REPEAT_MODE_OFF
-        }
-    }
+    fun stopCountedPlay(restoreRepeatMode: Boolean = true) = countedPlayController.stop(restoreRepeatMode)
 
     /**
      * Bridges a suspend block into a [ListenableFuture] for Media3 callback methods.

@@ -151,6 +151,7 @@ import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape
 import com.theveloper.pixelplay.presentation.utils.AppHapticsConfig
 import com.theveloper.pixelplay.presentation.utils.LocalAppHapticsConfig
 import com.theveloper.pixelplay.presentation.utils.NoOpHapticFeedback
+import com.theveloper.pixelplay.ui.theme.LocalShowSongQualityBadge
 import com.theveloper.pixelplay.utils.CrashLogData
 import javax.annotation.concurrent.Immutable
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -243,6 +244,7 @@ class MainActivity : ComponentActivity() {
             val systemDarkTheme = isSystemInDarkTheme()
             val appThemeMode by themePreferencesRepository.appThemeModeFlow.collectAsStateWithLifecycle(initialValue = AppThemeMode.FOLLOW_SYSTEM)
             val showScrollbar by userPreferencesRepository.showScrollbarFlow.collectAsStateWithLifecycle(initialValue = true)
+            val showSongQualityBadge by userPreferencesRepository.showSongQualityBadgeFlow.collectAsStateWithLifecycle(initialValue = false)
             val useDarkTheme = when (appThemeMode) {
                 AppThemeMode.DARK -> true
                 AppThemeMode.LIGHT -> false
@@ -288,7 +290,10 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            CompositionLocalProvider(LocalShowScrollbar provides showScrollbar) {
+            CompositionLocalProvider(
+                LocalShowScrollbar provides showScrollbar,
+                LocalShowSongQualityBadge provides showSongQualityBadge
+            ) {
                 PixelPlayTheme(
                     darkTheme = useDarkTheme
                 ) {

@@ -8,6 +8,7 @@ import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -54,6 +55,7 @@ import com.theveloper.pixelplay.presentation.components.ShimmerBox
 import androidx.compose.ui.res.stringResource
 import com.theveloper.pixelplay.R
 import com.theveloper.pixelplay.presentation.components.SmartImage
+import com.theveloper.pixelplay.utils.SongQualityBadgeIfEnabled
 
 @Immutable
 private data class EnhancedSongAnimationTarget(
@@ -162,6 +164,7 @@ fun EnhancedSongListItem(
     val baseContentColor = colors.onSurface
     val playbackContentColor = lerpColor(baseContentColor, colors.onPrimaryContainer, highlightProgress)
     val contentColor = lerpColor(playbackContentColor, colors.onSecondaryContainer, selectionVisualProgress)
+    val artistColor = contentColor.copy(alpha = 0.7f)
 
     val selectionBorderColor = lerpColor(colors.primary.copy(alpha = 0f), colors.primary, selectionVisualProgress)
     val mvContainerColor = lerpColor(colors.onSurface, colors.primaryContainer, highlightProgress)
@@ -349,13 +352,24 @@ fun EnhancedSongListItem(
                         )
                     }
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = song.displayArtist,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = contentColor.copy(alpha = 0.7f),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        SongQualityBadgeIfEnabled(
+                            song = song,
+                            textColor = artistColor
+                        )
+                        Text(
+                            text = song.displayArtist,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = artistColor,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f, fill = false)
+                        )
+                    }
                 }
                 
                 val showPlayingIndicator = isCurrentSong && !isSelectionMode

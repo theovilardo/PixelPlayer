@@ -185,6 +185,8 @@
     <string name="settings_disable_blur_all_over_subtitle">배터리와 리소스를 절약하기 위해 앱 전체의 블러 효과를 끕니다.</string>
     <string name="settings_show_scrollbar_title">스크롤바 표시</string>
     <string name="settings_show_scrollbar_subtitle">빠른 스크롤을 위해 음악 목록에 측면 스크롤바를 표시합니다.</string>
+    <string name="settings_show_song_quality_badge_title">음질 배지 표시</string>
+    <string name="settings_show_song_quality_badge_subtitle">노래 목록에서 아티스트 이름 앞에 LQ / HQ / SQ / HR 음질 배지를 표시합니다</string>
     <string name="settings_now_playing_section">현재 재생 중</string>
     <string name="settings_player_theme_title">플레이어 테마</string>
     <string name="settings_player_theme_subtitle">플로팅 플레이어의 디자인을 선택하세요.</string>

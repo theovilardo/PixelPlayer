@@ -185,6 +185,8 @@
     <string name="settings_disable_blur_all_over_subtitle">Weichzeichnungseffekte in der gesamten App deaktivieren, um Akku und Ressourcen zu sparen.</string>
     <string name="settings_show_scrollbar_title">Scrollleiste anzeigen</string>
     <string name="settings_show_scrollbar_subtitle">Seitliche Scrollleiste in Musiklisten für schnelles Scrollen anzeigen</string>
+    <string name="settings_show_song_quality_badge_title">Qualitätskennzeichen anzeigen</string>
+    <string name="settings_show_song_quality_badge_subtitle">LQ-/HQ-/SQ-/HR-Kennzeichen vor dem Künstlernamen in Songlisten anzeigen</string>
     <string name="settings_now_playing_section">Läuft gerade</string>
     <string name="settings_player_theme_title">Player-Design</string>
     <string name="settings_player_theme_subtitle">Wie der Player aussieht.</string>

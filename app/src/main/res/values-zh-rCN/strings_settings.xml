@@ -185,6 +185,8 @@
     <string name="settings_disable_blur_all_over_subtitle">在应用中关闭模糊效果以节省电量和资源。</string>
     <string name="settings_show_scrollbar_title">显示滚动条</string>
     <string name="settings_show_scrollbar_subtitle">在音乐列表中显示侧边滚动条，便于快速滚动。</string>
+    <string name="settings_show_song_quality_badge_title">显示音质标识</string>
+    <string name="settings_show_song_quality_badge_subtitle">在歌曲列表的艺术家名称前显示 LQ / HQ / SQ / HR 音质标识</string>
     <string name="settings_now_playing_section">正在播放</string>
     <string name="settings_player_theme_title">播放器主题</string>
     <string name="settings_player_theme_subtitle">选择悬浮播放器的外观。</string>

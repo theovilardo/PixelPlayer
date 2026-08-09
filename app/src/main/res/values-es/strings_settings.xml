@@ -185,6 +185,8 @@
     <string name="settings_disable_blur_all_over_subtitle">Desactiva los efectos de desenfoque en toda la aplicación para ahorrar batería y recursos.</string>
     <string name="settings_show_scrollbar_title">Mostrar barra de desplazamiento</string>
     <string name="settings_show_scrollbar_subtitle">Muestra una barra de desplazamiento lateral en las listas de música para un desplazamiento rápido.</string>
+    <string name="settings_show_song_quality_badge_title">Mostrar insignias de calidad</string>
+    <string name="settings_show_song_quality_badge_subtitle">Mostrar insignias LQ / HQ / SQ / HR delante del nombre del artista en las listas de canciones</string>
     <string name="settings_now_playing_section">Reproduciendo ahora</string>
     <string name="settings_player_theme_title">Tema del reproductor</string>
     <string name="settings_player_theme_subtitle">Aspecto del reproductor flotante.</string>

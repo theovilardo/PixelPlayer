@@ -246,6 +246,8 @@ class UserPreferencesRepository @Inject constructor(
         val REPLAYGAIN_USE_ALBUM_GAIN = booleanPreferencesKey("replaygain_use_album_gain")
         val PAUSE_ON_VOLUME_ZERO = booleanPreferencesKey("pause_on_volume_zero")
         val SHOW_SCROLLBAR = booleanPreferencesKey("show_scrollbar")
+        val SHOW_SONG_QUALITY_BADGE = booleanPreferencesKey("show_song_quality_badge")
+
     }
 
     // ─── Private helpers ─────────────────────────────────────────────────────
@@ -767,6 +769,17 @@ suspend fun markDirectoryRulesVersionApplied(version: Int) {
     suspend fun setShowScrollbar(enabled: Boolean) {
         dataStore.edit { preferences ->
             preferences[PreferencesKeys.SHOW_SCROLLBAR] = enabled
+        }
+    }
+
+    // Flow / setter：
+    val showSongQualityBadgeFlow: Flow<Boolean> =
+        dataStore.data.map { preferences ->
+            preferences[PreferencesKeys.SHOW_SONG_QUALITY_BADGE] ?: false
+        }
+    suspend fun setShowSongQualityBadge(enabled: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.SHOW_SONG_QUALITY_BADGE] = enabled
         }
     }
 

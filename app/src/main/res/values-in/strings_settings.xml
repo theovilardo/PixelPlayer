@@ -181,6 +181,8 @@
     <string name="settings_disable_blur_all_over_subtitle">Matikan efek blur di seluruh aplikasi untuk menghemat baterai dan sumber daya.</string>
     <string name="settings_show_scrollbar_title">Tampilkan Scrollbar</string>
     <string name="settings_show_scrollbar_subtitle">Menampilkan scrollbar samping pada daftar musik untuk navigasi cepat.</string>
+    <string name="settings_show_song_quality_badge_title">Tampilkan lencana kualitas</string>
+    <string name="settings_show_song_quality_badge_subtitle">Tampilkan lencana LQ / HQ / SQ / HR sebelum nama artis di daftar lagu</string>
     <string name="settings_now_playing_section">Sedang Diputar</string>
     <string name="settings_player_theme_title">Tema Pemutar</string>
     <string name="settings_player_theme_subtitle">Pilih tampilan untuk pemutar melayang.</string>

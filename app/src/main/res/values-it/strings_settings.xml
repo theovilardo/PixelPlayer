@@ -185,6 +185,8 @@
     <string name="settings_disable_blur_all_over_subtitle">Disattiva gli effetti di sfocatura nell\'app per risparmiare batteria e risorse.</string>
     <string name="settings_show_scrollbar_title">Mostra barra di scorrimento</string>
     <string name="settings_show_scrollbar_subtitle">Mostra la barra di scorrimento laterale sulle liste di musica per uno scorrimento rapido</string>
+    <string name="settings_show_song_quality_badge_title">Mostra badge di qualità</string>
+    <string name="settings_show_song_quality_badge_subtitle">Mostra i badge LQ / HQ / SQ / HR prima del nome dell\'artista nelle liste dei brani</string>
     <string name="settings_now_playing_section">In riproduzione</string>
     <string name="settings_player_theme_title">Tema player</string>
     <string name="settings_player_theme_subtitle">Scegli l\'aspetto per il player fluttuante.</string>

@@ -584,6 +584,19 @@ fun SettingsCategoryScreen(
                                     onCheckedChange = { settingsViewModel.setShowScrollbar(it) },
                                     leadingIcon = { Icon(Icons.Rounded.UnfoldMore, null, tint = MaterialTheme.colorScheme.secondary) }
                                 )
+                                SwitchSettingItem(
+                                    title = stringResource(R.string.settings_show_song_quality_badge_title),
+                                    subtitle = stringResource(R.string.settings_show_song_quality_badge_subtitle),
+                                    checked = uiState.showSongQualityBadge,
+                                    onCheckedChange = { settingsViewModel.setShowSongQualityBadge(it) },
+                                    leadingIcon = {
+                                        Icon(
+                                            painterResource(R.drawable.rounded_label),
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.secondary
+                                        )
+                                    }
+                                )
                             }
 
                             SettingsSubsection(title = stringResource(R.string.settings_now_playing_section)) {

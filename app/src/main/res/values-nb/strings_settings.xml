@@ -185,6 +185,8 @@
     <string name="settings_disable_blur_all_over_subtitle">Slå av sløringseffekter i appen for å spare batteri og ressurser.</string>
     <string name="settings_show_scrollbar_title">Vis rullefelt</string>
     <string name="settings_show_scrollbar_subtitle">Vis rullefelt på siden av musikklisten for rask rulling</string>
+    <string name="settings_show_song_quality_badge_title">Vis kvalitetsmerker</string>
+    <string name="settings_show_song_quality_badge_subtitle">Vis LQ / HQ / SQ / HR-merker foran artistnavnet i sanglister</string>
     <string name="settings_now_playing_section">Spilles nå</string>
     <string name="settings_player_theme_title">Spiller-tema</string>
     <string name="settings_player_theme_subtitle">Velg utseende for den flytende spilleren.</string>

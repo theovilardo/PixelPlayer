@@ -185,6 +185,8 @@
     <string name="settings_disable_blur_all_over_subtitle">Turn off blur effects across the app to save battery and resources.</string>
     <string name="settings_show_scrollbar_title">Show Scrollbar</string>
     <string name="settings_show_scrollbar_subtitle">Display lateral scrollbar on music lists for quick scrolling</string>
+    <string name="settings_show_song_quality_badge_title">Show quality badges</string>
+    <string name="settings_show_song_quality_badge_subtitle">Show LQ / HQ / SQ / HR badges before the artist name in song lists</string>
     <string name="settings_now_playing_section">Now Playing</string>
     <string name="settings_player_theme_title">Player Theme</string>
     <string name="settings_player_theme_subtitle">Choose the appearance for the floating player.</string>

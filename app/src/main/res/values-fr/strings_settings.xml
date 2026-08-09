@@ -181,6 +181,8 @@
     <string name="settings_disable_blur_all_over_subtitle">Désactiver les effets de flou dans toute l\'application pour économiser de la batterie et des ressources.</string>
     <string name="settings_show_scrollbar_title">Afficher la barre de défilement</string>
     <string name="settings_show_scrollbar_subtitle">Afficher la barre de défilement latérale sur les listes de musique pour un défilement rapide</string>
+    <string name="settings_show_song_quality_badge_title">Afficher les badges de qualité</string>
+    <string name="settings_show_song_quality_badge_subtitle">Afficher les badges LQ / HQ / SQ / HR devant le nom de l\'artiste dans les listes de morceaux</string>
     <string name="settings_now_playing_section">En cours de lecture</string>
     <string name="settings_player_theme_title">Thème du lecteur</string>
     <string name="settings_player_theme_subtitle">Choisissez l\'apparence du lecteur flottant.</string>

@@ -185,6 +185,8 @@
     <string name="settings_disable_blur_all_over_subtitle">Отключить эффекты размытия во всем приложении для экономии заряда батареи и ресурсов.</string>
     <string name="settings_show_scrollbar_title">Показывать полосу прокрутки</string>
     <string name="settings_show_scrollbar_subtitle">Отображать боковую полосу прокрутки в списках музыки для быстрого прокручивания</string>
+    <string name="settings_show_song_quality_badge_title">Показывать значки качества</string>
+    <string name="settings_show_song_quality_badge_subtitle">Показывать значки LQ / HQ / SQ / HR перед именем исполнителя в списках песен</string>
     <string name="settings_now_playing_section">Сейчас играет</string>
     <string name="settings_player_theme_title">Тема плеера</string>
     <string name="settings_player_theme_subtitle">Выберите оформление плавающего плеера.</string>

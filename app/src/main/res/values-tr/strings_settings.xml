@@ -185,6 +185,8 @@
     <string name="settings_disable_blur_all_over_subtitle">Pil ve kaynak tasarrufu sağlamak için uygulama genelindeki bulanıklık efektlerini kapatın.</string>
     <string name="settings_show_scrollbar_title">Kaydırma Çubuğunu Göster</string>
     <string name="settings_show_scrollbar_subtitle">Hızlı kaydırma için müzik listesinin kenarında kaydırma çubuğunu göster</string>
+    <string name="settings_show_song_quality_badge_title">Kalite rozetlerini göster</string>
+    <string name="settings_show_song_quality_badge_subtitle">Şarkı listelerinde sanatçı adından önce LQ / HQ / SQ / HR rozetlerini göster</string>
     <string name="settings_now_playing_section">Şu An Çalınan</string>
     <string name="settings_player_theme_title">Oynatıcı Teması</string>
     <string name="settings_player_theme_subtitle">Yüzen oynatıcının görünümünü seçin.</string>

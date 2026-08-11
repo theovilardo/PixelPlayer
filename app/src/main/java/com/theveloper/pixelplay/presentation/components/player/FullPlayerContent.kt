@@ -41,6 +41,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.mandatorySystemGestures
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -261,7 +262,10 @@ fun FullPlayerContent(
     val isBluetoothEnabled = fullPlayerSlice.isBluetoothEnabled
     val bluetoothName = fullPlayerSlice.bluetoothName
     val navigationBarBottomInset = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-    val queueGestureBottomExclusion = maxOf(20.dp, navigationBarBottomInset + 8.dp)
+    val mandatoryGestureBottomInset =
+        WindowInsets.mandatorySystemGestures.asPaddingValues().calculateBottomPadding()
+    val queueGestureBottomExclusion =
+        maxOf(20.dp, navigationBarBottomInset, mandatoryGestureBottomInset) + 8.dp
     val queueGestureBottomExclusionPx = with(LocalDensity.current) {
         queueGestureBottomExclusion.toPx()
     }

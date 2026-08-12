@@ -98,8 +98,13 @@ fun WearPixelPlayTheme(
     val palette = remember(themePalette, albumArt, seedColorArgb) {
         when {
             themePalette != null -> themePalette.toWearPalette()
-            albumArt != null -> buildPaletteFromAlbumArt(albumArt)
+            // Prefer the seed over re-deriving one from the full bitmap: WearLocalPlayerRepository
+            // already extracts this cheaply off the main thread (small downsampled bitmap,
+            // recycled after use). Falling through to buildPaletteFromAlbumArt here would redo
+            // that work on the main thread against the full-size bitmap (~576 getPixel() calls)
+            // for no benefit, every time albumArt is present alongside a seed.
             seedColorArgb != null -> buildPaletteFromSeedColor(Color(seedColorArgb))
+            albumArt != null -> buildPaletteFromAlbumArt(albumArt)
             else -> DefaultWearPalette
         }
     }

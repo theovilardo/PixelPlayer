@@ -14,7 +14,6 @@ import androidx.compose.material.icons.rounded.Watch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import android.content.Context
 import androidx.compose.ui.Alignment
@@ -27,6 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
@@ -55,13 +55,13 @@ import kotlinx.coroutines.delay
 fun OutputScreen(
     viewModel: WearPlayerViewModel = hiltViewModel(),
 ) {
-    val outputTarget by viewModel.outputTarget.collectAsState()
-    val isPhoneConnected by viewModel.isPhoneConnected.collectAsState()
-    val canCurrentSongPlayOnWatch by viewModel.canCurrentSongPlayOnWatch.collectAsState()
-    val playerState by viewModel.playerState.collectAsState()
-    val phoneVolumeState by viewModel.phoneVolumeState.collectAsState()
-    val watchAudioRoutes by viewModel.watchAudioRoutes.collectAsState()
-    val watchVolumeState by viewModel.watchVolumeState.collectAsState()
+    val outputTarget by viewModel.outputTarget.collectAsStateWithLifecycle()
+    val isPhoneConnected by viewModel.isPhoneConnected.collectAsStateWithLifecycle()
+    val canCurrentSongPlayOnWatch by viewModel.canCurrentSongPlayOnWatch.collectAsStateWithLifecycle()
+    val playerState by viewModel.playerState.collectAsStateWithLifecycle()
+    val phoneVolumeState by viewModel.phoneVolumeState.collectAsStateWithLifecycle()
+    val watchAudioRoutes by viewModel.watchAudioRoutes.collectAsStateWithLifecycle()
+    val watchVolumeState by viewModel.watchVolumeState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val palette = LocalWearPalette.current
     val columnState = rememberResponsiveColumnState()

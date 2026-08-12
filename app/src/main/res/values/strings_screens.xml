@@ -126,6 +126,19 @@
     <string name="playlist_cd_remove_songs">Remove songs</string>
     <string name="playlist_action_reorder_songs">Reorder</string>
     <string name="playlist_cd_reorder_songs">Reorder songs</string>
+    <string name="playlist_action_send_to_watch">Send to Watch</string>
+    <string name="playlist_action_update_on_watch">Update on Watch</string>
+    <string name="playlist_cd_send_to_watch">Send playlist to watch</string>
+    <string name="playlist_send_to_watch_dialog_title">Send \"%1$s\" to your watch?</string>
+    <string name="playlist_send_to_watch_dialog_update_title">Update \"%1$s\" on your watch?</string>
+    <string name="playlist_send_to_watch_dialog_pending_songs">%1$d of %2$d songs to send</string>
+    <string name="playlist_send_to_watch_dialog_all_songs">%1$d songs</string>
+    <string name="playlist_send_to_watch_dialog_estimate">%1$s · about %2$s</string>
+    <string name="playlist_send_to_watch_dialog_confirm">Send</string>
+    <string name="playlist_send_to_watch_dialog_update_confirm">Update</string>
+    <string name="playlist_send_to_watch_dialog_watch_unavailable">No watch connected</string>
+    <string name="playlist_watch_transfer_started_toast">Sending \"%1$s\" to your watch</string>
+    <string name="playlist_watch_transfer_start_failed_toast">Couldn\'t start the transfer: %1$s</string>
 
     <!-- EditTransitionScreen -->
     <string name="transition_title_global">Global transitions</string>

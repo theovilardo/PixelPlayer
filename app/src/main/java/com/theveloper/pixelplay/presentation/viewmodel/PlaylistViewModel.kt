@@ -14,6 +14,14 @@ import com.theveloper.pixelplay.data.model.SortOption
 import com.theveloper.pixelplay.data.playlist.M3uManager
 import com.theveloper.pixelplay.data.preferences.PlaylistPreferencesRepository
 import com.theveloper.pixelplay.data.repository.MusicRepository
+import com.theveloper.pixelplay.data.service.wear.PhoneWatchBatchTransferState
+import com.theveloper.pixelplay.data.service.wear.PhoneWatchTransferStateStore
+import com.theveloper.pixelplay.data.service.wear.PlaylistWatchTransferCoordinator
+import com.theveloper.pixelplay.data.service.wear.WatchAudioTranscoder
+import com.theveloper.pixelplay.data.service.wear.WatchPlaylistTransferEstimate
+import com.theveloper.pixelplay.data.service.wear.WatchPlaylistTransferEstimator
+import com.theveloper.pixelplay.data.service.wear.WearPhoneTransferSender
+import com.theveloper.pixelplay.shared.WearTransferProgress
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +30,9 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -75,6 +86,10 @@ class PlaylistViewModel @Inject constructor(
     private val dailyMixManager: DailyMixManager,
     private val aiPlaylistGenerator: AiPlaylistGenerator,
     private val m3uManager: M3uManager,
+    private val playlistWatchTransferCoordinator: PlaylistWatchTransferCoordinator,
+    private val watchTransferStateStore: PhoneWatchTransferStateStore,
+    private val wearPhoneTransferSender: WearPhoneTransferSender,
+    private val watchAudioTranscoder: WatchAudioTranscoder,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -87,10 +102,39 @@ class PlaylistViewModel @Inject constructor(
     )
     val playlistCreationEvent: SharedFlow<Boolean> = _playlistCreationEvent.asSharedFlow()
 
+    private val _isPixelPlayWatchAvailable = MutableStateFlow(false)
+    val isPixelPlayWatchAvailable: StateFlow<Boolean> = _isPixelPlayWatchAvailable.asStateFlow()
+    private val _isRefreshingWatchAvailability = MutableStateFlow(false)
+    val watchSongIds: StateFlow<Set<String>> = watchTransferStateStore.watchSongIds
+
+    /** Whether any watch has ever been paired with PixelPlay installed — as opposed to
+     *  [isPixelPlayWatchAvailable], which is "reachable right now". Gates whether watch-related
+     *  actions show at all, vs. showing disabled for a paired-but-out-of-range watch. */
+    val isAnyWatchPaired: StateFlow<Boolean> = watchTransferStateStore.isAnyWatchPaired
+
+    /**
+     * Whichever playlist batch transfer is currently active, regardless of which screen/ViewModel
+     * instance started it — queried off the shared [PhoneWatchTransferStateStore] instead of
+     * remembering "the last batchId this instance kicked off", so re-entering the detail screen
+     * for the same playlist still sees a batch already in flight.
+     */
+    val activePlaylistBatchTransfer: StateFlow<PhoneWatchBatchTransferState?> = watchTransferStateStore.batchTransfers
+        .map { batches -> batches.values.firstOrNull { it.status !in TERMINAL_BATCH_STATUSES } }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000L),
+            initialValue = null,
+        )
+
     companion object {
         const val FOLDER_PLAYLIST_PREFIX = "folder_playlist:"
         private const val MANUAL_ORDER_MODE = "manual"
         private const val SMART_PLAYLIST_MAX_ITEMS = 100
+        private val TERMINAL_BATCH_STATUSES = setOf(
+            WearTransferProgress.STATUS_COMPLETED,
+            WearTransferProgress.STATUS_FAILED,
+            WearTransferProgress.STATUS_CANCELLED,
+        )
 
         fun sanitizeFileName(name: String): String {
             val sanitized = name.replace(Regex("[\\\\/:*?\"<>|\\s]+"), "_").trim('_')
@@ -1223,5 +1267,47 @@ class PlaylistViewModel @Inject constructor(
                 Toast.makeText(context, context.getString(R.string.playlist_view_model_export_failed, e.message ?: ""), Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    // --- Watch transfer ---
+
+    /**
+     * Refreshes reachable-watch capability + free storage. Call before showing the send-to-watch
+     * confirmation sheet so its estimate and availability state are current.
+     */
+    fun refreshWatchAvailability() {
+        if (_isRefreshingWatchAvailability.value) return
+
+        viewModelScope.launch {
+            _isRefreshingWatchAvailability.value = true
+            val available = wearPhoneTransferSender.isPixelPlayWatchAvailable()
+            _isPixelPlayWatchAvailable.value = available
+            _isRefreshingWatchAvailability.value = false
+            if (available) {
+                wearPhoneTransferSender.refreshWatchLibraryState()
+            }
+        }
+        viewModelScope.launch {
+            wearPhoneTransferSender.refreshWatchPairingState()
+        }
+    }
+
+    fun isPlaylistFullyOnWatch(songIds: List<String>): Boolean {
+        return songIds.isNotEmpty() && songIds.all { watchTransferStateStore.isSongSavedOnAllReachableWatches(it) }
+    }
+
+    /** Size/time estimate over only the songs from [songs] that aren't already on every reachable watch. */
+    fun estimateWatchTransfer(songs: List<Song>): WatchPlaylistTransferEstimate {
+        val pendingSongs = songs.filterNot { watchTransferStateStore.isSongSavedOnAllReachableWatches(it.id) }
+        return WatchPlaylistTransferEstimator.estimate(songs, pendingSongs, watchAudioTranscoder)
+    }
+
+    /** Returns the generated batchId immediately; the transfer itself runs asynchronously. */
+    fun sendPlaylistToWatch(playlistId: String, playlistName: String, songIds: List<String>): String {
+        return playlistWatchTransferCoordinator.requestPlaylistTransfer(playlistId, playlistName, songIds)
+    }
+
+    fun cancelPlaylistTransfer(batchId: String) {
+        playlistWatchTransferCoordinator.cancelPlaylistTransfer(batchId)
     }
 }

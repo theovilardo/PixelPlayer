@@ -224,6 +224,14 @@ class WearDownloadsViewModel @Inject constructor(
         transferRepository.cancelTransfer(requestId)
     }
 
+    /**
+     * Dismiss a failed/cancelled transfer's chip from the "issues" section — otherwise it stays
+     * there indefinitely with no other way to clear it.
+     */
+    fun dismissTransfer(requestId: String) {
+        transferRepository.dismissTransfer(requestId)
+    }
+
     override fun onCleared() {
         phonePlaybackTimeoutJob?.cancel()
         super.onCleared()

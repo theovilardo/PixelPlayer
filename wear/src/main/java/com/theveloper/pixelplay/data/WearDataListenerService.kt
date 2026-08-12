@@ -17,11 +17,13 @@ import com.theveloper.pixelplay.shared.WearDataPaths
 import com.theveloper.pixelplay.shared.WearFavoriteSyncResponse
 import com.theveloper.pixelplay.shared.WearPlaybackResult
 import com.theveloper.pixelplay.shared.WearPlayerState
+import com.theveloper.pixelplay.shared.WearPlaylistSync
 import com.theveloper.pixelplay.shared.WearTransferMetadata
 import com.theveloper.pixelplay.shared.WearTransferProgress
 import com.theveloper.pixelplay.shared.WearTransferRequest
 import com.theveloper.pixelplay.shared.WearVolumeState
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -57,6 +59,9 @@ class WearDataListenerService : WearableListenerService() {
     @Inject
     lateinit var favoriteSyncRepository: WearFavoriteSyncRepository
 
+    @Inject
+    lateinit var performanceSettingsRepository: WearPerformanceSettingsRepository
+
     private val json = Json { ignoreUnknownKeys = true }
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -83,14 +88,32 @@ class WearDataListenerService : WearableListenerService() {
 
             val dataItem = event.dataItem
             Timber.tag(TAG).d("Data event path=%s", dataItem.uri.path)
-            if (dataItem.uri.path == WearDataPaths.PLAYER_STATE) {
-                // Copy DataMap in callback thread; DataEventBuffer is invalid once callback returns.
-                val dataMap = DataMapItem.fromDataItem(dataItem).dataMap
-                scope.launch {
-                    try {
-                        processPlayerStateUpdate(dataMap)
-                    } catch (e: Exception) {
-                        Timber.tag(TAG).e(e, "Failed to process player state update")
+            when (dataItem.uri.path) {
+                WearDataPaths.PLAYER_STATE -> {
+                    // Copy DataMap in callback thread; DataEventBuffer is invalid once callback returns.
+                    val dataMap = DataMapItem.fromDataItem(dataItem).dataMap
+                    scope.launch {
+                        try {
+                            processPlayerStateUpdate(dataMap)
+                        } catch (e: Exception) {
+                            Timber.tag(TAG).e(e, "Failed to process player state update")
+                        }
+                    }
+                }
+
+                WearDataPaths.WEAR_PERFORMANCE_SETTINGS -> {
+                    val dataMap = DataMapItem.fromDataItem(dataItem).dataMap
+                    scope.launch {
+                        try {
+                            performanceSettingsRepository.save(
+                                showAlbumArt = dataMap.getBoolean(WearDataPaths.KEY_SHOW_ALBUM_ART, true),
+                                dynamicColorTheming = dataMap.getBoolean(WearDataPaths.KEY_DYNAMIC_COLOR_THEMING, true),
+                                playButtonAnimation = dataMap.getBoolean(WearDataPaths.KEY_PLAY_BUTTON_ANIMATION, true),
+                            )
+                            Timber.tag(TAG).d("Performance settings synced from phone")
+                        } catch (e: Exception) {
+                            Timber.tag(TAG).e(e, "Failed to process performance settings sync")
+                        }
                     }
                 }
             }
@@ -248,6 +271,20 @@ class WearDataListenerService : WearableListenerService() {
                         )
                     } catch (e: Exception) {
                         Timber.tag(TAG).e(e, "Failed to process transfer metadata")
+                    }
+                }
+            }
+
+            WearDataPaths.PLAYLIST_SYNC -> {
+                scope.launch {
+                    try {
+                        val syncJson = String(messageEvent.data, Charsets.UTF_8)
+                        val sync = json.decodeFromString<WearPlaylistSync>(syncJson)
+                        transferRepository.onPlaylistSyncReceived(sync, sourceNodeId = messageEvent.sourceNodeId)
+                    } catch (e: CancellationException) {
+                        throw e
+                    } catch (e: Exception) {
+                        Timber.tag(TAG).e(e, "Failed to process playlist sync")
                     }
                 }
             }

@@ -28,7 +28,6 @@ import androidx.compose.material.icons.rounded.Remove
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -41,6 +40,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.wear.compose.foundation.ExperimentalWearFoundationApi
 import androidx.wear.compose.foundation.requestFocusOnHierarchyActive
@@ -65,9 +65,9 @@ fun VolumeScreen(
     viewModel: WearPlayerViewModel = hiltViewModel(),
 ) {
     val palette = LocalWearPalette.current
-    val volumeState by viewModel.activeVolumeState.collectAsState()
-    val volumePercent by viewModel.activeVolumePercent.collectAsState()
-    val activeDeviceName by viewModel.activeVolumeDeviceName.collectAsState()
+    val volumeState by viewModel.activeVolumeState.collectAsStateWithLifecycle()
+    val volumePercent by viewModel.activeVolumePercent.collectAsStateWithLifecycle()
+    val activeDeviceName by viewModel.activeVolumeDeviceName.collectAsStateWithLifecycle()
 
     // Enable MediaRouter discovery while this screen is visible so the
     // route-callback path in WearVolumeRepository pushes updates reactively.

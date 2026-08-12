@@ -642,4 +642,16 @@
     <string name="settings_volume_section">Volume</string>
     <string name="settings_pause_on_volume_zero">Mettre en pause quand le volume atteint zéro</string>
     <string name="settings_pause_on_volume_zero_desc">Mettre automatiquement en pause la lecture lorsque le volume est à 0</string>
+
+    <!-- Watch category -->
+    <string name="settings_category_wear_title">Montre</string>
+    <string name="settings_category_wear_subtitle">Options de performance pour la lecture hors ligne sur votre montre</string>
+    <string name="settings_wear_performance_section">Performance</string>
+    <string name="settings_wear_performance_scope_note">Ces options s\'appliquent uniquement lorsque votre montre lit de la musique de manière autonome, sans connexion au téléphone. Le contrôle de la lecture du téléphone depuis la montre affiche toujours l\'expérience complète.</string>
+    <string name="settings_wear_show_album_art_title">Afficher la pochette de l\'album</string>
+    <string name="settings_wear_show_album_art_subtitle">Désactivez pour économiser la mémoire de la montre — l\'option ayant le plus d\'impact des trois</string>
+    <string name="settings_wear_dynamic_color_title">Couleur dynamique</string>
+    <string name="settings_wear_dynamic_color_subtitle">Teinte l\'interface de la montre selon la pochette de chaque morceau</string>
+    <string name="settings_wear_play_button_animation_title">Animation du bouton de lecture</string>
+    <string name="settings_wear_play_button_animation_subtitle">Anneau tournant en continu autour du bouton de lecture pendant la musique</string>
 </resources>

@@ -8,7 +8,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -16,6 +15,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.theveloper.pixelplay.data.WearLifecycleState
 import kotlinx.coroutines.isActive
 import kotlin.math.PI
@@ -36,8 +36,8 @@ fun PlayingEqIcon(
     val fullRotation = (2f * PI).toFloat()
     val phaseAnim = remember { Animatable(0f) }
     val wanderAnim = remember { Animatable(0f) }
-    val isInteractive by WearLifecycleState.isInteractive.collectAsState(
-        initial = WearLifecycleState.isInteractiveNow,
+    val isInteractive by WearLifecycleState.isInteractive.collectAsStateWithLifecycle(
+        initialValue = WearLifecycleState.isInteractiveNow,
     )
     val animate = isPlaying && isInteractive
 

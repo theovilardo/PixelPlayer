@@ -23,6 +23,8 @@
     <string name="settings_category_accounts_subtitle">Manage Telegram, Google Drive, NetEase, and more services</string>
     <string name="settings_category_about_title">About</string>
     <string name="settings_category_about_subtitle">App info, version, and credits</string>
+    <string name="settings_category_wear_title">Watch</string>
+    <string name="settings_category_wear_subtitle">Performance options for offline playback on your watch</string>
 
     <!-- Common toggles / labels used in ThemeSelectorItem maps -->
     <string name="settings_label_on">On</string>
@@ -655,4 +657,14 @@
     <string name="settings_volume_section">Volume</string>
     <string name="settings_pause_on_volume_zero">Pause when volume reaches zero</string>
     <string name="settings_pause_on_volume_zero_desc">Automatically pause playback when the volume is set to 0</string>
+
+    <!-- Watch category -->
+    <string name="settings_wear_performance_section">Performance</string>
+    <string name="settings_wear_performance_scope_note">These only apply when your watch plays music on its own, without the phone connected. Controlling phone playback from the watch always shows the full experience.</string>
+    <string name="settings_wear_show_album_art_title">Show album art</string>
+    <string name="settings_wear_show_album_art_subtitle">Turn off to save memory on the watch — biggest impact of the three</string>
+    <string name="settings_wear_dynamic_color_title">Dynamic color</string>
+    <string name="settings_wear_dynamic_color_subtitle">Tint the watch UI from each song\'s artwork</string>
+    <string name="settings_wear_play_button_animation_title">Play button animation</string>
+    <string name="settings_wear_play_button_animation_subtitle">Continuous spinning ring around the play button while music plays</string>
 </resources>

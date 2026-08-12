@@ -7,6 +7,7 @@
     <string name="wear_transfer_issues">Overføringsproblemer</string>
     <string name="wear_transfer_cancelled">Avbrutt</string>
     <string name="wear_transfer_failed">Overføring feilet</string>
+    <string name="wear_transfer_dismiss_hint">Trykk for å avvise</string>
     <string name="wear_saved_from_phone">Lagret fra telefonen</string>
     <string name="wear_songs_watch_storage">Sanger på klokkens lagring</string>
     <string name="wear_allow_audio_access">Tillat lydtilgang</string>

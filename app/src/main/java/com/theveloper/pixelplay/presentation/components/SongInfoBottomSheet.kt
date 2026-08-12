@@ -158,6 +158,7 @@ fun SongInfoBottomSheet(
     val audioMeta by songInfoViewModel.audioMeta.collectAsStateWithLifecycle()
     val resolvedArtists by songInfoViewModel.resolvedArtists.collectAsStateWithLifecycle()
     val isPixelPlayWatchAvailable by songInfoViewModel.isPixelPlayWatchAvailable.collectAsStateWithLifecycle()
+    val isAnyWatchPaired by songInfoViewModel.isAnyWatchPaired.collectAsStateWithLifecycle()
     val isWatchAvailabilityResolved by songInfoViewModel.isWatchAvailabilityResolved.collectAsStateWithLifecycle()
     val isSendingToWatch by songInfoViewModel.isSendingToWatch.collectAsStateWithLifecycle()
     val watchTransfers by songInfoViewModel.watchTransfers.collectAsStateWithLifecycle()
@@ -281,21 +282,29 @@ fun SongInfoBottomSheet(
     val shouldOfferWatchTransfer = remember(
         canSendToWatch,
         currentSongTransfer,
+        isAnyWatchPaired,
         isPixelPlayWatchAvailable,
         isSongSavedOnWatch,
         isWatchAvailabilityResolved,
     ) {
         currentSongTransfer == null &&
                 canSendToWatch &&
+                isAnyWatchPaired &&
                 isWatchAvailabilityResolved &&
                 isPixelPlayWatchAvailable &&
                 !isSongSavedOnWatch
     }
+    // isAnyWatchPaired gates this too — otherwise this "checking watch…" state would flash for
+    // every song info sheet even on a phone that's never paired a watch at all, since
+    // isWatchAvailabilityResolved only flips true after the (irrelevant, in that case) reachability
+    // check finishes.
     val shouldShowWatchTransferLoading = remember(
         canSendToWatch,
+        isAnyWatchPaired,
         isWatchAvailabilityResolved,
     ) {
         canSendToWatch &&
+                isAnyWatchPaired &&
                 !isWatchAvailabilityResolved
     }
 

@@ -42,6 +42,31 @@ class WearPhoneTransferSender @Inject constructor(
         }
     }
 
+    /**
+     * Distinct from [isPixelPlayWatchAvailable]: `FILTER_ALL` returns every node that has ever
+     * advertised the PixelPlay capability, reachable or not, instead of only ones reachable right
+     * now — the signal for "has the user ever paired a watch with PixelPlay installed at all",
+     * used to hide watch-related UI entirely for someone who never has, as opposed to showing it
+     * disabled/"not connected" for a paired watch that's just out of range at the moment.
+     */
+    suspend fun refreshWatchPairingState(): Boolean {
+        return runCatching {
+            val capability = capabilityClient.getCapability(
+                WearCapabilities.PIXELPLAY_WEAR_APP,
+                CapabilityClient.FILTER_ALL,
+            ).await()
+            val paired = capability.nodes.isNotEmpty()
+            transferStateStore.setAnyWatchPaired(paired)
+            paired
+        }.getOrElse { error ->
+            Timber.tag(TAG).w(error, "Failed checking whether any watch is paired")
+            // Deliberately don't clear transferStateStore's flag on failure (unlike
+            // isPixelPlayWatchAvailable's reachability reset): a transient error here shouldn't
+            // hide UI that a previous successful check already confirmed should be visible.
+            transferStateStore.isAnyWatchPaired.value
+        }
+    }
+
     suspend fun refreshWatchLibraryState(): Result<Unit> {
         return runCatching {
             val capability = capabilityClient.getCapability(

@@ -7,6 +7,7 @@
     <string name="wear_transfer_issues">Problemas de transferencia</string>
     <string name="wear_transfer_cancelled">Cancelada</string>
     <string name="wear_transfer_failed">Error en la transferencia</string>
+    <string name="wear_transfer_dismiss_hint">Toca para descartar</string>
     <string name="wear_saved_from_phone">Guardado desde el teléfono</string>
     <string name="wear_songs_watch_storage">Canciones en el almacenamiento del reloj</string>
     <string name="wear_allow_audio_access">Permitir acceso al audio</string>
@@ -14,6 +15,14 @@
     <string name="wear_scanning_watch_storage">Escaneando almacenamiento del reloj…</string>
     <string name="wear_retry_scan">Reintentar escaneo</string>
     <string name="wear_no_local_songs">No se encontraron canciones locales</string>
+    <string name="wear_playlists_title">Listas de reproducción</string>
+    <string name="wear_no_local_playlists">Aún no se ha enviado ninguna lista desde tu teléfono</string>
+    <string name="wear_playlist_receiving">Recibiendo…</string>
+    <string name="wear_local_playlists_entry">Listas de reproducción</string>
+    <string name="wear_playlist_pending_songs">%1$d de %2$d disponibles</string>
+    <string name="wear_play_all">Reproducir todo</string>
+    <string name="wear_playlist_empty">Esta lista no tiene canciones</string>
+    <string name="wear_song_pending_transfer">Esperando transferencia…</string>
     <string name="wear_status_playing">Reproduciendo</string>
     <string name="wear_status_current">Actual</string>
     <string name="wear_cd_more_options">Más opciones</string>

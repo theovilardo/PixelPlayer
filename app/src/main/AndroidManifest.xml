@@ -302,6 +302,10 @@
                     android:scheme="wear"
                     android:host="*"
                     android:pathPrefix="/watch_library_state" />
+                <data
+                    android:scheme="wear"
+                    android:host="*"
+                    android:pathPrefix="/playlist_sync_ack" />
             </intent-filter>
         </service>
 

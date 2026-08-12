@@ -7,6 +7,7 @@
     <string name="wear_transfer_issues">전송 문제</string>
     <string name="wear_transfer_cancelled">취소됨</string>
     <string name="wear_transfer_failed">전송 실패</string>
+    <string name="wear_transfer_dismiss_hint">탭하여 닫기</string>
     <string name="wear_saved_from_phone">휴대전화에서 저장됨</string>
     <string name="wear_songs_watch_storage">워치 저장공간의 곡</string>
     <string name="wear_allow_audio_access">오디오 액세스 허용</string>

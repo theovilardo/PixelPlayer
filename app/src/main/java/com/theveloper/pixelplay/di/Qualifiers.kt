@@ -29,3 +29,21 @@ annotation class BackupGson
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class AppScope
+
+/**
+ * Qualifier for the IO [kotlinx.coroutines.CoroutineDispatcher]. Injected rather than referenced
+ * as `Dispatchers.IO` directly so tests can substitute a `TestDispatcher` (implements
+ * `AND-CONC-03`). Most of this codebase predates this convention and still references
+ * `Dispatchers.IO` directly — only use this qualifier in new code.
+ */
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class IoDispatcher
+
+/**
+ * Qualifier for the Main [kotlinx.coroutines.CoroutineDispatcher]. Same rationale as
+ * [IoDispatcher] — new code only.
+ */
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class MainDispatcher

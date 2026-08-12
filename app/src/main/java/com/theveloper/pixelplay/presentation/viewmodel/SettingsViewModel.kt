@@ -111,7 +111,11 @@ data class SettingsUiState(
     val replayGainEnabled: Boolean = false,
     val replayGainUseAlbumGain: Boolean = false,
     val isSafeTokenLimitEnabled: Boolean = true,
-    val showScrollbar: Boolean = true
+    val showScrollbar: Boolean = true,
+    // Wear OS performance toggles — only apply during standalone local playback on the watch.
+    val wearShowAlbumArt: Boolean = true,
+    val wearDynamicColorTheming: Boolean = true,
+    val wearPlayButtonAnimation: Boolean = true,
 )
 
 data class FailedSongInfo(
@@ -190,11 +194,27 @@ class SettingsViewModel @Inject constructor(
     private val lyricsRepository: LyricsRepository,
     private val musicRepository: MusicRepository,
     private val backupManager: BackupManager,
+    private val wearPerformanceSettingsPublisher: com.theveloper.pixelplay.data.service.wear.WearPerformanceSettingsPublisher,
+    private val wearPhoneTransferSender: com.theveloper.pixelplay.data.service.wear.WearPhoneTransferSender,
+    private val watchTransferStateStore: com.theveloper.pixelplay.data.service.wear.PhoneWatchTransferStateStore,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
+
+    /** Whether any watch has ever been paired with PixelPlay installed — gates whether the
+     *  "Watch" category even shows in the Settings hub. See PlaylistViewModel's identical field
+     *  for the full explanation of why this differs from "reachable right now". */
+    val isAnyWatchPaired: StateFlow<Boolean> = watchTransferStateStore.isAnyWatchPaired
+
+    /** Re-checks watch pairing state — call once when the Settings hub (or "Watch" category)
+     *  opens, on top of the app-startup check, in case a watch was paired mid-session. */
+    fun refreshWatchPairingState() {
+        viewModelScope.launch {
+            wearPhoneTransferSender.refreshWatchPairingState()
+        }
+    }
 
     // AI Provider State
     val aiProvider: StateFlow<String> = aiPreferencesRepository.aiProvider
@@ -764,6 +784,24 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             userPreferencesRepository.tapBackgroundClosesPlayerFlow.collect { enabled ->
                 _uiState.update { it.copy(tapBackgroundClosesPlayer = enabled) }
+            }
+        }
+
+        viewModelScope.launch {
+            userPreferencesRepository.wearShowAlbumArtFlow.collect { enabled ->
+                _uiState.update { it.copy(wearShowAlbumArt = enabled) }
+            }
+        }
+
+        viewModelScope.launch {
+            userPreferencesRepository.wearDynamicColorThemingFlow.collect { enabled ->
+                _uiState.update { it.copy(wearDynamicColorTheming = enabled) }
+            }
+        }
+
+        viewModelScope.launch {
+            userPreferencesRepository.wearPlayButtonAnimationFlow.collect { enabled ->
+                _uiState.update { it.copy(wearPlayButtonAnimation = enabled) }
             }
         }
 
@@ -1368,6 +1406,65 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             userPreferencesRepository.setHapticsEnabled(enabled)
         }
+    }
+
+    fun setWearShowAlbumArt(enabled: Boolean) {
+        viewModelScope.launch {
+            userPreferencesRepository.setWearShowAlbumArt(enabled)
+            publishWearPerformanceSettings(showAlbumArtOverride = enabled)
+        }
+    }
+
+    fun setWearDynamicColorTheming(enabled: Boolean) {
+        viewModelScope.launch {
+            userPreferencesRepository.setWearDynamicColorTheming(enabled)
+            publishWearPerformanceSettings(dynamicColorThemingOverride = enabled)
+        }
+    }
+
+    fun setWearPlayButtonAnimation(enabled: Boolean) {
+        viewModelScope.launch {
+            userPreferencesRepository.setWearPlayButtonAnimation(enabled)
+            publishWearPerformanceSettings(playButtonAnimationOverride = enabled)
+        }
+    }
+
+    /**
+     * Publishes the current watch performance settings to the watch. Called once when the
+     * "Watch" settings screen opens (no overrides — just re-announces whatever's persisted, so a
+     * freshly paired or reinstalled watch gets them without the user touching a toggle first,
+     * since DataItem sync only reaches a node once something's actually been `putDataItem`'d at
+     * least once), and after each individual setter above with that field's fresh value passed as
+     * an override.
+     *
+     * Deliberately reads the other (non-overridden) fields straight from
+     * [UserPreferencesRepository]'s flows via `.first()`, not from `uiState.value`: `uiState` is
+     * updated by a separate reactive collector that isn't guaranteed to have caught up to a write
+     * that just happened a moment ago on a *different* setter call — flipping two switches in
+     * quick succession could publish a stale value for whichever one's collector hadn't run yet,
+     * silently reverting it on the watch. Reading the repository directly has no such race: by
+     * the time this runs, every `set...()` call that's already returned has durably completed its
+     * `DataStore.edit`, so a fresh `.first()` always reflects it.
+     */
+    private fun publishWearPerformanceSettings(
+        showAlbumArtOverride: Boolean? = null,
+        dynamicColorThemingOverride: Boolean? = null,
+        playButtonAnimationOverride: Boolean? = null,
+    ) {
+        viewModelScope.launch {
+            wearPerformanceSettingsPublisher.publish(
+                showAlbumArt = showAlbumArtOverride
+                    ?: userPreferencesRepository.wearShowAlbumArtFlow.first(),
+                dynamicColorTheming = dynamicColorThemingOverride
+                    ?: userPreferencesRepository.wearDynamicColorThemingFlow.first(),
+                playButtonAnimation = playButtonAnimationOverride
+                    ?: userPreferencesRepository.wearPlayButtonAnimationFlow.first(),
+            )
+        }
+    }
+
+    fun publishWearPerformanceSettings() {
+        publishWearPerformanceSettings(null, null, null)
     }
 
     fun setBackupInfoDismissed(dismissed: Boolean) {

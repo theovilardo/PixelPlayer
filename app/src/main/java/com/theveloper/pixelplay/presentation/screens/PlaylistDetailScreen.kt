@@ -9,6 +9,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -48,6 +49,7 @@ import androidx.compose.material.icons.filled.MusicOff
 import androidx.compose.material.icons.filled.RemoveCircleOutline
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.DragIndicator
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Shuffle
@@ -134,6 +136,10 @@ import com.theveloper.pixelplay.ui.theme.GoogleSansRounded
 import com.theveloper.pixelplay.presentation.viewmodel.PlaylistSongsOrderMode
 import com.theveloper.pixelplay.utils.formatSongCount
 import com.theveloper.pixelplay.utils.formatTotalDuration
+import com.theveloper.pixelplay.utils.formatListeningDurationCompact
+import com.theveloper.pixelplay.data.service.wear.PhoneWatchBatchTransferState
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.LinearWavyProgressIndicator
 import racra.compose.smooth_corner_rect_library.AbsoluteSmoothCornerShape
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
@@ -179,6 +185,9 @@ fun PlaylistDetailScreen(
     val deletePlaylistLabel = stringResource(R.string.playlist_action_delete_playlist)
     val setDefaultTransitionLabel = stringResource(R.string.playlist_action_set_default_transition)
     val exportPlaylistLabel = stringResource(R.string.playlist_action_export_playlist)
+    val sendToWatchLabel = stringResource(R.string.playlist_action_send_to_watch)
+    val updateOnWatchLabel = stringResource(R.string.playlist_action_update_on_watch)
+    val sendToWatchCd = stringResource(R.string.playlist_cd_send_to_watch)
     val deletePlaylistConfirmTitle = stringResource(R.string.playlist_dialog_delete_title)
     val deletePlaylistConfirmBody = stringResource(R.string.playlist_dialog_delete_body)
     val sortSheetTitle = stringResource(R.string.playlist_sort_songs_title)
@@ -192,6 +201,12 @@ fun PlaylistDetailScreen(
         playlistViewModel.loadPlaylistDetails(playlistId)
     }
 
+    // So "Send to Watch" in the options sheet below can be gated on isAnyWatchPaired before the
+    // user ever opens that sheet, not only refreshed reactively once they tap it.
+    LaunchedEffect(Unit) {
+        playlistViewModel.refreshWatchAvailability()
+    }
+
     var showAddSongsSheet by remember { mutableStateOf(false) }
 
     var isReorderModeEnabled by remember { mutableStateOf(false) }
@@ -200,6 +215,7 @@ fun PlaylistDetailScreen(
     var showPlaylistOptionsSheet by remember { mutableStateOf(false) }
     var showEditPlaylistDialog by remember { mutableStateOf(false) }
     var showDeleteConfirmation by remember { mutableStateOf(false) }
+    var showSendToWatchDialog by remember { mutableStateOf(false) }
 
     val m3uExportLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("audio/x-mpegurl")
@@ -213,6 +229,29 @@ fun PlaylistDetailScreen(
 
     val selectedSongForInfo by playerViewModel.selectedSongForInfo.collectAsStateWithLifecycle()
     val favoriteIds by playerViewModel.favoriteSongIds.collectAsStateWithLifecycle() // Reintroducir favoriteIds aquí
+    val isPixelPlayWatchAvailable by playlistViewModel.isPixelPlayWatchAvailable.collectAsStateWithLifecycle()
+    val isAnyWatchPaired by playlistViewModel.isAnyWatchPaired.collectAsStateWithLifecycle()
+    val watchSongIds by playlistViewModel.watchSongIds.collectAsStateWithLifecycle()
+    val activeBatchTransfer by playlistViewModel.activePlaylistBatchTransfer.collectAsStateWithLifecycle()
+    val activePlaylistTransfer = activeBatchTransfer?.takeIf { it.playlistId == playlistId }
+    // Mutating the playlist while it's mid-transfer to the watch could desync what's actually
+    // being sent from what the user sees on screen — reorder/add/remove are disabled (not
+    // removed, to avoid a layout jump) for the duration.
+    val isTransferActive = activePlaylistTransfer != null
+    // Unlike isTransferActive above (this playlist only), this covers ANY playlist currently
+    // transferring — there's no real transfer queue yet (multiple batches would race over the
+    // watch's single Bluetooth link), so starting a second one is blocked entirely rather than
+    // silently running concurrently.
+    val isAnyBatchTransferActive = activeBatchTransfer != null
+    LaunchedEffect(isTransferActive) {
+        if (isTransferActive) {
+            isReorderModeEnabled = false
+            isRemoveModeEnabled = false
+        }
+    }
+    val isAnySongOnWatch = remember(songsInPlaylist, watchSongIds) {
+        songsInPlaylist.isNotEmpty() && songsInPlaylist.any { it.id in watchSongIds }
+    }
     val stableOnMoreOptionsClick: (Song) -> Unit = remember {
         { song ->
             playerViewModel.selectSongForInfo(song)
@@ -352,14 +391,23 @@ fun PlaylistDetailScreen(
                     .fillMaxSize()
                     .padding(top = innerPadding.calculateTopPadding())
             ) {
+                activePlaylistTransfer?.let { batch ->
+                    WatchTransferProgressBanner(
+                        batch = batch,
+                        onCancelClick = { playlistViewModel.cancelPlaylistTransfer(batch.batchId) },
+                    )
+                }
                 val actionButtonsHeight = 42.dp
-                val playbackControlBottomPadding = if (isFolderPlaylist) 8.dp else 6.dp
+                // Single gap value between every stacked section below (playback row, action
+                // row, search field, song list card) — previously each used its own ad-hoc
+                // value (6dp/8dp/2dp/12dp), which read as visually inconsistent spacing.
+                val sectionSpacing = 12.dp
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(62.dp)
                         .padding(horizontal = 20.dp)
-                        .padding(bottom = playbackControlBottomPadding),
+                        .padding(bottom = sectionSpacing),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Button(
@@ -450,7 +498,8 @@ fun PlaylistDetailScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 20.dp, end = 20.dp, bottom = 8.dp, top = 2.dp),
+                            .padding(horizontal = 20.dp)
+                            .padding(bottom = sectionSpacing),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -482,6 +531,7 @@ fun PlaylistDetailScreen(
 
                         Button(
                             onClick = { showAddSongsSheet = true },
+                            enabled = !isTransferActive,
                             shape = CircleShape,
                             contentPadding = PaddingValues(horizontal = 12.dp),
                             colors = ButtonDefaults.buttonColors(
@@ -547,6 +597,7 @@ fun PlaylistDetailScreen(
                                 content = {
                                     Button(
                                         onClick = { isRemoveModeEnabled = !isRemoveModeEnabled },
+                                        enabled = !isTransferActive,
                                         shape = RoundedCornerShape(removeCornerRadius),
                                         contentPadding = PaddingValues(horizontal = 8.dp),
                                         colors = ButtonDefaults.buttonColors(
@@ -577,6 +628,7 @@ fun PlaylistDetailScreen(
 
                                     Button(
                                         onClick = { isReorderModeEnabled = !isReorderModeEnabled },
+                                        enabled = !isTransferActive,
                                         shape = RoundedCornerShape(reorderCornerRadius),
                                         contentPadding = PaddingValues(horizontal = 8.dp),
                                         colors = ButtonDefaults.buttonColors(
@@ -860,6 +912,18 @@ fun PlaylistDetailScreen(
                         showEditPlaylistDialog = true
                     }
                 )
+                if (isAnyWatchPaired) {
+                    PlaylistActionItem(
+                        icon = painterResource(R.drawable.rounded_watch_arrow_down_24),
+                        label = if (isAnySongOnWatch) updateOnWatchLabel else sendToWatchLabel,
+                        enabled = !isAnyBatchTransferActive,
+                        onClick = {
+                            showPlaylistOptionsSheet = false
+                            playlistViewModel.refreshWatchAvailability()
+                            showSendToWatchDialog = true
+                        }
+                    )
+                }
                 PlaylistActionItem(
                     icon = painterResource(R.drawable.rounded_delete_24),
                     label = deletePlaylistLabel,
@@ -949,6 +1013,90 @@ fun PlaylistDetailScreen(
             dismissButton = {
                 TextButton(onClick = { showDeleteConfirmation = false }) {
                     Text(stringResource(R.string.common_cancel), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                }
+            }
+        )
+    }
+
+    if (showSendToWatchDialog && currentPlaylist != null) {
+        val playlistName = currentPlaylist.name
+        val estimate = remember(songsInPlaylist, watchSongIds) {
+            playlistViewModel.estimateWatchTransfer(songsInPlaylist)
+        }
+        val estimatedSizeText = android.text.format.Formatter.formatShortFileSize(context, estimate.estimatedBytes)
+        val estimatedTimeText = formatListeningDurationCompact(estimate.estimatedTransferSeconds * 1000L)
+        val canSend = isPixelPlayWatchAvailable && estimate.pendingSongCount > 0 && !isAnyBatchTransferActive
+
+        AlertDialog(
+            onDismissRequest = { showSendToWatchDialog = false },
+            title = {
+                Text(
+                    if (isAnySongOnWatch) {
+                        stringResource(R.string.playlist_send_to_watch_dialog_update_title, playlistName)
+                    } else {
+                        stringResource(R.string.playlist_send_to_watch_dialog_title, playlistName)
+                    }
+                )
+            },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    when {
+                        !isPixelPlayWatchAvailable -> Text(stringResource(R.string.playlist_send_to_watch_dialog_watch_unavailable))
+                        estimate.pendingSongCount == 0 -> Text(
+                            stringResource(R.string.playlist_send_to_watch_dialog_all_songs, estimate.totalSongCount)
+                        )
+                        else -> {
+                            Text(
+                                if (estimate.pendingSongCount == estimate.totalSongCount) {
+                                    stringResource(R.string.playlist_send_to_watch_dialog_all_songs, estimate.totalSongCount)
+                                } else {
+                                    stringResource(
+                                        R.string.playlist_send_to_watch_dialog_pending_songs,
+                                        estimate.pendingSongCount,
+                                        estimate.totalSongCount,
+                                    )
+                                }
+                            )
+                            Text(
+                                text = stringResource(
+                                    R.string.playlist_send_to_watch_dialog_estimate,
+                                    estimatedSizeText,
+                                    estimatedTimeText,
+                                ),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    enabled = canSend,
+                    onClick = {
+                        showSendToWatchDialog = false
+                        playlistViewModel.sendPlaylistToWatch(
+                            currentPlaylist.id,
+                            playlistName,
+                            songsInPlaylist.map { it.id },
+                        )
+                        playerViewModel.sendToast(
+                            context.getString(R.string.playlist_watch_transfer_started_toast, playlistName)
+                        )
+                    }
+                ) {
+                    Text(
+                        if (isAnySongOnWatch) {
+                            stringResource(R.string.playlist_send_to_watch_dialog_update_confirm)
+                        } else {
+                            stringResource(R.string.playlist_send_to_watch_dialog_confirm)
+                        }
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showSendToWatchDialog = false }) {
+                    Text(stringResource(R.string.common_cancel))
                 }
             }
         )
@@ -1119,15 +1267,17 @@ fun PlaylistDetailScreen(
 private fun PlaylistActionItem(
     icon: Painter,
     label: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    enabled: Boolean = true,
 ) {
+    val contentAlpha = if (enabled) 1f else 0.38f
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp)
             .clip(RoundedCornerShape(18.dp))
             .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-            .clickable(onClick = onClick)
+            .clickable(enabled = enabled, onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -1141,14 +1291,112 @@ private fun PlaylistActionItem(
             Icon(
                 painter = icon,
                 contentDescription = label,
-                tint = MaterialTheme.colorScheme.primary
+                tint = MaterialTheme.colorScheme.primary.copy(alpha = contentAlpha)
             )
         }
         Spacer(modifier = Modifier.width(14.dp))
         Text(
             text = label,
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = contentAlpha)
         )
     }
 }
+
+/**
+ * Non-blocking playlist-transfer indicator shown at the top of the songs list — the user can
+ * leave the screen (or the app) while it continues; the foreground notification (see
+ * `WatchTransferForegroundService`) is what tracks completion once they do.
+ */
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun WatchTransferProgressBanner(
+    batch: PhoneWatchBatchTransferState,
+    onCancelClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val overallProgress by remember(batch.processedSongCount, batch.currentSongProgress, batch.totalSongCount) {
+        derivedStateOf {
+            if (batch.totalSongCount > 0) {
+                ((batch.processedSongCount + batch.currentSongProgress) / batch.totalSongCount.toFloat())
+                    .coerceIn(0f, 1f)
+            } else {
+                0f
+            }
+        }
+    }
+    val animatedProgress by animateFloatAsState(
+        targetValue = overallProgress,
+        animationSpec = tween(durationMillis = 300),
+        label = "WatchTransferProgressBanner",
+    )
+
+    // Same icon-badge + row treatment as PlaylistActionItem right below it (40dp circular badge
+    // on surfaceContainerHighest, 16dp horizontal padding, 18dp corner radius) — this banner is
+    // conceptually one more row in that same list, not a separate, unrelated status card.
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 6.dp)
+            .clip(RoundedCornerShape(18.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+            .padding(horizontal = 16.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.surfaceContainerHighest),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.rounded_watch_arrow_down_24),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(20.dp),
+            )
+        }
+        Spacer(modifier = Modifier.width(14.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = stringResource(
+                    R.string.watch_transfer_batch_progress,
+                    batch.processedSongCount,
+                    batch.totalSongCount,
+                ),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            if (batch.currentSongTitle.isNotBlank()) {
+                Text(
+                    text = batch.currentSongTitle,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(top = 2.dp),
+                )
+            }
+            LinearWavyProgressIndicator(
+                progress = { animatedProgress },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp)
+                    .height(6.dp)
+                    .clip(RoundedCornerShape(50)),
+                color = MaterialTheme.colorScheme.primary,
+                trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+            )
+        }
+        Spacer(modifier = Modifier.width(4.dp))
+        IconButton(onClick = onCancelClick) {
+            Icon(
+                imageVector = Icons.Rounded.Close,
+                contentDescription = stringResource(R.string.watch_transfer_action_cancel),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+

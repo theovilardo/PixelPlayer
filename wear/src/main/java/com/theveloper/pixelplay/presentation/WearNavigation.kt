@@ -9,6 +9,8 @@ import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import com.theveloper.pixelplay.presentation.screens.BrowseScreen
 import com.theveloper.pixelplay.presentation.screens.DownloadsScreen
 import com.theveloper.pixelplay.presentation.screens.LibraryListScreen
+import com.theveloper.pixelplay.presentation.screens.LocalPlaylistDetailScreen
+import com.theveloper.pixelplay.presentation.screens.LocalPlaylistsScreen
 import com.theveloper.pixelplay.presentation.screens.MoreScreen
 import com.theveloper.pixelplay.presentation.screens.OutputScreen
 import com.theveloper.pixelplay.presentation.screens.PlayerScreen
@@ -39,6 +41,8 @@ object WearScreens {
     const val DOWNLOADS = "downloads"
     const val LIBRARY_LIST = "library_list/{browseType}/{title}"
     const val SONG_LIST = "song_list/{browseType}/{contextId}/{title}"
+    const val LOCAL_PLAYLISTS = "local_playlists"
+    const val LOCAL_PLAYLIST_DETAIL = "local_playlist_detail/{playlistId}/{title}"
 
     fun libraryListRoute(browseType: String, title: String): String {
         return "library_list/$browseType/${URLEncoder.encode(title, "UTF-8")}"
@@ -46,6 +50,10 @@ object WearScreens {
 
     fun songListRoute(browseType: String, contextId: String, title: String): String {
         return "song_list/$browseType/$contextId/${URLEncoder.encode(title, "UTF-8")}"
+    }
+
+    fun localPlaylistDetailRoute(playlistId: String, title: String): String {
+        return "local_playlist_detail/$playlistId/${URLEncoder.encode(title, "UTF-8")}"
     }
 }
 
@@ -67,6 +75,16 @@ fun WearNavigation() {
                     WearScreens.libraryListRoute(browseType, title)
                 )
             }
+        }
+    }
+    // Starting playback from deep in Downloads/Playlists is otherwise a lot of swipes-back to
+    // reach the transport controls — jump straight there instead, clearing everything in
+    // between so a swipe-back from Player lands on Player's own dismiss behavior, not back
+    // through the browse stack.
+    val navigateToPlayer: () -> Unit = {
+        navController.navigate(WearScreens.PLAYER) {
+            popUpTo(WearScreens.PLAYER) { inclusive = true }
+            launchSingleTop = true
         }
     }
 
@@ -138,7 +156,42 @@ fun WearNavigation() {
         }
 
         composable(WearScreens.DOWNLOADS) {
-            DownloadsScreen()
+            DownloadsScreen(
+                onPlaylistsClick = {
+                    navController.navigate(WearScreens.LOCAL_PLAYLISTS) {
+                        launchSingleTop = true
+                    }
+                },
+                onPlaybackStarted = navigateToPlayer,
+            )
+        }
+
+        composable(WearScreens.LOCAL_PLAYLISTS) {
+            LocalPlaylistsScreen(
+                onPlaylistClick = { playlistId, title ->
+                    navController.navigate(
+                        WearScreens.localPlaylistDetailRoute(playlistId, title)
+                    )
+                },
+            )
+        }
+
+        composable(
+            route = WearScreens.LOCAL_PLAYLIST_DETAIL,
+            arguments = listOf(
+                navArgument("playlistId") { type = NavType.StringType },
+                navArgument("title") { type = NavType.StringType },
+            ),
+        ) { backStackEntry ->
+            val playlistId = backStackEntry.arguments?.getString("playlistId") ?: ""
+            val title = URLDecoder.decode(
+                backStackEntry.arguments?.getString("title") ?: "", "UTF-8"
+            )
+            LocalPlaylistDetailScreen(
+                playlistId = playlistId,
+                title = title,
+                onPlaybackStarted = navigateToPlayer,
+            )
         }
 
         composable(WearScreens.BROWSE) {

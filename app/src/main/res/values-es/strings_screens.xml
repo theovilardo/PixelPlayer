@@ -126,6 +126,19 @@
     <string name="playlist_cd_remove_songs">Quitar canciones</string>
     <string name="playlist_action_reorder_songs">Reordenar</string>
     <string name="playlist_cd_reorder_songs">Reordenar canciones</string>
+    <string name="playlist_action_send_to_watch">Enviar al reloj</string>
+    <string name="playlist_action_update_on_watch">Actualizar en el reloj</string>
+    <string name="playlist_cd_send_to_watch">Enviar lista al reloj</string>
+    <string name="playlist_send_to_watch_dialog_title">¿Enviar \"%1$s\" a tu reloj?</string>
+    <string name="playlist_send_to_watch_dialog_update_title">¿Actualizar \"%1$s\" en tu reloj?</string>
+    <string name="playlist_send_to_watch_dialog_pending_songs">%1$d de %2$d canciones por enviar</string>
+    <string name="playlist_send_to_watch_dialog_all_songs">%1$d canciones</string>
+    <string name="playlist_send_to_watch_dialog_estimate">%1$s · unos %2$s</string>
+    <string name="playlist_send_to_watch_dialog_confirm">Enviar</string>
+    <string name="playlist_send_to_watch_dialog_update_confirm">Actualizar</string>
+    <string name="playlist_send_to_watch_dialog_watch_unavailable">Ningún reloj conectado</string>
+    <string name="playlist_watch_transfer_started_toast">Enviando \"%1$s\" a tu reloj</string>
+    <string name="playlist_watch_transfer_start_failed_toast">No se pudo iniciar la transferencia: %1$s</string>
 
     <!-- EditTransitionScreen -->
     <string name="transition_title_global">Transiciones globales</string>

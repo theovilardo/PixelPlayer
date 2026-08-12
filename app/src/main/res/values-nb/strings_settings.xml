@@ -646,4 +646,16 @@
     <string name="settings_volume_section">Volum</string>
     <string name="settings_pause_on_volume_zero">Sett på pause når volumet er null</string>
     <string name="settings_pause_on_volume_zero_desc">Sett automatisk avspillingen på pause når volumet settes til 0</string>
+
+    <!-- Watch category -->
+    <string name="settings_category_wear_title">Klokke</string>
+    <string name="settings_category_wear_subtitle">Ytelsesalternativer for frakoblet avspilling på klokken din</string>
+    <string name="settings_wear_performance_section">Ytelse</string>
+    <string name="settings_wear_performance_scope_note">Disse alternativene gjelder bare når klokken din spiller musikk på egen hånd, uten tilkoblet telefon. Å styre telefonavspilling fra klokken viser alltid hele opplevelsen.</string>
+    <string name="settings_wear_show_album_art_title">Vis albumcover</string>
+    <string name="settings_wear_show_album_art_subtitle">Slå av for å spare minne på klokken — den med størst innvirkning av de tre</string>
+    <string name="settings_wear_dynamic_color_title">Dynamisk farge</string>
+    <string name="settings_wear_dynamic_color_subtitle">Fargelegger klokkens grensesnitt basert på coveret til hver sang</string>
+    <string name="settings_wear_play_button_animation_title">Animasjon for avspillingsknapp</string>
+    <string name="settings_wear_play_button_animation_subtitle">Kontinuerlig roterende ring rundt avspillingsknappen mens musikken spilles</string>
 </resources>

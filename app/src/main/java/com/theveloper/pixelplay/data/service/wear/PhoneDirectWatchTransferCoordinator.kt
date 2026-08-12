@@ -43,9 +43,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
@@ -91,6 +93,18 @@ class PhoneDirectWatchTransferCoordinator @Inject constructor(
         }
     }
 
+    /**
+     * Substitutes the audio actually streamed to the watch with an already-transcoded file (see
+     * [WatchAudioTranscoder]), bypassing [isSongTransferEligible] and the song's own local-file
+     * resolution — the override file was just written locally by the transcoder, so it's
+     * unconditionally eligible regardless of what the original [Song]'s source was.
+     */
+    data class WatchAudioOverride(
+        val file: File,
+        val mimeType: String,
+        val bitrateBps: Int,
+    )
+
     fun startTransferToWatch(
         nodeId: String,
         requestId: String,
@@ -98,6 +112,7 @@ class PhoneDirectWatchTransferCoordinator @Inject constructor(
         transferMode: String = WearTransferRequest.MODE_SAVE_TO_LIBRARY,
         startPositionMs: Long = 0L,
         autoPlay: Boolean = false,
+        audioOverride: WatchAudioOverride? = null,
     ) {
         transferStateStore.markRequested(
             requestId = requestId,
@@ -112,6 +127,7 @@ class PhoneDirectWatchTransferCoordinator @Inject constructor(
                 transferMode = transferMode,
                 startPositionMs = startPositionMs,
                 autoPlay = autoPlay,
+                audioOverride = audioOverride,
             )
         }
     }
@@ -123,6 +139,7 @@ class PhoneDirectWatchTransferCoordinator @Inject constructor(
         transferMode: String,
         startPositionMs: Long,
         autoPlay: Boolean,
+        audioOverride: WatchAudioOverride? = null,
     ) {
         var openedSongSource: OpenedSongSource? = null
         try {
@@ -138,6 +155,7 @@ class PhoneDirectWatchTransferCoordinator @Inject constructor(
             }
 
             if (
+                audioOverride == null &&
                 transferMode == WearTransferRequest.MODE_SAVE_TO_LIBRARY &&
                 !isSongTransferEligible(song)
             ) {
@@ -150,19 +168,23 @@ class PhoneDirectWatchTransferCoordinator @Inject constructor(
                 return
             }
 
-            val songSource = openSongSource(
-                song = song,
-                allowProxyStreaming = transferMode == WearTransferRequest.MODE_TEMPORARY_PLAYBACK,
-            )
+            val songSource = if (audioOverride != null) {
+                openOverrideSongSource(audioOverride)
+            } else {
+                openSongSource(
+                    song = song,
+                    allowProxyStreaming = transferMode == WearTransferRequest.MODE_TEMPORARY_PLAYBACK,
+                )
+            }
             if (songSource == null) {
                 sendTransferMetadataError(
                     nodeId = nodeId,
                     requestId = requestId,
                     songId = song.id,
-                    errorMessage = if (transferMode == WearTransferRequest.MODE_TEMPORARY_PLAYBACK) {
-                        "Cannot stream audio source to watch"
-                    } else {
-                        "Cannot read audio file"
+                    errorMessage = when {
+                        audioOverride != null -> "Cannot read transcoded audio file"
+                        transferMode == WearTransferRequest.MODE_TEMPORARY_PLAYBACK -> "Cannot stream audio source to watch"
+                        else -> "Cannot read audio file"
                     },
                 )
                 return
@@ -182,9 +204,9 @@ class PhoneDirectWatchTransferCoordinator @Inject constructor(
                 album = song.album,
                 albumId = song.albumId,
                 duration = song.duration,
-                mimeType = song.mimeType ?: "audio/mpeg",
+                mimeType = audioOverride?.mimeType ?: (song.mimeType ?: "audio/mpeg"),
                 fileSize = fileSize,
-                bitrate = song.bitrate ?: 0,
+                bitrate = audioOverride?.bitrateBps ?: (song.bitrate ?: 0),
                 sampleRate = song.sampleRate ?: 0,
                 isFavorite = song.isFavorite,
                 paletteSeedArgb = paletteSeedArgb,
@@ -211,19 +233,12 @@ class PhoneDirectWatchTransferCoordinator @Inject constructor(
                 return
             }
 
-            messageClient.sendMessage(
-                nodeId,
-                WearDataPaths.TRANSFER_METADATA,
-                json.encodeToString(metadata).toByteArray(Charsets.UTF_8),
-            ).await()
-
-            // Give the watch a brief window to reject duplicates before the audio stream starts.
-            delay(METADATA_GUARD_DELAY_MS)
-            val duplicateRejected = transferStateStore.transfers.value[requestId]?.let { transfer ->
-                transfer.status == WearTransferProgress.STATUS_FAILED &&
-                    transfer.error == WearTransferProgress.ERROR_ALREADY_ON_WATCH
-            } == true
-            if (duplicateRejected) {
+            val metadataOutcome = sendMetadataAndAwaitAck(
+                nodeId = nodeId,
+                requestId = requestId,
+                metadataBytes = json.encodeToString(metadata).toByteArray(Charsets.UTF_8),
+            )
+            if (metadataOutcome == MetadataAckOutcome.DUPLICATE_REJECTED) {
                 runCatching { openedSongSource.close() }
                 openedSongSource = null
                 return
@@ -262,6 +277,7 @@ class PhoneDirectWatchTransferCoordinator @Inject constructor(
                 songId = song.id,
                 inputStream = songSource.inputStream,
                 fileSize = fileSize,
+                transferMode = transferMode,
             )
             runCatching { songSource.close() }
             openedSongSource = null
@@ -323,6 +339,15 @@ class PhoneDirectWatchTransferCoordinator @Inject constructor(
 
         val streamUrl = resolveStreamUrl(song) ?: return null
         return openHttpSongSource(streamUrl)
+    }
+
+    private fun openOverrideSongSource(override: WatchAudioOverride): OpenedSongSource? {
+        val file = override.file.takeIf { it.isFile && it.canRead() && it.length() > 0L } ?: return null
+        return runCatching {
+            OpenedSongSource(inputStream = file.inputStream(), fileSize = file.length())
+        }.onFailure { error ->
+            Timber.tag(TAG).w(error, "Failed to open transcoded override file=%s", file.absolutePath)
+        }.getOrNull()
     }
 
     private fun openDirectSongSource(song: Song): OpenedSongSource? {
@@ -739,6 +764,7 @@ class PhoneDirectWatchTransferCoordinator @Inject constructor(
         songId: String,
         inputStream: InputStream,
         fileSize: Long,
+        transferMode: String,
     ) {
         if (transferCancellationStore.consumeCancellation(requestId)) {
             sendTransferProgress(
@@ -811,14 +837,34 @@ class PhoneDirectWatchTransferCoordinator @Inject constructor(
 
             shouldForceCloseChannel = false
 
-            sendTransferProgress(
-                nodeId = nodeId,
-                requestId = requestId,
-                songId = songId,
-                bytesTransferred = fileSize,
-                totalBytes = fileSize,
-                status = WearTransferProgress.STATUS_COMPLETED,
-            )
+            if (transferMode == WearTransferRequest.MODE_SAVE_TO_LIBRARY) {
+                // Bytes are on the wire, but that's not the same as "the watch has it" — wait
+                // for the watch's own write-complete/failure report (WearCommandReceiver's
+                // TRANSFER_PROGRESS handler, fed by WearTransferRepository) before this counts
+                // as done. STATUS_AWAITING_WATCH_ACK is local-only, never sent to the watch — the
+                // outer await in PlaylistWatchTransferCoordinator.transferSongToNode just keeps
+                // waiting past it (it isn't a terminal status) until the real outcome lands, with
+                // its own timeout as the backstop if that never happens.
+                transferStateStore.markProgress(
+                    requestId = requestId,
+                    songId = songId,
+                    bytesTransferred = fileSize,
+                    totalBytes = fileSize,
+                    status = WearTransferProgress.STATUS_AWAITING_WATCH_ACK,
+                )
+            } else {
+                // Temporary playback isn't part of the "is this saved on watch" bookkeeping and
+                // is latency-sensitive (the watch is waiting to start playing), so it keeps the
+                // original optimistic-completion behavior.
+                sendTransferProgress(
+                    nodeId = nodeId,
+                    requestId = requestId,
+                    songId = songId,
+                    bytesTransferred = fileSize,
+                    totalBytes = fileSize,
+                    status = WearTransferProgress.STATUS_COMPLETED,
+                )
+            }
         } catch (error: Exception) {
             Timber.tag(TAG).e(error, "Failed to stream file to watch")
             sendTransferProgress(
@@ -911,6 +957,58 @@ class PhoneDirectWatchTransferCoordinator @Inject constructor(
         )
     }
 
+    private enum class MetadataAckOutcome { ACKED, DUPLICATE_REJECTED, TIMED_OUT }
+
+    /**
+     * Sends [metadataBytes] and waits for the watch to either ack receipt
+     * ([WearTransferProgress.STATUS_METADATA_RECEIVED]) or reject it as a duplicate — instead of
+     * the old fixed blind delay, which let the audio channel open (and the watch start draining
+     * it) before confirming the metadata message even arrived. Real hardware testing showed that
+     * race losing under Bluetooth contention (a connected headset, the watch's screen toggling on
+     * a run) and the watch failing with "Transfer metadata missing" after already receiving the
+     * whole file. Retries the send once on timeout, same shape as
+     * [PlaylistWatchTransferCoordinator.sendPlaylistSyncToNodeWithRetry] — if the retry also times
+     * out, streams anyway rather than blocking a whole song indefinitely; the completion-ack work
+     * in [streamFileToWatch] still catches a genuine failure downstream.
+     */
+    private suspend fun sendMetadataAndAwaitAck(
+        nodeId: String,
+        requestId: String,
+        metadataBytes: ByteArray,
+    ): MetadataAckOutcome {
+        messageClient.sendMessage(nodeId, WearDataPaths.TRANSFER_METADATA, metadataBytes).await()
+        val outcome = awaitMetadataAck(requestId)
+        if (outcome != MetadataAckOutcome.TIMED_OUT) return outcome
+
+        Timber.tag(TAG).w("No metadata ack from watch, retrying once: requestId=%s", requestId)
+        messageClient.sendMessage(nodeId, WearDataPaths.TRANSFER_METADATA, metadataBytes).await()
+        val retryOutcome = awaitMetadataAck(requestId)
+        if (retryOutcome == MetadataAckOutcome.TIMED_OUT) {
+            Timber.tag(TAG).w(
+                "Metadata ack still missing after retry, streaming anyway: requestId=%s",
+                requestId,
+            )
+        }
+        return retryOutcome
+    }
+
+    private suspend fun awaitMetadataAck(requestId: String): MetadataAckOutcome {
+        val transfer = withTimeoutOrNull(METADATA_ACK_TIMEOUT_MS) {
+            transferStateStore.transfers
+                .mapNotNull { it[requestId] }
+                .first { transfer ->
+                    transfer.status == WearTransferProgress.STATUS_METADATA_RECEIVED ||
+                        (transfer.status == WearTransferProgress.STATUS_FAILED &&
+                            transfer.error == WearTransferProgress.ERROR_ALREADY_ON_WATCH)
+                }
+        }
+        return when {
+            transfer == null -> MetadataAckOutcome.TIMED_OUT
+            transfer.status == WearTransferProgress.STATUS_FAILED -> MetadataAckOutcome.DUPLICATE_REJECTED
+            else -> MetadataAckOutcome.ACKED
+        }
+    }
+
     private suspend fun sendTransferProgress(
         nodeId: String,
         requestId: String,
@@ -960,6 +1058,10 @@ class PhoneDirectWatchTransferCoordinator @Inject constructor(
         const val TRANSFER_ARTWORK_MAX_DIMENSION = 1024
         const val TRANSFER_ARTWORK_QUALITY = 95
         const val TRANSFER_ARTWORK_MAX_BYTES = 1_500_000
-        const val METADATA_GUARD_DELAY_MS = 250L
+        // Real round-trip over the watch's Wear Data Layer connection, not a local guard delay
+        // (the old blind 250ms) — generous enough for Bluetooth contention with a connected
+        // headset, short enough that a genuinely unreachable watch fails a song quickly instead
+        // of dragging out a whole playlist.
+        const val METADATA_ACK_TIMEOUT_MS = 4_000L
     }
 }

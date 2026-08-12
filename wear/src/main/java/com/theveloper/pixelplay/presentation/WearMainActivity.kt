@@ -3,8 +3,8 @@ package com.theveloper.pixelplay.presentation
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.collectAsState
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.wear.ambient.AmbientLifecycleObserver
 import com.theveloper.pixelplay.data.WearLifecycleState
@@ -39,9 +39,9 @@ class WearMainActivity : FragmentActivity() {
 
         setContent {
             val playerViewModel: WearPlayerViewModel = hiltViewModel()
-            val albumArt by playerViewModel.albumArt.collectAsState()
-            val paletteSeedArgb by playerViewModel.paletteSeedArgb.collectAsState()
-            val themePalette by playerViewModel.themePalette.collectAsState()
+            val albumArt by playerViewModel.albumArt.collectAsStateWithLifecycle()
+            val paletteSeedArgb by playerViewModel.paletteSeedArgb.collectAsStateWithLifecycle()
+            val themePalette by playerViewModel.themePalette.collectAsStateWithLifecycle()
 
             WearPixelPlayTheme(
                 albumArt = albumArt,

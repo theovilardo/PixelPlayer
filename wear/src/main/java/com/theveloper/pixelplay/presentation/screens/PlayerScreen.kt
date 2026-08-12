@@ -48,7 +48,6 @@ import androidx.compose.material.icons.rounded.SkipPrevious
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -98,6 +97,7 @@ import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.foundation.ExperimentalWearFoundationApi
 import androidx.wear.compose.foundation.pager.HorizontalPager
 import androidx.wear.compose.foundation.pager.rememberPagerState
@@ -149,12 +149,13 @@ fun PlayerScreen(
     onQueueClick: () -> Unit = {},
     viewModel: WearPlayerViewModel = hiltViewModel(),
 ) {
-    val state by viewModel.playerState.collectAsState()
-    val isPhoneConnected by viewModel.isPhoneConnected.collectAsState()
-    val isWatchOutputSelected by viewModel.isWatchOutputSelected.collectAsState()
-    val activeOutputRouteType by viewModel.activeOutputRouteType.collectAsState()
-    val activeVolumeState by viewModel.activeVolumeState.collectAsState()
-    val albumArt by viewModel.albumArt.collectAsState()
+    val state by viewModel.playerState.collectAsStateWithLifecycle()
+    val isPhoneConnected by viewModel.isPhoneConnected.collectAsStateWithLifecycle()
+    val isWatchOutputSelected by viewModel.isWatchOutputSelected.collectAsStateWithLifecycle()
+    val activeOutputRouteType by viewModel.activeOutputRouteType.collectAsStateWithLifecycle()
+    val activeVolumeState by viewModel.activeVolumeState.collectAsStateWithLifecycle()
+    val albumArt by viewModel.albumArt.collectAsStateWithLifecycle()
+    val showPlayButtonAnimation by viewModel.showPlayButtonAnimation.collectAsStateWithLifecycle()
 
     PlayerContent(
         state = state,
@@ -162,6 +163,7 @@ fun PlayerScreen(
         isPhoneConnected = isPhoneConnected,
         isWatchOutputSelected = isWatchOutputSelected,
         activeVolumeState = activeVolumeState,
+        showPlayButtonAnimation = showPlayButtonAnimation,
         onTogglePlayPause = viewModel::togglePlayPause,
         onNext = viewModel::next,
         onPrevious = viewModel::previous,
@@ -182,6 +184,7 @@ private fun PlayerContent(
     isPhoneConnected: Boolean,
     isWatchOutputSelected: Boolean = false,
     activeVolumeState: WearVolumeState,
+    showPlayButtonAnimation: Boolean = true,
     onTogglePlayPause: () -> Unit,
     onNext: () -> Unit,
     onPrevious: () -> Unit,
@@ -194,7 +197,7 @@ private fun PlayerContent(
     onQueueClick: () -> Unit,
 ) {
     val palette = LocalWearPalette.current
-    val isAmbient by WearLifecycleState.isAmbient.collectAsState()
+    val isAmbient by WearLifecycleState.isAmbient.collectAsStateWithLifecycle()
     // Memoize: radialGradient allocates Shader inputs on every call. PlayerContent
     // recomposes whenever the play-button ring animation ticks, so without this
     // we'd churn the GC for nothing.
@@ -272,6 +275,7 @@ private fun PlayerContent(
                         isPhoneConnected = isPhoneConnected,
                         isWatchOutputSelected = isWatchOutputSelected,
                         activeVolumeState = activeVolumeState,
+                        showPlayButtonAnimation = showPlayButtonAnimation,
                         onTogglePlayPause = onTogglePlayPause,
                         onNext = onNext,
                         onPrevious = onPrevious,
@@ -323,6 +327,7 @@ private fun PlayerMainPageHost(
     isPhoneConnected: Boolean,
     isWatchOutputSelected: Boolean,
     activeVolumeState: WearVolumeState,
+    showPlayButtonAnimation: Boolean,
     onTogglePlayPause: () -> Unit,
     onNext: () -> Unit,
     onPrevious: () -> Unit,
@@ -390,6 +395,7 @@ private fun PlayerMainPageHost(
                 isWatchOutputSelected = isWatchOutputSelected,
                 isAmbient = isAmbient,
                 activeVolumeState = activeVolumeState,
+                showPlayButtonAnimation = showPlayButtonAnimation,
                 onTogglePlayPause = onTogglePlayPause,
                 onNext = onNext,
                 onPrevious = onPrevious,
@@ -1052,6 +1058,7 @@ private fun MainPlayerPage(
     isWatchOutputSelected: Boolean = false,
     isAmbient: Boolean,
     activeVolumeState: WearVolumeState,
+    showPlayButtonAnimation: Boolean = true,
     onTogglePlayPause: () -> Unit,
     onNext: () -> Unit,
     onPrevious: () -> Unit,
@@ -1194,6 +1201,7 @@ private fun MainPlayerPage(
                     enabled = if (isWatchOutputSelected) !state.isEmpty else isPhoneConnected,
                     outlined = isAmbient,
                     trackProgress = trackProgress,
+                    showPlayButtonAnimation = showPlayButtonAnimation,
                     onTogglePlayPause = onTogglePlayPause,
                     onNext = onNext,
                     onPrevious = onPrevious,
@@ -1251,21 +1259,32 @@ private fun MainPlayerPage(
 private fun rememberLivePositionMs(state: WearPlayerState): androidx.compose.runtime.State<Long> {
     val safeDuration = state.totalDurationMs.coerceAtLeast(0L)
     val safeAnchorPosition = state.currentPositionMs.coerceIn(0L, safeDuration)
+    // WearLifecycleState's own contract: "position-update jobs... should gate on isInteractive
+    // so they pause as soon as the activity moves to the background or the watch enters ambient
+    // mode" — this loop wasn't wired to it. Ticking every 250ms recomposes this composable (and
+    // the progress ring/animation reading its value) whether or not the screen is actually being
+    // refreshed at that rate, competing with audio decode for CPU. `livePositionFromAnchor`
+    // computes from elapsed real time regardless, so freezing the display between ticks loses
+    // nothing: the moment isInteractive flips back on, the position snaps to the correct value.
+    val isInteractive by WearLifecycleState.isInteractive.collectAsStateWithLifecycle(
+        initialValue = WearLifecycleState.isInteractiveNow,
+    )
     val positionKey = remember(
         state.songId,
         safeAnchorPosition,
         safeDuration,
         state.isPlaying,
         state.positionUpdatedElapsedRealtimeMs,
+        isInteractive,
     ) {
-        "${state.songId}|$safeAnchorPosition|$safeDuration|${state.isPlaying}|${state.positionUpdatedElapsedRealtimeMs}"
+        "${state.songId}|$safeAnchorPosition|$safeDuration|${state.isPlaying}|${state.positionUpdatedElapsedRealtimeMs}|$isInteractive"
     }
     return produceState(
         initialValue = state.livePositionFromAnchor(safeAnchorPosition, safeDuration),
         key1 = positionKey,
     ) {
         value = state.livePositionFromAnchor(safeAnchorPosition, safeDuration)
-        if (!state.isPlaying || safeDuration <= 0L) {
+        if (!state.isPlaying || safeDuration <= 0L || !isInteractive) {
             return@produceState
         }
 
@@ -1485,6 +1504,13 @@ private fun rememberActiveLyricLineIndex(
 ): androidx.compose.runtime.State<Int> {
     val safeDuration = state.totalDurationMs.coerceAtLeast(0L)
     val safeAnchorPosition = state.currentPositionMs.coerceIn(0L, safeDuration)
+    // Same reasoning as rememberLivePositionMs: this page sits right next to the main player
+    // page in the HorizontalPager (beyondViewportPageCount = 1), so it can stay composed —
+    // and this loop ticking — while the user is looking at the main page instead. Gate it on
+    // WearLifecycleState.isInteractive for the same reason its own contract asks for.
+    val isInteractive by WearLifecycleState.isInteractive.collectAsStateWithLifecycle(
+        initialValue = WearLifecycleState.isInteractiveNow,
+    )
     val positionKey = remember(
         state.songId,
         safeAnchorPosition,
@@ -1492,8 +1518,9 @@ private fun rememberActiveLyricLineIndex(
         state.isPlaying,
         state.positionUpdatedElapsedRealtimeMs,
         lines,
+        isInteractive,
     ) {
-        "${state.songId}|$safeAnchorPosition|$safeDuration|${state.isPlaying}|${state.positionUpdatedElapsedRealtimeMs}|${lines.size}|${lines.firstOrNull()?.timeMs}|${lines.lastOrNull()?.timeMs}"
+        "${state.songId}|$safeAnchorPosition|$safeDuration|${state.isPlaying}|${state.positionUpdatedElapsedRealtimeMs}|${lines.size}|${lines.firstOrNull()?.timeMs}|${lines.lastOrNull()?.timeMs}|$isInteractive"
     }
 
     return produceState(
@@ -1507,9 +1534,15 @@ private fun rememberActiveLyricLineIndex(
             return@produceState
         }
 
+        val livePositionMs = state.livePositionFromAnchor(safeAnchorPosition, safeDuration)
+        value = lines.activeLyricLineIndex(livePositionMs)
+        if (!isInteractive) {
+            return@produceState
+        }
+
         while (true) {
-            val livePositionMs = state.livePositionFromAnchor(safeAnchorPosition, safeDuration)
-            val currentIndex = lines.activeLyricLineIndex(livePositionMs)
+            val currentLivePositionMs = state.livePositionFromAnchor(safeAnchorPosition, safeDuration)
+            val currentIndex = lines.activeLyricLineIndex(currentLivePositionMs)
             value = currentIndex
 
             if (!state.isPlaying || safeDuration <= 0L) {
@@ -1518,7 +1551,7 @@ private fun rememberActiveLyricLineIndex(
 
             val nextLineTimeMs = lines.getOrNull(currentIndex + 1)?.timeMs?.toLong()
                 ?: return@produceState
-            val delayUntilNextLine = (nextLineTimeMs - livePositionMs)
+            val delayUntilNextLine = (nextLineTimeMs - currentLivePositionMs)
                 .coerceIn(80L, 60_000L)
             delay(delayUntilNextLine)
         }
@@ -1633,6 +1666,7 @@ private fun MainControlsRow(
     enabled: Boolean,
     outlined: Boolean,
     trackProgress: Float,
+    showPlayButtonAnimation: Boolean = true,
     onTogglePlayPause: () -> Unit,
     onNext: () -> Unit,
     onPrevious: () -> Unit,
@@ -1661,6 +1695,7 @@ private fun MainControlsRow(
             enabled = enabled && !isEmpty,
             outlined = outlined,
             trackProgress = trackProgress,
+            showAnimation = showPlayButtonAnimation,
             onClick = onTogglePlayPause,
         )
 
@@ -1737,6 +1772,7 @@ private fun CenterPlayButton(
     outlined: Boolean,
     trackProgress: Float,
     onClick: () -> Unit,
+    showAnimation: Boolean = true,
 ) {
     val palette = LocalWearPalette.current
 
@@ -1746,11 +1782,14 @@ private fun CenterPlayButton(
         label = "playStarCurve",
     )
     val rotation = remember { Animatable(0f) }
-    val isInteractive by WearLifecycleState.isInteractive.collectAsState(
-        initial = WearLifecycleState.isInteractiveNow,
+    val isInteractive by WearLifecycleState.isInteractive.collectAsStateWithLifecycle(
+        initialValue = WearLifecycleState.isInteractiveNow,
     )
-    LaunchedEffect(isPlaying, isInteractive) {
-        if (!isPlaying || !isInteractive) {
+    // showAnimation off is treated exactly like "not interactive": settle back to 0° and stop —
+    // the ring itself still draws (and still reflects trackProgress), it just stops continuously
+    // rebuilding its 320-point path every animation frame while spinning.
+    LaunchedEffect(isPlaying, isInteractive, showAnimation) {
+        if (!isPlaying || !isInteractive || !showAnimation) {
             val normalizedRotation = ((rotation.value % 360f) + 360f) % 360f
             rotation.snapTo(normalizedRotation)
             rotation.animateTo(

@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
@@ -80,10 +80,10 @@ fun SongListScreen(
     downloadsViewModel: WearDownloadsViewModel = hiltViewModel(),
     playerViewModel: WearPlayerViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-    val downloadedIds by downloadsViewModel.downloadedSongIds.collectAsState()
-    val activeTransfers by downloadsViewModel.activeTransfers.collectAsState()
-    val playerState by playerViewModel.playerState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val downloadedIds by downloadsViewModel.downloadedSongIds.collectAsStateWithLifecycle()
+    val activeTransfers by downloadsViewModel.activeTransfers.collectAsStateWithLifecycle()
+    val playerState by playerViewModel.playerState.collectAsStateWithLifecycle()
     val palette = LocalWearPalette.current
     val subscreenTitleFont = rememberBrowseSubscreenTitleFont()
     var selectedSongForMenu by remember { mutableStateOf<WearLibraryItem?>(null) }

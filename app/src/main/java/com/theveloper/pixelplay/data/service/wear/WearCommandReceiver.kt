@@ -26,6 +26,7 @@ import com.theveloper.pixelplay.shared.WearBrowseResponse
 import com.theveloper.pixelplay.shared.WearDataPaths
 import com.theveloper.pixelplay.shared.WearLibraryItem
 import com.theveloper.pixelplay.shared.WearPlaybackCommand
+import com.theveloper.pixelplay.shared.WearPlaylistSyncAck
 import com.theveloper.pixelplay.shared.WearTransferMetadata
 import com.theveloper.pixelplay.shared.WearTransferProgress
 import com.theveloper.pixelplay.shared.WearTransferRequest
@@ -97,6 +98,8 @@ class WearCommandReceiver : WearableListenerService() {
             WearDataPaths.BROWSE_REQUEST -> handleBrowseRequest(messageEvent)
             WearDataPaths.TRANSFER_REQUEST -> handleTransferRequest(messageEvent)
             WearDataPaths.TRANSFER_CANCEL -> handleTransferCancel(messageEvent)
+            WearDataPaths.PLAYLIST_SYNC_ACK -> handlePlaylistSyncAck(messageEvent)
+            WearDataPaths.TRANSFER_PROGRESS -> handleTransferOutcomeFromWatch(messageEvent)
             else -> Timber.tag(TAG).w("Unknown message path: ${messageEvent.path}")
         }
     }
@@ -522,6 +525,49 @@ class WearCommandReceiver : WearableListenerService() {
             startPositionMs = request.startPositionMs,
             autoPlay = request.autoPlay,
         )
+    }
+
+    private fun handlePlaylistSyncAck(messageEvent: MessageEvent) {
+        val ackJson = String(messageEvent.data, Charsets.UTF_8)
+        val ack = try {
+            json.decodeFromString<WearPlaylistSyncAck>(ackJson)
+        } catch (e: Exception) {
+            Timber.tag(TAG).e(e, "Failed to parse playlist sync ack")
+            return
+        }
+        transferStateStore.onPlaylistSyncAckReceived(ack)
+    }
+
+    /**
+     * The watch's real outcome for a transfer it received — metadata acked, the file actually
+     * written and playable, or a genuine failure — sent over the same [WearDataPaths]
+     * .TRANSFER_PROGRESS path this receiver's own [PhoneDirectWatchTransferCoordinator] uses to
+     * push its send-side progress to the watch. This is now the only thing that advances a
+     * save-to-library transfer past [WearTransferProgress.STATUS_AWAITING_WATCH_ACK]: the phone
+     * no longer assumes success just because it finished streaming bytes.
+     */
+    private fun handleTransferOutcomeFromWatch(messageEvent: MessageEvent) {
+        val progressJson = String(messageEvent.data, Charsets.UTF_8)
+        val progress = try {
+            json.decodeFromString<WearTransferProgress>(progressJson)
+        } catch (e: Exception) {
+            Timber.tag(TAG).e(e, "Failed to parse transfer outcome from watch")
+            return
+        }
+        transferStateStore.markProgress(
+            requestId = progress.requestId,
+            songId = progress.songId,
+            bytesTransferred = progress.bytesTransferred,
+            totalBytes = progress.totalBytes,
+            status = progress.status,
+            error = progress.error,
+        )
+        if (progress.status == WearTransferProgress.STATUS_COMPLETED) {
+            transferStateStore.markSongPresentOnWatch(
+                nodeId = messageEvent.sourceNodeId,
+                songId = progress.songId,
+            )
+        }
     }
 
     private fun handleTransferCancel(messageEvent: MessageEvent) {

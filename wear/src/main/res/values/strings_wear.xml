@@ -7,6 +7,7 @@
     <string name="wear_transfer_issues">Transfer issues</string>
     <string name="wear_transfer_cancelled">Cancelled</string>
     <string name="wear_transfer_failed">Transfer failed</string>
+    <string name="wear_transfer_dismiss_hint">Tap to dismiss</string>
     <string name="wear_saved_from_phone">Saved from phone</string>
     <string name="wear_songs_watch_storage">Songs on watch storage</string>
     <string name="wear_allow_audio_access">Allow audio access</string>
@@ -14,6 +15,14 @@
     <string name="wear_scanning_watch_storage">Scanning watch storage…</string>
     <string name="wear_retry_scan">Retry scan</string>
     <string name="wear_no_local_songs">No local songs found</string>
+    <string name="wear_playlists_title">Playlists</string>
+    <string name="wear_no_local_playlists">No playlists sent from your phone yet</string>
+    <string name="wear_playlist_receiving">Receiving…</string>
+    <string name="wear_local_playlists_entry">Playlists</string>
+    <string name="wear_playlist_pending_songs">%1$d of %2$d ready</string>
+    <string name="wear_play_all">Play all</string>
+    <string name="wear_playlist_empty">This playlist has no songs</string>
+    <string name="wear_song_pending_transfer">Waiting to transfer…</string>
     <string name="wear_status_playing">Playing</string>
     <string name="wear_status_current">Current</string>
     <string name="wear_cd_more_options">More options</string>

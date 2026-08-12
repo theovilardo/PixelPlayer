@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
@@ -52,9 +52,9 @@ fun TimerScreen(
 ) {
     val context = LocalContext.current
     val palette = LocalWearPalette.current
-    val timerState by viewModel.sleepTimerUiState.collectAsState()
-    val isPhoneConnected by viewModel.isPhoneConnected.collectAsState()
-    val isWatchOutputSelected by viewModel.isWatchOutputSelected.collectAsState()
+    val timerState by viewModel.sleepTimerUiState.collectAsStateWithLifecycle()
+    val isPhoneConnected by viewModel.isPhoneConnected.collectAsStateWithLifecycle()
+    val isWatchOutputSelected by viewModel.isWatchOutputSelected.collectAsStateWithLifecycle()
     val enabled = isPhoneConnected && !isWatchOutputSelected
     val columnState = rememberResponsiveColumnState()
 

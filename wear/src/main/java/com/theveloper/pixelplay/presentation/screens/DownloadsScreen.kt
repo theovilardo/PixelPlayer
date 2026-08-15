@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.QueueMusic
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.ErrorOutline
@@ -28,7 +29,6 @@ import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.Security
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,6 +47,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.core.content.ContextCompat
 import androidx.wear.compose.material.Chip
@@ -81,17 +82,19 @@ import kotlinx.coroutines.flow.collect
  */
 @Composable
 fun DownloadsScreen(
+    onPlaylistsClick: () -> Unit = {},
+    onPlaybackStarted: () -> Unit = {},
     viewModel: WearDownloadsViewModel = hiltViewModel(),
     playerViewModel: WearPlayerViewModel = hiltViewModel(),
 ) {
-    val localSongs by viewModel.localSongs.collectAsState()
-    val activeTransfers by viewModel.activeTransfers.collectAsState()
-    val deviceSongs by viewModel.deviceSongs.collectAsState()
-    val isDeviceLibraryLoading by viewModel.isDeviceLibraryLoading.collectAsState()
-    val deviceLibraryError by viewModel.deviceLibraryError.collectAsState()
-    val pendingPhonePlaybackSongId by viewModel.pendingPhonePlaybackSongId.collectAsState()
-    val playerState by playerViewModel.playerState.collectAsState()
-    val isPhoneConnected by playerViewModel.isPhoneConnected.collectAsState()
+    val localSongs by viewModel.localSongs.collectAsStateWithLifecycle()
+    val activeTransfers by viewModel.activeTransfers.collectAsStateWithLifecycle()
+    val deviceSongs by viewModel.deviceSongs.collectAsStateWithLifecycle()
+    val isDeviceLibraryLoading by viewModel.isDeviceLibraryLoading.collectAsStateWithLifecycle()
+    val deviceLibraryError by viewModel.deviceLibraryError.collectAsStateWithLifecycle()
+    val pendingPhonePlaybackSongId by viewModel.pendingPhonePlaybackSongId.collectAsStateWithLifecycle()
+    val playerState by playerViewModel.playerState.collectAsStateWithLifecycle()
+    val isPhoneConnected by playerViewModel.isPhoneConnected.collectAsStateWithLifecycle()
     val palette = LocalWearPalette.current
     val watchLibraryTitleFont = rememberWatchLibraryTitleFont()
     val columnState = rememberResponsiveColumnState()
@@ -177,6 +180,33 @@ fun DownloadsScreen(
                     fontWeight = FontWeight(780),
                     color = palette.textPrimary,
                     textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 4.dp),
+                )
+            }
+
+            item {
+                Chip(
+                    label = {
+                        Text(
+                            text = stringResource(R.string.wear_local_playlists_entry),
+                            color = palette.textPrimary,
+                        )
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Rounded.QueueMusic,
+                            contentDescription = null,
+                            tint = palette.textSecondary,
+                            modifier = Modifier.size(18.dp),
+                        )
+                    },
+                    onClick = onPlaylistsClick,
+                    colors = ChipDefaults.chipColors(
+                        backgroundColor = surfaceContainer,
+                        contentColor = palette.chipContent,
+                    ),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 4.dp),
@@ -298,12 +328,12 @@ fun DownloadsScreen(
                         icon = {
                             Icon(
                                 imageVector = Icons.Rounded.ErrorOutline,
-                                contentDescription = null,
+                                contentDescription = stringResource(R.string.wear_transfer_dismiss_hint),
                                 tint = palette.textError,
                                 modifier = Modifier.size(18.dp),
                             )
                         },
-                        onClick = {},
+                        onClick = { viewModel.dismissTransfer(transfer.requestId) },
                         colors = ChipDefaults.chipColors(
                             backgroundColor = elevatedSurfaceContainer,
                             contentColor = palette.chipContent,
@@ -555,10 +585,12 @@ fun DownloadsScreen(
                 onPlayOnWatch = {
                     viewModel.playLocalSong(menuSong.songId)
                     selectedLocalSongForMenu = null
+                    onPlaybackStarted()
                 },
                 onPlayOnPhone = {
                     viewModel.playSongOnPhone(menuSong.songId)
                     selectedLocalSongForMenu = null
+                    onPlaybackStarted()
                 },
                 onDeleteFromWatch = {
                     selectedLocalSongForMenu = null

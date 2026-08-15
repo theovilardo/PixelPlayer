@@ -73,6 +73,12 @@ enum class SettingsCategory(
         subtitleRes = R.string.settings_category_device_capabilities_subtitle,
         icon = Icons.Rounded.DeveloperBoard // Placeholder, maybe Memory or SettingsInputComponent
     ),
+    WEAR_OS(
+        id = "wear_os",
+        titleRes = R.string.settings_category_wear_title,
+        subtitleRes = R.string.settings_category_wear_subtitle,
+        iconRes = R.drawable.rounded_watch_arrow_down_24
+    ),
     ABOUT(
         id = "about",
         titleRes = R.string.settings_category_about_title,

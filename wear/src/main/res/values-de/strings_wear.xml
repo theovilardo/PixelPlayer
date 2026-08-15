@@ -7,6 +7,7 @@
     <string name="wear_transfer_issues">Übertragungsprobleme</string>
     <string name="wear_transfer_cancelled">Abgebrochen</string>
     <string name="wear_transfer_failed">Übertragung fehlgeschlagen</string>
+    <string name="wear_transfer_dismiss_hint">Zum Ausblenden tippen</string>
     <string name="wear_saved_from_phone">Vom Telefon gespeichert</string>
     <string name="wear_songs_watch_storage">Songs auf dem Uhr-Speicher</string>
     <string name="wear_allow_audio_access">Audiozugriff erlauben</string>

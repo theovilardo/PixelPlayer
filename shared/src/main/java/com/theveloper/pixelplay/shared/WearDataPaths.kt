@@ -64,4 +64,29 @@ object WearDataPaths {
 
     /** Message path for favorites sync progress/state (phone -> watch) */
     const val FAVORITES_SYNC_STATE = "/favorites_sync_state"
+
+    /** Message path for playlist sync (phone -> watch): creates or updates a local playlist's membership/order. */
+    const val PLAYLIST_SYNC = "/playlist_sync"
+
+    /**
+     * Message path for playlist sync acknowledgement (watch -> phone): confirms a [PLAYLIST_SYNC]
+     * message was actually applied, since `MessageClient.sendMessage()` succeeding on the phone
+     * only means local hand-off, not delivery.
+     */
+    const val PLAYLIST_SYNC_ACK = "/playlist_sync_ack"
+
+    /**
+     * DataItem path for the watch performance toggles configured from the phone's Settings ->
+     * "Reloj" screen (phone -> watch). DataItem, not MessageClient: these need to durably reach
+     * the watch even if it's mid-reconnect when the phone publishes, same reasoning as
+     * [PLAYER_STATE] — see [PLAYLIST_SYNC]'s ack for what happens when a phone->watch send is
+     * only best-effort instead.
+     */
+    const val WEAR_PERFORMANCE_SETTINGS = "/wear_performance_settings"
+
+    /** DataMap keys within [WEAR_PERFORMANCE_SETTINGS]. All three default to `true` on the watch
+     *  if never synced, preserving today's behavior. */
+    const val KEY_SHOW_ALBUM_ART = "show_album_art"
+    const val KEY_DYNAMIC_COLOR_THEMING = "dynamic_color_theming"
+    const val KEY_PLAY_BUTTON_ANIMATION = "play_button_animation"
 }

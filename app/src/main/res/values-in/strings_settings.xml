@@ -642,4 +642,16 @@
     <string name="settings_volume_section">Volume</string>
     <string name="settings_pause_on_volume_zero">Jeda saat volume mencapai nol</string>
     <string name="settings_pause_on_volume_zero_desc">Otomatis menjeda pemutaran saat volume diatur ke 0</string>
+
+    <!-- Watch category -->
+    <string name="settings_category_wear_title">Jam Tangan</string>
+    <string name="settings_category_wear_subtitle">Opsi performa untuk pemutaran offline di jam tangan Anda</string>
+    <string name="settings_wear_performance_section">Performa</string>
+    <string name="settings_wear_performance_scope_note">Opsi ini hanya berlaku saat jam tangan Anda memutar musik secara mandiri, tanpa ponsel terhubung. Mengontrol pemutaran ponsel dari jam tangan selalu menampilkan pengalaman lengkap.</string>
+    <string name="settings_wear_show_album_art_title">Tampilkan sampul album</string>
+    <string name="settings_wear_show_album_art_subtitle">Nonaktifkan untuk menghemat memori di jam tangan — dampak terbesar dari ketiganya</string>
+    <string name="settings_wear_dynamic_color_title">Warna dinamis</string>
+    <string name="settings_wear_dynamic_color_subtitle">Mewarnai antarmuka jam tangan berdasarkan sampul setiap lagu</string>
+    <string name="settings_wear_play_button_animation_title">Animasi tombol putar</string>
+    <string name="settings_wear_play_button_animation_subtitle">Cincin berputar terus-menerus di sekitar tombol putar saat musik diputar</string>
 </resources>

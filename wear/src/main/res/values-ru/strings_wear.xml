@@ -7,6 +7,7 @@
     <string name="wear_transfer_issues">Проблемы с передачей</string>
     <string name="wear_transfer_cancelled">Отменено</string>
     <string name="wear_transfer_failed">Передача не удалась</string>
+    <string name="wear_transfer_dismiss_hint">Нажмите, чтобы скрыть</string>
     <string name="wear_saved_from_phone">Сохранено с телефона</string>
     <string name="wear_songs_watch_storage">Песни в памяти часов</string>
     <string name="wear_allow_audio_access">Разрешить доступ к аудио</string>

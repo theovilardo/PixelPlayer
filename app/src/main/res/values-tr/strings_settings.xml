@@ -646,4 +646,16 @@
     <string name="settings_volume_section">Ses</string>
     <string name="settings_pause_on_volume_zero">Ses sıfıra ulaştığında duraklat</string>
     <string name="settings_pause_on_volume_zero_desc">Ses seviyesi 0\'a ayarlandığında oynatmayı otomatik olarak duraklat</string>
+
+    <!-- Watch category -->
+    <string name="settings_category_wear_title">Saat</string>
+    <string name="settings_category_wear_subtitle">Saatinizde çevrimdışı oynatma için performans seçenekleri</string>
+    <string name="settings_wear_performance_section">Performans</string>
+    <string name="settings_wear_performance_scope_note">Bu seçenekler yalnızca saatiniz telefon bağlı olmadan kendi başına müzik çaldığında geçerlidir. Telefon oynatımını saatten kontrol etmek her zaman tam deneyimi gösterir.</string>
+    <string name="settings_wear_show_album_art_title">Albüm kapağını göster</string>
+    <string name="settings_wear_show_album_art_subtitle">Saatte bellekten tasarruf etmek için kapatın — üçü arasında en büyük etkiye sahip olan</string>
+    <string name="settings_wear_dynamic_color_title">Dinamik renk</string>
+    <string name="settings_wear_dynamic_color_subtitle">Saat arayüzünü her şarkının kapak resmine göre renklendirir</string>
+    <string name="settings_wear_play_button_animation_title">Oynat düğmesi animasyonu</string>
+    <string name="settings_wear_play_button_animation_subtitle">Müzik çalarken oynat düğmesinin etrafında sürekli dönen halka</string>
 </resources>

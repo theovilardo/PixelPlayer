@@ -646,4 +646,16 @@
     <string name="settings_volume_section">볼륨</string>
     <string name="settings_pause_on_volume_zero">볼륨이 0이 되면 일시정지</string>
     <string name="settings_pause_on_volume_zero_desc">볼륨이 0으로 설정되면 자동으로 재생을 일시정지합니다</string>
+
+    <!-- Watch category -->
+    <string name="settings_category_wear_title">워치</string>
+    <string name="settings_category_wear_subtitle">워치에서 오프라인 재생을 위한 성능 옵션</string>
+    <string name="settings_wear_performance_section">성능</string>
+    <string name="settings_wear_performance_scope_note">이 옵션은 워치가 휴대폰 연결 없이 단독으로 음악을 재생할 때만 적용됩니다. 워치에서 휴대폰 재생을 제어할 때는 항상 전체 화면이 표시됩니다.</string>
+    <string name="settings_wear_show_album_art_title">앨범 아트 표시</string>
+    <string name="settings_wear_show_album_art_subtitle">워치의 메모리를 절약하려면 꺼두세요 — 세 가지 중 가장 큰 영향을 미칩니다</string>
+    <string name="settings_wear_dynamic_color_title">다이내믹 컬러</string>
+    <string name="settings_wear_dynamic_color_subtitle">각 곡의 앨범 아트에 따라 워치 UI 색상을 지정합니다</string>
+    <string name="settings_wear_play_button_animation_title">재생 버튼 애니메이션</string>
+    <string name="settings_wear_play_button_animation_subtitle">음악 재생 중 재생 버튼 주위로 계속 회전하는 링</string>
 </resources>

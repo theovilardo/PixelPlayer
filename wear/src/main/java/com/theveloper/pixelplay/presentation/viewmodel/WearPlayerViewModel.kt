@@ -10,6 +10,7 @@ import com.theveloper.pixelplay.data.WearLifecycleState
 import com.theveloper.pixelplay.data.WearLocalQueueState
 import com.theveloper.pixelplay.data.WearLocalPlayerRepository
 import com.theveloper.pixelplay.data.WearOutputTarget
+import com.theveloper.pixelplay.data.WearPerformanceSettingsRepository
 import com.theveloper.pixelplay.data.WearPlaybackController
 import com.theveloper.pixelplay.data.WearStateRepository
 import com.theveloper.pixelplay.data.WearTransferRepository
@@ -49,6 +50,7 @@ class WearPlayerViewModel @Inject constructor(
     private val transferRepository: WearTransferRepository,
     private val volumeRepository: WearVolumeRepository,
     private val favoriteSyncRepository: WearFavoriteSyncRepository,
+    private val performanceSettingsRepository: WearPerformanceSettingsRepository,
 ) : ViewModel() {
     companion object {
         private const val PHONE_SYNC_BOOTSTRAP_ATTEMPTS = 3
@@ -129,6 +131,37 @@ class WearPlayerViewModel @Inject constructor(
     }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
+    /**
+     * Whether the theme may still derive its palette from the album art bitmap when no palette or
+     * seed is available. Without this, turning "dynamic color theming" off while "show album art"
+     * stays on would change nothing visible: [WearLocalPlayerRepository] clears the palette and
+     * the seed, and the theme would simply fall through to deriving one from the bitmap
+     * instead — on the main thread, via the *more* expensive path the toggle exists to avoid.
+     *
+     * Only restricted during local playback, same as [showPlayButtonAnimation]: in remote mode
+     * the palette comes from the phone, which honours the phone's own theming settings.
+     */
+    val dynamicColorThemingEnabled: StateFlow<Boolean> = combine(
+        stateRepository.outputTarget,
+        performanceSettingsRepository.dynamicColorTheming,
+        performanceSettingsRepository.isResolved,
+    ) { target, dynamicColorEnabled, settingsResolved ->
+        target != WearOutputTarget.WATCH || (settingsResolved && dynamicColorEnabled)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
+
+    /**
+     * Whether the play button's continuous rotation/ring animation should run. Only restricted
+     * during local playback — remote-controller mode never decodes anything heavy on the watch,
+     * so there's nothing to save there and the full animation always shows.
+     */
+    val showPlayButtonAnimation: StateFlow<Boolean> = combine(
+        stateRepository.outputTarget,
+        performanceSettingsRepository.playButtonAnimation,
+        performanceSettingsRepository.isResolved,
+    ) { target, animationEnabled, settingsResolved ->
+        target != WearOutputTarget.WATCH || (settingsResolved && animationEnabled)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
+
     val isPhoneConnected: StateFlow<Boolean> = stateRepository.isPhoneConnected
     val phoneVolumeState: StateFlow<WearVolumeState> = stateRepository.volumeState
     val watchVolumeState: StateFlow<WearVolumeState> = volumeRepository.watchVolumeState
@@ -200,6 +233,18 @@ class WearPlayerViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     init {
+        viewModelScope.launch {
+            // Recovers a queue/position that survived a process death mid-playback (see
+            // WearLocalPlayerRepository's KDoc) — a no-op whenever nothing was persisted, which
+            // is the overwhelming majority of app opens. `outputTarget` itself isn't persisted
+            // (WearStateRepository always starts at PHONE), so a successful restore is the
+            // signal that the user actually was on watch-local playback; it wouldn't otherwise
+            // be visible in `playerState` until switched here.
+            val restored = localPlayerRepository.restorePersistedPlaybackIfAvailable()
+            if (restored) {
+                stateRepository.setOutputTarget(WearOutputTarget.WATCH)
+            }
+        }
         viewModelScope.launch {
             outputTarget.collect {
                 refreshActiveVolumeState()

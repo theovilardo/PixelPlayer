@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
@@ -70,13 +70,13 @@ fun QueueScreen(
     browseViewModel: WearBrowseViewModel = hiltViewModel(),
 ) {
     val palette = LocalWearPalette.current
-    val playerState by viewModel.playerState.collectAsState()
-    val localQueueState by viewModel.localQueueState.collectAsState()
-    val isLocalPlaybackActive by viewModel.isLocalPlaybackActive.collectAsState()
-    val uiState by browseViewModel.uiState.collectAsState()
-    val isPhoneConnected by viewModel.isPhoneConnected.collectAsState()
-    val isWatchOutputSelected by viewModel.isWatchOutputSelected.collectAsState()
-    val timerState by viewModel.sleepTimerUiState.collectAsState()
+    val playerState by viewModel.playerState.collectAsStateWithLifecycle()
+    val localQueueState by viewModel.localQueueState.collectAsStateWithLifecycle()
+    val isLocalPlaybackActive by viewModel.isLocalPlaybackActive.collectAsStateWithLifecycle()
+    val uiState by browseViewModel.uiState.collectAsStateWithLifecycle()
+    val isPhoneConnected by viewModel.isPhoneConnected.collectAsStateWithLifecycle()
+    val isWatchOutputSelected by viewModel.isWatchOutputSelected.collectAsStateWithLifecycle()
+    val timerState by viewModel.sleepTimerUiState.collectAsStateWithLifecycle()
 
     val showingLocalQueue = isWatchOutputSelected
     val remoteControlsEnabled = isPhoneConnected && !isWatchOutputSelected

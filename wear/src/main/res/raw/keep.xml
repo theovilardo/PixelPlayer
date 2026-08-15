@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The resource shrinker (isShrinkResources = true in release) only sees resources reached via
+  code references (R.array.foo, @array/foo in XML, etc). android_wear_capabilities is never
+  referenced that way — Google Play Services discovers it purely by resource NAME convention to
+  advertise this app's Wear capabilities (see WearCapabilities.PIXELPLAY_WEAR_APP), so the
+  shrinker's reachability analysis correctly, but wrongly for our purposes, considers it unused
+  and strips it from release builds. Confirmed via wear/build/outputs/mapping/release/resources.txt:
+  "array:android_wear_capabilities:... is not reachable." This keeps it in the APK.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@array/android_wear_capabilities" />

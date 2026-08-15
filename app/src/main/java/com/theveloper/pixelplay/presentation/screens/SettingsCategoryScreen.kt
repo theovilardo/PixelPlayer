@@ -74,12 +74,15 @@ import androidx.compose.material.icons.outlined.PlayCircle
 import androidx.compose.material.icons.outlined.Style
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Animation
 import androidx.compose.material.icons.rounded.BlurOff
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.ColorLens
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.ExpandMore
+import androidx.compose.material.icons.rounded.Image
 import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.material.icons.rounded.Restore
 import androidx.compose.material.icons.rounded.Science
@@ -912,6 +915,44 @@ fun SettingsCategoryScreen(
                                     checked = uiState.hapticsEnabled,
                                     onCheckedChange = { settingsViewModel.setHapticsEnabled(it) },
                                     leadingIcon = { Icon(painterResource(R.drawable.rounded_touch_app_24), null, tint = MaterialTheme.colorScheme.secondary) }
+                                )
+                            }
+                        }
+                        SettingsCategory.WEAR_OS -> {
+                            // Re-announce the current values on entry — covers a freshly paired
+                            // or reinstalled watch that's never received a DataItem sync yet.
+                            LaunchedEffect(Unit) {
+                                settingsViewModel.publishWearPerformanceSettings()
+                            }
+                            SettingsSubsection(
+                                title = stringResource(R.string.settings_wear_performance_section)
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.settings_wear_performance_scope_note),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+                                )
+                                SwitchSettingItem(
+                                    title = stringResource(R.string.settings_wear_show_album_art_title),
+                                    subtitle = stringResource(R.string.settings_wear_show_album_art_subtitle),
+                                    checked = uiState.wearShowAlbumArt,
+                                    onCheckedChange = { settingsViewModel.setWearShowAlbumArt(it) },
+                                    leadingIcon = { Icon(Icons.Rounded.Image, null, tint = MaterialTheme.colorScheme.secondary) }
+                                )
+                                SwitchSettingItem(
+                                    title = stringResource(R.string.settings_wear_dynamic_color_title),
+                                    subtitle = stringResource(R.string.settings_wear_dynamic_color_subtitle),
+                                    checked = uiState.wearDynamicColorTheming,
+                                    onCheckedChange = { settingsViewModel.setWearDynamicColorTheming(it) },
+                                    leadingIcon = { Icon(Icons.Rounded.ColorLens, null, tint = MaterialTheme.colorScheme.secondary) }
+                                )
+                                SwitchSettingItem(
+                                    title = stringResource(R.string.settings_wear_play_button_animation_title),
+                                    subtitle = stringResource(R.string.settings_wear_play_button_animation_subtitle),
+                                    checked = uiState.wearPlayButtonAnimation,
+                                    onCheckedChange = { settingsViewModel.setWearPlayButtonAnimation(it) },
+                                    leadingIcon = { Icon(Icons.Rounded.Animation, null, tint = MaterialTheme.colorScheme.secondary) }
                                 )
                             }
                         }

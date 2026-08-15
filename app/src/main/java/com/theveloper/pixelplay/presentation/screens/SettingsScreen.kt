@@ -131,6 +131,8 @@ fun SettingsScreen(
     val uiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
     val launchTab = uiState.launchTab
     val useSmoothCorners by settingsViewModel.useSmoothCorners.collectAsStateWithLifecycle()
+    val isAnyWatchPaired by settingsViewModel.isAnyWatchPaired.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) { settingsViewModel.refreshWatchPairingState() }
 
     var showCornerRadiusOverlay by remember { mutableStateOf(false) }
 
@@ -214,8 +216,9 @@ fun SettingsScreen(
                 val isDark = MaterialTheme.colorScheme.surface.luminance() < 0.5f
                 ExpressiveSettingsGroup {
                     val mainCategories = SettingsCategory.entries.filter {
-                        it != SettingsCategory.ABOUT && 
-                        it != SettingsCategory.DEVICE_CAPABILITIES
+                        it != SettingsCategory.ABOUT &&
+                        it != SettingsCategory.DEVICE_CAPABILITIES &&
+                        (it != SettingsCategory.WEAR_OS || isAnyWatchPaired)
                     }
 
                     val totalItems = mainCategories.size + 3 // Device + Accounts + About
@@ -487,7 +490,8 @@ private fun getCategoryColors(category: SettingsCategory, isDark: Boolean): Pair
             SettingsCategory.DEVELOPER -> Color(0xFF324F34) to Color(0xFFCBEFD0) 
             SettingsCategory.EQUALIZER -> Color(0xFF6E4E13) to Color(0xFFFFDEAC) 
             SettingsCategory.DEVICE_CAPABILITIES -> Color(0xFF004D61) to Color(0xFFACEFEE) // Custom teal/cyan mix
-            SettingsCategory.ABOUT -> Color(0xFF3F474D) to Color(0xFFDEE3EB) 
+            SettingsCategory.WEAR_OS -> Color(0xFF3B4869) to Color(0xFFD9E2FF) // Same family as BACKUP_RESTORE
+            SettingsCategory.ABOUT -> Color(0xFF3F474D) to Color(0xFFDEE3EB)
         }
     } else {
         when (category) {
@@ -500,6 +504,7 @@ private fun getCategoryColors(category: SettingsCategory, isDark: Boolean): Pair
             SettingsCategory.DEVELOPER -> Color(0xFFCBEFD0) to Color(0xFF042106)
             SettingsCategory.EQUALIZER -> Color(0xFFFFDEAC) to Color(0xFF281900)
             SettingsCategory.DEVICE_CAPABILITIES -> Color(0xFFACEFEE) to Color(0xFF002022)
+            SettingsCategory.WEAR_OS -> Color(0xFFD9E2FF) to Color(0xFF27304E)
             SettingsCategory.ABOUT -> Color(0xFFEFF1F7) to Color(0xFF44474F)
         }
     }

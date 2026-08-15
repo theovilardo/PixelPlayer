@@ -646,4 +646,16 @@
     <string name="settings_volume_section">Lautstärke</string>
     <string name="settings_pause_on_volume_zero">Pausieren, wenn Lautstärke null erreicht</string>
     <string name="settings_pause_on_volume_zero_desc">Wiedergabe automatisch pausieren, wenn die Lautstärke auf 0 gesetzt wird</string>
+
+    <!-- Watch category -->
+    <string name="settings_category_wear_title">Uhr</string>
+    <string name="settings_category_wear_subtitle">Leistungsoptionen für die Offline-Wiedergabe auf deiner Uhr</string>
+    <string name="settings_wear_performance_section">Leistung</string>
+    <string name="settings_wear_performance_scope_note">Diese Optionen gelten nur, wenn deine Uhr Musik eigenständig abspielt, ohne verbundenes Smartphone. Wenn du die Wiedergabe auf dem Smartphone von der Uhr aus steuerst, wird immer die vollständige Ansicht angezeigt.</string>
+    <string name="settings_wear_show_album_art_title">Albumcover anzeigen</string>
+    <string name="settings_wear_show_album_art_subtitle">Deaktivieren, um Speicher auf der Uhr zu sparen — hat von den dreien die größte Wirkung</string>
+    <string name="settings_wear_dynamic_color_title">Dynamische Farbe</string>
+    <string name="settings_wear_dynamic_color_subtitle">Färbt die Oberfläche der Uhr passend zum Cover des jeweiligen Songs</string>
+    <string name="settings_wear_play_button_animation_title">Animation der Wiedergabetaste</string>
+    <string name="settings_wear_play_button_animation_subtitle">Durchgehend rotierender Ring um die Wiedergabetaste, während Musik läuft</string>
 </resources>

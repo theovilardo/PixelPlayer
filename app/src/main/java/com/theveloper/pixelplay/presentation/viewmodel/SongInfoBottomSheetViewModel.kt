@@ -77,6 +77,10 @@ class SongInfoBottomSheetViewModel @Inject constructor(
     val isWatchAvailabilityResolved: StateFlow<Boolean> = _isWatchAvailabilityResolved.asStateFlow()
     private val _isRefreshingWatchAvailability = MutableStateFlow(false)
 
+    /** Whether any watch has ever been paired with PixelPlay installed — see PlaylistViewModel's
+     *  identical field for the full explanation. */
+    val isAnyWatchPaired: StateFlow<Boolean> = transferStateStore.isAnyWatchPaired
+
     private val _isRequestingToWatch = MutableStateFlow(false)
     val watchTransfers: StateFlow<Map<String, PhoneWatchTransferState>> = transferStateStore.transfers
     val watchSongIds: StateFlow<Set<String>> = transferStateStore.watchSongIds
@@ -172,6 +176,9 @@ class SongInfoBottomSheetViewModel @Inject constructor(
                     wearPhoneTransferSender.refreshWatchLibraryState()
                 }
             }
+        }
+        viewModelScope.launch {
+            wearPhoneTransferSender.refreshWatchPairingState()
         }
     }
 

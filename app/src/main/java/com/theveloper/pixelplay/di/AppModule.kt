@@ -1,5 +1,6 @@
 package com.theveloper.pixelplay.di
 
+import android.app.Application
 import android.content.Context
 import androidx.annotation.OptIn
 import androidx.datastore.core.DataStore
@@ -15,6 +16,9 @@ import androidx.work.WorkManager
 import coil.ImageLoader
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
+import com.google.android.gms.wearable.CapabilityClient
+import com.google.android.gms.wearable.MessageClient
+import com.google.android.gms.wearable.Wearable
 import com.theveloper.pixelplay.BuildConfig
 import com.theveloper.pixelplay.PixelPlayApplication
 import com.theveloper.pixelplay.data.database.AlbumArtThemeDao
@@ -56,6 +60,7 @@ import kotlinx.serialization.json.Json
 import javax.inject.Qualifier
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import okhttp3.OkHttpClient
@@ -112,6 +117,28 @@ object AppModule {
     fun provideAppCoroutineScope(): CoroutineScope {
         return CoroutineScope(SupervisorJob() + Dispatchers.IO)
     }
+
+    @Provides
+    @IoDispatcher
+    fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
+
+    @Provides
+    @MainDispatcher
+    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
+    // Injected (unlike the rest of the wear/ package, which resolves these via
+    // Wearable.getXClient(application) internally) so PlaylistWatchTransferCoordinator can be
+    // constructed with fakes in tests — CapabilityClient/MessageClient are non-final abstract
+    // classes, so MockK can subclass them directly with no inline-mocking agent involved.
+    @Singleton
+    @Provides
+    fun provideCapabilityClient(application: Application): CapabilityClient =
+        Wearable.getCapabilityClient(application)
+
+    @Singleton
+    @Provides
+    fun provideMessageClient(application: Application): MessageClient =
+        Wearable.getMessageClient(application)
 
     @Singleton
     @Provides

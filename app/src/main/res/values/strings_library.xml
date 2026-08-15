@@ -265,9 +265,12 @@
 
     <!-- Watch Transfer Dialog + Foreground Service -->
     <string name="watch_transfer_action_cancel">Cancel transfer</string>
+    <string name="watch_transfer_batch_failed_count">%1$d songs failed</string>
+    <string name="watch_transfer_batch_progress">%1$d of %2$d songs</string>
     <string name="watch_transfer_bytes_progress">%1$s / %2$s</string>
     <string name="watch_transfer_channel_description">Shows live progress for phone-to-watch music transfers</string>
     <string name="watch_transfer_channel_name">Watch transfers</string>
+    <string name="watch_transfer_current_song">Sending: %1$s</string>
     <string name="watch_transfer_dialog_title">Sending to Watch</string>
     <string name="watch_transfer_status_cancelled">Cancelled</string>
     <string name="watch_transfer_status_cancelled_service">Transfer cancelled</string>
@@ -281,6 +284,7 @@
     <string name="watch_transfer_status_preparing_service">Preparing watch transfer</string>
     <string name="watch_transfer_status_preparing_transfer">Preparing transfer…</string>
     <string name="watch_transfer_status_sending_n_to_watch">Sending %1$d songs to watch</string>
+    <string name="watch_transfer_status_sending_playlist_to_watch">Sending \"%1$s\" to watch</string>
     <string name="watch_transfer_status_sending_to_watch">Sending to watch</string>
     <string name="watch_transfer_status_starting">Starting transfer…</string>
     <string name="watch_transfer_status_starting_short">Starting</string>

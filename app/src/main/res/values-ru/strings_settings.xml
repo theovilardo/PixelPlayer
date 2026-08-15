@@ -646,4 +646,16 @@
     <string name="settings_volume_section">Громкость</string>
     <string name="settings_pause_on_volume_zero">Пауза при нулевой громкости</string>
     <string name="settings_pause_on_volume_zero_desc">Автоматически приостанавливать воспроизведение, когда громкость равна 0</string>
+
+    <!-- Watch category -->
+    <string name="settings_category_wear_title">Часы</string>
+    <string name="settings_category_wear_subtitle">Настройки производительности для автономного воспроизведения на часах</string>
+    <string name="settings_wear_performance_section">Производительность</string>
+    <string name="settings_wear_performance_scope_note">Эти параметры применяются, только когда часы воспроизводят музыку самостоятельно, без подключения к телефону. Управление воспроизведением на телефоне с часов всегда показывает полный интерфейс.</string>
+    <string name="settings_wear_show_album_art_title">Показывать обложку альбома</string>
+    <string name="settings_wear_show_album_art_subtitle">Отключите, чтобы сэкономить память на часах — оказывает наибольшее влияние из трёх</string>
+    <string name="settings_wear_dynamic_color_title">Динамический цвет</string>
+    <string name="settings_wear_dynamic_color_subtitle">Окрашивает интерфейс часов по обложке каждой песни</string>
+    <string name="settings_wear_play_button_animation_title">Анимация кнопки воспроизведения</string>
+    <string name="settings_wear_play_button_animation_subtitle">Непрерывно вращающееся кольцо вокруг кнопки воспроизведения во время игры музыки</string>
 </resources>

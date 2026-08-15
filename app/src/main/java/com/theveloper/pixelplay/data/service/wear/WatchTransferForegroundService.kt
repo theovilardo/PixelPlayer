@@ -24,6 +24,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -43,7 +44,10 @@ class WatchTransferForegroundService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val notification = buildNotification(transferStateStore.transfers.value.values.toList())
+        val notification = buildNotification(
+            transferStateStore.transfers.value.values.toList(),
+            transferStateStore.batchTransfers.value.values.toList(),
+        )
         if (!hasStartedForeground) {
             startInForeground(notification)
         } else {
@@ -63,21 +67,24 @@ class WatchTransferForegroundService : Service() {
     private fun observeTransfers() {
         transferObserverJob?.cancel()
         transferObserverJob = serviceScope.launch {
-            transferStateStore.transfers.collect { transfers ->
-                val states = transfers.values.toList()
-                if (states.isEmpty()) {
-                    stopForegroundCompat()
-                    stopSelf()
-                    return@collect
-                }
+            combine(
+                transferStateStore.transfers,
+                transferStateStore.batchTransfers,
+            ) { transfers, batches -> transfers.values.toList() to batches.values.toList() }
+                .collect { (transferStates, batchStates) ->
+                    if (transferStates.isEmpty() && batchStates.isEmpty()) {
+                        stopForegroundCompat()
+                        stopSelf()
+                        return@collect
+                    }
 
-                val notification = buildNotification(states)
-                if (!hasStartedForeground) {
-                    startInForeground(notification)
-                } else {
-                    notificationManager().notify(NOTIFICATION_ID, notification)
+                    val notification = buildNotification(transferStates, batchStates)
+                    if (!hasStartedForeground) {
+                        startInForeground(notification)
+                    } else {
+                        notificationManager().notify(NOTIFICATION_ID, notification)
+                    }
                 }
-            }
         }
     }
 
@@ -110,7 +117,85 @@ class WatchTransferForegroundService : Service() {
         hasStartedForeground = false
     }
 
-    private fun buildNotification(transfers: List<PhoneWatchTransferState>): Notification {
+    /**
+     * A playlist batch, when one is active or just finished, takes priority over any concurrent
+     * lone single-song transfer (e.g. from the song info sheet) — it's the longer-running, more
+     * significant operation, and showing both at once would make the notification unreadable.
+     */
+    private fun buildNotification(
+        transfers: List<PhoneWatchTransferState>,
+        batches: List<PhoneWatchBatchTransferState>,
+    ): Notification {
+        val selectedBatch = batches.firstOrNull { it.status == WearTransferProgress.STATUS_TRANSFERRING }
+            ?: batches.maxByOrNull { it.updatedAtMillis }
+        return if (selectedBatch != null) {
+            buildBatchNotification(selectedBatch)
+        } else {
+            buildSongNotification(transfers)
+        }
+    }
+
+    private fun buildBatchNotification(batch: PhoneWatchBatchTransferState): Notification {
+        val isOngoing = batch.status == WearTransferProgress.STATUS_TRANSFERRING
+        val title = when (batch.status) {
+            WearTransferProgress.STATUS_TRANSFERRING ->
+                getString(R.string.watch_transfer_status_sending_playlist_to_watch, batch.playlistName)
+            WearTransferProgress.STATUS_COMPLETED -> getString(R.string.watch_transfer_status_complete_service)
+            WearTransferProgress.STATUS_FAILED -> getString(R.string.watch_transfer_status_failed_service)
+            WearTransferProgress.STATUS_CANCELLED -> getString(R.string.watch_transfer_status_cancelled_service)
+            else -> getString(R.string.watch_transfer_status_preparing_service)
+        }
+        val contentText = getString(
+            R.string.watch_transfer_batch_progress,
+            batch.processedSongCount,
+            batch.totalSongCount,
+        )
+        val overallProgress = if (batch.totalSongCount > 0) {
+            ((batch.processedSongCount + batch.currentSongProgress) / batch.totalSongCount.toFloat())
+        } else {
+            0f
+        }.coerceIn(0f, 1f)
+        val progressPercent = (overallProgress * 100f).toInt().coerceIn(0, 100)
+
+        val builder = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+            .setSmallIcon(R.drawable.monochrome_player)
+            .setContentTitle(title)
+            .setContentText(contentText)
+            .setContentIntent(createOpenAppPendingIntent())
+            .setCategory(NotificationCompat.CATEGORY_SERVICE)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setOnlyAlertOnce(true)
+            .setSilent(true)
+            .setOngoing(isOngoing)
+            .setShowWhen(false)
+            .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+
+        if (isOngoing) {
+            builder.setProgress(100, progressPercent, false)
+        } else {
+            builder.setProgress(0, 0, false)
+        }
+
+        val detailText = buildBatchDetailedText(batch)
+        if (detailText.isNotBlank()) {
+            builder.setStyle(NotificationCompat.BigTextStyle().bigText(detailText))
+        }
+
+        return builder.build()
+    }
+
+    private fun buildBatchDetailedText(batch: PhoneWatchBatchTransferState): String {
+        val songLine = batch.currentSongTitle.ifBlank { null }
+        val failedLine = if (batch.failedSongCount > 0) {
+            getString(R.string.watch_transfer_batch_failed_count, batch.failedSongCount)
+        } else {
+            null
+        }
+        val errorLine = batch.errorMessage?.takeIf { it.isNotBlank() }
+        return listOfNotNull(songLine, failedLine, errorLine).joinToString(separator = "\n")
+    }
+
+    private fun buildSongNotification(transfers: List<PhoneWatchTransferState>): Notification {
         val activeTransfers = transfers.filter { it.status == WearTransferProgress.STATUS_TRANSFERRING }
         val selectedTransfer = activeTransfers.maxByOrNull { it.updatedAtMillis }
             ?: transfers.maxByOrNull { it.updatedAtMillis }

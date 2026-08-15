@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -81,6 +82,8 @@ data class WearQueueSong(
 class WearLocalPlayerRepository @Inject constructor(
     private val application: Application,
     private val localSongDao: LocalSongDao,
+    private val playbackStatePersistence: WearPlaybackStatePersistence,
+    private val performanceSettings: WearPerformanceSettingsRepository,
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private val json = Json { ignoreUnknownKeys = true }
@@ -116,6 +119,7 @@ class WearLocalPlayerRepository @Inject constructor(
     companion object {
         private const val TAG = "WearLocalPlayer"
         private const val POSITION_UPDATE_INTERVAL_MS = 1000L
+        private const val PERSIST_INTERVAL_TICKS = 10
     }
 
     init {
@@ -135,6 +139,33 @@ class WearLocalPlayerRepository @Inject constructor(
                 }
             }
         }
+
+        // React to the performance toggles changing while a song is already loaded — e.g. the
+        // user turns "show album art" off from the phone mid-song: drop the bitmap immediately
+        // instead of waiting for the next song change, since the whole point is freeing RAM right
+        // away. drop(1) skips the initial replay so this doesn't fire redundantly at construction.
+        scope.launch {
+            performanceSettings.showAlbumArt.drop(1).collect {
+                updateArtworkForSong(_localPlayerState.value.songId)
+            }
+        }
+        scope.launch {
+            performanceSettings.dynamicColorTheming.drop(1).collect {
+                updatePaletteForSong(_localPlayerState.value.songId)
+            }
+        }
+        // Both gates below refuse to do anything until the toggles are known, so this is what
+        // actually loads the art/palette on a normal start — the toggle flows themselves often
+        // never change value, and their collectors above would then never fire.
+        // Deliberately no drop(1) here, unlike the two above: this repository may well be
+        // constructed after the toggles already resolved, and dropping that first emission would
+        // mean the art/palette never load at all for the rest of the session.
+        scope.launch {
+            performanceSettings.isResolved.collect {
+                updatePaletteForSong(_localPlayerState.value.songId)
+                updateArtworkForSong(_localPlayerState.value.songId)
+            }
+        }
     }
 
     private val playerListener = object : Player.Listener {
@@ -142,16 +173,21 @@ class WearLocalPlayerRepository @Inject constructor(
             updateState()
             if (playbackState == Player.STATE_ENDED) {
                 stopPositionUpdates()
+                // Nothing left to resume — clear rather than leave a stale "restore" prompt
+                // pointing at a queue that already finished.
+                clearPersistedPlaybackState()
             }
         }
 
         override fun onIsPlayingChanged(isPlaying: Boolean) {
             updateState()
+            persistCurrentPlaybackState()
             if (isPlaying) startPositionUpdates() else stopPositionUpdates()
         }
 
         override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
             updateState()
+            persistCurrentPlaybackState()
         }
     }
 
@@ -472,6 +508,7 @@ class WearLocalPlayerRepository @Inject constructor(
      */
     fun release() {
         stopPositionUpdates()
+        clearPersistedPlaybackState()
         mediaController?.let { controller ->
             controller.removeListener(playerListener)
             runCatching {
@@ -536,6 +573,7 @@ class WearLocalPlayerRepository @Inject constructor(
     private fun startPositionUpdates() {
         positionUpdateJob?.cancel()
         positionUpdateJob = scope.launch {
+            var ticksSinceLastPersist = 0
             while (isActive) {
                 // Skip the StateFlow churn when the user can't see the UI: the
                 // ExoPlayer keeps tracking position internally, we just don't
@@ -545,9 +583,89 @@ class WearLocalPlayerRepository @Inject constructor(
                 if (WearLifecycleState.isInteractiveNow) {
                     updateState()
                 }
+                // Coarser than the 1s UI tick: a DataStore write every second would be real,
+                // pointless disk I/O on a device this battery-constrained. Losing up to
+                // PERSIST_INTERVAL_TICKS seconds of position on a crash is an acceptable
+                // trade — onIsPlayingChanged/onMediaItemTransition already persist immediately
+                // on the events that matter most (a pause or a track change right before a
+                // crash won't be lost).
+                ticksSinceLastPersist++
+                if (ticksSinceLastPersist >= PERSIST_INTERVAL_TICKS) {
+                    ticksSinceLastPersist = 0
+                    persistCurrentPlaybackState()
+                }
                 delay(POSITION_UPDATE_INTERVAL_MS)
             }
         }
+    }
+
+    private fun persistCurrentPlaybackState() {
+        val player = mediaController ?: return
+        if (currentQueueSongIds.isEmpty()) return
+        val snapshot = PersistedLocalPlaybackState(
+            queueSongIds = currentQueueSongIds,
+            currentIndex = player.currentMediaItemIndex,
+            positionMs = player.currentPosition,
+            updatedAtMillis = System.currentTimeMillis(),
+        )
+        scope.launch {
+            runCatching { playbackStatePersistence.save(snapshot) }
+                .onFailure { error -> Timber.tag(TAG).w(error, "Failed to persist local playback state") }
+        }
+    }
+
+    private fun clearPersistedPlaybackState() {
+        scope.launch {
+            runCatching { playbackStatePersistence.clear() }
+                .onFailure { error -> Timber.tag(TAG).w(error, "Failed to clear persisted local playback state") }
+        }
+    }
+
+    /**
+     * Restores a persisted queue, paused, if one exists and is still fresh enough
+     * ([isPersistedLocalPlaybackStateRestorable]) — the recovery path for a process that died
+     * mid-playback (see this class's KDoc). Paused rather than auto-playing: starting audio
+     * without a fresh user gesture on app open would be surprising, especially for headphones
+     * that may no longer even be in the user's ears.
+     *
+     * Safe to call unconditionally on startup: a no-op if nothing is local-playback-active
+     * to restore, and it never overwrites an already-active queue.
+     */
+    suspend fun restorePersistedPlaybackIfAvailable(): Boolean {
+        if (_isLocalPlaybackActive.value) return false
+        val persisted = playbackStatePersistence.read() ?: return false
+        if (!isPersistedLocalPlaybackStateRestorable(persisted, System.currentTimeMillis())) {
+            playbackStatePersistence.clear()
+            return false
+        }
+
+        val songsById = persisted.queueSongIds
+            .mapNotNull { songId -> localSongDao.getSongById(songId) }
+            .associateBy { it.songId }
+        // Songs may have been deleted from the watch since the snapshot was taken (storage
+        // pressure, the user removing a download) — only resume the ones that are still there,
+        // in their original relative order.
+        val playableSongs = persisted.queueSongIds.mapNotNull { songsById[it] }
+        if (playableSongs.isEmpty()) {
+            playbackStatePersistence.clear()
+            return false
+        }
+
+        val originalIndexSongId = persisted.queueSongIds.getOrNull(persisted.currentIndex)
+        val originalIndexInPlayable = playableSongs.indexOfFirst { it.songId == originalIndexSongId }
+        val restoredIndex = originalIndexInPlayable.coerceAtLeast(0)
+
+        playLocalSongs(
+            songs = playableSongs,
+            startIndex = restoredIndex,
+            // The saved position belongs to the song that was playing, so it only travels with
+            // it: when that song is one of the deleted ones we fall back to the first remaining
+            // track, and seeking that to the old position would resume a different song
+            // mid-way — or past its end entirely, which just ends playback immediately.
+            startPositionMs = if (originalIndexInPlayable >= 0) persisted.positionMs else 0L,
+            autoPlay = false,
+        )
+        return true
     }
 
     private fun stopPositionUpdates() {
@@ -644,7 +762,16 @@ class WearLocalPlayerRepository @Inject constructor(
     }
 
     private fun updatePaletteForSong(songId: String) {
-        if (songId.isBlank()) {
+        // !isResolved is treated exactly like "the toggle is off": the settings may still be
+        // about to arrive, and deriving a palette now only to drop it a second later is the
+        // visible flicker this guard exists to prevent.
+        if (songId.isBlank() ||
+            !performanceSettings.isResolved.value ||
+            !performanceSettings.dynamicColorTheming.value
+        ) {
+            // Also reset lastPaletteSongId when the toggle is off (not just for a blank songId):
+            // otherwise re-enabling it later without a song change would leave it pointing at a
+            // song that's technically "already handled" and skip re-extracting the seed.
             lastPaletteSongId = ""
             _localThemePalette.value = null
             _localPaletteSeedArgb.value = null
@@ -707,7 +834,14 @@ class WearLocalPlayerRepository @Inject constructor(
     }
 
     private fun updateArtworkForSong(songId: String) {
-        if (songId.isBlank()) {
+        // Same "not resolved yet counts as off" rule as updatePaletteForSong.
+        if (songId.isBlank() ||
+            !performanceSettings.isResolved.value ||
+            !performanceSettings.showAlbumArt.value
+        ) {
+            // Same reasoning as updatePaletteForSong: reset lastArtworkSongId even when the
+            // toggle (not a blank songId) is why we're bailing, so a later re-enable without a
+            // song change still triggers a fresh decode instead of being silently skipped.
             lastArtworkSongId = ""
             _localAlbumArt.value = null
             return

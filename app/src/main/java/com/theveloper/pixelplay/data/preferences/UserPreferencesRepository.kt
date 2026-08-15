@@ -219,6 +219,11 @@ class UserPreferencesRepository @Inject constructor(
             longPreferencesKey("advanced_performance_diagnostics_started_at_epoch_ms")
         val ADVANCED_PERFORMANCE_DIAGNOSTICS_EXPIRES_AT =
             longPreferencesKey("advanced_performance_diagnostics_expires_at_epoch_ms")
+        // Wear OS performance toggles (synced to the watch via WearPerformanceSettingsPublisher)
+        val WEAR_SHOW_ALBUM_ART = booleanPreferencesKey("wear_show_album_art")
+        val WEAR_DYNAMIC_COLOR_THEMING = booleanPreferencesKey("wear_dynamic_color_theming")
+        val WEAR_PLAY_BUTTON_ANIMATION = booleanPreferencesKey("wear_play_button_animation")
+
         val IMMERSIVE_LYRICS_ENABLED = booleanPreferencesKey("immersive_lyrics_enabled")
         val IMMERSIVE_LYRICS_TIMEOUT = longPreferencesKey("immersive_lyrics_timeout")
         val USE_ANIMATED_LYRICS = booleanPreferencesKey("use_animated_lyrics")
@@ -1242,6 +1247,32 @@ suspend fun markDirectoryRulesVersionApplied(version: Int) {
 
     suspend fun setHapticsEnabled(enabled: Boolean) {
         dataStore.edit { it[PreferencesKeys.HAPTICS_ENABLED] = enabled }
+    }
+
+    // ─── Wear OS performance toggles ────────────────────────────────────────────
+    // Only take effect during standalone local playback on the watch (no phone connected) —
+    // remote-controller mode never decodes anything heavy on the watch, so there's nothing to
+    // save there. All three default to true, preserving today's behavior.
+
+    val wearShowAlbumArtFlow: Flow<Boolean> =
+        pref { it[PreferencesKeys.WEAR_SHOW_ALBUM_ART] ?: true }
+
+    suspend fun setWearShowAlbumArt(enabled: Boolean) {
+        dataStore.edit { it[PreferencesKeys.WEAR_SHOW_ALBUM_ART] = enabled }
+    }
+
+    val wearDynamicColorThemingFlow: Flow<Boolean> =
+        pref { it[PreferencesKeys.WEAR_DYNAMIC_COLOR_THEMING] ?: true }
+
+    suspend fun setWearDynamicColorTheming(enabled: Boolean) {
+        dataStore.edit { it[PreferencesKeys.WEAR_DYNAMIC_COLOR_THEMING] = enabled }
+    }
+
+    val wearPlayButtonAnimationFlow: Flow<Boolean> =
+        pref { it[PreferencesKeys.WEAR_PLAY_BUTTON_ANIMATION] ?: true }
+
+    suspend fun setWearPlayButtonAnimation(enabled: Boolean) {
+        dataStore.edit { it[PreferencesKeys.WEAR_PLAY_BUTTON_ANIMATION] = enabled }
     }
 
     // ─── Backup / restore ─────────────────────────────────────────────────────

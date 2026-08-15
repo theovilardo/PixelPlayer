@@ -646,4 +646,16 @@
     <string name="settings_volume_section">音量</string>
     <string name="settings_pause_on_volume_zero">音量为零时暂停</string>
     <string name="settings_pause_on_volume_zero_desc">当音量设置为 0 时自动暂停播放</string>
+
+    <!-- Watch category -->
+    <string name="settings_category_wear_title">手表</string>
+    <string name="settings_category_wear_subtitle">手表离线播放的性能选项</string>
+    <string name="settings_wear_performance_section">性能</string>
+    <string name="settings_wear_performance_scope_note">这些选项仅在您的手表脱离手机独立播放音乐时生效。从手表控制手机播放时，始终显示完整体验。</string>
+    <string name="settings_wear_show_album_art_title">显示专辑封面</string>
+    <string name="settings_wear_show_album_art_subtitle">关闭以节省手表内存 — 三项中影响最大的一项</string>
+    <string name="settings_wear_dynamic_color_title">动态颜色</string>
+    <string name="settings_wear_dynamic_color_subtitle">根据每首歌曲的封面为手表界面着色</string>
+    <string name="settings_wear_play_button_animation_title">播放按钮动画</string>
+    <string name="settings_wear_play_button_animation_subtitle">音乐播放时播放按钮周围持续旋转的圆环</string>
 </resources>

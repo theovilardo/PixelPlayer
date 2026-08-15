@@ -306,4 +306,16 @@
     <string name="settings_volume_section">مستوى الصوت</string>
     <string name="settings_pause_on_volume_zero">إيقاف مؤقت عند وصول مستوى الصوت إلى الصفر</string>
     <string name="settings_pause_on_volume_zero_desc">إيقاف التشغيل تلقائيًا مؤقتًا عندما يكون مستوى الصوت 0</string>
+
+    <!-- Watch category -->
+    <string name="settings_category_wear_title">الساعة</string>
+    <string name="settings_category_wear_subtitle">خيارات الأداء للتشغيل دون اتصال على ساعتك</string>
+    <string name="settings_wear_performance_section">الأداء</string>
+    <string name="settings_wear_performance_scope_note">تنطبق هذه الخيارات فقط عندما تشغّل ساعتك الموسيقى بمفردها، دون اتصال بالهاتف. يعرض التحكم في تشغيل الهاتف من الساعة التجربة الكاملة دائمًا.</string>
+    <string name="settings_wear_show_album_art_title">إظهار غلاف الألبوم</string>
+    <string name="settings_wear_show_album_art_subtitle">أوقف التشغيل لتوفير الذاكرة على الساعة — الأكبر تأثيرًا من بين الثلاثة</string>
+    <string name="settings_wear_dynamic_color_title">اللون الديناميكي</string>
+    <string name="settings_wear_dynamic_color_subtitle">يلوّن واجهة الساعة وفقًا لغلاف كل أغنية</string>
+    <string name="settings_wear_play_button_animation_title">رسوم زر التشغيل المتحركة</string>
+    <string name="settings_wear_play_button_animation_subtitle">حلقة تدور باستمرار حول زر التشغيل أثناء تشغيل الموسيقى</string>
 </resources>

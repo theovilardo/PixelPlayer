@@ -646,4 +646,16 @@
     <string name="settings_volume_section">Volume</string>
     <string name="settings_pause_on_volume_zero">Metti in pausa quando il volume raggiunge zero</string>
     <string name="settings_pause_on_volume_zero_desc">Metti automaticamente in pausa la riproduzione quando il volume è 0</string>
+
+    <!-- Watch category -->
+    <string name="settings_category_wear_title">Orologio</string>
+    <string name="settings_category_wear_subtitle">Opzioni di prestazioni per la riproduzione offline sul tuo orologio</string>
+    <string name="settings_wear_performance_section">Prestazioni</string>
+    <string name="settings_wear_performance_scope_note">Queste opzioni si applicano solo quando il tuo orologio riproduce musica in autonomia, senza il telefono connesso. Controllare la riproduzione del telefono dall\'orologio mostra sempre l\'esperienza completa.</string>
+    <string name="settings_wear_show_album_art_title">Mostra copertina dell\'album</string>
+    <string name="settings_wear_show_album_art_subtitle">Disattiva per risparmiare memoria sull\'orologio — quella con il maggiore impatto delle tre</string>
+    <string name="settings_wear_dynamic_color_title">Colore dinamico</string>
+    <string name="settings_wear_dynamic_color_subtitle">Colora l\'interfaccia dell\'orologio in base alla copertina di ogni brano</string>
+    <string name="settings_wear_play_button_animation_title">Animazione del pulsante di riproduzione</string>
+    <string name="settings_wear_play_button_animation_subtitle">Anello che ruota continuamente attorno al pulsante di riproduzione durante la musica</string>
 </resources>

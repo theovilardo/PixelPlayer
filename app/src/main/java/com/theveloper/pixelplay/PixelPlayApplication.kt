@@ -16,6 +16,7 @@ import coil.ImageLoaderFactory
 import com.theveloper.pixelplay.data.preferences.UserPreferencesRepository
 import com.theveloper.pixelplay.data.diagnostics.AdvancedPerformanceDiagnosticsController
 import com.theveloper.pixelplay.data.repository.ArtistImageRepository
+import com.theveloper.pixelplay.data.service.wear.PlaylistWatchTransferCoordinator
 import com.theveloper.pixelplay.data.telegram.TelegramRepository
 import com.theveloper.pixelplay.presentation.viewmodel.LibraryStateHolder
 import com.theveloper.pixelplay.presentation.viewmodel.ThemeStateHolder
@@ -71,6 +72,12 @@ class PixelPlayApplication : Application(), ImageLoaderFactory, Configuration.Pr
 
     @Inject
     lateinit var advancedPerformanceDiagnosticsController: dagger.Lazy<AdvancedPerformanceDiagnosticsController>
+
+    @Inject
+    lateinit var playlistWatchTransferCoordinator: dagger.Lazy<PlaylistWatchTransferCoordinator>
+
+    @Inject
+    lateinit var wearPhoneTransferSender: dagger.Lazy<com.theveloper.pixelplay.data.service.wear.WearPhoneTransferSender>
 
     private val startupScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -128,6 +135,34 @@ class PixelPlayApplication : Application(), ImageLoaderFactory, Configuration.Pr
             }.getOrNull()
             if (savedLimit != null) {
                 AlbumArtCacheManager.configuredCacheLimitMb = savedLimit.toLong()
+            }
+        }
+
+        startupScope.launch {
+            // Best-effort: a cold start not directly triggered by the user (e.g. the system
+            // reviving the process for an unrelated broadcast) may be too restricted to start the
+            // foreground service this resumes into — resumePersistedBatchIfNeeded() just skips
+            // resuming this time rather than crashing app startup over it; the persisted intent
+            // stays put for the next launch that can.
+            try {
+                playlistWatchTransferCoordinator.get().resumePersistedBatchIfNeeded()
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Timber.w(e, "Failed to resume an interrupted playlist watch transfer")
+            }
+        }
+
+        startupScope.launch {
+            // Local Play Services call, not a network wait — resolved well before the user could
+            // navigate to a screen that needs it. Best-effort: watch-related UI just stays hidden
+            // this session if this fails, rather than crashing startup over it.
+            try {
+                wearPhoneTransferSender.get().refreshWatchPairingState()
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Timber.w(e, "Failed to check watch pairing state at startup")
             }
         }
     }

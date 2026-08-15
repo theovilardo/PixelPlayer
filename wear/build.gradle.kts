@@ -16,6 +16,13 @@ android {
         targetSdk = 37
         versionCode = (project.findProperty("APP_VERSION_CODE") as? String)?.toInt() ?: 1
         versionName = (project.findProperty("APP_VERSION_NAME") as? String) ?: "1.0.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+        unitTests.all { it.useJUnitPlatform() }
     }
 
     buildTypes {
@@ -90,6 +97,10 @@ dependencies {
     // Serialization
     implementation(libs.kotlinx.serialization.json)
 
+    // DataStore (persisting local playback state across process death — see
+    // WearPlaybackStatePersistence)
+    implementation(libs.androidx.datastore.preferences)
+
     // Image loading
     implementation(libs.coil.compose)
 
@@ -117,6 +128,27 @@ dependencies {
     implementation(libs.androidx.media3.session)
     implementation(libs.androidx.mediarouter)
 
+    // Testing (Unit) — no legacy JUnit 4 unit tests planned here, so no vintage engine needed
+    // (compare to :app, which carries pre-existing JUnit 4 tests under useJUnitPlatform()).
+    testImplementation(libs.junit.jupiter.api)
+    testImplementation(libs.junit.jupiter.params)
+    testRuntimeOnly(libs.junit.jupiter.engine)
+    testRuntimeOnly(libs.junitplatformlauncher)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.turbine)
+    testImplementation(libs.truth)
+    testImplementation(kotlin("test"))
+
+    // Testing (Instrumentation) — Room in-memory DAO tests run on-device via AndroidJUnitRunner.
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.room.testing)
+    androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.truth)
+    // Android-specific artifact: plain io.mockk:mockk can't mock classes on ART.
+    androidTestImplementation(libs.mockk.android)
+
     constraints {
         // Fix vulnerabilities in transitive dependencies
         implementation(libs.netty.common)
@@ -130,4 +162,8 @@ dependencies {
         implementation(libs.jose4j)
         implementation(libs.apache.httpclient)
     }
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

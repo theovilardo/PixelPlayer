@@ -89,7 +89,11 @@ class UserPreferencesRepository @Inject constructor(
         // MediaStore album ids, which mean nothing on another device or after a
         // re-index: restoring them would suppress automatic covers for whatever
         // albums happened to land on those ids.
-        PreferencesKeys.AUTO_ALBUM_ART_NOT_FOUND_IDS.name
+        PreferencesKeys.AUTO_ALBUM_ART_NOT_FOUND_IDS.name,
+        // Backups are plain JSON written where the user may share them, and
+        // every other credential store is excluded for that reason -- see
+        // backup_rules.xml. Listing it here also keeps a restore from wiping it.
+        PreferencesKeys.WEB_IMAGE_SEARCH_API_KEY.name
     )
 
     // ─── Preference keys ────────────────────────────────────────────────────
@@ -931,6 +935,25 @@ suspend fun markDirectoryRulesVersionApplied(version: Int) {
             val existing = preferences[PreferencesKeys.AUTO_ALBUM_ART_NOT_FOUND_IDS].orEmpty()
             preferences[PreferencesKeys.AUTO_ALBUM_ART_NOT_FOUND_IDS] =
                 existing + albumIds.map(Long::toString)
+        }
+    }
+
+    /**
+     * Replaces the remembered dead ends outright.
+     *
+     * The adding form can only grow the set, and these are MediaStore album ids
+     * -- they do not survive a re-index, so entries for albums that no longer
+     * exist would otherwise accumulate for the life of the install, in a
+     * preferences file that is rewritten whole on every change.
+     */
+    suspend fun setAlbumArtNotFoundIds(albumIds: Set<Long>) {
+        dataStore.edit { preferences ->
+            if (albumIds.isEmpty()) {
+                preferences.remove(PreferencesKeys.AUTO_ALBUM_ART_NOT_FOUND_IDS)
+            } else {
+                preferences[PreferencesKeys.AUTO_ALBUM_ART_NOT_FOUND_IDS] =
+                    albumIds.map(Long::toString).toSet()
+            }
         }
     }
 

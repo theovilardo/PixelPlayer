@@ -347,6 +347,7 @@ constructor(
                                 "runMaintenance" to "false"
                             )
                         }
+                        maybeEnqueueCoverArtPass()
                         return@withContext Result.success(
                             workDataOf(OUTPUT_TOTAL_SONGS to totalSongs.toLong())
                         )
@@ -478,6 +479,7 @@ constructor(
                             "runMaintenance" to runMaintenance.toString()
                         )
                     }
+                    maybeEnqueueCoverArtPass()
                     Result.success(workDataOf(OUTPUT_TOTAL_SONGS to finalTotalSongs.toLong()))
                 } catch (e: Exception) {
                     Log.e(TAG, "Error during MediaStore synchronization", e)
@@ -1198,6 +1200,19 @@ constructor(
             }
         }
         return ids
+    }
+
+    /**
+     * Queues a cover art pass when the setting is on. Called from both success
+     * paths: a local-only sync returns before the maintenance phases, and that
+     * is the common one.
+     */
+    private suspend fun maybeEnqueueCoverArtPass() {
+        if (!userPreferencesRepository.autoAlbumArtEnabledFlow.first()) return
+        AutoCoverArtWorker.enqueue(
+            context = applicationContext,
+            unmeteredOnly = userPreferencesRepository.autoAlbumArtUnmeteredOnlyFlow.first()
+        )
     }
 
     companion object {

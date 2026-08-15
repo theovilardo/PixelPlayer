@@ -42,11 +42,14 @@ class WearMainActivity : FragmentActivity() {
             val albumArt by playerViewModel.albumArt.collectAsStateWithLifecycle()
             val paletteSeedArgb by playerViewModel.paletteSeedArgb.collectAsStateWithLifecycle()
             val themePalette by playerViewModel.themePalette.collectAsStateWithLifecycle()
+            val dynamicColorEnabled by playerViewModel.dynamicColorThemingEnabled
+                .collectAsStateWithLifecycle()
 
             WearPixelPlayTheme(
                 albumArt = albumArt,
                 seedColorArgb = paletteSeedArgb,
                 themePalette = themePalette,
+                dynamicColorEnabled = dynamicColorEnabled,
             ) {
                 WearNavigation()
             }

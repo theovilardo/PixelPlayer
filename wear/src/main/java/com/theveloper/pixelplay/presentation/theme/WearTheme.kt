@@ -93,9 +93,10 @@ fun WearPixelPlayTheme(
     albumArt: Bitmap? = null,
     seedColorArgb: Int? = null,
     themePalette: WearThemePalette? = null,
+    dynamicColorEnabled: Boolean = true,
     content: @Composable () -> Unit,
 ) {
-    val palette = remember(themePalette, albumArt, seedColorArgb) {
+    val palette = remember(themePalette, albumArt, seedColorArgb, dynamicColorEnabled) {
         when {
             themePalette != null -> themePalette.toWearPalette()
             // Prefer the seed over re-deriving one from the full bitmap: WearLocalPlayerRepository
@@ -104,7 +105,11 @@ fun WearPixelPlayTheme(
             // that work on the main thread against the full-size bitmap (~576 getPixel() calls)
             // for no benefit, every time albumArt is present alongside a seed.
             seedColorArgb != null -> buildPaletteFromSeedColor(Color(seedColorArgb))
-            albumArt != null -> buildPaletteFromAlbumArt(albumArt)
+            // Gated on the toggle for the same reason the seed extraction upstream is: with
+            // dynamic color theming off there is no palette and no seed, and falling through
+            // here would silently re-derive one from the bitmap anyway — the toggle would cost
+            // more than it saves and visibly do nothing.
+            albumArt != null && dynamicColorEnabled -> buildPaletteFromAlbumArt(albumArt)
             else -> DefaultWearPalette
         }
     }

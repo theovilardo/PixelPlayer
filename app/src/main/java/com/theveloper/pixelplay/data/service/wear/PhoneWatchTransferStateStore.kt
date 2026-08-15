@@ -96,6 +96,14 @@ class PhoneWatchTransferStateStore @Inject constructor() {
     val playlistSyncAcks: SharedFlow<WearPlaylistSyncAck> = _playlistSyncAcks.asSharedFlow()
 
     private val cleanupJobs = ConcurrentHashMap<String, Job>()
+    private val watchAckTimeoutJobs = ConcurrentHashMap<String, Job>()
+
+    /**
+     * Deliberately an instance property, not a companion `const`: tests shrink it on their own
+     * store instance instead of mutating shared static state (same reasoning as
+     * [PlaylistWatchTransferCoordinator.songTransferAwaitTimeoutMs]).
+     */
+    internal var watchAckTimeoutMs: Long = DEFAULT_WATCH_ACK_TIMEOUT_MS
 
     fun onPlaylistSyncAckReceived(ack: WearPlaylistSyncAck) {
         _playlistSyncAcks.tryEmit(ack)
@@ -193,10 +201,53 @@ class PhoneWatchTransferStateStore @Inject constructor() {
             status == WearTransferProgress.STATUS_FAILED ||
             status == WearTransferProgress.STATUS_CANCELLED
         ) {
+            cancelWatchAckTimeout(requestId)
             scheduleTerminalCleanup(requestId)
         } else {
             cleanupJobs.remove(requestId)?.cancel()
+            if (status == WearTransferProgress.STATUS_AWAITING_WATCH_ACK) {
+                scheduleWatchAckTimeout(requestId, songId)
+            } else {
+                cancelWatchAckTimeout(requestId)
+            }
         }
+    }
+
+    /**
+     * A save-to-library transfer parks in [WearTransferProgress.STATUS_AWAITING_WATCH_ACK] once
+     * the bytes are on the wire, waiting for the watch's own write-complete report. That report
+     * can simply never arrive — Bluetooth drops right after the last chunk, or the watch app is
+     * killed before it can send it — and nothing else would ever move the entry out of that
+     * non-terminal state: [scheduleTerminalCleanup] only evicts terminal ones, so the transfer
+     * would pin [WatchTransferForegroundService]'s notification and the library's "sending"
+     * badge for the rest of the process's life.
+     *
+     * Lives here rather than in [PhoneDirectWatchTransferCoordinator] so it covers the lone
+     * single-song path too ([WearPhoneTransferSender.requestSongTransfer] is fire-and-forget,
+     * with no await to time out), not just the batch path that has its own backstop.
+     */
+    private fun scheduleWatchAckTimeout(requestId: String, songId: String) {
+        watchAckTimeoutJobs.remove(requestId)?.cancel()
+        watchAckTimeoutJobs[requestId] = scope.launch {
+            delay(watchAckTimeoutMs)
+            val stillAwaiting = _transfers.value[requestId]
+                ?.status == WearTransferProgress.STATUS_AWAITING_WATCH_ACK
+            watchAckTimeoutJobs.remove(requestId)
+            if (stillAwaiting) {
+                markProgress(
+                    requestId = requestId,
+                    songId = songId,
+                    bytesTransferred = 0L,
+                    totalBytes = 0L,
+                    status = WearTransferProgress.STATUS_FAILED,
+                    error = "Timed out waiting for watch confirmation",
+                )
+            }
+        }
+    }
+
+    private fun cancelWatchAckTimeout(requestId: String) {
+        watchAckTimeoutJobs.remove(requestId)?.cancel()
     }
 
     fun updateWatchSongIds(nodeId: String, songIds: Set<String>) {
@@ -225,6 +276,7 @@ class PhoneWatchTransferStateStore @Inject constructor() {
 
     fun markCancelled(requestId: String, error: String? = null) {
         cleanupJobs.remove(requestId)?.cancel()
+        cancelWatchAckTimeout(requestId)
         _transfers.update { map ->
             val current = map[requestId] ?: return@update map
             map + (requestId to current.copy(
@@ -410,7 +462,13 @@ class PhoneWatchTransferStateStore @Inject constructor() {
         }
     }
 
-    private companion object {
+    internal companion object {
         const val TERMINAL_STATE_VISIBILITY_MS = 3500L
+
+        // Comfortably longer than a healthy watch's write-and-report round trip (near-instant
+        // once the bytes have landed), and comfortably shorter than
+        // PlaylistWatchTransferCoordinator's own 300s per-song await, so a batch still sees the
+        // failure and gets to retry the song instead of timing out around it.
+        const val DEFAULT_WATCH_ACK_TIMEOUT_MS = 120_000L
     }
 }

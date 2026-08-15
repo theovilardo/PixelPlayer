@@ -18,6 +18,7 @@ class WatchAudioTranscoderTest {
     private val transcoder = WatchAudioTranscoder(
         application = mockk<Application>(relaxed = true),
         mainDispatcher = Dispatchers.Unconfined,
+        ioDispatcher = Dispatchers.Unconfined,
     )
 
     private fun song(mimeType: String?, bitrate: Int?) =
@@ -50,12 +51,43 @@ class WatchAudioTranscoderTest {
     }
 
     @Test
-    fun `unknown bitrate requires transcoding even for an otherwise eligible lossy mimeType`() {
+    fun `unknown bitrate requires transcoding when nothing else is known about the song`() {
+        // The Song-based overload only sees what the library scanned. transcodeIfNeeded probes
+        // the file before deciding, so this conservative answer is not what a real unknown-bitrate
+        // MP3 gets — see the resolved-bitrate case below.
         assertThat(transcoder.requiresTranscoding(song("audio/mpeg", bitrate = null))).isTrue()
+    }
+
+    @Test
+    fun `a lossy source whose bitrate was resolved by probing is sent as-is`() {
+        assertThat(transcoder.requiresTranscoding("audio/mpeg", bitrateBps = 192_000)).isFalse()
+        assertThat(transcoder.requiresTranscoding("audio/mpeg", bitrateBps = 320_000)).isTrue()
     }
 
     @Test
     fun `mimeType is matched case-insensitively`() {
         assertThat(transcoder.requiresTranscoding(song("AUDIO/MPEG", bitrate = 128_000))).isFalse()
+    }
+
+    @Test
+    fun `an unprobed lossy source is estimated above the transcode target, not at it`() {
+        // It will most likely pass through untouched at its real bitrate, so sizing it at the
+        // AAC target would systematically undershoot the confirmation sheet's estimate.
+        assertThat(transcoder.estimatedTransferBitrateBps(song("audio/mpeg", bitrate = null)))
+            .isGreaterThan(WatchAudioTranscoder.TARGET_BITRATE_BPS)
+    }
+
+    @Test
+    fun `songs that will be transcoded are estimated at the AAC target bitrate`() {
+        assertThat(transcoder.estimatedTransferBitrateBps(song("audio/flac", bitrate = null)))
+            .isEqualTo(WatchAudioTranscoder.TARGET_BITRATE_BPS)
+        assertThat(transcoder.estimatedTransferBitrateBps(song("audio/mpeg", bitrate = 320_000)))
+            .isEqualTo(WatchAudioTranscoder.TARGET_BITRATE_BPS)
+    }
+
+    @Test
+    fun `a passthrough song with a known bitrate is estimated at that bitrate`() {
+        assertThat(transcoder.estimatedTransferBitrateBps(song("audio/mpeg", bitrate = 192_000)))
+            .isEqualTo(192_000)
     }
 }

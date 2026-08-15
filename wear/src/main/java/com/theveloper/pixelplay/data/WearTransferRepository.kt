@@ -671,6 +671,43 @@ class WearTransferRepository @Inject constructor(
                 return
             }
 
+            // The read loop exiting cleanly is not proof the whole file arrived: armTransferWatchdog
+            // interrupts a stuck transfer by closing this very stream, and a closed channel stream's
+            // blocking read() can return -1 instead of throwing — which walks straight out of the
+            // loop and down this path with a partial .part file. Committing that would rename a
+            // truncated song into the music dir, insert it into Room as playable, and report
+            // STATUS_COMPLETED to the phone, so the phone would mark it present on the watch and
+            // never retry it.
+            // Only short files are rejected, never long ones: fileSize comes from whatever source
+            // the phone opened and is 0 (unknown) for a content uri that won't report a length,
+            // so treating "more bytes than announced" as corruption would fail transfers that are
+            // actually fine. A file that stops short of its announced size is unambiguous.
+            val expectedSize = resolvedMetadata.fileSize
+            val isTruncated = if (expectedSize > 0L) {
+                actualSize < expectedSize
+            } else {
+                watchdogTimedOutRequestIds.contains(requestId)
+            }
+            if (isTruncated) {
+                tempFile.delete()
+                Timber.tag(TAG).w(
+                    "Incomplete transfer discarded: requestId=%s received=%d expected=%d",
+                    requestId,
+                    actualSize,
+                    expectedSize,
+                )
+                handleTransferError(
+                    requestId = requestId,
+                    songId = resolvedMetadata.songId,
+                    message = if (watchdogTimedOutRequestIds.contains(requestId)) {
+                        "Transfer timed out"
+                    } else {
+                        "Incomplete file received"
+                    },
+                )
+                return
+            }
+
             val extension = MimeTypeMap.getSingleton()
                 .getExtensionFromMimeType(resolvedMetadata.mimeType) ?: "mp3"
             if (resolvedMetadata.transferMode == WearTransferRequest.MODE_TEMPORARY_PLAYBACK) {

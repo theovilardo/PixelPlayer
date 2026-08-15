@@ -640,13 +640,17 @@ class WearLocalPlayerRepository @Inject constructor(
         }
 
         val originalIndexSongId = persisted.queueSongIds.getOrNull(persisted.currentIndex)
-        val restoredIndex = playableSongs.indexOfFirst { it.songId == originalIndexSongId }
-            .let { if (it >= 0) it else 0 }
+        val originalIndexInPlayable = playableSongs.indexOfFirst { it.songId == originalIndexSongId }
+        val restoredIndex = originalIndexInPlayable.coerceAtLeast(0)
 
         playLocalSongs(
             songs = playableSongs,
             startIndex = restoredIndex,
-            startPositionMs = persisted.positionMs,
+            // The saved position belongs to the song that was playing, so it only travels with
+            // it: when that song is one of the deleted ones we fall back to the first remaining
+            // track, and seeking that to the old position would resume a different song
+            // mid-way — or past its end entirely, which just ends playback immediately.
+            startPositionMs = if (originalIndexInPlayable >= 0) persisted.positionMs else 0L,
             autoPlay = false,
         )
         return true

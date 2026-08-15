@@ -132,6 +132,23 @@ class WearPlayerViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
     /**
+     * Whether the theme may still derive its palette from the album art bitmap when no palette or
+     * seed is available. Without this, turning "dynamic color theming" off while "show album art"
+     * stays on would change nothing visible: [WearLocalPlayerRepository] clears the palette and
+     * the seed, and the theme would simply fall through to deriving one from the bitmap
+     * instead — on the main thread, via the *more* expensive path the toggle exists to avoid.
+     *
+     * Only restricted during local playback, same as [showPlayButtonAnimation]: in remote mode
+     * the palette comes from the phone, which honours the phone's own theming settings.
+     */
+    val dynamicColorThemingEnabled: StateFlow<Boolean> = combine(
+        stateRepository.outputTarget,
+        performanceSettingsRepository.dynamicColorTheming,
+    ) { target, dynamicColorEnabled ->
+        target != WearOutputTarget.WATCH || dynamicColorEnabled
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
+
+    /**
      * Whether the play button's continuous rotation/ring animation should run. Only restricted
      * during local playback — remote-controller mode never decodes anything heavy on the watch,
      * so there's nothing to save there and the full animation always shows.

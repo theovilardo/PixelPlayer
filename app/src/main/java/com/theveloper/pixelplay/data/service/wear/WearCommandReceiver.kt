@@ -562,7 +562,12 @@ class WearCommandReceiver : WearableListenerService() {
             status = progress.status,
             error = progress.error,
         )
-        if (progress.status == WearTransferProgress.STATUS_COMPLETED) {
+        // A duplicate rejection is just as good a confirmation that the song is on this watch as
+        // a completion is — it's the watch saying it already has it — and recording it keeps the
+        // rest of the transfer (and the next "update on watch") from offering that song again.
+        val confirmsSongOnWatch = progress.status == WearTransferProgress.STATUS_COMPLETED ||
+            progress.error == WearTransferProgress.ERROR_ALREADY_ON_WATCH
+        if (confirmsSongOnWatch) {
             transferStateStore.markSongPresentOnWatch(
                 nodeId = messageEvent.sourceNodeId,
                 songId = progress.songId,

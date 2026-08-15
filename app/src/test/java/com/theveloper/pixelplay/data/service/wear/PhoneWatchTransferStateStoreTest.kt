@@ -9,7 +9,8 @@ import org.junit.jupiter.api.Test
  * `Dispatchers.Default` scope after a fixed real-time delay — asserting on it here would mean
  * either a real sleep, which `GEN-TEST-04` rules out, or refactoring the store's scope handling,
  * which is out of scope for this change). Every test below only asserts on state transitions that
- * are visible synchronously.
+ * are visible synchronously. The awaiting-watch-ack timeout runs on that same scope and is
+ * excluded for the same reason — it's covered by device testing instead.
  */
 class PhoneWatchTransferStateStoreTest {
 
@@ -44,6 +45,23 @@ class PhoneWatchTransferStateStoreTest {
     fun `progress is zero when totalBytes is not yet known`() {
         val state = PhoneWatchTransferState(requestId = "r1", songId = "s1", bytesTransferred = 0L, totalBytes = 0L)
         assertThat(state.progress).isEqualTo(0f)
+    }
+
+    @Test
+    fun `awaiting-watch-ack is recorded as a live, non-terminal state`() {
+        store.markRequested(requestId = "r1", songId = "s1")
+        store.markProgress(
+            requestId = "r1",
+            songId = "s1",
+            bytesTransferred = 100L,
+            totalBytes = 100L,
+            status = WearTransferProgress.STATUS_AWAITING_WATCH_ACK,
+        )
+
+        // The phone is waiting on the watch's own write-complete report here, so the entry must
+        // stay visible (the notification still shows the song) and must not be read as finished.
+        assertThat(store.transfers.value["r1"]?.status)
+            .isEqualTo(WearTransferProgress.STATUS_AWAITING_WATCH_ACK)
     }
 
     @Test

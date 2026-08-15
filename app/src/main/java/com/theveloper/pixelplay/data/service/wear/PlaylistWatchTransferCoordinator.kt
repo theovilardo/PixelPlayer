@@ -313,6 +313,12 @@ class PlaylistWatchTransferCoordinator @Inject constructor(
         val ack = withTimeoutOrNull(PLAYLIST_SYNC_ACK_TIMEOUT_MS) {
             transferStateStore.playlistSyncAcks.first { it.requestId == requestId }
         }
+        if (ack != null) {
+            // The watch has confirmed it stored the playlist, so record that now rather than
+            // waiting for the next library query to discover it — this is what flips the UI from
+            // "send to watch" to "update on watch" for this playlist.
+            transferStateStore.markPlaylistPresentOnWatch(nodeId = node.id, playlistId = playlistId)
+        }
         return ack != null
     }
 

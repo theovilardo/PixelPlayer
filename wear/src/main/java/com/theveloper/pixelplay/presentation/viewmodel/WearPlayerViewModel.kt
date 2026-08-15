@@ -144,8 +144,9 @@ class WearPlayerViewModel @Inject constructor(
     val dynamicColorThemingEnabled: StateFlow<Boolean> = combine(
         stateRepository.outputTarget,
         performanceSettingsRepository.dynamicColorTheming,
-    ) { target, dynamicColorEnabled ->
-        target != WearOutputTarget.WATCH || dynamicColorEnabled
+        performanceSettingsRepository.isResolved,
+    ) { target, dynamicColorEnabled, settingsResolved ->
+        target != WearOutputTarget.WATCH || (settingsResolved && dynamicColorEnabled)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
 
     /**
@@ -156,8 +157,9 @@ class WearPlayerViewModel @Inject constructor(
     val showPlayButtonAnimation: StateFlow<Boolean> = combine(
         stateRepository.outputTarget,
         performanceSettingsRepository.playButtonAnimation,
-    ) { target, animationEnabled ->
-        target != WearOutputTarget.WATCH || animationEnabled
+        performanceSettingsRepository.isResolved,
+    ) { target, animationEnabled, settingsResolved ->
+        target != WearOutputTarget.WATCH || (settingsResolved && animationEnabled)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
 
     val isPhoneConnected: StateFlow<Boolean> = stateRepository.isPhoneConnected

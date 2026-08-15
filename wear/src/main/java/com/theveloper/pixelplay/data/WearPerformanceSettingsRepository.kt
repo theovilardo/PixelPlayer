@@ -12,10 +12,14 @@ import com.theveloper.pixelplay.shared.WearDataPaths
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import javax.inject.Inject
@@ -41,6 +45,29 @@ class WearPerformanceSettingsRepository @Inject constructor(
     private val dataClient: DataClient,
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
+    private val _isResolved = MutableStateFlow(false)
+
+    /**
+     * Whether the toggles below can be trusted yet.
+     *
+     * Reading them before this is `true` gives whatever the watch had cached last, which
+     * [refreshFromPhone] may be about to overturn — and acting on that guess is visible: playback
+     * starts, the album art and its adapted colors appear, and a second later the refresh lands
+     * and rips them away again. Consumers treat "not resolved yet" as off, so the expensive work
+     * is deferred rather than done and undone.
+     */
+    val isResolved: StateFlow<Boolean> = _isResolved.asStateFlow()
+
+    init {
+        // Safety net so an unresolved state can never be permanent: if refreshFromPhone() is
+        // never called, or its process is torn down before it finishes, the toggles fall back to
+        // the cached values rather than suppressing album art forever.
+        scope.launch {
+            delay(RESOLVE_DEADLINE_MS)
+            _isResolved.value = true
+        }
+    }
 
     val showAlbumArt: StateFlow<Boolean> = dataStore.data
         .map { it[Keys.SHOW_ALBUM_ART] ?: true }
@@ -71,6 +98,16 @@ class WearPerformanceSettingsRepository @Inject constructor(
      * has never opened the phone's watch settings (no DataItem, defaults stand).
      */
     suspend fun refreshFromPhone() {
+        try {
+            readAndApplyPublishedSettings()
+        } finally {
+            // Resolved either way: a failed lookup means "the cached values are all we'll ever
+            // have", which is a resolved answer as far as consumers are concerned.
+            _isResolved.value = true
+        }
+    }
+
+    private suspend fun readAndApplyPublishedSettings() {
         // Wildcard host to match the item whichever node published it, and FILTER_PREFIX rather
         // than an exact literal match so the lookup can't miss over a trailing-path detail.
         val uri = Uri.Builder()
@@ -109,6 +146,11 @@ class WearPerformanceSettingsRepository @Inject constructor(
 
     private companion object {
         const val TAG = "WearPerfSettings"
+
+        // Only reached if refreshFromPhone() never completes. Long enough that the normal path
+        // (a local Play Services lookup, started at process creation) always wins the race, short
+        // enough that the pathological case isn't a visibly art-less app.
+        const val RESOLVE_DEADLINE_MS = 4_000L
     }
 
     private object Keys {

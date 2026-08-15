@@ -94,6 +94,44 @@ class PhoneWatchTransferStateStoreTest {
     }
 
     @Test
+    fun `the watch's own report replaces what this phone believed it had`() {
+        store.retainReachableWatchNodes(setOf("node-1"))
+        store.markSongPresentOnWatch("node-1", "s1")
+
+        // The watch app was reinstalled, so it now reports an empty library. Anything this phone
+        // recorded from its own past transfers has to give way to that.
+        store.updateWatchLibrary(nodeId = "node-1", songIds = emptySet(), playlistIds = emptySet())
+
+        assertThat(store.watchSongIds.value).isEmpty()
+        assertThat(store.isSongSavedOnAllReachableWatches("s1")).isFalse()
+    }
+
+    @Test
+    fun `playlist presence comes from the watch, not from its songs being there`() {
+        store.retainReachableWatchNodes(setOf("node-1"))
+        store.updateWatchLibrary(
+            nodeId = "node-1",
+            songIds = setOf("shared-song"),
+            playlistIds = setOf("p-sent"),
+        )
+
+        assertThat(store.isPlaylistOnAnyReachableWatch("p-sent")).isTrue()
+        // Shares a song with p-sent, but was never itself synced to the watch.
+        assertThat(store.isPlaylistOnAnyReachableWatch("p-never-sent")).isFalse()
+    }
+
+    @Test
+    fun `a playlist recorded for a node that dropped out stops counting as present`() {
+        store.retainReachableWatchNodes(setOf("node-1"))
+        store.markPlaylistPresentOnWatch("node-1", "p1")
+
+        store.retainReachableWatchNodes(setOf("node-2"))
+
+        assertThat(store.isPlaylistOnAnyReachableWatch("p1")).isFalse()
+        assertThat(store.watchPlaylistIds.value).isEmpty()
+    }
+
+    @Test
     fun `isSongSavedOnAllReachableWatches is false when there are no reachable watches`() {
         assertThat(store.isSongSavedOnAllReachableWatches("s1")).isFalse()
     }

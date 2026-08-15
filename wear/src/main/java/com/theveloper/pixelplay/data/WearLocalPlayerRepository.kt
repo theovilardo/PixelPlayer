@@ -154,6 +154,18 @@ class WearLocalPlayerRepository @Inject constructor(
                 updatePaletteForSong(_localPlayerState.value.songId)
             }
         }
+        // Both gates below refuse to do anything until the toggles are known, so this is what
+        // actually loads the art/palette on a normal start — the toggle flows themselves often
+        // never change value, and their collectors above would then never fire.
+        // Deliberately no drop(1) here, unlike the two above: this repository may well be
+        // constructed after the toggles already resolved, and dropping that first emission would
+        // mean the art/palette never load at all for the rest of the session.
+        scope.launch {
+            performanceSettings.isResolved.collect {
+                updatePaletteForSong(_localPlayerState.value.songId)
+                updateArtworkForSong(_localPlayerState.value.songId)
+            }
+        }
     }
 
     private val playerListener = object : Player.Listener {
@@ -750,7 +762,13 @@ class WearLocalPlayerRepository @Inject constructor(
     }
 
     private fun updatePaletteForSong(songId: String) {
-        if (songId.isBlank() || !performanceSettings.dynamicColorTheming.value) {
+        // !isResolved is treated exactly like "the toggle is off": the settings may still be
+        // about to arrive, and deriving a palette now only to drop it a second later is the
+        // visible flicker this guard exists to prevent.
+        if (songId.isBlank() ||
+            !performanceSettings.isResolved.value ||
+            !performanceSettings.dynamicColorTheming.value
+        ) {
             // Also reset lastPaletteSongId when the toggle is off (not just for a blank songId):
             // otherwise re-enabling it later without a song change would leave it pointing at a
             // song that's technically "already handled" and skip re-extracting the seed.
@@ -816,7 +834,11 @@ class WearLocalPlayerRepository @Inject constructor(
     }
 
     private fun updateArtworkForSong(songId: String) {
-        if (songId.isBlank() || !performanceSettings.showAlbumArt.value) {
+        // Same "not resolved yet counts as off" rule as updatePaletteForSong.
+        if (songId.isBlank() ||
+            !performanceSettings.isResolved.value ||
+            !performanceSettings.showAlbumArt.value
+        ) {
             // Same reasoning as updatePaletteForSong: reset lastArtworkSongId even when the
             // toggle (not a blank songId) is why we're bailing, so a later re-enable without a
             // song change still triggers a fresh decode instead of being silently skipped.

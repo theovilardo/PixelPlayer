@@ -31,6 +31,9 @@ interface LocalPlaylistDao {
     @Query("SELECT * FROM local_playlists WHERE playlistId = :playlistId")
     suspend fun getPlaylistById(playlistId: String): LocalPlaylistEntity?
 
+    @Query("SELECT playlistId FROM local_playlists")
+    suspend fun getAllPlaylistIdsOnce(): List<String>
+
     @Query("DELETE FROM local_playlist_songs WHERE playlistId = :playlistId")
     suspend fun deleteSongsForPlaylist(playlistId: String)
 

@@ -78,7 +78,7 @@ class PlaylistViewModelTest {
     fun `estimateWatchTransfer only counts songs not already on every reachable watch`() = runTest {
         coEvery { watchAudioTranscoder.transcodeIfNeeded(any(), any(), any()) } returns
             WatchAudioTranscoder.TranscodeResult.Passthrough
-        every { watchAudioTranscoder.requiresTranscoding(any()) } returns false
+        every { watchAudioTranscoder.estimatedTransferBitrateBps(any()) } returns 128_000
         watchTransferStateStore.retainReachableWatchNodes(setOf("node-1"))
         watchTransferStateStore.markSongPresentOnWatch("node-1", "already-there")
         val viewModel = buildViewModel()

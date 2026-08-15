@@ -9,7 +9,8 @@ import org.junit.jupiter.api.Test
  * `Dispatchers.Default` scope after a fixed real-time delay — asserting on it here would mean
  * either a real sleep, which `GEN-TEST-04` rules out, or refactoring the store's scope handling,
  * which is out of scope for this change). Every test below only asserts on state transitions that
- * are visible synchronously.
+ * are visible synchronously. The awaiting-watch-ack timeout runs on that same scope and is
+ * excluded for the same reason — it's covered by device testing instead.
  */
 class PhoneWatchTransferStateStoreTest {
 
@@ -47,6 +48,23 @@ class PhoneWatchTransferStateStoreTest {
     }
 
     @Test
+    fun `awaiting-watch-ack is recorded as a live, non-terminal state`() {
+        store.markRequested(requestId = "r1", songId = "s1")
+        store.markProgress(
+            requestId = "r1",
+            songId = "s1",
+            bytesTransferred = 100L,
+            totalBytes = 100L,
+            status = WearTransferProgress.STATUS_AWAITING_WATCH_ACK,
+        )
+
+        // The phone is waiting on the watch's own write-complete report here, so the entry must
+        // stay visible (the notification still shows the song) and must not be read as finished.
+        assertThat(store.transfers.value["r1"]?.status)
+            .isEqualTo(WearTransferProgress.STATUS_AWAITING_WATCH_ACK)
+    }
+
+    @Test
     fun `markCancelled marks an existing transfer as cancelled without creating a new one`() {
         store.markRequested("r1", "s1")
         store.markCancelled("r1", error = "user cancelled")
@@ -73,6 +91,44 @@ class PhoneWatchTransferStateStoreTest {
 
         store.markSongPresentOnWatch("node-2", "s1")
         assertThat(store.isSongSavedOnAllReachableWatches("s1")).isTrue()
+    }
+
+    @Test
+    fun `the watch's own report replaces what this phone believed it had`() {
+        store.retainReachableWatchNodes(setOf("node-1"))
+        store.markSongPresentOnWatch("node-1", "s1")
+
+        // The watch app was reinstalled, so it now reports an empty library. Anything this phone
+        // recorded from its own past transfers has to give way to that.
+        store.updateWatchLibrary(nodeId = "node-1", songIds = emptySet(), playlistIds = emptySet())
+
+        assertThat(store.watchSongIds.value).isEmpty()
+        assertThat(store.isSongSavedOnAllReachableWatches("s1")).isFalse()
+    }
+
+    @Test
+    fun `playlist presence comes from the watch, not from its songs being there`() {
+        store.retainReachableWatchNodes(setOf("node-1"))
+        store.updateWatchLibrary(
+            nodeId = "node-1",
+            songIds = setOf("shared-song"),
+            playlistIds = setOf("p-sent"),
+        )
+
+        assertThat(store.isPlaylistOnAnyReachableWatch("p-sent")).isTrue()
+        // Shares a song with p-sent, but was never itself synced to the watch.
+        assertThat(store.isPlaylistOnAnyReachableWatch("p-never-sent")).isFalse()
+    }
+
+    @Test
+    fun `a playlist recorded for a node that dropped out stops counting as present`() {
+        store.retainReachableWatchNodes(setOf("node-1"))
+        store.markPlaylistPresentOnWatch("node-1", "p1")
+
+        store.retainReachableWatchNodes(setOf("node-2"))
+
+        assertThat(store.isPlaylistOnAnyReachableWatch("p1")).isFalse()
+        assertThat(store.watchPlaylistIds.value).isEmpty()
     }
 
     @Test

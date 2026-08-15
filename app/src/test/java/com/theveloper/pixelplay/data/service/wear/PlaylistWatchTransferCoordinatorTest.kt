@@ -525,7 +525,32 @@ class PlaylistWatchTransferCoordinatorTest {
         coordinator.requestPlaylistTransfer("p1", "Playlist", listOf("s1"))
         advanceUntilIdle()
 
+        // A brand-new request that finds no watch is simply a failed request: the user saw it
+        // fail, so it must not come back to life on some later launch.
         assertThat(batchPersistence.getInFlightBatch()).isNull()
+    }
+
+    @Test
+    fun `a resumed batch that finds no reachable watch keeps its intent for the next launch`() = runTest {
+        stubReachableNodes()
+        song("s1")
+        val coordinator = buildCoordinator(this)
+        batchPersistence.saveInFlightBatch(
+            PersistedPlaylistBatchIntent(
+                batchId = "orphaned-batch",
+                playlistId = "p1",
+                playlistName = "Playlist",
+                songIds = listOf("s1"),
+                requestedAtMillis = System.currentTimeMillis(),
+            )
+        )
+
+        coordinator.resumePersistedBatchIfNeeded()
+        advanceUntilIdle()
+
+        // The watch being out of range at a cold start is exactly what the persistence is for;
+        // dropping the intent here would lose the interrupted transfer for good.
+        assertThat(batchPersistence.getInFlightBatch()?.playlistId).isEqualTo("p1")
     }
 
     @Test
@@ -576,7 +601,7 @@ class PlaylistWatchTransferCoordinatorTest {
                 playlistId = "p1",
                 playlistName = "Playlist",
                 songIds = listOf("s1", "s2"),
-                requestedAtMillis = 0L,
+                requestedAtMillis = System.currentTimeMillis(),
             )
         )
 
@@ -585,5 +610,107 @@ class PlaylistWatchTransferCoordinatorTest {
 
         assertThat(transferredSongIdsInOrder).containsExactly("s1", "s2").inOrder()
         coVerify { wearPhoneTransferSender.refreshWatchLibraryState() }
+    }
+
+    @Test
+    fun `a resumed intent carries the original request time forward, so it can still age out`() = runTest {
+        // No watch in range, so the resumed batch stops early and leaves the intent in place —
+        // the only state in which there's still a persisted timestamp to inspect.
+        stubReachableNodes()
+        song("s1")
+        val coordinator = buildCoordinator(this)
+        val originalRequestedAt = System.currentTimeMillis() - 1_000L
+        batchPersistence.saveInFlightBatch(
+            PersistedPlaylistBatchIntent(
+                batchId = "orphaned-batch",
+                playlistId = "p1",
+                playlistName = "Playlist",
+                songIds = listOf("s1"),
+                requestedAtMillis = originalRequestedAt,
+            )
+        )
+
+        coordinator.resumePersistedBatchIfNeeded()
+        advanceUntilIdle()
+
+        // Re-stamping this "now" on every resume would make the intent immortal: its age could
+        // then never reach the cutoff that discards abandoned transfers.
+        assertThat(batchPersistence.getInFlightBatch()?.requestedAtMillis).isEqualTo(originalRequestedAt)
+    }
+
+    @Test
+    fun `an intent older than the resume cutoff is discarded instead of resumed`() = runTest {
+        stubReachableNodes("node-1")
+        stubTransfersResolveTo(WearTransferProgress.STATUS_COMPLETED)
+        song("s1")
+        val coordinator = buildCoordinator(this)
+        batchPersistence.saveInFlightBatch(
+            PersistedPlaylistBatchIntent(
+                batchId = "ancient-batch",
+                playlistId = "p1",
+                playlistName = "Playlist",
+                songIds = listOf("s1"),
+                requestedAtMillis = System.currentTimeMillis() - 30L * 24 * 60 * 60 * 1000,
+            )
+        )
+
+        coordinator.resumePersistedBatchIfNeeded()
+        advanceUntilIdle()
+
+        assertThat(transferredSongIdsInOrder).isEmpty()
+        assertThat(batchPersistence.getInFlightBatch()).isNull()
+    }
+
+    @Test
+    fun `a song the watch already has counts as transferred, not as a failure`() = runTest {
+        stubReachableNodes("node-1")
+        song("s1")
+        val coordinator = buildCoordinator(this)
+        every {
+            directTransferCoordinator.startTransferToWatch(
+                nodeId = any(), requestId = any(), songId = any(),
+                transferMode = any(), startPositionMs = any(), autoPlay = any(), audioOverride = any(),
+            )
+        } answers {
+            val requestId = secondArg<String>()
+            val songId = thirdArg<String>()
+            transferredSongIdsInOrder += songId
+            transferStateStore.markProgress(
+                requestId = requestId,
+                songId = songId,
+                bytesTransferred = 0L,
+                totalBytes = 0L,
+                status = WearTransferProgress.STATUS_FAILED,
+                error = WearTransferProgress.ERROR_ALREADY_ON_WATCH,
+            )
+        }
+
+        val batchId = coordinator.requestPlaylistTransfer("p1", "Playlist", listOf("s1"))
+        advanceUntilIdle()
+
+        val batch = transferStateStore.batchTransfers.value[batchId]
+        assertThat(batch?.completedSongCount).isEqualTo(1)
+        assertThat(batch?.failedSongCount).isEqualTo(0)
+        // Offered exactly once: the old behaviour read the rejection as a failure and re-transcoded
+        // and re-offered the very same song before reporting it to the user as failed.
+        assertThat(transferredSongIdsInOrder).containsExactly("s1")
+        assertThat(transferStateStore.isSongSavedOnAllReachableWatches("s1")).isTrue()
+    }
+
+    @Test
+    fun `a batch cancelled before it starts is reported as cancelled, not completed`() = runTest {
+        stubReachableNodes("node-1")
+        stubTransfersResolveTo(WearTransferProgress.STATUS_COMPLETED)
+        song("s1")
+        val coordinator = buildCoordinator(this)
+
+        // Cancel lands before runBatchTransfer has had a chance to register the batch — the user
+        // tapping send and then immediately cancel.
+        val batchId = coordinator.requestPlaylistTransfer("p1", "Playlist", listOf("s1"))
+        coordinator.cancelPlaylistTransfer(batchId)
+        advanceUntilIdle()
+
+        assertThat(transferStateStore.batchTransfers.value[batchId]?.status)
+            .isEqualTo(WearTransferProgress.STATUS_CANCELLED)
     }
 }

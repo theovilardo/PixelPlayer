@@ -232,6 +232,7 @@ fun PlaylistDetailScreen(
     val isPixelPlayWatchAvailable by playlistViewModel.isPixelPlayWatchAvailable.collectAsStateWithLifecycle()
     val isAnyWatchPaired by playlistViewModel.isAnyWatchPaired.collectAsStateWithLifecycle()
     val watchSongIds by playlistViewModel.watchSongIds.collectAsStateWithLifecycle()
+    val watchPlaylistIds by playlistViewModel.watchPlaylistIds.collectAsStateWithLifecycle()
     val activeBatchTransfer by playlistViewModel.activePlaylistBatchTransfer.collectAsStateWithLifecycle()
     val activePlaylistTransfer = activeBatchTransfer?.takeIf { it.playlistId == playlistId }
     // Mutating the playlist while it's mid-transfer to the watch could desync what's actually
@@ -249,8 +250,12 @@ fun PlaylistDetailScreen(
             isRemoveModeEnabled = false
         }
     }
-    val isAnySongOnWatch = remember(songsInPlaylist, watchSongIds) {
-        songsInPlaylist.isNotEmpty() && songsInPlaylist.any { it.id in watchSongIds }
+    // "Update" vs "send" is about this playlist having been synced to the watch before, which is
+    // not the same as some of its songs happening to be there: two playlists sharing one song
+    // would otherwise both claim to be already on the watch, and a watch whose app was
+    // reinstalled (library wiped) would still offer "update" for a playlist it no longer has.
+    val isPlaylistOnWatch = remember(playlistId, watchPlaylistIds) {
+        playlistId in watchPlaylistIds
     }
     val stableOnMoreOptionsClick: (Song) -> Unit = remember {
         { song ->
@@ -915,7 +920,7 @@ fun PlaylistDetailScreen(
                 if (isAnyWatchPaired) {
                     PlaylistActionItem(
                         icon = painterResource(R.drawable.rounded_watch_arrow_down_24),
-                        label = if (isAnySongOnWatch) updateOnWatchLabel else sendToWatchLabel,
+                        label = if (isPlaylistOnWatch) updateOnWatchLabel else sendToWatchLabel,
                         enabled = !isAnyBatchTransferActive,
                         onClick = {
                             showPlaylistOptionsSheet = false
@@ -1031,7 +1036,7 @@ fun PlaylistDetailScreen(
             onDismissRequest = { showSendToWatchDialog = false },
             title = {
                 Text(
-                    if (isAnySongOnWatch) {
+                    if (isPlaylistOnWatch) {
                         stringResource(R.string.playlist_send_to_watch_dialog_update_title, playlistName)
                     } else {
                         stringResource(R.string.playlist_send_to_watch_dialog_title, playlistName)
@@ -1086,7 +1091,7 @@ fun PlaylistDetailScreen(
                     }
                 ) {
                     Text(
-                        if (isAnySongOnWatch) {
+                        if (isPlaylistOnWatch) {
                             stringResource(R.string.playlist_send_to_watch_dialog_update_confirm)
                         } else {
                             stringResource(R.string.playlist_send_to_watch_dialog_confirm)

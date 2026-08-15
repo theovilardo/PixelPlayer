@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
+import io.mockk.mockk
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlinx.coroutines.CoroutineScope
@@ -37,7 +38,9 @@ class WearPerformanceSettingsRepositoryTest {
             scope = dataStoreScope,
             produceFile = { tempDir.resolve("settings.preferences_pb").toFile() },
         )
-        repository = WearPerformanceSettingsRepository(dataStore)
+        // Only the DataStore-backed behavior is covered here; refreshFromPhone() drives a real
+        // Play Services DataClient and is device-verified, so a relaxed mock is enough to build.
+        repository = WearPerformanceSettingsRepository(dataStore, mockk(relaxed = true))
     }
 
     @AfterEach

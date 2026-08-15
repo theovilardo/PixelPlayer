@@ -12,6 +12,7 @@ class WatchPlaylistTransferEstimatorTest {
     private val transcoder = WatchAudioTranscoder(
         application = mockk<Application>(relaxed = true),
         mainDispatcher = Dispatchers.Unconfined,
+        ioDispatcher = Dispatchers.Unconfined,
     )
 
     private fun song(id: String, mimeType: String?, bitrate: Int?, durationMs: Long = 180_000L) =

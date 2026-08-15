@@ -76,6 +76,9 @@ class PhoneWatchTransferStateStore @Inject constructor() {
     private val watchSongIdsByNodeId = ConcurrentHashMap<String, Set<String>>()
     private val _watchSongIds = MutableStateFlow<Set<String>>(emptySet())
     val watchSongIds: StateFlow<Set<String>> = _watchSongIds.asStateFlow()
+    private val watchPlaylistIdsByNodeId = ConcurrentHashMap<String, Set<String>>()
+    private val _watchPlaylistIds = MutableStateFlow<Set<String>>(emptySet())
+    val watchPlaylistIds: StateFlow<Set<String>> = _watchPlaylistIds.asStateFlow()
 
     // Distinct from reachableWatchNodeIds: "ever paired" (CapabilityClient FILTER_ALL) vs
     // "reachable right now" (FILTER_REACHABLE). Defaults to false — safer to hide watch-related
@@ -96,6 +99,14 @@ class PhoneWatchTransferStateStore @Inject constructor() {
     val playlistSyncAcks: SharedFlow<WearPlaylistSyncAck> = _playlistSyncAcks.asSharedFlow()
 
     private val cleanupJobs = ConcurrentHashMap<String, Job>()
+    private val watchAckTimeoutJobs = ConcurrentHashMap<String, Job>()
+
+    /**
+     * Deliberately an instance property, not a companion `const`: tests shrink it on their own
+     * store instance instead of mutating shared static state (same reasoning as
+     * [PlaylistWatchTransferCoordinator.songTransferAwaitTimeoutMs]).
+     */
+    internal var watchAckTimeoutMs: Long = DEFAULT_WATCH_ACK_TIMEOUT_MS
 
     fun onPlaylistSyncAckReceived(ack: WearPlaylistSyncAck) {
         _playlistSyncAcks.tryEmit(ack)
@@ -193,10 +204,65 @@ class PhoneWatchTransferStateStore @Inject constructor() {
             status == WearTransferProgress.STATUS_FAILED ||
             status == WearTransferProgress.STATUS_CANCELLED
         ) {
+            cancelWatchAckTimeout(requestId)
             scheduleTerminalCleanup(requestId)
         } else {
             cleanupJobs.remove(requestId)?.cancel()
+            if (status == WearTransferProgress.STATUS_AWAITING_WATCH_ACK) {
+                scheduleWatchAckTimeout(requestId, songId)
+            } else {
+                cancelWatchAckTimeout(requestId)
+            }
         }
+    }
+
+    /**
+     * A save-to-library transfer parks in [WearTransferProgress.STATUS_AWAITING_WATCH_ACK] once
+     * the bytes are on the wire, waiting for the watch's own write-complete report. That report
+     * can simply never arrive — Bluetooth drops right after the last chunk, or the watch app is
+     * killed before it can send it — and nothing else would ever move the entry out of that
+     * non-terminal state: [scheduleTerminalCleanup] only evicts terminal ones, so the transfer
+     * would pin [WatchTransferForegroundService]'s notification and the library's "sending"
+     * badge for the rest of the process's life.
+     *
+     * Lives here rather than in [PhoneDirectWatchTransferCoordinator] so it covers the lone
+     * single-song path too ([WearPhoneTransferSender.requestSongTransfer] is fire-and-forget,
+     * with no await to time out), not just the batch path that has its own backstop.
+     */
+    private fun scheduleWatchAckTimeout(requestId: String, songId: String) {
+        watchAckTimeoutJobs.remove(requestId)?.cancel()
+        watchAckTimeoutJobs[requestId] = scope.launch {
+            delay(watchAckTimeoutMs)
+            val stillAwaiting = _transfers.value[requestId]
+                ?.status == WearTransferProgress.STATUS_AWAITING_WATCH_ACK
+            watchAckTimeoutJobs.remove(requestId)
+            if (stillAwaiting) {
+                markProgress(
+                    requestId = requestId,
+                    songId = songId,
+                    bytesTransferred = 0L,
+                    totalBytes = 0L,
+                    status = WearTransferProgress.STATUS_FAILED,
+                    error = "Timed out waiting for watch confirmation",
+                )
+            }
+        }
+    }
+
+    private fun cancelWatchAckTimeout(requestId: String) {
+        watchAckTimeoutJobs.remove(requestId)?.cancel()
+    }
+
+    /**
+     * Replaces this phone's picture of [nodeId]'s contents with what that watch just reported —
+     * authoritative, so songs (or whole playlists) that are gone from the watch stop counting as
+     * present here.
+     */
+    fun updateWatchLibrary(nodeId: String, songIds: Set<String>, playlistIds: Set<String>) {
+        if (nodeId.isBlank()) return
+        watchPlaylistIdsByNodeId[nodeId] = playlistIds
+        _watchPlaylistIds.value = watchPlaylistIdsByNodeId.values.flatten().toSet()
+        updateWatchSongIds(nodeId, songIds)
     }
 
     fun updateWatchSongIds(nodeId: String, songIds: Set<String>) {
@@ -207,6 +273,26 @@ class PhoneWatchTransferStateStore @Inject constructor() {
         }
         _watchSongIds.value = watchSongIdsByNodeId.values.flatten().toSet()
         updateWatchLibraryResolution()
+    }
+
+    /**
+     * Whether [playlistId] has been synced to a watch that's currently reachable — the honest
+     * answer to "have I sent this playlist before", which song presence can only approximate
+     * (two playlists sharing one song would both look already-sent).
+     */
+    fun isPlaylistOnAnyReachableWatch(playlistId: String): Boolean {
+        if (playlistId.isBlank()) return false
+        return _reachableWatchNodeIds.value.any { nodeId ->
+            watchPlaylistIdsByNodeId[nodeId]?.contains(playlistId) == true
+        }
+    }
+
+    fun markPlaylistPresentOnWatch(nodeId: String, playlistId: String) {
+        if (nodeId.isBlank() || playlistId.isBlank()) return
+        val existing = watchPlaylistIdsByNodeId[nodeId].orEmpty()
+        if (playlistId in existing) return
+        watchPlaylistIdsByNodeId[nodeId] = existing + playlistId
+        _watchPlaylistIds.value = watchPlaylistIdsByNodeId.values.flatten().toSet()
     }
 
     fun beginWatchLibraryRefresh(nodeIds: Set<String>) {
@@ -225,6 +311,7 @@ class PhoneWatchTransferStateStore @Inject constructor() {
 
     fun markCancelled(requestId: String, error: String? = null) {
         cleanupJobs.remove(requestId)?.cancel()
+        cancelWatchAckTimeout(requestId)
         _transfers.update { map ->
             val current = map[requestId] ?: return@update map
             map + (requestId to current.copy(
@@ -243,8 +330,14 @@ class PhoneWatchTransferStateStore @Inject constructor() {
                 watchSongIdsByNodeId.remove(nodeId)
             }
         }
+        watchPlaylistIdsByNodeId.keys.toList().forEach { nodeId ->
+            if (nodeId !in nodeIds) {
+                watchPlaylistIdsByNodeId.remove(nodeId)
+            }
+        }
         _watchLibrarySyncedNodeIds.value = _watchLibrarySyncedNodeIds.value.intersect(nodeIds)
         _watchSongIds.value = watchSongIdsByNodeId.values.flatten().toSet()
+        _watchPlaylistIds.value = watchPlaylistIdsByNodeId.values.flatten().toSet()
         updateWatchLibraryResolution()
     }
 
@@ -410,7 +503,13 @@ class PhoneWatchTransferStateStore @Inject constructor() {
         }
     }
 
-    private companion object {
+    internal companion object {
         const val TERMINAL_STATE_VISIBILITY_MS = 3500L
+
+        // Comfortably longer than a healthy watch's write-and-report round trip (near-instant
+        // once the bytes have landed), and comfortably shorter than
+        // PlaylistWatchTransferCoordinator's own 300s per-song await, so a batch still sees the
+        // failure and gets to retry the song instead of timing out around it.
+        const val DEFAULT_WATCH_ACK_TIMEOUT_MS = 120_000L
     }
 }

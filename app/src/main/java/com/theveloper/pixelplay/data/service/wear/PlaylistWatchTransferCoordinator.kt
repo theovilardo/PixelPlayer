@@ -68,12 +68,27 @@ class PlaylistWatchTransferCoordinator @Inject constructor(
     internal var songTransferAwaitTimeoutMs: Long = DEFAULT_SONG_TRANSFER_AWAIT_TIMEOUT_MS
 
     /** Returns the generated batchId immediately; the transfer itself runs asynchronously. */
-    fun requestPlaylistTransfer(playlistId: String, playlistName: String, songIds: List<String>): String {
+    fun requestPlaylistTransfer(playlistId: String, playlistName: String, songIds: List<String>): String =
+        startBatch(
+            playlistId = playlistId,
+            playlistName = playlistName,
+            songIds = songIds,
+            requestedAtMillis = System.currentTimeMillis(),
+            isResume = false,
+        )
+
+    private fun startBatch(
+        playlistId: String,
+        playlistName: String,
+        songIds: List<String>,
+        requestedAtMillis: Long,
+        isResume: Boolean,
+    ): String {
         val batchId = UUID.randomUUID().toString()
         if (songIds.isEmpty()) return batchId
 
         scope.launch {
-            runBatchTransfer(batchId, playlistId, playlistName, songIds)
+            runBatchTransfer(batchId, playlistId, playlistName, songIds, requestedAtMillis, isResume)
         }
         return batchId
     }
@@ -100,6 +115,16 @@ class PlaylistWatchTransferCoordinator @Inject constructor(
      */
     suspend fun resumePersistedBatchIfNeeded() {
         val persisted = batchPersistence.getInFlightBatch() ?: return
+        val age = System.currentTimeMillis() - persisted.requestedAtMillis
+        if (age > MAX_RESUME_AGE_MS) {
+            Timber.tag(TAG).i(
+                "Discarding stale playlist transfer intent: playlistId=%s age=%dms",
+                persisted.playlistId,
+                age,
+            )
+            batchPersistence.clearInFlightBatch(persisted.batchId)
+            return
+        }
         Timber.tag(TAG).i(
             "Resuming playlist transfer interrupted by process death: playlistId=%s (%d songs)",
             persisted.playlistId,
@@ -109,7 +134,16 @@ class PlaylistWatchTransferCoordinator @Inject constructor(
         withTimeoutOrNull(WATCH_LIBRARY_RESOLVE_TIMEOUT_MS) {
             transferStateStore.isWatchLibraryResolved.first { it }
         }
-        requestPlaylistTransfer(persisted.playlistId, persisted.playlistName, persisted.songIds)
+        startBatch(
+            playlistId = persisted.playlistId,
+            playlistName = persisted.playlistName,
+            songIds = persisted.songIds,
+            // Carries the *original* request's timestamp forward: a resume re-saves the intent
+            // under a fresh batchId, and stamping it "now" every time would make the intent
+            // immortal, since its age could then never reach MAX_RESUME_AGE_MS.
+            requestedAtMillis = persisted.requestedAtMillis,
+            isResume = true,
+        )
     }
 
     private suspend fun runBatchTransfer(
@@ -117,6 +151,8 @@ class PlaylistWatchTransferCoordinator @Inject constructor(
         playlistId: String,
         playlistName: String,
         songIds: List<String>,
+        requestedAtMillis: Long,
+        isResume: Boolean,
     ) {
         batchPersistence.saveInFlightBatch(
             PersistedPlaylistBatchIntent(
@@ -124,7 +160,7 @@ class PlaylistWatchTransferCoordinator @Inject constructor(
                 playlistId = playlistId,
                 playlistName = playlistName,
                 songIds = songIds,
-                requestedAtMillis = System.currentTimeMillis(),
+                requestedAtMillis = requestedAtMillis,
             )
         )
 
@@ -132,8 +168,15 @@ class PlaylistWatchTransferCoordinator @Inject constructor(
         transferStateStore.markBatchStarted(batchId, playlistId, playlistName, songIds.size)
 
         if (nodes.isEmpty()) {
+            cancelledBatchIds.remove(batchId)
             transferStateStore.markBatchFailed(batchId, "No reachable watch with PixelPlay")
-            batchPersistence.clearInFlightBatch(batchId)
+            // A resumed batch keeps its intent: "no watch in range right now" is exactly the case
+            // the persistence exists for — a resume at a cold start routinely lands with the watch
+            // off the wrist or out of Bluetooth range, and clearing here would lose the
+            // interrupted transfer for good. It ages out via MAX_RESUME_AGE_MS instead.
+            // A brand-new request that can't find a watch is just a failed request, and is cleared
+            // as before: the user saw it fail and would not expect it to reappear days later.
+            if (!isResume) batchPersistence.clearInFlightBatch(batchId)
             return
         }
         transferStateStore.retainReachableWatchNodes(nodes.map { it.id }.toSet())
@@ -165,11 +208,19 @@ class PlaylistWatchTransferCoordinator @Inject constructor(
             }
         }
 
-        cancelledBatchIds.remove(batchId)
-        if (transferStateStore.batchTransfers.value[batchId]?.status != WearTransferProgress.STATUS_CANCELLED) {
+        // Reads the cancellation from cancelledBatchIds rather than from the store's status:
+        // cancelPlaylistTransfer() can land before runBatchTransfer() has called markBatchStarted,
+        // in which case markBatchCancelled found no entry to update and no-opped — leaving a
+        // status that isn't CANCELLED for a batch the user did cancel, reported to them as a
+        // successfully completed transfer of zero songs.
+        val wasCancelled = cancelledBatchIds.remove(batchId) ||
+            transferStateStore.batchTransfers.value[batchId]?.status == WearTransferProgress.STATUS_CANCELLED
+        if (wasCancelled) {
+            transferStateStore.markBatchCancelled(batchId)
+        } else {
             transferStateStore.markBatchCompleted(batchId)
-            batchPersistence.clearInFlightBatch(batchId)
         }
+        batchPersistence.clearInFlightBatch(batchId)
     }
 
     private suspend fun resolveReachableNodes(): List<Node> {
@@ -261,6 +312,12 @@ class PlaylistWatchTransferCoordinator @Inject constructor(
 
         val ack = withTimeoutOrNull(PLAYLIST_SYNC_ACK_TIMEOUT_MS) {
             transferStateStore.playlistSyncAcks.first { it.requestId == requestId }
+        }
+        if (ack != null) {
+            // The watch has confirmed it stored the playlist, so record that now rather than
+            // waiting for the next library query to discover it — this is what flips the UI from
+            // "send to watch" to "update on watch" for this playlist.
+            transferStateStore.markPlaylistPresentOnWatch(nodeId = node.id, playlistId = playlistId)
         }
         return ack != null
     }
@@ -428,6 +485,19 @@ class PlaylistWatchTransferCoordinator @Inject constructor(
             return SongTransferResult(completed = false, errorCode = WearTransferProgress.ERROR_CODE_TIMED_OUT)
         }
 
+        // The watch rejecting a song it already has is a success for this batch's purposes, not a
+        // failure: treating it as one made transferSongToAllNodesWithRetry re-transcode and
+        // re-offer the very same song, get rejected again, and then report it to the user as
+        // failed. It also teaches the state store the song really is on this node — the outcome
+        // handler only learns that from a COMPLETED — so the rest of the batch (and the next one)
+        // can skip it up front.
+        val alreadyOnWatch = finalState.status == WearTransferProgress.STATUS_FAILED &&
+            finalState.error == WearTransferProgress.ERROR_ALREADY_ON_WATCH
+        if (alreadyOnWatch) {
+            transferStateStore.markSongPresentOnWatch(nodeId = node.id, songId = song.id)
+            return SongTransferResult(completed = true)
+        }
+
         return SongTransferResult(
             completed = finalState.status == WearTransferProgress.STATUS_COMPLETED,
             errorCode = if (finalState.status == WearTransferProgress.STATUS_FAILED) {
@@ -462,6 +532,12 @@ class PlaylistWatchTransferCoordinator @Inject constructor(
         // giving up and resuming anyway. Short: this only avoids some wasted duplicate-rejected
         // round-trips, it's not load-bearing for correctness (the watch rejects duplicates itself).
         private const val WATCH_LIBRARY_RESOLVE_TIMEOUT_MS = 10_000L
+
+        // How stale a persisted intent may be before resumePersistedBatchIfNeeded() drops it
+        // instead of resuming. A transfer interrupted by process death is worth retrying across
+        // the next few launches (the watch may simply have been out of range each time), but a
+        // playlist the user asked for a week ago and has since forgotten about isn't.
+        private const val MAX_RESUME_AGE_MS = 7L * 24 * 60 * 60 * 1000
 
         // How long to wait for the watch's playlist-sync ack before retrying. Generous relative to
         // a normal round-trip (which is near-instant) to tolerate a brief Wi-Fi/ADB reconnect blip

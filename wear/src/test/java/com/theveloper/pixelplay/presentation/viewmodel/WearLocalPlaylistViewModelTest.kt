@@ -104,6 +104,9 @@ class WearLocalPlaylistViewModelTest {
             every { showAlbumArt } returns MutableStateFlow(true)
             every { dynamicColorTheming } returns MutableStateFlow(true)
             every { playButtonAnimation } returns MutableStateFlow(true)
+            // Already resolved: these tests are about transfer/playlist behavior, not about the
+            // startup window where the toggles aren't known yet.
+            every { isResolved } returns MutableStateFlow(true)
         }
         val localPlayerRepository = WearLocalPlayerRepository(
             application,

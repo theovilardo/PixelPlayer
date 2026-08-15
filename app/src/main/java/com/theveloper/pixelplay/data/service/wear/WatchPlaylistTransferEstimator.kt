@@ -33,11 +33,10 @@ object WatchPlaylistTransferEstimator {
     private const val ASSUMED_TRANSFER_RATE_BYTES_PER_SEC = 40_000L
 
     fun estimateBytesForSong(song: Song, transcoder: WatchAudioTranscoder): Long {
-        val effectiveBitrateBps = if (transcoder.requiresTranscoding(song)) {
-            WatchAudioTranscoder.TARGET_BITRATE_BPS
-        } else {
-            song.bitrate ?: WatchAudioTranscoder.TARGET_BITRATE_BPS
-        }
+        // Delegated so the "what will this song actually weigh on the wire" rule lives in one
+        // place: the transcoder probes an unknown bitrate before deciding, and only it knows what
+        // that probe is likely to find (see WatchAudioTranscoder.estimatedTransferBitrateBps).
+        val effectiveBitrateBps = transcoder.estimatedTransferBitrateBps(song)
         val durationSeconds = song.duration / 1000.0
         return (durationSeconds * effectiveBitrateBps / 8.0).toLong().coerceAtLeast(0L)
     }

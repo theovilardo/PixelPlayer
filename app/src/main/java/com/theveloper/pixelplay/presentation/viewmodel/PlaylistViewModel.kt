@@ -107,6 +107,9 @@ class PlaylistViewModel @Inject constructor(
     private val _isRefreshingWatchAvailability = MutableStateFlow(false)
     val watchSongIds: StateFlow<Set<String>> = watchTransferStateStore.watchSongIds
 
+    /** Playlists the watch itself reports having, which is what "send" vs "update" hinges on. */
+    val watchPlaylistIds: StateFlow<Set<String>> = watchTransferStateStore.watchPlaylistIds
+
     /** Whether any watch has ever been paired with PixelPlay installed — as opposed to
      *  [isPixelPlayWatchAvailable], which is "reachable right now". Gates whether watch-related
      *  actions show at all, vs. showing disabled for a paired-but-out-of-range watch. */

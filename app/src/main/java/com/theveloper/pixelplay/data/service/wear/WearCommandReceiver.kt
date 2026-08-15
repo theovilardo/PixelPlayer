@@ -25,6 +25,7 @@ import com.theveloper.pixelplay.shared.WearBrowseRequest
 import com.theveloper.pixelplay.shared.WearBrowseResponse
 import com.theveloper.pixelplay.shared.WearDataPaths
 import com.theveloper.pixelplay.shared.WearLibraryItem
+import com.theveloper.pixelplay.shared.WearLibraryState
 import com.theveloper.pixelplay.shared.WearPlaybackCommand
 import com.theveloper.pixelplay.shared.WearPlaylistSyncAck
 import com.theveloper.pixelplay.shared.WearTransferMetadata
@@ -100,6 +101,7 @@ class WearCommandReceiver : WearableListenerService() {
             WearDataPaths.TRANSFER_CANCEL -> handleTransferCancel(messageEvent)
             WearDataPaths.PLAYLIST_SYNC_ACK -> handlePlaylistSyncAck(messageEvent)
             WearDataPaths.TRANSFER_PROGRESS -> handleTransferOutcomeFromWatch(messageEvent)
+            WearDataPaths.WATCH_LIBRARY_STATE -> handleWatchLibraryState(messageEvent)
             else -> Timber.tag(TAG).w("Unknown message path: ${messageEvent.path}")
         }
     }
@@ -546,6 +548,38 @@ class WearCommandReceiver : WearableListenerService() {
      * save-to-library transfer past [WearTransferProgress.STATUS_AWAITING_WATCH_ACK]: the phone
      * no longer assumes success just because it finished streaming bytes.
      */
+    /**
+     * The watch's answer to [WearDataPaths.WATCH_LIBRARY_QUERY] — the only thing that tells this
+     * phone what the watch *actually* holds, as opposed to what this phone remembers sending it.
+     *
+     * Without it the phone's picture only ever grows, from its own completed transfers, and never
+     * corrects itself: songs deleted on the watch, or a watch app reinstalled (which wipes its
+     * library outright), still look present here — so a playlist would offer "update" and skip
+     * songs the watch no longer has. It also gates
+     * [PhoneWatchTransferStateStore.isWatchLibraryResolved], which
+     * [PlaylistWatchTransferCoordinator.resumePersistedBatchIfNeeded] waits on before resuming.
+     */
+    private fun handleWatchLibraryState(messageEvent: MessageEvent) {
+        val libraryJson = String(messageEvent.data, Charsets.UTF_8)
+        val libraryState = try {
+            json.decodeFromString<WearLibraryState>(libraryJson)
+        } catch (e: Exception) {
+            Timber.tag(TAG).e(e, "Failed to parse watch library state")
+            return
+        }
+        Timber.tag(TAG).d(
+            "Watch library state from node=%s: %d songs, %d playlists",
+            messageEvent.sourceNodeId,
+            libraryState.songIds.size,
+            libraryState.playlistIds.size,
+        )
+        transferStateStore.updateWatchLibrary(
+            nodeId = messageEvent.sourceNodeId,
+            songIds = libraryState.songIds.toSet(),
+            playlistIds = libraryState.playlistIds.toSet(),
+        )
+    }
+
     private fun handleTransferOutcomeFromWatch(messageEvent: MessageEvent) {
         val progressJson = String(messageEvent.data, Charsets.UTF_8)
         val progress = try {
@@ -562,7 +596,12 @@ class WearCommandReceiver : WearableListenerService() {
             status = progress.status,
             error = progress.error,
         )
-        if (progress.status == WearTransferProgress.STATUS_COMPLETED) {
+        // A duplicate rejection is just as good a confirmation that the song is on this watch as
+        // a completion is — it's the watch saying it already has it — and recording it keeps the
+        // rest of the transfer (and the next "update on watch") from offering that song again.
+        val confirmsSongOnWatch = progress.status == WearTransferProgress.STATUS_COMPLETED ||
+            progress.error == WearTransferProgress.ERROR_ALREADY_ON_WATCH
+        if (confirmsSongOnWatch) {
             transferStateStore.markSongPresentOnWatch(
                 nodeId = messageEvent.sourceNodeId,
                 songId = progress.songId,

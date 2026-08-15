@@ -154,6 +154,12 @@ class WearTransferRepository @Inject constructor(
         private const val WATCHDOG_TOUCH_INTERVAL_MS = 1_500L
         private const val LOCAL_PROGRESS_UPDATE_INTERVAL_BYTES = 65_536L
         private const val CANCELLED_REQUEST_RETENTION_MS = 300_000L
+
+        /** Entries a later successful transfer of the same song makes obsolete. */
+        private val DISMISSABLE_STATUSES = setOf(
+            WearTransferProgress.STATUS_FAILED,
+            WearTransferProgress.STATUS_CANCELLED,
+        )
     }
 
     private data class PendingTemporaryPlaybackRequest(
@@ -671,6 +677,43 @@ class WearTransferRepository @Inject constructor(
                 return
             }
 
+            // The read loop exiting cleanly is not proof the whole file arrived: armTransferWatchdog
+            // interrupts a stuck transfer by closing this very stream, and a closed channel stream's
+            // blocking read() can return -1 instead of throwing — which walks straight out of the
+            // loop and down this path with a partial .part file. Committing that would rename a
+            // truncated song into the music dir, insert it into Room as playable, and report
+            // STATUS_COMPLETED to the phone, so the phone would mark it present on the watch and
+            // never retry it.
+            // Only short files are rejected, never long ones: fileSize comes from whatever source
+            // the phone opened and is 0 (unknown) for a content uri that won't report a length,
+            // so treating "more bytes than announced" as corruption would fail transfers that are
+            // actually fine. A file that stops short of its announced size is unambiguous.
+            val expectedSize = resolvedMetadata.fileSize
+            val isTruncated = if (expectedSize > 0L) {
+                actualSize < expectedSize
+            } else {
+                watchdogTimedOutRequestIds.contains(requestId)
+            }
+            if (isTruncated) {
+                tempFile.delete()
+                Timber.tag(TAG).w(
+                    "Incomplete transfer discarded: requestId=%s received=%d expected=%d",
+                    requestId,
+                    actualSize,
+                    expectedSize,
+                )
+                handleTransferError(
+                    requestId = requestId,
+                    songId = resolvedMetadata.songId,
+                    message = if (watchdogTimedOutRequestIds.contains(requestId)) {
+                        "Transfer timed out"
+                    } else {
+                        "Incomplete file received"
+                    },
+                )
+                return
+            }
+
             val extension = MimeTypeMap.getSingleton()
                 .getExtensionFromMimeType(resolvedMetadata.mimeType) ?: "mp3"
             if (resolvedMetadata.transferMode == WearTransferRequest.MODE_TEMPORARY_PLAYBACK) {
@@ -818,7 +861,15 @@ class WearTransferRepository @Inject constructor(
                 currentArtworkPath = artworkPath,
             )
 
-            _activeTransfers.update { it - requestId }
+            // Drops this request's entry *and* any earlier failure left over for the same song:
+            // once the song is genuinely on the watch, a stale "Error en la transferencia" chip
+            // for it is just wrong — the retry that the user was told to make has succeeded.
+            _activeTransfers.update { map ->
+                map.filterNot { (entryRequestId, entry) ->
+                    entryRequestId == requestId ||
+                        (entry.songId == resolvedMetadata.songId && entry.status in DISMISSABLE_STATUSES)
+                }
+            }
             songToRequestId.remove(resolvedMetadata.songId)
             clearTransferWatchdog(requestId)
 
@@ -932,8 +983,14 @@ class WearTransferRepository @Inject constructor(
         songIds: Set<String>? = null,
     ) {
         val snapshotSongIds = songIds ?: localSongDao.getAllSongIds().first().toSet()
+        val snapshotPlaylistIds = runCatching { localPlaylistDao.getAllPlaylistIdsOnce() }
+            .onFailure { error -> Timber.tag(TAG).w(error, "Failed to read local playlist ids") }
+            .getOrDefault(emptyList())
         val payload = json.encodeToString(
-            WearLibraryState(songIds = snapshotSongIds.sorted())
+            WearLibraryState(
+                songIds = snapshotSongIds.sorted(),
+                playlistIds = snapshotPlaylistIds.sorted(),
+            )
         ).toByteArray(Charsets.UTF_8)
 
         runCatching {
@@ -1095,10 +1152,17 @@ class WearTransferRepository @Inject constructor(
 
     private suspend fun handleTransferError(requestId: String, songId: String, message: String) {
         Timber.tag(TAG).e("Transfer error: $message (requestId=$requestId, songId=$songId)")
+        // A failure chip with no title reads as "something went wrong, good luck" — the song's
+        // name is what makes it actionable, and it's still recoverable here even when the entry
+        // was created before any metadata arrived.
+        val resolvedTitle = pendingMetadata[requestId]?.title?.takeIf { it.isNotBlank() }
+            ?: songId.takeIf { it.isNotBlank() }
+                ?.let { runCatching { localSongDao.getSongById(it)?.title }.getOrNull() }
         _activeTransfers.update { map ->
             val current = map[requestId]
             if (current != null) {
                 map + (requestId to current.copy(
+                    songTitle = current.songTitle.ifBlank { resolvedTitle.orEmpty() },
                     status = WearTransferProgress.STATUS_FAILED,
                     error = message,
                 ))

@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Cover art:** Search Deezer, iTunes and the Cover Art Archive for an album's cover, compare results by resolution and size, and apply one.
+- **Cover art:** Pick a cover for an album from your gallery.
+- **Cover art:** Choose where applied covers are kept, in Settings → Library → Album art storage.
+- **Cover art:** Optionally look up covers for albums that have none, after a library scan. Off by default, Wi-Fi only, confident matches only.
+- **Cover art:** Optional web image search for releases no catalog carries, using your own Serper API key.
+
+### Changed
+- **Cover art:** Changing only a cover now keeps it in PixelPlayer rather than writing it into the audio file; other tag edits are unchanged. Switch back under Settings → Library → Album art storage.
+- **Cover art:** Covers applied to an album are stored once for the whole album, as WebP, instead of once per track.
+
+### Fixed
+- **Metadata:** Editing one field across several tracks no longer rewrites the fields you left alone. Multi-artist tags kept their own spelling, titles were replaced with the library's version, and the composer was removed from every track edited this way.
+- **Metadata:** Lyrics fetched inside PixelPlayer are no longer written into your audio files by an edit that was not about lyrics.
+- **Album art:** Album grids and album headers now update when a track's cover changes, instead of showing the previous cover until the next library scan.
+
 ## [0.7.5-beta] - 2026-06-13
 
 ### Added

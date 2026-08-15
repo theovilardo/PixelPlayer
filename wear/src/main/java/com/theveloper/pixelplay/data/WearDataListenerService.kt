@@ -29,6 +29,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import kotlinx.serialization.json.Json
 import timber.log.Timber
@@ -103,7 +104,14 @@ class WearDataListenerService : WearableListenerService() {
 
                 WearDataPaths.WEAR_PERFORMANCE_SETTINGS -> {
                     val dataMap = DataMapItem.fromDataItem(dataItem).dataMap
-                    scope.launch {
+                    // Written inline rather than through `scope`: onDataChanged already runs on
+                    // the Data Layer's own background thread, and this service is torn down as
+                    // soon as its callbacks return — onDestroy cancels `scope`, so a launched
+                    // DataStore write races that teardown and can be dropped before it lands.
+                    // Player state can absorb a dropped update (it streams continuously); this
+                    // is a one-shot event, and losing it leaves the toggles stuck at their
+                    // defaults with no way for the watch to notice.
+                    runBlocking {
                         try {
                             performanceSettingsRepository.save(
                                 showAlbumArt = dataMap.getBoolean(WearDataPaths.KEY_SHOW_ALBUM_ART, true),

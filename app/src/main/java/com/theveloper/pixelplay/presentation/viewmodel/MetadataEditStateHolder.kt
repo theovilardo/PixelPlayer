@@ -21,6 +21,7 @@ import com.theveloper.pixelplay.utils.MediaItemBuilder
 import com.theveloper.pixelplay.utils.MediaStorePermissionHelper
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
+import com.theveloper.pixelplay.data.media.AudioMetadataReader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -151,7 +152,15 @@ class MetadataEditStateHolder @Inject constructor(
         newDiscNumber: Int?,
         newReplayGainTrackGainDb: String? = null,
         newReplayGainAlbumGainDb: String? = null,
-        coverArtUpdate: CoverArtUpdate?
+        coverArtUpdate: CoverArtUpdate?,
+        /**
+         * Whether [newLyrics] is also the library's copy of them. False when the
+         * caller filled the field in from the file merely to have something to
+         * write there -- the batch path does that for every field a save is not
+         * editing -- because storing that back would drop lyrics this app
+         * fetched into its own database for a song whose file carries none.
+         */
+        syncLibraryLyrics: Boolean = true
     ): MetadataEditResult = withContext(Dispatchers.IO) {
         
         Log.d("MetadataEditStateHolder", "Starting saveMetadata for: ${song.title}")
@@ -180,9 +189,16 @@ class MetadataEditStateHolder @Inject constructor(
 
         val trimmedLyrics = newLyrics.trim()
         val normalizedLyrics = trimmedLyrics.takeIf { it.isNotBlank() }
-        // We parse lyrics here just to ensure they are valid or to have them ready, 
+        // What the library should hold afterwards, which is not always what is
+        // being written to the file: see [syncLibraryLyrics].
+        val libraryLyrics = if (syncLibraryLyrics) {
+            normalizedLyrics
+        } else {
+            song.lyrics?.takeIf { it.isNotBlank() }
+        }
+        // We parse lyrics here just to ensure they are valid or to have them ready,
         // essentially mirroring logic in ViewModel
-        val parsedLyrics = normalizedLyrics?.let { LyricsUtils.parseLyrics(it) }
+        val parsedLyrics = libraryLyrics?.let { LyricsUtils.parseLyrics(it) }
         val resolvedSongId = resolveSongIdForMetadataEdit(song)
 
         if (resolvedSongId == null) {
@@ -220,10 +236,12 @@ class MetadataEditStateHolder @Inject constructor(
             }
             
             // Update Repository (Lyrics)
-            if (normalizedLyrics != null) {
-                musicRepository.updateLyrics(resolvedSongId, normalizedLyrics)
-            } else {
-                musicRepository.resetLyrics(resolvedSongId)
+            if (syncLibraryLyrics) {
+                if (normalizedLyrics != null) {
+                    musicRepository.updateLyrics(resolvedSongId, normalizedLyrics)
+                } else {
+                    musicRepository.resetLyrics(resolvedSongId)
+                }
             }
 
             val updatedSong = song.copy(
@@ -232,7 +250,7 @@ class MetadataEditStateHolder @Inject constructor(
                 album = newAlbum,
                 albumArtist = newAlbumArtist.trim().takeIf { it.isNotBlank() },
                 genre = newGenre,
-                lyrics = normalizedLyrics,
+                lyrics = libraryLyrics,
                 trackNumber = newTrackNumber,
                 discNumber = newDiscNumber,
                 albumArtUriString = refreshedAlbumArtUri,
@@ -720,20 +738,57 @@ class MetadataEditStateHolder @Inject constructor(
         songs.forEach { song ->
             previousAlbumArts.add(song.albumArtUriString)
 
+            // A null field here means "not being edited", but the tag write
+            // replaces the whole set, so every one of them still has to be
+            // given a value -- and the value it has to be given is the one the
+            // file already carries.
+            //
+            // Song is not that value. It is the library's rendering of the
+            // file, and writing it back changes tags nobody asked to change: a
+            // multi-artist "A; B" comes back as the ", " join
+            // Song.displayArtist shows, a title MediaStore derived from the
+            // filename lands in the file that had none, lyrics this app fetched
+            // into its own database get embedded. Composer is worse still --
+            // Song carries none at all, so every batch edit was sending "" for
+            // it, and the editor reads a blank as "delete this tag".
+            //
+            // So the file answers for its own tags, and Song only fills in what
+            // the file has nothing to say about.
+            val readsFromFile = title == null || artist == null || album == null ||
+                albumArtist == null || composer == null || genre == null || lyrics == null ||
+                trackNumber == null || discNumber == null
+            val embedded = if (readsFromFile) {
+                withContext(Dispatchers.IO) {
+                    runCatching {
+                        AudioMetadataReader.read(java.io.File(song.path), readArtwork = false)
+                    }.getOrNull()
+                }
+            } else {
+                null
+            }
+
             val result = saveMetadata(
                 song = song,
-                newTitle = title ?: song.title,
-                newArtist = artist ?: song.displayArtist,
-                newAlbum = album ?: song.album,
-                newAlbumArtist = albumArtist ?: (song.albumArtist ?: ""),
-                newComposer = composer ?: "",
-                newGenre = genre ?: (song.genre ?: ""),
-                newLyrics = lyrics ?: (song.lyrics ?: ""),
-                newTrackNumber = trackNumber ?: song.trackNumber,
-                newDiscNumber = discNumber ?: song.discNumber,
+                newTitle = title ?: embedded?.title ?: song.title,
+                newArtist = artist ?: embedded?.artist ?: song.displayArtist,
+                newAlbum = album ?: embedded?.album ?: song.album,
+                newAlbumArtist = albumArtist
+                    ?: embedded?.albumArtist
+                    ?: song.albumArtist?.takeIf { it.isNotBlank() }
+                    ?: "",
+                newComposer = composer ?: embedded?.composer ?: "",
+                newGenre = genre ?: embedded?.genre ?: song.genre?.takeIf { it.isNotBlank() } ?: "",
+                newLyrics = lyrics ?: embedded?.lyrics ?: song.lyrics?.takeIf { it.isNotBlank() } ?: "",
+                newTrackNumber = trackNumber ?: embedded?.trackNumber ?: song.trackNumber,
+                newDiscNumber = discNumber ?: embedded?.discNumber ?: song.discNumber,
                 newReplayGainTrackGainDb = replayGainTrackGainDb,
                 newReplayGainAlbumGainDb = replayGainAlbumGainDb,
-                coverArtUpdate = coverArtUpdate
+                coverArtUpdate = coverArtUpdate,
+                // The lyrics above are the file's own whenever this save is not
+                // editing them, and the library's copy -- which a file often
+                // does not carry at all -- is not something to overwrite with
+                // them.
+                syncLibraryLyrics = lyrics != null
             )
 
             if (result.success && result.updatedSong != null) {

@@ -1110,7 +1110,11 @@ class SongMetadataEditor(
             success
 
         } catch (e: Exception) {
-            Timber.e(e, "Failed to update MediaStore for songId: $songId")
+            // Best effort. MediaStore refuses the write for files the app does
+            // not own until the user consents per file, and it holds no artwork
+            // column at all -- the file itself was already written and the
+            // rescan below is what publishes the change either way.
+            Timber.tag(TAG).w(e, "MediaStore columns not updated for songId $songId")
             false
         }
     }

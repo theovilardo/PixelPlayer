@@ -30,6 +30,12 @@ object AlbumArtCacheManager {
      * Prefix for album art cache files
      */
     private const val CACHE_PREFIX = "song_art_"
+
+    // The applied store holds one cover per album plus a pointer per song. Both
+    // are artwork this app is keeping on the user's behalf, so both have to be
+    // visible here -- but only the covers carry any size worth reporting.
+    private const val APPLIED_COVER_PREFIX = "cover_"
+    private const val APPLIED_POINTER_EXTENSION = ".ref"
     
     /**
      * Suffix for "no art" marker files
@@ -59,6 +65,26 @@ object AlbumArtCacheManager {
      * Minimum interval between cleanups (5 minutes)
      */
     private const val MIN_CLEANUP_INTERVAL_MS = 5 * 60 * 1000L
+
+    /**
+     * How long an applied cover's song has to stay out of the library before
+     * the cover is given up on.
+     *
+     * Long enough to outlast an unmounted card or a library being reorganised,
+     * because the other side of it is permanent loss of the only copy. Waiting
+     * costs a few kilobytes per genuinely deleted album.
+     */
+    internal const val APPLIED_ORPHAN_GRACE_MS = 30L * 24 * 60 * 60 * 1000
+
+    /**
+     * Where the sweep records applied covers that looked orphaned, so a later
+     * one can tell a song that has been gone for weeks from a song that is
+     * missing from this sync alone.
+     *
+     * Named outside the artwork prefixes on purpose: it is not artwork, and
+     * nothing scanning this directory for covers or pointers should see it.
+     */
+    private const val ORPHAN_CANDIDATES_FILE_NAME = "orphan_candidates"
 
     private data class CacheEvictionCandidate(
         val file: File,
@@ -137,39 +163,131 @@ object AlbumArtCacheManager {
     /**
      * Cleans orphaned cache files for songs that no longer exist.
      * Should be called after sync operations.
-     * 
+     *
+     * Extracted artwork goes as soon as its song is out of the library; an
+     * applied cover has to look orphaned for [APPLIED_ORPHAN_GRACE_MS] of
+     * elapsed time before it does. See [sweepAppliedPointers].
+     *
      * @param context Application context
      * @param validSongIds Set of song IDs that still exist in the library
+     * @param now Exposed so tests do not have to wait out the grace period.
      * @return Number of orphaned files deleted
      */
     suspend fun cleanOrphanedCacheFiles(
         context: Context,
-        validSongIds: Set<Long>
+        validSongIds: Set<Long>,
+        now: Long = System.currentTimeMillis()
     ): Int = withContext(Dispatchers.IO) {
+        // An empty set makes every file here look orphaned, and now costs the
+        // applied covers rather than a rebuildable cache. A scan without media
+        // permission or before a card mounted produces one, so it is refused.
+        if (validSongIds.isEmpty()) {
+            Log.w(TAG, "Skipping orphan sweep: no valid song ids were supplied")
+            return@withContext 0
+        }
+
         cleanupMutex.withLock {
-            val cacheDir = AlbumArtUtils.getAlbumArtDir(context)
-            val allArtFiles = getAllAlbumArtRelatedFiles(cacheDir)
-            
-            if (allArtFiles.isEmpty()) {
-                return@withLock 0
-            }
-            
             var deletedCount = 0
-            
-            for (file in allArtFiles) {
+
+            // Extracted artwork, which is re-read from the audio file the next
+            // time anything asks for it, so a song that turns out to still be
+            // there costs one extraction.
+            for (file in getAllAlbumArtRelatedFiles(AlbumArtUtils.getAlbumArtDir(context))) {
                 val songId = extractSongIdFromFilename(file.name)
-                if (songId != null && songId !in validSongIds) {
-                    if (file.delete()) {
-                        deletedCount++
-                    }
+                if (songId != null && songId !in validSongIds && file.delete()) {
+                    deletedCount++
                 }
             }
-            
+
+            deletedCount += sweepAppliedPointers(
+                appliedDir = AlbumArtUtils.getAppliedArtDir(context),
+                validSongIds = validSongIds,
+                now = now
+            )
+
+            // Songs that left the library take their pointers with them above,
+            // which is what can stand a cover down to nothing pointing at it.
+            AlbumArtUtils.deleteUnreferencedAppliedCovers(context)
+
             if (deletedCount > 0) {
                 Log.d(TAG, "Cleaned $deletedCount orphaned album art files")
             }
-            
+
             deletedCount
+        }
+    }
+
+    /**
+     * Drops the pointers of applied covers whose songs have been gone from the
+     * library for [APPLIED_ORPHAN_GRACE_MS], and notes the rest as candidates.
+     *
+     * Absence from one sync is not evidence a song is gone: an unmounted card,
+     * a moved folder or a re-index all empty rows that come back. That costs a
+     * re-read for the extracted cache, but the cover itself here --
+     * [AlbumArtUtils.deleteUnreferencedAppliedCovers] destroys the image once
+     * its last pointer goes, and there is no second copy.
+     *
+     * @return the number of pointers actually deleted.
+     */
+    private fun sweepAppliedPointers(
+        appliedDir: File,
+        validSongIds: Set<Long>,
+        now: Long
+    ): Int {
+        val candidates = readOrphanCandidates(appliedDir)
+        val stillOrphaned = mutableMapOf<Long, Long>()
+        var deletedCount = 0
+
+        for (file in getAllAlbumArtRelatedFiles(appliedDir)) {
+            val songId = extractSongIdFromFilename(file.name) ?: continue
+            if (songId in validSongIds) continue
+
+            // A timestamp from the future is a clock that was wound back since
+            // it was written; read as it stands it would hold the pointer for
+            // however long that is.
+            val firstSeen = candidates[songId]?.coerceAtMost(now)
+            if (firstSeen != null && now - firstSeen >= APPLIED_ORPHAN_GRACE_MS) {
+                if (file.delete()) deletedCount++
+            } else {
+                stillOrphaned[songId] = firstSeen ?: now
+            }
+        }
+
+        writeOrphanCandidates(appliedDir, stillOrphaned)
+        return deletedCount
+    }
+
+    /** When each still-present applied cover was first seen without its song. */
+    private fun readOrphanCandidates(appliedDir: File): Map<Long, Long> {
+        val file = File(appliedDir, ORPHAN_CANDIDATES_FILE_NAME)
+        if (!file.exists()) return emptyMap()
+
+        return runCatching {
+            file.readLines().mapNotNull { line ->
+                val songId = line.substringBefore('=').toLongOrNull() ?: return@mapNotNull null
+                val firstSeen = line.substringAfter('=', "").toLongOrNull() ?: return@mapNotNull null
+                songId to firstSeen
+            }.toMap()
+        }.getOrElse {
+            // Unreadable means nothing has been observed yet, which starts every
+            // candidate's clock again rather than expiring anything early.
+            Log.w(TAG, "Could not read applied cover orphan candidates", it)
+            emptyMap()
+        }
+    }
+
+    private fun writeOrphanCandidates(appliedDir: File, candidates: Map<Long, Long>) {
+        val file = File(appliedDir, ORPHAN_CANDIDATES_FILE_NAME)
+        runCatching {
+            if (candidates.isEmpty()) {
+                file.delete()
+            } else {
+                file.writeText(candidates.entries.joinToString("\n") { "${it.key}=${it.value}" })
+            }
+        }.onFailure {
+            // The sweep is still correct without this, only more cautious: every
+            // candidate looks new again on the next pass.
+            Log.w(TAG, "Could not record applied cover orphan candidates", it)
         }
     }
     
@@ -180,7 +298,9 @@ object AlbumArtCacheManager {
      * @return Total size of album art cache in bytes
      */
     suspend fun getCacheSizeBytes(context: Context): Long = withContext(Dispatchers.IO) {
-        getAlbumArtFiles(AlbumArtUtils.getAlbumArtDir(context)).sumOf { it.length() }
+        artworkDirectories(context)
+            .flatMap { getAlbumArtFiles(it) }
+            .sumOf { it.length() }
     }
     
     /**
@@ -202,18 +322,35 @@ object AlbumArtCacheManager {
      * @return Number of cached files
      */
     fun getCachedFileCount(context: Context): Int {
-        return getAlbumArtFiles(AlbumArtUtils.getAlbumArtDir(context)).size
+        return artworkDirectories(context).sumOf { getAlbumArtFiles(it).size }
     }
-    
+
     /**
-     * Clears all album art cache files.
-     * 
+     * Every directory holding artwork the app manages.
+     *
+     * Covers the user applied live apart from the extracted cache so the LRU
+     * cannot evict them, but they are still artwork the app is storing on the
+     * user's behalf: leaving them out here would under-report the size and
+     * leak them when their songs are gone.
+     */
+    private fun artworkDirectories(context: Context): List<File> = listOf(
+        AlbumArtUtils.getAlbumArtDir(context),
+        AlbumArtUtils.getAppliedArtDir(context)
+    )
+
+    /**
+     * Clears all album art cache files, including covers applied to songs.
+     *
+     * Unused as it stands. Note before wiring it to anything that the applied
+     * covers it deletes are the only copy there is: unlike the extracted cache,
+     * nothing can regenerate them from the audio files.
+     *
      * @param context Application context
      * @return Number of files deleted
      */
     suspend fun clearAllCache(context: Context): Int = withContext(Dispatchers.IO) {
         cleanupMutex.withLock {
-            val files = getAllAlbumArtRelatedFiles(AlbumArtUtils.getAlbumArtDir(context))
+            val files = artworkDirectories(context).flatMap { getAllAlbumArtRelatedFiles(it) }
             var deletedCount = 0
             
             for (file in files) {
@@ -233,8 +370,9 @@ object AlbumArtCacheManager {
     private fun getAlbumArtFiles(cacheDir: File): List<File> {
         return cacheDir.listFiles { file ->
             file.isFile &&
-            file.name.startsWith(CACHE_PREFIX) &&
-            !file.name.contains(NO_ART_SUFFIX)
+            !file.name.endsWith(APPLIED_POINTER_EXTENSION) &&
+            (file.name.startsWith(APPLIED_COVER_PREFIX) ||
+                (file.name.startsWith(CACHE_PREFIX) && !file.name.contains(NO_ART_SUFFIX)))
         }?.toList() ?: emptyList()
     }
 
@@ -268,7 +406,8 @@ object AlbumArtCacheManager {
      */
     private fun getAllAlbumArtRelatedFiles(cacheDir: File): List<File> {
         return cacheDir.listFiles { file ->
-            file.isFile && file.name.startsWith(CACHE_PREFIX)
+            file.isFile &&
+                (file.name.startsWith(CACHE_PREFIX) || file.name.startsWith(APPLIED_COVER_PREFIX))
         }?.toList() ?: emptyList()
     }
     
@@ -279,7 +418,7 @@ object AlbumArtCacheManager {
      * @param filename The filename to parse
      * @return Song ID or null if parsing fails
      */
-    private fun extractSongIdFromFilename(filename: String): Long? {
+    internal fun extractSongIdFromFilename(filename: String): Long? {
         return try {
             // Remove prefix "song_art_"
             val withoutPrefix = filename.removePrefix(CACHE_PREFIX)

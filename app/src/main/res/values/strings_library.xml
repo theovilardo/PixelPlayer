@@ -318,6 +318,45 @@
     <string name="edit_song_unable_to_load_image">Unable to load the selected image</string>
     <string name="edit_song_cd_search_lyrics_lrclib">Search lyrics on lrclib.net</string>
 
+    <!-- Album cover art -->
+    <string name="album_cd_edit_cover_art">Change album cover art</string>
+    <string name="album_action_search_cover_online">Search online</string>
+    <string name="album_action_pick_cover_from_gallery">Choose from gallery</string>
+
+    <!-- OnlineCoverArtPickerDialog -->
+    <string name="cover_art_search_title">Find cover art</string>
+    <string name="cover_art_search_field_album">Album</string>
+    <string name="cover_art_search_field_artist">Artist</string>
+    <string name="cover_art_removed_in_app">Cover removed</string>
+    <string name="album_action_remove_cover">Remove cover</string>
+    <!-- The destructive counterpart: the artwork lives in the audio files, so
+         taking it off means rewriting them and it does not come back. -->
+    <string name="album_action_delete_cover_from_files">Delete cover from files</string>
+    <string name="album_delete_cover_dialog_title">Delete cover from files?</string>
+    <string name="album_delete_cover_dialog_body">The artwork stored inside this album\'s %1$d tracks will be removed from the audio files. This can\'t be undone.</string>
+    <string name="cover_art_search_edit_query">Edit search terms</string>
+    <string name="cover_art_search_edit_query_done">Hide search terms</string>
+    <string name="cover_art_search_idle">Enter an album or an artist to search for cover art.</string>
+    <string name="cover_art_search_empty">No cover art found. Try a different album or artist.</string>
+    <string name="cover_art_search_error">Couldn\'t reach the cover art catalog. Check your connection and try again.</string>
+    <string name="cover_art_search_download_error">Couldn\'t download that cover. Try another one.</string>
+    <string name="cover_art_search_cd_result">Cover art for %1$s by %2$s</string>
+    <string name="cover_art_search_cd_catalog_searching">%1$s, searching</string>
+    <string name="cover_art_search_cd_catalog_failed">%1$s, did not answer</string>
+    <string name="cover_art_search_cd_catalog_results">%1$s, %2$d covers</string>
+    <string name="cover_art_search_size_measured">%1$d × %2$d</string>
+    <string name="cover_art_search_size_nominal">~%1$d × %2$d</string>
+    <string name="cover_art_search_measuring">Measuring…</string>
+    <string name="cover_art_search_size_unknown">Size unknown</string>
+    <string name="cover_art_search_album_scope">The cover you pick is applied to all %1$d tracks in this album.</string>
+    <!-- Where the pick will be kept, shown under the scope line above. -->
+    <string name="cover_art_search_destination_app">It will be kept in PixelPlayer, and your audio files will not be changed.</string>
+    <string name="cover_art_search_destination_files">It will be written into the audio files.</string>
+    <string name="cover_art_applied_unsupported">Cover art can only be applied to songs stored on this device.</string>
+    <string name="cover_art_apply_failed">Couldn\'t save that cover. Try again.</string>
+    <string name="cover_art_applied_in_app">Cover saved in PixelPlayer. Your files were not changed.</string>
+    <string name="cover_art_search_web_action">Search the web</string>
+
     <!-- EditMultipleSongsSheet -->
     <string name="batch_edit_toolbar_title">Edit %d Songs</string>
     <string name="batch_edit_info_message">Only modified fields will be updated. Leave fields empty to keep existing values.</string>

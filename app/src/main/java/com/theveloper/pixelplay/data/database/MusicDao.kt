@@ -468,6 +468,15 @@ interface MusicDao {
     @Query("SELECT * FROM songs WHERE album_id = :albumId ORDER BY disc_number ASC, track_number ASC")
     fun getSongsByAlbumId(albumId: Long): Flow<List<SongEntity>>
 
+    /**
+     * One-shot form, for callers reading an album's tracks once rather than
+     * watching them: collecting the Flow above registers and tears down an
+     * invalidation observer per call, which a loop over the library pays for
+     * on every album.
+     */
+    @Query("SELECT * FROM songs WHERE album_id = :albumId ORDER BY disc_number ASC, track_number ASC")
+    suspend fun getSongsByAlbumIdOnce(albumId: Long): List<SongEntity>
+
     @Query("SELECT * FROM songs WHERE artist_id = :artistId ORDER BY title ASC")
     fun getSongsByArtistId(artistId: Long): Flow<List<SongEntity>>
 
@@ -1716,6 +1725,14 @@ interface MusicDao {
 
     @Query("UPDATE songs SET album_art_uri_string = :albumArtUri WHERE id = :songId")
     suspend fun updateSongAlbumArt(songId: Long, albumArtUri: String?)
+
+    /**
+     * Album rows carry their own copy of a representative song's artwork URI,
+     * assembled during a sync. A cover applied between syncs has to set it too,
+     * or the album grid keeps drawing a placeholder until the next full scan.
+     */
+    @Query("UPDATE albums SET album_art_uri_string = :albumArtUri WHERE id = :albumId")
+    suspend fun updateAlbumArt(albumId: Long, albumArtUri: String?)
 
     @Query("UPDATE songs SET lyrics = :lyrics WHERE id = :songId")
     suspend fun updateLyrics(songId: Long, lyrics: String)

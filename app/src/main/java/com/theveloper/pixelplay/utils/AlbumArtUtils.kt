@@ -19,6 +19,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
+import java.security.MessageDigest
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.roundToInt
 
@@ -36,6 +37,23 @@ object AlbumArtUtils {
     // Cache entries larger than this are treated as legacy/oversized and shrunk in the
     // background on first access (one-time migration for art cached before bounding existed).
     private const val OVERSIZED_CACHED_ART_BYTES = 900L * 1024
+
+    // WebP at 80 runs roughly a third below JPEG at 90 for the same visible
+    // quality on cover art, and the encode is paid once per album rather than
+    // per track. The store is new in this release, so nothing needs converting.
+    private const val APPLIED_ART_WEBP_QUALITY = 80
+    private const val APPLIED_COVER_PREFIX = "cover_"
+    private const val APPLIED_POINTER_EXTENSION = ".ref"
+    private const val APPLIED_STAGING_EXTENSION = ".tmp"
+
+    // Versioned apart from the extracted cache: bumping that suffix discards a
+    // cache the audio files can rebuild, which is why it has been bumped three
+    // times. The same bump here would delete the only copy of every cover.
+    private const val APPLIED_ART_VERSION_SUFFIX = "_v1"
+
+    // One writer at a time: a cover is written before the pointers that keep it
+    // alive, and a sweep landing in that window would delete it.
+    private val appliedArtLock = Any()
 
     // P2-1: Dedicated app-level scope to replace GlobalScope.
     // SupervisorJob ensures child failures don't cancel sibling coroutines.
@@ -112,7 +130,8 @@ object AlbumArtUtils {
             noArtFile.delete()
         }
 
-        val hasCachedArtwork = cachedFile.exists() && cachedFile.length() > 0
+        val hasCachedArtwork = getAppliedAlbumArtFile(appContext, songId) != null ||
+            (cachedFile.exists() && cachedFile.length() > 0)
         if (hasCachedArtwork) {
             cachedFile.setLastModified(System.currentTimeMillis())
         }
@@ -164,6 +183,10 @@ object AlbumArtUtils {
         filePath: String? = null,
         forceRefresh: Boolean = false
     ): File? {
+        // Applied art answers first and is never evicted, so a cover the user
+        // chose survives a cache sweep, a rescan and a re-extract.
+        getAppliedAlbumArtFile(appContext, songId)?.let { return it }
+
         val cachedFile = getCachedAlbumArtFile(appContext, songId)
         val noArtFile = noArtMarkerFile(appContext, songId)
 
@@ -227,6 +250,10 @@ object AlbumArtUtils {
         val audioFile = File(filePath)
         if (!audioFile.exists() || !audioFile.canRead()) {
             return false
+        }
+
+        if (getAppliedAlbumArtFile(appContext, songId) != null) {
+            return true
         }
 
         val cachedFile = getCachedAlbumArtFile(appContext, songId)
@@ -336,10 +363,34 @@ object AlbumArtUtils {
         ).forEach { it.delete() }
     }
 
+    /**
+     * Drops the cover the user applied to [songId], and the image behind it if
+     * no other song was pointing there.
+     *
+     * Deliberately not part of [clearCacheForSong], which every metadata save
+     * reaches and which only deletes what the audio file can rebuild. An
+     * applied cover is the only copy, so it goes only when meant to.
+     */
+    fun clearAppliedArtForSong(appContext: Context, songId: Long) {
+        val removed = synchronized(appliedArtLock) {
+            appliedPointerFile(appContext, songId).delete()
+        }
+        // Reading every pointer in the store is too much to do on the caller's
+        // thread, and nothing waits on the image being gone.
+        if (removed) {
+            appScope.launch { deleteUnreferencedAppliedCovers(appContext) }
+        }
+    }
+
     // Album art lives in filesDir (persistent) instead of cacheDir, because Android can
     // wipe cacheDir at any time under storage pressure — taking every cached cover with
     // it and leaving the UI blank. The size is bounded by AlbumArtCacheManager's LRU.
     private const val ALBUM_ART_DIR_NAME = "album_art"
+
+    // Apart from the extracted cache, which is safe to evict only because the
+    // audio files can rebuild it. An applied cover has no other copy, so this
+    // directory is never LRU-swept -- only swept for orphans.
+    private const val APPLIED_ART_DIR_NAME = "album_art_applied"
 
     fun getAlbumArtDir(appContext: Context): File {
         val dir = File(appContext.filesDir, ALBUM_ART_DIR_NAME)
@@ -351,6 +402,166 @@ object AlbumArtUtils {
 
     fun getCachedAlbumArtFile(appContext: Context, songId: Long): File {
         return File(getAlbumArtDir(appContext), "song_art_${songId}${CACHE_VERSION_SUFFIX}.jpg")
+    }
+
+    fun getAppliedArtDir(appContext: Context): File {
+        val dir = File(appContext.filesDir, APPLIED_ART_DIR_NAME)
+        if (!dir.exists()) {
+            dir.mkdirs()
+        }
+        return dir
+    }
+
+    /**
+     * The cover [songId] was given, or null when it has none.
+     *
+     * Artwork is addressed by song id everywhere -- the library scan, the shared
+     * content provider, the widget and the Coil fetcher all resolve it that way
+     * -- so every track needs its own answer. The answer is a pointer rather
+     * than a copy: an album's tracks all name the same file, which is why
+     * covering a 20-track album costs one image instead of twenty.
+     */
+    fun getAppliedAlbumArtFile(appContext: Context, songId: Long): File? {
+        val pointer = appliedPointerFile(appContext, songId)
+        if (!pointer.exists()) return null
+
+        val coverKey = runCatching { pointer.readText().trim() }
+            .getOrNull()
+            ?.takeIf { it.isNotEmpty() }
+            ?: return null
+
+        return appliedCoverFile(appContext, coverKey).takeIf { it.exists() && it.length() > 0 }
+    }
+
+    /**
+     * Names the pointer after the song the way the extracted cache names its
+     * files, so the orphan sweep reads a song id out of it without knowing this
+     * directory holds anything unusual.
+     */
+    private fun appliedPointerFile(appContext: Context, songId: Long): File {
+        return File(
+            getAppliedArtDir(appContext),
+            "song_art_${songId}${APPLIED_ART_VERSION_SUFFIX}$APPLIED_POINTER_EXTENSION"
+        )
+    }
+
+    internal fun appliedCoverFile(appContext: Context, coverKey: String): File {
+        return File(
+            getAppliedArtDir(appContext),
+            "$APPLIED_COVER_PREFIX$coverKey$APPLIED_ART_VERSION_SUFFIX.webp"
+        )
+    }
+
+    /**
+     * Stores a cover the user applied to [songIds], as the only copy there is.
+     *
+     * Kept out of the extracted cache so nothing sweeps it, and it wins over
+     * both the cache and the file's own tag as the most recent thing the user
+     * chose.
+     *
+     * The image is written once and each song pointed at it, named for a digest
+     * of its own bytes -- so the same cover applied by any path lands on one
+     * file, and a different cover for one track leaves its album-mates alone.
+     * Covers nothing points at are deleted here.
+     *
+     * @return the cover every song in [songIds] now resolves to, or null when
+     * [songIds] is empty.
+     */
+    fun saveAppliedAlbumArt(
+        appContext: Context,
+        bytes: ByteArray,
+        songIds: List<Long>
+    ): File? {
+        val ids = songIds.distinct()
+        if (ids.isEmpty() || bytes.isEmpty()) return null
+
+        val coverKey = digestOf(bytes)
+
+        return synchronized(appliedArtLock) {
+            val cover = appliedCoverFile(appContext, coverKey)
+
+            // Staged and moved into place, so a reader never opens a cover that
+            // is half written and an interrupted write leaves nothing behind
+            // that a later sweep has to reason about.
+            val staging = File(cover.parentFile, cover.name + APPLIED_STAGING_EXTENSION)
+            try {
+                staging.outputStream().use { it.write(bytes) }
+                if (!staging.renameTo(cover)) {
+                    staging.copyTo(cover, overwrite = true)
+                }
+            } finally {
+                staging.delete()
+            }
+
+            ids.forEach { songId ->
+                appliedPointerFile(appContext, songId).writeText(coverKey)
+                noArtMarkerFile(appContext, songId).delete()
+            }
+
+            deleteUnreferencedAppliedCovers(appContext)
+            cover
+        }
+    }
+
+    /**
+     * Deletes applied covers no song points at.
+     *
+     * Called after a write and after a song's art is dropped, which is every
+     * moment a cover can stop being referenced.
+     */
+    internal fun deleteUnreferencedAppliedCovers(appContext: Context) {
+        synchronized(appliedArtLock) {
+            val files = getAppliedArtDir(appContext).listFiles() ?: return
+
+            val covers = files
+                .filter {
+                    it.isFile &&
+                        it.name.startsWith(APPLIED_COVER_PREFIX) &&
+                        !it.name.endsWith(APPLIED_STAGING_EXTENSION)
+                }
+                .associateBy { file ->
+                    file.name
+                        .removePrefix(APPLIED_COVER_PREFIX)
+                        .removeSuffix("$APPLIED_ART_VERSION_SUFFIX.webp")
+                }
+
+            val referenced = mutableSetOf<String>()
+            files.asSequence()
+                .filter { it.isFile && it.name.endsWith(APPLIED_POINTER_EXTENSION) }
+                .forEach { pointer ->
+                    val key = runCatching { pointer.readText().trim() }.getOrNull()
+                    // A pointer at a cover that is gone keeps nothing alive, and
+                    // would silently adopt the image if that key were ever
+                    // written again.
+                    if (key.isNullOrEmpty() || key !in covers) {
+                        pointer.delete()
+                    } else {
+                        referenced += key
+                    }
+                }
+
+            covers.forEach { (key, file) -> if (key !in referenced) file.delete() }
+
+            // Any staging file visible from in here is stale: writes hold this
+            // same lock, so an in-flight one cannot be observed.
+            files.asSequence()
+                .filter { it.isFile && it.name.endsWith(APPLIED_STAGING_EXTENSION) }
+                .forEach { it.delete() }
+        }
+    }
+
+    /**
+     * Content digest, used to keep two different covers apart on disk.
+     *
+     * Long enough that a collision is not worth reasoning about, because the
+     * failure would be silent: two covers sharing a name means one album quietly
+     * showing another album's artwork, with nothing to notice it.
+     */
+    private fun digestOf(bytes: ByteArray): String {
+        return MessageDigest.getInstance("SHA-256")
+            .digest(bytes)
+            .take(16)
+            .joinToString("") { "%02x".format(it) }
     }
 
     /**
@@ -423,6 +634,41 @@ object AlbumArtUtils {
             } finally {
                 artworkShrinkInFlight.remove(key)
             }
+        }
+    }
+
+    /**
+     * Bounds and re-encodes a cover for the applied store, once per album.
+     *
+     * Unlike [boundArtworkForCache] this always re-encodes rather than passing
+     * small sources through: the store keeps one image for a whole album and
+     * holds it until the user replaces it, so the smaller format is worth the
+     * decode every time. Falls back to the original bytes if anything fails,
+     * because a slightly larger cover beats no cover.
+     */
+    fun boundArtworkForStorage(bytes: ByteArray): ByteArray {
+        return try {
+            val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            BitmapFactory.decodeByteArray(bytes, 0, bytes.size, bounds)
+            val srcWidth = bounds.outWidth
+            val srcHeight = bounds.outHeight
+            if (srcWidth <= 0 || srcHeight <= 0) return bytes
+
+            val decodeOptions = BitmapFactory.Options().apply {
+                inSampleSize = calculateArtworkInSampleSize(srcWidth, srcHeight, MAX_CACHED_ART_DIMENSION_PX)
+            }
+            val decoded = BitmapFactory.decodeByteArray(bytes, 0, bytes.size, decodeOptions) ?: return bytes
+            val scaled = scaleArtworkDownTo(decoded, MAX_CACHED_ART_DIMENSION_PX)
+            val encoded = ByteArrayOutputStream().use { stream ->
+                scaled.compress(Bitmap.CompressFormat.WEBP_LOSSY, APPLIED_ART_WEBP_QUALITY, stream)
+                stream.toByteArray()
+            }
+            if (scaled !== decoded) decoded.recycle()
+            scaled.recycle()
+            if (encoded.isNotEmpty()) encoded else bytes
+        } catch (e: Throwable) {
+            Timber.tag("AlbumArtUtils").w(e, "Failed to bound artwork for the applied store; keeping original bytes")
+            bytes
         }
     }
 

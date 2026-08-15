@@ -13,6 +13,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.media3.common.Player
+import com.theveloper.pixelplay.data.coverart.AlbumArtStorage
 import com.theveloper.pixelplay.data.equalizer.EqualizerPreset
 import com.theveloper.pixelplay.data.diagnostics.AdvancedPerformanceDiagnostics
 import com.theveloper.pixelplay.data.model.FolderSource
@@ -84,7 +85,15 @@ class UserPreferencesRepository @Inject constructor(
 ) {
 
     private val backupExcludedKeyNames = setOf(
-        PreferencesKeys.INITIAL_SETUP_DONE.name
+        PreferencesKeys.INITIAL_SETUP_DONE.name,
+        // MediaStore album ids, which mean nothing on another device or after a
+        // re-index: restoring them would suppress automatic covers for whatever
+        // albums happened to land on those ids.
+        PreferencesKeys.AUTO_ALBUM_ART_NOT_FOUND_IDS.name,
+        // Backups are plain JSON written where the user may share them, and
+        // every other credential store is excluded for that reason -- see
+        // backup_rules.xml. Listing it here also keeps a restore from wiping it.
+        PreferencesKeys.WEB_IMAGE_SEARCH_API_KEY.name
     )
 
     // ─── Preference keys ────────────────────────────────────────────────────
@@ -116,6 +125,11 @@ class UserPreferencesRepository @Inject constructor(
         val LAST_LIBRARY_TAB_INDEX = intPreferencesKey("last_library_tab_index")
         val LAST_STORAGE_FILTER = stringPreferencesKey("last_storage_filter")
         val MOCK_GENRES_ENABLED = booleanPreferencesKey("mock_genres_enabled")
+        val AUTO_ALBUM_ART_ENABLED = booleanPreferencesKey("auto_album_art_enabled")
+        val ALBUM_ART_STORAGE = stringPreferencesKey("album_art_storage")
+        val AUTO_ALBUM_ART_UNMETERED_ONLY = booleanPreferencesKey("auto_album_art_unmetered_only")
+        val AUTO_ALBUM_ART_NOT_FOUND_IDS = stringSetPreferencesKey("auto_album_art_not_found_ids")
+        val WEB_IMAGE_SEARCH_API_KEY = stringPreferencesKey("web_image_search_api_key")
         val LAST_DAILY_MIX_UPDATE = longPreferencesKey("last_daily_mix_update")
         val DAILY_MIX_SONG_IDS = stringPreferencesKey("daily_mix_song_ids")
         val YOUR_MIX_SONG_IDS = stringPreferencesKey("your_mix_song_ids")
@@ -871,6 +885,98 @@ suspend fun markDirectoryRulesVersionApplied(version: Int) {
 
     suspend fun saveLastStorageFilter(filter: StorageFilter) {
         dataStore.edit { it[PreferencesKeys.LAST_STORAGE_FILTER] = filter.name }
+    }
+
+    /**
+     * Where a cover the user applies is kept: inside the audio files, or only in
+     * the app. Applies wherever art is applied, by hand or automatically.
+     */
+    val albumArtStorageFlow: Flow<AlbumArtStorage> =
+        pref { preferences ->
+            preferences[PreferencesKeys.ALBUM_ART_STORAGE]
+                ?.let { stored -> AlbumArtStorage.entries.firstOrNull { it.name == stored } }
+                ?: AlbumArtStorage.APP_ONLY
+        }
+
+    suspend fun setAlbumArtStorage(storage: AlbumArtStorage) {
+        dataStore.edit { it[PreferencesKeys.ALBUM_ART_STORAGE] = storage.name }
+    }
+
+    /** Fetch covers for albums that have none, in the background, after a sync. */
+    val autoAlbumArtEnabledFlow: Flow<Boolean> =
+        pref { it[PreferencesKeys.AUTO_ALBUM_ART_ENABLED] ?: false }
+
+    suspend fun setAutoAlbumArtEnabled(enabled: Boolean) {
+        dataStore.edit { it[PreferencesKeys.AUTO_ALBUM_ART_ENABLED] = enabled }
+    }
+
+    val autoAlbumArtUnmeteredOnlyFlow: Flow<Boolean> =
+        pref { it[PreferencesKeys.AUTO_ALBUM_ART_UNMETERED_ONLY] ?: true }
+
+    suspend fun setAutoAlbumArtUnmeteredOnly(unmeteredOnly: Boolean) {
+        dataStore.edit { it[PreferencesKeys.AUTO_ALBUM_ART_UNMETERED_ONLY] = unmeteredOnly }
+    }
+
+    /**
+     * Albums no catalog had a cover for. Remembered so every sync does not
+     * re-query the same dead ends, and clearable so a later upload can be found.
+     */
+    val albumArtNotFoundIdsFlow: Flow<Set<Long>> =
+        pref { preferences ->
+            preferences[PreferencesKeys.AUTO_ALBUM_ART_NOT_FOUND_IDS]
+                ?.mapNotNull(String::toLongOrNull)
+                ?.toSet()
+                .orEmpty()
+        }
+
+    suspend fun addAlbumArtNotFoundIds(albumIds: Set<Long>) {
+        if (albumIds.isEmpty()) return
+        dataStore.edit { preferences ->
+            val existing = preferences[PreferencesKeys.AUTO_ALBUM_ART_NOT_FOUND_IDS].orEmpty()
+            preferences[PreferencesKeys.AUTO_ALBUM_ART_NOT_FOUND_IDS] =
+                existing + albumIds.map(Long::toString)
+        }
+    }
+
+    /**
+     * Replaces the remembered dead ends outright.
+     *
+     * The adding form can only grow the set, and these are MediaStore album ids
+     * -- they do not survive a re-index, so entries for albums that no longer
+     * exist would otherwise accumulate for the life of the install, in a
+     * preferences file that is rewritten whole on every change.
+     */
+    suspend fun setAlbumArtNotFoundIds(albumIds: Set<Long>) {
+        dataStore.edit { preferences ->
+            if (albumIds.isEmpty()) {
+                preferences.remove(PreferencesKeys.AUTO_ALBUM_ART_NOT_FOUND_IDS)
+            } else {
+                preferences[PreferencesKeys.AUTO_ALBUM_ART_NOT_FOUND_IDS] =
+                    albumIds.map(Long::toString).toSet()
+            }
+        }
+    }
+
+    suspend fun clearAlbumArtNotFoundIds() {
+        dataStore.edit { it.remove(PreferencesKeys.AUTO_ALBUM_ART_NOT_FOUND_IDS) }
+    }
+
+    /**
+     * The user's own key for the image search engine. Its presence is the whole
+     * configuration: no key, no web search.
+     */
+    val webImageSearchApiKeyFlow: Flow<String> =
+        pref { it[PreferencesKeys.WEB_IMAGE_SEARCH_API_KEY].orEmpty() }
+
+    suspend fun setWebImageSearchApiKey(apiKey: String) {
+        dataStore.edit { preferences ->
+            val trimmed = apiKey.trim()
+            if (trimmed.isEmpty()) {
+                preferences.remove(PreferencesKeys.WEB_IMAGE_SEARCH_API_KEY)
+            } else {
+                preferences[PreferencesKeys.WEB_IMAGE_SEARCH_API_KEY] = trimmed
+            }
+        }
     }
 
     val mockGenresEnabledFlow: Flow<Boolean> =

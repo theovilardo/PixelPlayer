@@ -655,4 +655,27 @@
     <string name="settings_volume_section">Volume</string>
     <string name="settings_pause_on_volume_zero">Pause when volume reaches zero</string>
     <string name="settings_pause_on_volume_zero_desc">Automatically pause playback when the volume is set to 0</string>
+    <!-- Automatic album art -->
+    <string name="settings_auto_album_art_title">Find missing album art</string>
+    <string name="settings_auto_album_art_subtitle">After a library scan, look up covers online for albums that have none. Covers come from the Deezer, iTunes and Cover Art Archive catalogs, only the album and artist are sent, and your music files are never modified.</string>
+    <!-- Shown in place of the subtitle above when applied covers go into the audio
+         files, since covers found automatically do not follow that choice. -->
+    <string name="settings_auto_album_art_subtitle_app_only">After a library scan, look up covers online for albums that have none. Covers come from the Deezer, iTunes and Cover Art Archive catalogs, and only the album and artist are sent. These covers are kept in PixelPlayer even though you chose to apply covers into the audio files, because writing to your files needs your permission each time.</string>
+    <string name="settings_auto_album_art_unmetered_title">Wi-Fi only</string>
+    <string name="settings_auto_album_art_unmetered_subtitle">Only look up covers on an unmetered connection</string>
+    <string name="settings_auto_album_art_retry_title">Try albums with no match again</string>
+    <string name="settings_auto_album_art_retry_subtitle">Albums no catalog matched are skipped on later scans. This forgets that list and searches again.</string>
+    <!-- Where covers the user applies are kept -->
+    <string name="settings_album_art_storage_title">Where covers you apply manually are kept</string>
+    <string name="settings_album_art_storage_subtitle">Covers found automatically are always kept in PixelPlayer, because writing to your files needs your permission each time.</string>
+    <string name="settings_album_art_storage_files">In the audio files</string>
+    <string name="settings_album_art_storage_app">In PixelPlayer only</string>
+    <!-- Web image search as a cover art source -->
+    <string name="settings_web_image_search_title">Web image search</string>
+    <string name="settings_web_image_search_subtitle">Off. Add a Serper key to search the web for covers no catalog carries.</string>
+    <string name="settings_web_image_search_configured">Using %1$s</string>
+    <string name="settings_web_image_search_explainer">A web search has no album or artist data to rank against your tags, so it is never run on its own: it waits behind a button in the cover art picker, for the albums no catalog carries. Automatic cover art never uses it. Each search uses your own key and counts against its monthly allowance, so it is spent only on the album you ask it for.</string>
+    <string name="settings_web_image_search_key_label">API key</string>
+    <string name="settings_web_image_search_key_hint">Create a key at %1$s. It is stored on this device and sent only to Serper.</string>
+    <string name="settings_web_image_search_disable">Turn off</string>
 </resources>

@@ -29,3 +29,34 @@ annotation class BackupGson
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class AppScope
+
+/**
+ * Qualifier for the iTunes Search Retrofit instance.
+ */
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class ItunesRetrofit
+
+/**
+ * Qualifier for the MusicBrainz Retrofit instance and the client behind it.
+ */
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class MusicBrainzRetrofit
+
+/**
+ * Qualifier for the Cover Art Archive Retrofit instance.
+ */
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class CoverArtArchiveRetrofit
+
+/**
+ * Qualifier for the client cover art images are fetched with.
+ *
+ * The URLs come from third-party search results and are checked for HTTPS
+ * before the request is made; this client refuses to be redirected off it.
+ */
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class CoverArtImageClient

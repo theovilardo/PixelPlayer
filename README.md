@@ -71,8 +71,10 @@
 - **Lyrics Editing** - Modify or add lyrics to your tracks
 - **Scrolling Display** - Follow along as you listen
 
-### 🖼️ Artist Artwork
+### 🖼️ Artwork
 - **Deezer Integration** - Automatic artist images from Deezer API
+- **Cover Art Search** - Find album covers on Deezer, iTunes and the Cover Art Archive
+- **Automatic Covers** - Optionally fill in albums missing artwork after a scan
 - **Smart Caching** - Memory (LRU) + database caching for offline access
 - **Fallback Icons** - Beautiful placeholders when images unavailable
 

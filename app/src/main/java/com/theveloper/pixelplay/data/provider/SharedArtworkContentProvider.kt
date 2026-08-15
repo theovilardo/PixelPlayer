@@ -25,10 +25,17 @@ class SharedArtworkContentProvider : ContentProvider() {
 
     override fun getType(uri: Uri): String? {
         val appContext = context?.applicationContext ?: return null
-        return if (parseSongId(uri, appContext.packageName) != null) {
-            DEFAULT_CONTENT_TYPE
+        val songId = parseSongId(uri, appContext.packageName) ?: return null
+        // Applied covers are WebP, extracted art is JPEG, and declaring the
+        // wrong one leaves anything trusting the declared type -- a share
+        // target, Android Auto -- with an image it cannot decode. Only the
+        // applied store is consulted: it wins when both exist and costs a
+        // pointer lookup, while resolving the cache could run a MediaStore
+        // query and a decode on the caller's main thread.
+        return if (AlbumArtUtils.getAppliedAlbumArtFile(appContext, songId) != null) {
+            WEBP_CONTENT_TYPE
         } else {
-            null
+            DEFAULT_CONTENT_TYPE
         }
     }
 
@@ -72,6 +79,7 @@ class SharedArtworkContentProvider : ContentProvider() {
         private const val AUTHORITY_SUFFIX = ".artwork"
         private const val PATH_SONG = "song"
         private const val DEFAULT_CONTENT_TYPE = "image/jpeg"
+        private const val WEBP_CONTENT_TYPE = "image/webp"
 
         fun authority(packageName: String): String = packageName + AUTHORITY_SUFFIX
 

@@ -57,6 +57,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.clickable
@@ -66,6 +67,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ClearAll
 import androidx.compose.material.icons.outlined.Folder
+import androidx.compose.material.icons.outlined.Image
+import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Wifi
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.LightMode
@@ -135,6 +140,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextGeometricTransform
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -151,6 +158,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import com.theveloper.pixelplay.R
+import com.theveloper.pixelplay.data.coverart.AlbumArtStorage
+import com.theveloper.pixelplay.data.network.webimage.WebImageSearchEngine
 import com.theveloper.pixelplay.data.backup.model.BackupHistoryEntry
 import com.theveloper.pixelplay.data.backup.model.BackupOperationType
 import com.theveloper.pixelplay.data.backup.model.BackupSection
@@ -506,6 +515,97 @@ fun SettingsCategoryScreen(
                                     onCheckedChange = { settingsViewModel.setAutoScanLrcFiles(it) },
                                     leadingIcon = { Icon(Icons.Outlined.Folder, null, tint = MaterialTheme.colorScheme.secondary) }
                                 )
+
+                                val albumArtStorage by settingsViewModel.albumArtStorage.collectAsStateWithLifecycle()
+
+                                ThemeSelectorItem(
+                                    label = stringResource(R.string.settings_album_art_storage_title),
+                                    description = stringResource(R.string.settings_album_art_storage_subtitle),
+                                    options = mapOf(
+                                        AlbumArtStorage.AUDIO_FILES.name to
+                                            stringResource(R.string.settings_album_art_storage_files),
+                                        AlbumArtStorage.APP_ONLY.name to
+                                            stringResource(R.string.settings_album_art_storage_app)
+                                    ),
+                                    selectedKey = albumArtStorage.name,
+                                    onSelectionChanged = { key ->
+                                        settingsViewModel.setAlbumArtStorage(
+                                            AlbumArtStorage.entries.first { it.name == key }
+                                        )
+                                    },
+                                    leadingIcon = {
+                                        Icon(
+                                            Icons.Outlined.Image,
+                                            null,
+                                            tint = MaterialTheme.colorScheme.secondary
+                                        )
+                                    }
+                                )
+
+                                val autoAlbumArtEnabled by settingsViewModel.autoAlbumArtEnabled.collectAsStateWithLifecycle()
+                                val autoAlbumArtUnmeteredOnly by settingsViewModel.autoAlbumArtUnmeteredOnly.collectAsStateWithLifecycle()
+
+                                SwitchSettingItem(
+                                    title = stringResource(R.string.settings_auto_album_art_title),
+                                    // Covers found automatically never reach the
+                                    // audio files, so a user who chose to apply
+                                    // covers into them is told here rather than
+                                    // left to find out from the storage setting
+                                    // they are no longer looking at.
+                                    subtitle = if (albumArtStorage == AlbumArtStorage.AUDIO_FILES) {
+                                        stringResource(R.string.settings_auto_album_art_subtitle_app_only)
+                                    } else {
+                                        stringResource(R.string.settings_auto_album_art_subtitle)
+                                    },
+                                    checked = autoAlbumArtEnabled,
+                                    onCheckedChange = { settingsViewModel.setAutoAlbumArtEnabled(it) },
+                                    leadingIcon = { Icon(Icons.Outlined.Image, null, tint = MaterialTheme.colorScheme.secondary) }
+                                )
+
+                                val webImageSearchKey by settingsViewModel.webImageSearchApiKey.collectAsStateWithLifecycle()
+                                var showWebImageSearchDialog by remember { mutableStateOf(false) }
+
+                                SettingsItem(
+                                    title = stringResource(R.string.settings_web_image_search_title),
+                                    subtitle = if (webImageSearchKey.isNotBlank()) {
+                                        stringResource(
+                                            R.string.settings_web_image_search_configured,
+                                            WebImageSearchEngine.LABEL
+                                        )
+                                    } else {
+                                        stringResource(R.string.settings_web_image_search_subtitle)
+                                    },
+                                    leadingIcon = { Icon(Icons.Outlined.Search, null, tint = MaterialTheme.colorScheme.secondary) },
+                                    onClick = { showWebImageSearchDialog = true }
+                                )
+
+                                if (showWebImageSearchDialog) {
+                                    WebImageSearchDialog(
+                                        currentApiKey = webImageSearchKey,
+                                        onDismiss = { showWebImageSearchDialog = false },
+                                        onSave = { key ->
+                                            settingsViewModel.setWebImageSearchApiKey(key)
+                                            showWebImageSearchDialog = false
+                                        }
+                                    )
+                                }
+
+                                if (autoAlbumArtEnabled) {
+                                    SwitchSettingItem(
+                                        title = stringResource(R.string.settings_auto_album_art_unmetered_title),
+                                        subtitle = stringResource(R.string.settings_auto_album_art_unmetered_subtitle),
+                                        checked = autoAlbumArtUnmeteredOnly,
+                                        onCheckedChange = { settingsViewModel.setAutoAlbumArtUnmeteredOnly(it) },
+                                        leadingIcon = { Icon(Icons.Outlined.Wifi, null, tint = MaterialTheme.colorScheme.secondary) }
+                                    )
+
+                                    SettingsItem(
+                                        title = stringResource(R.string.settings_auto_album_art_retry_title),
+                                        subtitle = stringResource(R.string.settings_auto_album_art_retry_subtitle),
+                                        leadingIcon = { Icon(Icons.Outlined.Refresh, null, tint = MaterialTheme.colorScheme.secondary) },
+                                        onClick = { settingsViewModel.retryMissingAlbumArt() }
+                                    )
+                                }
                             }
 
                             SettingsSubsection(
@@ -2926,4 +3026,74 @@ private fun SettingsSubsection(
     if (addBottomSpace) {
         Spacer(modifier = Modifier.height(10.dp))
     }
+}
+
+
+/**
+ * Configures the optional web image search source.
+ *
+ * Every usable engine requires an account, so the key is the user's own: it is
+ * stored on the device and sent only to the engine they picked.
+ */
+@Composable
+private fun WebImageSearchDialog(
+    currentApiKey: String,
+    onDismiss: () -> Unit,
+    onSave: (String) -> Unit
+) {
+    var apiKey by remember { mutableStateOf(currentApiKey) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.settings_web_image_search_title)) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(
+                    text = stringResource(R.string.settings_web_image_search_explainer),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                OutlinedTextField(
+                    value = apiKey,
+                    onValueChange = { apiKey = it },
+                    label = { Text(stringResource(R.string.settings_web_image_search_key_label)) },
+                    singleLine = true,
+                    // Masked like the other credentials in Settings, and typed
+                    // as a password so the soft keyboard does not learn it.
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Text(
+                    text = stringResource(
+                        R.string.settings_web_image_search_key_hint,
+                        WebImageSearchEngine.CONSOLE_URL
+                    ),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = { onSave(apiKey) }) {
+                Text(stringResource(R.string.common_save))
+            }
+        },
+        dismissButton = {
+            Row {
+                if (currentApiKey.isNotBlank()) {
+                    TextButton(onClick = { onSave("") }) {
+                        Text(stringResource(R.string.settings_web_image_search_disable))
+                    }
+                }
+                TextButton(onClick = onDismiss) {
+                    Text(stringResource(R.string.common_cancel))
+                }
+            }
+        }
+    )
 }

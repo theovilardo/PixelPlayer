@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.theveloper.pixelplay.data.coverart.AlbumArtStorage
 import com.theveloper.pixelplay.data.backup.BackupManager
 import com.theveloper.pixelplay.data.backup.model.BackupSection
 import com.theveloper.pixelplay.data.backup.model.BackupOperationType
@@ -30,6 +31,7 @@ import com.theveloper.pixelplay.data.preferences.ThemePreferencesRepository
 import com.theveloper.pixelplay.data.repository.LyricsRepository
 import com.theveloper.pixelplay.data.repository.MusicRepository
 import com.theveloper.pixelplay.data.model.LyricsSourcePreference
+import com.theveloper.pixelplay.data.worker.AutoCoverArtWorker
 import com.theveloper.pixelplay.data.worker.SyncManager
 import com.theveloper.pixelplay.data.worker.SyncProgress
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -1335,6 +1337,63 @@ class SettingsViewModel @Inject constructor(
 
     val useSmoothCorners: StateFlow<Boolean> = userPreferencesRepository.useSmoothCornersFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
+
+    val albumArtStorage: StateFlow<AlbumArtStorage> =
+        userPreferencesRepository.albumArtStorageFlow
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AlbumArtStorage.APP_ONLY)
+
+    fun setAlbumArtStorage(storage: AlbumArtStorage) {
+        viewModelScope.launch {
+            userPreferencesRepository.setAlbumArtStorage(storage)
+        }
+    }
+
+    val autoAlbumArtEnabled: StateFlow<Boolean> = userPreferencesRepository.autoAlbumArtEnabledFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+
+    val autoAlbumArtUnmeteredOnly: StateFlow<Boolean> =
+        userPreferencesRepository.autoAlbumArtUnmeteredOnlyFlow
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
+
+    fun setAutoAlbumArtEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            userPreferencesRepository.setAutoAlbumArtEnabled(enabled)
+            // Turning it on runs a pass now rather than waiting for the next sync.
+            if (enabled) {
+                AutoCoverArtWorker.enqueue(
+                    context = context,
+                    unmeteredOnly = userPreferencesRepository.autoAlbumArtUnmeteredOnlyFlow.first()
+                )
+            }
+        }
+    }
+
+    fun setAutoAlbumArtUnmeteredOnly(unmeteredOnly: Boolean) {
+        viewModelScope.launch {
+            userPreferencesRepository.setAutoAlbumArtUnmeteredOnly(unmeteredOnly)
+        }
+    }
+
+    val webImageSearchApiKey: StateFlow<String> = userPreferencesRepository.webImageSearchApiKeyFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
+
+    fun setWebImageSearchApiKey(apiKey: String) {
+        viewModelScope.launch {
+            userPreferencesRepository.setWebImageSearchApiKey(apiKey)
+        }
+    }
+
+    /** Forgets the albums no catalog matched, so they are tried again. */
+    fun retryMissingAlbumArt() {
+        viewModelScope.launch {
+            userPreferencesRepository.clearAlbumArtNotFoundIds()
+            AutoCoverArtWorker.enqueue(
+                context = context,
+                unmeteredOnly = userPreferencesRepository.autoAlbumArtUnmeteredOnlyFlow.first(),
+                replaceRunning = true
+            )
+        }
+    }
 
     val tapBackgroundClosesPlayer: StateFlow<Boolean> = userPreferencesRepository.tapBackgroundClosesPlayerFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)

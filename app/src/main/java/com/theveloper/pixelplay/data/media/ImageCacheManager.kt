@@ -14,8 +14,27 @@ import javax.inject.Singleton
 class ImageCacheManager @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
+    /**
+     * Drops every cached form of the given artwork, including the extracted
+     * artwork file, so the next load re-reads the cover from the audio file.
+     *
+     * Callers that just wrote new art *into the file* want this. Callers whose
+     * new cover exists only as a file the app saved want
+     * [invalidateRenderedCoverArt] instead, or they delete the very image they
+     * just saved.
+     */
+    fun invalidateCoverArtCaches(vararg uriStrings: String?) =
+        invalidate(uriStrings, dropExtractedArtwork = true)
+
+    /**
+     * Drops the rendered bitmaps while keeping the extracted artwork files, for
+     * covers whose only copy is the cached file itself.
+     */
+    fun invalidateRenderedCoverArt(vararg uriStrings: String?) =
+        invalidate(uriStrings, dropExtractedArtwork = false)
+
     @OptIn(ExperimentalCoilApi::class)
-    fun invalidateCoverArtCaches(vararg uriStrings: String?) {
+    private fun invalidate(uriStrings: Array<out String?>, dropExtractedArtwork: Boolean) {
         val imageLoader = context.imageLoader
         val memoryCache = imageLoader.memoryCache
         val diskCache = imageLoader.diskCache
@@ -38,7 +57,7 @@ class ImageCacheManager @Inject constructor(
             .distinct()
 
         expandedUris.forEach { baseUri ->
-            if (LocalArtworkUri.isLocalArtworkUri(baseUri)) {
+            if (dropExtractedArtwork && LocalArtworkUri.isLocalArtworkUri(baseUri)) {
                 LocalArtworkUri.parseSongId(baseUri)?.let { songId ->
                     AlbumArtUtils.clearCacheForSong(context, songId)
                 }

@@ -329,6 +329,11 @@
     <string name="cover_art_search_field_artist">Artist</string>
     <string name="cover_art_removed_in_app">Cover removed</string>
     <string name="album_action_remove_cover">Remove cover</string>
+    <!-- The destructive counterpart: the artwork lives in the audio files, so
+         taking it off means rewriting them and it does not come back. -->
+    <string name="album_action_delete_cover_from_files">Delete cover from files</string>
+    <string name="album_delete_cover_dialog_title">Delete cover from files?</string>
+    <string name="album_delete_cover_dialog_body">The artwork stored inside this album\'s %1$d tracks will be removed from the audio files. This can\'t be undone.</string>
     <string name="cover_art_search_edit_query">Edit search terms</string>
     <string name="cover_art_search_edit_query_done">Hide search terms</string>
     <string name="cover_art_search_idle">Enter an album or an artist to search for cover art.</string>

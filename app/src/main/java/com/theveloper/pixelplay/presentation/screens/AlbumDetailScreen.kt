@@ -38,8 +38,10 @@ import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Image
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Shuffle
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ContainedLoadingIndicator
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.DropdownMenu
@@ -65,6 +67,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -112,6 +115,7 @@ import com.theveloper.pixelplay.utils.AlbumArtUtils
 import com.theveloper.pixelplay.utils.LocalArtworkUri
 import com.theveloper.pixelplay.presentation.components.CoverArtCropperDialog
 import com.theveloper.pixelplay.presentation.components.OnlineCoverArtPickerSheet
+import com.theveloper.pixelplay.data.media.CoverArtUpdate
 import com.theveloper.pixelplay.data.model.Album
 import com.theveloper.pixelplay.presentation.components.CollapsibleCommonTopBar
 import com.theveloper.pixelplay.presentation.components.ExpressiveScrollBar
@@ -153,44 +157,67 @@ fun AlbumDetailScreen(
     var showCoverArtPicker by remember { mutableStateOf(false) }
     var pendingCoverArtUri by rememberSaveable { mutableStateOf<Uri?>(null) }
     // The writer's revision, which changes once a cover has actually been
-    // written -- whichever store it went to.
-    //
-    // The songs look like the right signal but are not: applying a cover writes
-    // each row the canonical URI it already held for any track that came with
-    // artwork, so the list re-emits equal and nothing restarts. Nor is a token
-    // bumped where the action is fired, which is before the write it stands for
-    // has run: everything keyed on it then reads the disk ahead of the change it
-    // was meant to observe.
+    // written. The songs are not that signal: a row keeps the canonical URI it
+    // already held, so the list re-emits equal. Nor is a token bumped where the
+    // action fires, which is before the write it stands for has run.
     val context = LocalContext.current
     val coverArtRevision by playerViewModel.appliedCoverArtRevision.collectAsStateWithLifecycle()
     val batchEditInProgress by playerViewModel.batchEditInProgress.collectAsStateWithLifecycle()
 
-    // Album rows keep the same artwork URI when a cover is replaced, so the
-    // header would keep drawing the old image until it left composition. This
-    // token changes the request, forcing a reload in place -- but only once the
-    // new cover is on disk, or the reload just re-caches the old image under the
-    // new URI and the header never does pick it up.
+    // Album rows keep the same artwork URI when a cover is replaced, so this
+    // token forces the header to reload in place -- but only once the new cover
+    // is on disk, or the reload re-caches the old image under the new URI.
     val coverArtToken = coverArtRevision
 
-    // Removal is only offered for a cover this app is holding, so the menu has
-    // to know whether there is one.
-    var hasAppliedCoverArt by remember { mutableStateOf(false) }
+    // Which removal this album needs, deciding what the menu offers and whether
+    // it asks first. "All of them" rather than "any": where only some tracks
+    // hold an applied cover, removal still has files to rewrite for the rest,
+    // so it is the destructive one.
+    var appliedCoverTrackCount by remember { mutableIntStateOf(0) }
     LaunchedEffect(uiState.songs, coverArtRevision) {
-        hasAppliedCoverArt = withContext(Dispatchers.IO) {
-            uiState.songs.any { song ->
+        appliedCoverTrackCount = withContext(Dispatchers.IO) {
+            uiState.songs.count { song ->
                 song.id.toLongOrNull()
                     ?.let { AlbumArtUtils.getAppliedAlbumArtFile(context, it) != null } == true
             }
         }
     }
+    val songCount = uiState.songs.size
+    val everyTrackHoldsAppliedCover = songCount > 0 && appliedCoverTrackCount == songCount
+    // Nothing to take off an album that is not showing a cover in the first
+    // place. Read from the row rather than the files: the header draws from it,
+    // so it is exactly what the user is looking at.
+    val albumShowsCoverArt = uiState.album?.albumArtUriString != null
+    var showDeleteCoverFromFilesDialog by remember { mutableStateOf(false) }
+
     // Shared by the two top bar variants below, which differ only in which
     // composable draws them.
     val onRemoveCoverArt: () -> Unit = {
         // Removal always clears the applied cover, so the menu can drop the
         // entry now rather than waiting for the probe to confirm what is
         // already decided.
-        hasAppliedCoverArt = false
+        appliedCoverTrackCount = 0
         playerViewModel.removeAppliedCoverArt(uiState.songs)
+    }
+    val onDeleteCoverFromFiles: () -> Unit = {
+        showDeleteCoverFromFilesDialog = false
+        // The tag editor's cover delete, for every track at once. The save
+        // sorts the album out track by track, and asks for write consent first.
+        playerViewModel.saveBatchMetadata(
+            songs = uiState.songs,
+            title = null,
+            artist = null,
+            album = null,
+            albumArtist = null,
+            composer = null,
+            genre = null,
+            lyrics = null,
+            trackNumber = null,
+            discNumber = null,
+            replayGainTrackGainDb = null,
+            replayGainAlbumGainDb = null,
+            coverArtUpdate = CoverArtUpdate(isDeletion = true)
+        )
     }
     val pickCoverArtLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.PickVisualMedia()
@@ -453,8 +480,10 @@ fun AlbumDetailScreen(
                                     PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                                 )
                             },
-                            canRemoveCoverArt = hasAppliedCoverArt,
+                            canRemoveCoverArt = everyTrackHoldsAppliedCover,
                             onRemoveCoverArt = onRemoveCoverArt,
+                            canDeleteCoverFromFiles = albumShowsCoverArt,
+                            onDeleteCoverFromFiles = { showDeleteCoverFromFilesDialog = true },
                             coverArtToken = coverArtToken
                         )
                     } else {
@@ -482,20 +511,18 @@ fun AlbumDetailScreen(
                                     PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                                 )
                             },
-                            canRemoveCoverArt = hasAppliedCoverArt,
+                            canRemoveCoverArt = everyTrackHoldsAppliedCover,
                             onRemoveCoverArt = onRemoveCoverArt,
+                            canDeleteCoverFromFiles = albumShowsCoverArt,
+                            onDeleteCoverFromFiles = { showDeleteCoverFromFilesDialog = true },
                             coverArtToken = coverArtToken
                         )
                     }
 
-                    // Applying a cover to an album is a tag rewrite per track
-                    // when covers go into the audio files, and the cropper
-                    // closes the moment that starts -- so without this the
-                    // screen sits unchanged for seconds on the one path that
-                    // really is writing to the user's files, and the natural
-                    // response is to tap again. Clear of the mini player, rather
-                    // than a bar at the top edge the collapsing header art would
-                    // swallow.
+                    // The cropper closes the moment the write starts, so
+                    // without this the screen sits unchanged for seconds on the
+                    // one path writing to the user's files. Clear of the mini
+                    // player; a bar at the top edge the header art would swallow.
                     AnimatedVisibility(
                         visible = batchEditInProgress,
                         enter = fadeIn(),
@@ -532,6 +559,42 @@ fun AlbumDetailScreen(
                     }
                 }
             }
+        }
+
+        // The one action in this menu that cannot be undone: the artwork lives
+        // in the audio files and nothing else holds a copy of it.
+        if (showDeleteCoverFromFilesDialog) {
+            AlertDialog(
+                icon = { Icon(Icons.Rounded.Delete, contentDescription = null) },
+                title = { Text(stringResource(R.string.album_delete_cover_dialog_title)) },
+                text = {
+                    Text(
+                        stringResource(
+                            R.string.album_delete_cover_dialog_body,
+                            uiState.songs.size
+                        )
+                    )
+                },
+                onDismissRequest = { showDeleteCoverFromFilesDialog = false },
+                confirmButton = {
+                    TextButton(onClick = onDeleteCoverFromFiles) {
+                        Text(
+                            stringResource(R.string.common_delete),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showDeleteCoverFromFilesDialog = false }) {
+                        Text(
+                            stringResource(R.string.common_cancel),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
+            )
         }
 
         val albumForCoverArt = uiState.album
@@ -692,6 +755,8 @@ private fun SharedAlbumTopBarProbe(
     onPickCoverArtFromGallery: () -> Unit,
     canRemoveCoverArt: Boolean,
     onRemoveCoverArt: () -> Unit,
+    canDeleteCoverFromFiles: Boolean,
+    onDeleteCoverFromFiles: () -> Unit,
     coverArtToken: Long
 ) {
     val surfaceColor = MaterialTheme.colorScheme.surface
@@ -789,6 +854,8 @@ private fun SharedAlbumTopBarProbe(
                         onSearchOnline = onSearchCoverArtOnline,
                         onPickFromGallery = onPickCoverArtFromGallery,
                         canRemoveCover = canRemoveCoverArt,
+                        canDeleteCoverFromFiles = canDeleteCoverFromFiles,
+                        onDeleteCoverFromFiles = onDeleteCoverFromFiles,
                         onRemoveCover = onRemoveCoverArt
                     )
                 }
@@ -849,7 +916,9 @@ private fun CoverArtMenuButton(
     onSearchOnline: () -> Unit,
     onPickFromGallery: () -> Unit,
     canRemoveCover: Boolean,
-    onRemoveCover: () -> Unit
+    onRemoveCover: () -> Unit,
+    canDeleteCoverFromFiles: Boolean,
+    onDeleteCoverFromFiles: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -882,9 +951,9 @@ private fun CoverArtMenuButton(
                 onPickFromGallery()
             }
         )
-        // Only for a cover this app is holding. Offered against embedded art it
-        // would have to rewrite every track of the album to mean anything, which
-        // is not what the two actions above it do.
+        // At most one of these. Taking back an app-held cover is reversible;
+        // taking one out of the audio files destroys the image, so they are
+        // separate entries and only the second asks first.
         if (canRemoveCover) {
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.album_action_remove_cover)) },
@@ -892,6 +961,15 @@ private fun CoverArtMenuButton(
                 onClick = {
                     expanded = false
                     onRemoveCover()
+                }
+            )
+        } else if (canDeleteCoverFromFiles) {
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.album_action_delete_cover_from_files)) },
+                leadingIcon = { Icon(Icons.Rounded.Delete, contentDescription = null) },
+                onClick = {
+                    expanded = false
+                    onDeleteCoverFromFiles()
                 }
             )
         }
@@ -913,6 +991,8 @@ private fun CollapsingAlbumTopBar(
     onPickCoverArtFromGallery: () -> Unit,
     canRemoveCoverArt: Boolean,
     onRemoveCoverArt: () -> Unit,
+    canDeleteCoverFromFiles: Boolean,
+    onDeleteCoverFromFiles: () -> Unit,
     coverArtToken: Long
 ) {
     val surfaceColor = MaterialTheme.colorScheme.surface
@@ -1027,6 +1107,8 @@ private fun CollapsingAlbumTopBar(
                         onSearchOnline = onSearchCoverArtOnline,
                         onPickFromGallery = onPickCoverArtFromGallery,
                         canRemoveCover = canRemoveCoverArt,
+                        canDeleteCoverFromFiles = canDeleteCoverFromFiles,
+                        onDeleteCoverFromFiles = onDeleteCoverFromFiles,
                         onRemoveCover = onRemoveCoverArt
                     )
                 }

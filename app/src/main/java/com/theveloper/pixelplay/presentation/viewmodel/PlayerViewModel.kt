@@ -2850,6 +2850,15 @@ class PlayerViewModel @Inject constructor(
         metadataEditCallbacks()
     )
 
+    fun removeAppliedCoverArt(songs: List<Song>) =
+        metadataEditStateHolder.removeAppliedCoverArt(songs, metadataEditCallbacks())
+
+    /** See [com.theveloper.pixelplay.data.coverart.AppArtworkWriter.appliedArtworkRevision]. */
+    val appliedCoverArtRevision = metadataEditStateHolder.appliedArtworkRevision
+
+    /** See [MetadataEditStateHolder.batchEditInProgress]. */
+    val batchEditInProgress = metadataEditStateHolder.batchEditInProgress
+
     fun editSongMetadata(
         song: Song,
         newTitle: String,

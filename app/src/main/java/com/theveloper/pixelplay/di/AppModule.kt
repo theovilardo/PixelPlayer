@@ -36,7 +36,17 @@ import com.theveloper.pixelplay.data.media.SongMetadataEditor
 import com.theveloper.pixelplay.data.network.deezer.DeezerApiService
 import com.theveloper.pixelplay.data.network.netease.NeteaseApiService
 import com.theveloper.pixelplay.data.network.lyrics.LrcLibApiService
+import com.theveloper.pixelplay.data.coverart.CoverArtProvider
+import com.theveloper.pixelplay.data.coverart.DeezerCoverArtProvider
+import com.theveloper.pixelplay.data.coverart.ItunesCoverArtProvider
+import com.theveloper.pixelplay.data.coverart.MusicBrainzCoverArtProvider
+import com.theveloper.pixelplay.data.coverart.WebImageCoverArtProvider
+import com.theveloper.pixelplay.data.network.webimage.SerperImageSearchApi
+import com.theveloper.pixelplay.data.network.coverartarchive.CoverArtArchiveApiService
+import com.theveloper.pixelplay.data.network.coverartarchive.MusicBrainzApiService
+import com.theveloper.pixelplay.data.network.itunes.ItunesApiService
 import com.theveloper.pixelplay.data.repository.ArtistImageRepository
+import com.theveloper.pixelplay.data.repository.CoverArtSearchRepository
 import com.theveloper.pixelplay.data.repository.LyricsRepository
 import com.theveloper.pixelplay.data.repository.LyricsRepositoryImpl
 import com.theveloper.pixelplay.data.repository.MediaStoreSongRepository
@@ -67,6 +77,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    /**
+     * MusicBrainz requires an application name, a version and a contact URL, and
+     * answers 403 to clients that do not identify themselves.
+     */
+    private const val MUSICBRAINZ_USER_AGENT =
+        "PixelPlayer/${BuildConfig.VERSION_NAME} ( https://github.com/PixelPlayerHQ/PixelPlayer )"
 
     @Singleton
     @Provides
@@ -443,6 +460,7 @@ object AppModule {
             redactHeader("Cookie")
             redactHeader("Set-Cookie")
             redactHeader("x-goog-api-key")
+            redactHeader("X-API-KEY")
             redactHeader("X-Emby-Token")
             redactHeader("X-Emby-Authorization")
             redactHeader("X-MediaBrowser-Token")
@@ -585,5 +603,151 @@ object AppModule {
         musicDao: MusicDao
     ): ArtistImageRepository {
         return ArtistImageRepository(deezerApiService, musicDao)
+    }
+
+    /**
+     * Provee Retrofit para la API de búsqueda de iTunes.
+     */
+    @Provides
+    @Singleton
+    @ItunesRetrofit
+    fun provideItunesRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://itunes.apple.com/")
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideItunesApiService(@ItunesRetrofit retrofit: Retrofit): ItunesApiService {
+        return retrofit.create(ItunesApiService::class.java)
+    }
+
+    /**
+     * Client for fetching cover art images.
+     *
+     * The repository refuses a candidate whose URL is not HTTPS, but the check
+     * only sees the URL it is given: with redirects followed across schemes, a
+     * host could answer an HTTPS request with a 302 to cleartext and the image
+     * would be fetched in the open. The shared client cannot refuse those --
+     * Navidrome and Jellyfin are reachable over HTTP on a local network -- so
+     * this one does.
+     */
+    @Provides
+    @Singleton
+    @CoverArtImageClient
+    fun provideCoverArtImageClient(okHttpClient: OkHttpClient): OkHttpClient {
+        return okHttpClient.newBuilder()
+            .followSslRedirects(false)
+            .build()
+    }
+
+    /**
+     * Cliente HTTP para MusicBrainz y Cover Art Archive.
+     *
+     * MusicBrainz exige que cada cliente se identifique con una User-Agent
+     * descriptiva que incluya un contacto; sin ella la API responde 403.
+     */
+    @Provides
+    @Singleton
+    @MusicBrainzRetrofit
+    fun provideMusicBrainzOkHttpClient(okHttpClient: OkHttpClient): OkHttpClient {
+        return okHttpClient.newBuilder()
+            .addInterceptor { chain ->
+                val request = chain.request().newBuilder()
+                    .header("User-Agent", MUSICBRAINZ_USER_AGENT)
+                    .build()
+                chain.proceed(request)
+            }
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    @MusicBrainzRetrofit
+    fun provideMusicBrainzRetrofit(
+        @MusicBrainzRetrofit okHttpClient: OkHttpClient
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://musicbrainz.org/")
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideMusicBrainzApiService(
+        @MusicBrainzRetrofit retrofit: Retrofit
+    ): MusicBrainzApiService {
+        return retrofit.create(MusicBrainzApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    @CoverArtArchiveRetrofit
+    fun provideCoverArtArchiveRetrofit(
+        @MusicBrainzRetrofit okHttpClient: OkHttpClient
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://coverartarchive.org/")
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCoverArtArchiveApiService(
+        @CoverArtArchiveRetrofit retrofit: Retrofit
+    ): CoverArtArchiveApiService {
+        return retrofit.create(CoverArtArchiveApiService::class.java)
+    }
+
+    /**
+     * Retrofit para el buscador de imágenes web. La clave es del usuario y
+     * viaja como cabecera en cada llamada, así que aquí no se guarda nada.
+     */
+    @Provides
+    @Singleton
+    fun provideSerperImageSearchApi(okHttpClient: OkHttpClient): SerperImageSearchApi {
+        return Retrofit.Builder()
+            .baseUrl("https://google.serper.dev/")
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(SerperImageSearchApi::class.java)
+    }
+
+    /**
+     * Provee los catálogos consultados al buscar carátulas online.
+     *
+     * El orden importa: la búsqueda manual los consulta en paralelo y sólo lo
+     * usa para desempatar, pero la pasada automática recorre primero los
+     * catálogos de consulta directa y sólo sigue con el resto si ninguno da una
+     * coincidencia segura.
+     */
+    @Provides
+    @Singleton
+    fun provideCoverArtProviders(
+        deezerApiService: DeezerApiService,
+        itunesApiService: ItunesApiService,
+        musicBrainzApiService: MusicBrainzApiService,
+        coverArtArchiveApiService: CoverArtArchiveApiService,
+        serperImageSearchApi: SerperImageSearchApi,
+        userPreferencesRepository: UserPreferencesRepository
+    ): List<@JvmSuppressWildcards CoverArtProvider> {
+        return listOf(
+            DeezerCoverArtProvider(deezerApiService),
+            ItunesCoverArtProvider(itunesApiService),
+            MusicBrainzCoverArtProvider(musicBrainzApiService, coverArtArchiveApiService),
+            // Sits out of every search until the user configures a key.
+            WebImageCoverArtProvider(
+                serperImageSearchApi = serperImageSearchApi,
+                userPreferencesRepository = userPreferencesRepository
+            )
+        )
     }
 }

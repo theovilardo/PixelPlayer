@@ -5,7 +5,10 @@ import retrofit2.http.Query
 
 /**
  * Retrofit interface for Deezer API.
- * Used primarily for fetching artist artwork.
+ * Used primarily for fetching artist and album artwork.
+ *
+ * These are public catalog endpoints: they need no API key and no OAuth token,
+ * which is why the Retrofit instance in `AppModule` carries no auth interceptor.
  */
 interface DeezerApiService {
 
@@ -20,4 +23,16 @@ interface DeezerApiService {
         @Query("q") query: String,
         @Query("limit") limit: Int = 1
     ): DeezerSearchResponse
+
+    /**
+     * Search for albums, used to offer cover art candidates for a song.
+     *
+     * The query accepts Deezer's advanced syntax (`artist:"..." album:"..."`)
+     * as well as plain free text.
+     */
+    @GET("search/album")
+    suspend fun searchAlbum(
+        @Query("q") query: String,
+        @Query("limit") limit: Int = 24
+    ): DeezerAlbumSearchResponse
 }

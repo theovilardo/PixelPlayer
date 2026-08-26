@@ -1,0 +1,36 @@
+name: Sync All Branches from Upstream
+
+on:
+  schedule:
+    - cron: "0 */12 * * *"   # every 12 hours
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout fork
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Add upstream remote
+        run: |
+          git remote add upstream https://github.com/PixelPlayerHQ/PixelPlayer.git
+          git fetch upstream
+
+      - name: Sync all branches
+        run: |
+          for branch in $(git branch -r | grep upstream/ | sed 's/upstream\///'); do
+            echo "Syncing branch: $branch"
+
+            # Create branch locally if missing
+            git checkout -B $branch origin/$branch || git checkout -B $branch
+
+            # Merge upstream branch
+            git merge upstream/$branch --allow-unrelated-histories
+
+            # Push back to your fork
+            git push origin $branch
+          done

@@ -418,4 +418,54 @@ class LyricsUtilsTest {
             lrc
         )
     }
+
+    @Test
+    fun parseLyrics_supportsOverOneHour_minutesFormat() {
+        // 70 minutes = 70 * 60 * 1000 = 4,200,000 ms
+        val lrc = "[70:00.00]Long track line"
+        val lyrics = LyricsUtils.parseLyrics(lrc)
+        val synced = requireNotNull(lyrics.synced)
+
+        assertEquals(1, synced.size)
+        assertEquals(4_200_000, synced[0].time)
+        assertEquals("Long track line", synced[0].line)
+    }
+
+    @Test
+    fun parseLyrics_supportsOverOneHour_hoursFormat() {
+        // 01:10:00.00 = 1h 10m = 70 minutes = 4,200,000 ms
+        val lrc = "[01:10:00.00]Long track line with hours"
+        val lyrics = LyricsUtils.parseLyrics(lrc)
+        val synced = requireNotNull(lyrics.synced)
+
+        assertEquals(1, synced.size)
+        assertEquals(4_200_000, synced[0].time)
+        assertEquals("Long track line with hours", synced[0].line)
+    }
+
+    @Test
+    fun parseLyrics_wordByWord_supportsOverOneHour() {
+        // [01:00:00.00] = 3,600,000 ms
+        // <01:00:05.00> = 3,605,000 ms
+        val lrc = "[01:00:00.00]<01:00:00.00>Start <01:00:05.00>Later"
+        val lyrics = LyricsUtils.parseLyrics(lrc)
+        val synced = requireNotNull(lyrics.synced)
+        val words = requireNotNull(synced.single().words)
+
+        assertEquals(3_600_000, synced[0].time)
+        assertEquals(3_600_000, words[0].time)
+        assertEquals(3_605_000, words[1].time)
+    }
+
+    @Test
+    fun syncedToLrcString_usesHourFormatWhenNeeded() {
+        val synced = listOf(
+            com.theveloper.pixelplay.data.model.SyncedLine(
+                time = 4_200_000, // 70 minutes
+                line = "Over one hour"
+            )
+        )
+        val lrc = LyricsUtils.syncedToLrcString(synced)
+        assertEquals("[01:10:00.00]Over one hour", lrc)
+    }
 }

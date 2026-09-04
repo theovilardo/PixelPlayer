@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="glance_widget_description">Widget responsivo que se adapta ao seu tamanho</string>
+    <string name="widget_bar_4x1_desc">Barra de player compacta</string>
+    <string name="widget_control_4x2_desc">Controles completos com ordem aleatória e repetição</string>
+    <string name="widget_grid_2x2_desc">Player quadrado minimalista</string>
+
+    <string name="widget_tap_to_open">Toque para abrir</string>
+    <string name="widget_album_art">Capa do álbum</string>
+    <string name="widget_album_art_placeholder">Espaço reservado para capa do álbum</string>
+
+    <string name="widget_tap_to_play">Toque para reproduzir</string>
+    <string name="widget_preview_song_title">Título da música</string>
+    <string name="widget_preview_artist">Artista</string>
+
+    <string name="widget_wavy_progress_bar_desc">Barra de progresso, %1$d por cento</string>
+</resources>

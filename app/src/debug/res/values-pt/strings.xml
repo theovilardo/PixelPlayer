@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PixelPlayer [D]</string>
+    <string name="settings_pause_on_volume_zero">Pausar quando o volume atingir zero</string>
+    <string name="settings_pause_on_volume_zero_desc">Pausar automaticamente a reprodução quando o volume for definido como 0</string>
+    <string name="settings_volume_section">Volume</string>
+</resources>
